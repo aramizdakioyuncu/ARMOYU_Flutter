@@ -1,12 +1,12 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:convert';
 
-import 'package:armoyu/services/User.dart';
+import 'package:ARMOYU/services/User.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'api_service.dart';
-
-import 'dart:developer';
 
 class FunctionService {
   /*
@@ -21,8 +21,11 @@ class FunctionService {
   }
 
 ///////////Fonksiyonlar Başlangıcı
-  Future<Map<String, dynamic>> login(String username, String password) async {
-    password = generateMd5(password);
+  Future<Map<String, dynamic>> login(
+      String username, String password, bool System) async {
+    if (!System) {
+      password = generateMd5(password);
+    }
 
     if (username == "" || password == "") {
       Map<String, dynamic> jsonData = {
@@ -51,11 +54,6 @@ class FunctionService {
       return jsonString;
     }
     if (response["kontrol"].toString() != "1") {
-      final prefs = await SharedPreferences.getInstance();
-
-      prefs.setString('username', username);
-      prefs.setString('password', password);
-
       Map<String, dynamic> jsonData = {
         'durum': 0,
         'aciklama': "Hatalı giriş!",
@@ -74,9 +72,27 @@ class FunctionService {
     User.banneravatar = response["parkaresimufak"];
     User.mail = response["eposta"];
 
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('username', username);
+    prefs.setString('password', password);
     Map<String, dynamic> jsonData = {
       'durum': 1,
       'aciklama': "Başarılı.",
+    };
+    String jsonencode = jsonEncode(jsonData);
+    Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
+    return jsonString;
+  }
+
+  Future<Map<String, dynamic>> logOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('username');
+    prefs.remove('password');
+
+    Map<String, dynamic> jsonData = {
+      'durum': 1,
+      'aciklama': "Başarılı bir şekilde çıkış yapıldı.",
     };
     String jsonencode = jsonEncode(jsonData);
     Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
@@ -94,6 +110,13 @@ class FunctionService {
     Map<String, String> formData = {"param1": "value1"};
     Map<String, dynamic> jsonData =
         await apiService.request("okullarim/0/0", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> getPosts() async {
+    Map<String, String> formData = {"param1": "value1"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("sosyal/liste/1/", formData);
     return jsonData;
   }
 }

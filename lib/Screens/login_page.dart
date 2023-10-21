@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,17 @@ import 'main_page.dart';
 TextEditingController usernameController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +59,7 @@ class LoginPage extends StatelessWidget {
                 String password = passwordController.text;
                 FunctionService f = FunctionService();
                 Map<String, dynamic> response =
-                    await f.login(username, password); //sa
+                    await f.login(username, password, false); //sa
 
                 if (response["durum"] == 1) {
                   Navigator.push(context,
