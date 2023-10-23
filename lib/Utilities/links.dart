@@ -1,17 +1,17 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings
 import 'package:ARMOYU/Utilities/Import&Export/export.dart';
-import '../services/User.dart';
+import '../Services/User.dart';
 
 var URL =
     "https://aramizdakioyuncu.com/botlar/8cdee5526476b101869401a37c03e379/${User.userName}/${User.password}/";
 
-var qrlink = URL + "oturum-ac/qr/$gelenID/";
-var gonderiurl = URL + "sosyal/$startPage/0/";
+var qrlink = URL + "oturum-ac/qr/gelenID/";
+var gonderiurl = URL + "sosyal/startPage/0/";
 var haberurl = URL + "haberler/0/0/";
 var oturumkontrolurl = URL + "0/0/0/";
 var grupurl = URL + "gruplarim/0/0/";
-var grupdetail = URL + "sosyal/0/0/&grupid=$grupid";
-var detaylink = URL + "sosyal/detay/$detayid/";
+var grupdetail = URL + "sosyal/0/0/&grupid=grupid";
+var detaylink = URL + "sosyal/detay/detayid/";
 var etkinlikler = URL + "etkinlikler/0/0/";
 var toplantilink = URL + "toplantilar/0/0/";
 var cekilislink = URL + "cekilis/0/0/";

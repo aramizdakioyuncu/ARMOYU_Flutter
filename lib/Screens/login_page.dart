@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names
 
+import 'package:ARMOYU/Services/theme_service.dart';
 import 'package:flutter/material.dart';
 
-import '../services/functions_service.dart';
+import '../Services/functions_service.dart';
 import 'main_page.dart';
 
 TextEditingController usernameController = TextEditingController();
@@ -86,6 +87,12 @@ class _LoginPageState extends State<LoginPage> {
               },
               child: Text('Kayıt Ol'),
             ),
+            IconButton(
+              icon: Icon(Icons.nightlight), // Sağdaki butonun ikonu
+              onPressed: () {
+                ThemeProvider().toggleTheme();
+              },
+            )
           ],
         ),
       ),

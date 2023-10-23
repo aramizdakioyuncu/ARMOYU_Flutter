@@ -50,12 +50,8 @@ export 'package:ARMOYU/Utilities/ScreensUtilities/skelaton.dart';
 //  Controllers  //
 export 'package:ARMOYU/Controllers/controllers.dart';
 
-//  Variables  //
-export 'package:ARMOYU/Variables/variables.dart';
-
 //  Utilities  //
 export 'package:ARMOYU/Utilities/links.dart';
-export 'package:ARMOYU/Utilities/utilities.dart';
 export 'package:ARMOYU/Utilities/ScreensUtilities/newsCardSkelaton.dart';
 //?  ----------  Files  ----------  //
 
@@ -84,6 +80,6 @@ export 'package:http_parser/http_parser.dart';
 // export 'package:focused_menu/modals.dart';
 // export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // export 'package:gallery_saver/gallery_saver.dart';
-// export 'package:photo_view/photo_view_gallery.dart';
-// export 'package:photo_view/photo_view.dart';
+//  export 'package:photo_view/photo_view_gallery.dart';
+//  export 'package:photo_view/photo_view.dart';
 //?  ----------  Libraries  ----------  //

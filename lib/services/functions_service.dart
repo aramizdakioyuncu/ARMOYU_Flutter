@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:ARMOYU/services/User.dart';
+import 'package:ARMOYU/Services/User.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -99,24 +99,31 @@ class FunctionService {
     return jsonString;
   }
 
+  Future<Map<String, dynamic>> lookProfile(int userID) async {
+    Map<String, String> formData = {"oyuncubakid": "$userID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("0/0/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> myGroups() async {
-    Map<String, String> formData = {"param1": "value1"};
+    Map<String, String> formData = {};
     Map<String, dynamic> jsonData =
         await apiService.request("gruplarim/0/0", formData);
     return jsonData;
   }
 
   Future<Map<String, dynamic>> mySchools() async {
-    Map<String, String> formData = {"param1": "value1"};
+    Map<String, String> formData = {};
     Map<String, dynamic> jsonData =
         await apiService.request("okullarim/0/0", formData);
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getPosts() async {
-    Map<String, String> formData = {"param1": "value1"};
+  Future<Map<String, dynamic>> getPosts(int page) async {
+    Map<String, String> formData = {};
     Map<String, dynamic> jsonData =
-        await apiService.request("sosyal/liste/1/", formData);
+        await apiService.request("sosyal/liste/$page/", formData);
     return jsonData;
   }
 }

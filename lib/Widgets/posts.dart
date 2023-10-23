@@ -1,29 +1,70 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
+import 'dart:ui';
+
+import 'package:ARMOYU/Core/screen.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../Functions/posts.dart';
+import '../Screens/FullScreenImagePage.dart';
+import '../Screens/profile_page.dart';
+
 class TwitterPostWidget extends StatelessWidget {
+  final int userID;
   final String profileImageUrl;
   final String username;
+  final int postID;
+
   final String postText;
   final String postDate;
   final List<String> mediaUrls;
   final String postlikeCount;
   final String postcommentCount;
 
+  final int postMelike;
+  final int postMecomment;
+
   TwitterPostWidget({
+    required this.userID,
     required this.profileImageUrl,
     required this.username,
+    required this.postID,
     required this.postText,
     required this.postDate,
     required this.mediaUrls,
     required this.postlikeCount,
     required this.postcommentCount,
+    required this.postMelike,
+    required this.postMecomment,
   });
 
   @override
   Widget build(BuildContext context) {
+    //Like Buton
+    Icon postlikeIcon = Icon(Icons.favorite_outline);
+    Color postlikeColor = Colors.grey;
+    if (postMelike == 1) {
+      postlikeIcon = Icon(Icons.favorite);
+      postlikeColor = Colors.red;
+    }
+
+    //Comment Buton
+    Icon postcommentIcon = Icon(Icons.comment_outlined);
+    Color postcommentColor = Colors.grey;
+    if (postMecomment == 1) {
+      postcommentIcon = Icon(Icons.comment);
+      postcommentColor = Colors.blue;
+    }
+
+    //Repost Buton
+    Icon postrepostIcon = Icon(Icons.cyclone_outlined);
+    Color postrepostColor = Colors.grey;
+    if (postMecomment == 1) {
+      postrepostIcon = Icon(Icons.cyclone);
+      postrepostColor = Colors.green;
+    }
+
     return Container(
       padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -34,10 +75,20 @@ class TwitterPostWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(profileImageUrl),
-                radius: 30,
-              ),
+              GestureDetector(
+                  onTap: () {
+                    // Tıklama işlemlerinizi burada gerçekleştirin
+                    // Örneğin, bir işlevi çağırabilir veya bir sayfaya yönlendirebilirsiniz.
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfilePage(
+                                  userID: userID,
+                                )));
+                  },
+                  child: CircleAvatar(
+                      backgroundImage: NetworkImage(profileImageUrl),
+                      radius: 30)),
               SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,28 +113,53 @@ class TwitterPostWidget extends StatelessWidget {
           SizedBox(height: 16),
           _buildPostText(), // Tıklanabilir metin için yeni fonksiyon
           SizedBox(height: 16),
-          _buildMediaContent(), // Medya içeriği için yeni fonksiyon
+          Center(
+              child: _buildMediaContent(
+                  context)), // Medya içeriği için yeni fonksiyon
           SizedBox(height: 16),
 
           Row(
             children: [
               Spacer(),
-              Icon(Icons.favorite_outline, color: Colors.grey),
+              IconButton(
+                iconSize: 25,
+                icon: postlikeIcon,
+                color: postlikeColor,
+                onPressed: () {
+                  FunctionsPosts funct = FunctionsPosts();
+                  funct.likeordislike(postID);
+                },
+              ),
               SizedBox(width: 5),
               Text(
                 postlikeCount,
                 style: TextStyle(color: Colors.grey),
               ),
               Spacer(),
-              Icon(Icons.comment_outlined, color: Colors.grey),
+              IconButton(
+                iconSize: 25,
+                icon: postcommentIcon,
+                color: postcommentColor,
+                onPressed: () {
+                  FunctionsPosts funct = FunctionsPosts();
+                  funct.likeordislike(postID);
+                },
+              ),
               SizedBox(width: 5),
               Text(
                 postcommentCount,
                 style: TextStyle(color: Colors.grey),
               ), // Yorum simgesi
               Spacer(),
-              Icon(Icons.recycling_outlined,
-                  color: Colors.grey), // Retweet simgesi (yeşil renkte)
+              IconButton(
+                iconSize: 25,
+                icon: postrepostIcon,
+                color: postrepostColor,
+                onPressed: () {
+                  FunctionsPosts funct = FunctionsPosts();
+                  funct.likeordislike(postID);
+                },
+              ), // Retweet simgesi (yeşil renkte)
               Spacer(),
               Icon(Icons.share_outlined,
                   color: Colors.grey), // Paylaşım simgesi
@@ -123,12 +199,144 @@ class TwitterPostWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildMediaContent() {
-    return Column(
-      children: mediaUrls.map((mediaUrl) {
-        return Image.network(
-            mediaUrl); // Medya içeriğini görüntülemek için Image widget'ını kullanın
-      }).toList(),
-    );
+  Widget _buildMediaContent(BuildContext context) {
+    Widget mediaSablon(String mediaUrl,
+        {BoxFit? fit = BoxFit.cover,
+        double? width = 100,
+        double? height = 100}) {
+      return Image.network(
+        mediaUrl,
+        fit: fit,
+        width: width,
+        height: height,
+      );
+    }
+
+    Widget Mediayerlesim = Row();
+    if (mediaUrls.length == 1) {
+      Mediayerlesim = Row(
+        mainAxisAlignment: MainAxisAlignment
+            .center, // Görüntülerin yatayda merkezlenmesini sağlar
+        children: mediaUrls.map((mediaUrl) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => FullScreenImagePage(
+                  images: mediaUrls,
+                  initialIndex: 0,
+                ),
+              ));
+            },
+            child: mediaSablon(mediaUrl,
+                width: Screen.screenWidth / 1.09,
+                height: Screen.screenHeight / 2),
+          );
+        }).toList(),
+      );
+    } else if (mediaUrls.length == 2) {
+      Mediayerlesim = Row(
+        mainAxisAlignment: MainAxisAlignment
+            .center, // Görüntülerin yatayda merkezlenmesini sağlar
+        children: mediaUrls.map((mediaUrl) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => FullScreenImagePage(
+                  images: mediaUrls,
+                  initialIndex: 0,
+                ),
+              ));
+            },
+            child: mediaSablon(mediaUrl,
+                width: Screen.screenWidth / 2.18,
+                height: Screen.screenHeight / 4),
+          );
+        }).toList(),
+      );
+    } else if (mediaUrls.length == 3) {
+      Mediayerlesim = Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: mediaUrls.sublist(0, 1).map((mediaUrl) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FullScreenImagePage(
+                      images: mediaUrls,
+                      initialIndex: 0,
+                    ),
+                  ));
+                },
+                child: mediaSablon(mediaUrl,
+                    width: Screen.screenWidth / 1.09,
+                    height: Screen.screenHeight / 2.5),
+              );
+            }).toList(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: mediaUrls.sublist(1, 3).map((mediaUrl) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FullScreenImagePage(
+                      images: mediaUrls,
+                      initialIndex: 0,
+                    ),
+                  ));
+                },
+                child: mediaSablon(mediaUrl,
+                    width: Screen.screenWidth / 2.18,
+                    height: Screen.screenHeight / 4),
+              );
+            }).toList(),
+          ),
+        ],
+      );
+    } else if (mediaUrls.length >= 4) {
+      Mediayerlesim = Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: mediaUrls.sublist(0, 2).map((mediaUrl) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FullScreenImagePage(
+                      images: mediaUrls,
+                      initialIndex: 0,
+                    ),
+                  ));
+                },
+                child: mediaSablon(mediaUrl,
+                    width: Screen.screenWidth / 2.19,
+                    height: Screen.screenHeight / 4),
+              );
+            }).toList(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: mediaUrls.sublist(2, 4).map((mediaUrl) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FullScreenImagePage(
+                      images: mediaUrls,
+                      initialIndex: 0,
+                    ),
+                  ));
+                },
+                child: mediaSablon(mediaUrl,
+                    width: Screen.screenWidth / 2.19,
+                    height: Screen.screenHeight / 4),
+              );
+            }).toList(),
+          ),
+        ],
+      );
+    }
+
+    return Mediayerlesim;
   }
 }
