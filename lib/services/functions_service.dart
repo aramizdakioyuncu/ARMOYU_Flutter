@@ -20,6 +20,13 @@ class FunctionService {
     return md5.convert(utf8.encode(input)).toString();
   }
 
+  Future<Map<String, dynamic>> getappdetail() async {
+    Map<String, String> formData = {};
+    Map<String, dynamic> jsonData =
+        await apiService.request("0/0/0/", formData);
+    return jsonData;
+  }
+
 ///////////Fonksiyonlar Başlangıcı
   Future<Map<String, dynamic>> login(
       String username, String password, bool System) async {

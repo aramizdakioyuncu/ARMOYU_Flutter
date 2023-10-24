@@ -10,7 +10,7 @@ import '../Functions/posts.dart';
 import '../Screens/FullScreenImagePage.dart';
 import '../Screens/profile_page.dart';
 
-class TwitterPostWidget extends StatelessWidget {
+class TwitterPostWidget extends StatefulWidget {
   final int userID;
   final String profileImageUrl;
   final String username;
@@ -40,11 +40,16 @@ class TwitterPostWidget extends StatelessWidget {
   });
 
   @override
+  State<TwitterPostWidget> createState() => _TwitterPostWidgetState();
+}
+
+class _TwitterPostWidgetState extends State<TwitterPostWidget> {
+  @override
   Widget build(BuildContext context) {
     //Like Buton
     Icon postlikeIcon = Icon(Icons.favorite_outline);
     Color postlikeColor = Colors.grey;
-    if (postMelike == 1) {
+    if (widget.postMelike == 1) {
       postlikeIcon = Icon(Icons.favorite);
       postlikeColor = Colors.red;
     }
@@ -52,7 +57,7 @@ class TwitterPostWidget extends StatelessWidget {
     //Comment Buton
     Icon postcommentIcon = Icon(Icons.comment_outlined);
     Color postcommentColor = Colors.grey;
-    if (postMecomment == 1) {
+    if (widget.postMecomment == 1) {
       postcommentIcon = Icon(Icons.comment);
       postcommentColor = Colors.blue;
     }
@@ -60,7 +65,7 @@ class TwitterPostWidget extends StatelessWidget {
     //Repost Buton
     Icon postrepostIcon = Icon(Icons.cyclone_outlined);
     Color postrepostColor = Colors.grey;
-    if (postMecomment == 1) {
+    if (widget.postMecomment == 1) {
       postrepostIcon = Icon(Icons.cyclone);
       postrepostColor = Colors.green;
     }
@@ -83,25 +88,25 @@ class TwitterPostWidget extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ProfilePage(
-                                  userID: userID,
+                                  userID: widget.userID,
                                 )));
                   },
                   child: CircleAvatar(
-                      backgroundImage: NetworkImage(profileImageUrl),
+                      backgroundImage: NetworkImage(widget.profileImageUrl),
                       radius: 30)),
               SizedBox(width: 16),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    username,
+                    widget.username,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   Text(
-                    postDate,
+                    widget.postDate,
                     style: TextStyle(
                       color: Colors.grey,
                     ),
@@ -127,12 +132,12 @@ class TwitterPostWidget extends StatelessWidget {
                 color: postlikeColor,
                 onPressed: () {
                   FunctionsPosts funct = FunctionsPosts();
-                  funct.likeordislike(postID);
+                  funct.likeordislike(widget.postID);
                 },
               ),
               SizedBox(width: 5),
               Text(
-                postlikeCount,
+                widget.postlikeCount,
                 style: TextStyle(color: Colors.grey),
               ),
               Spacer(),
@@ -141,13 +146,13 @@ class TwitterPostWidget extends StatelessWidget {
                 icon: postcommentIcon,
                 color: postcommentColor,
                 onPressed: () {
-                  FunctionsPosts funct = FunctionsPosts();
-                  funct.likeordislike(postID);
+                  // FunctionsPosts funct = FunctionsPosts();
+                  // funct.likeordislike(widget.postID);
                 },
               ),
               SizedBox(width: 5),
               Text(
-                postcommentCount,
+                widget.postcommentCount,
                 style: TextStyle(color: Colors.grey),
               ), // Yorum simgesi
               Spacer(),
@@ -157,7 +162,7 @@ class TwitterPostWidget extends StatelessWidget {
                 color: postrepostColor,
                 onPressed: () {
                   FunctionsPosts funct = FunctionsPosts();
-                  funct.likeordislike(postID);
+                  funct.likeordislike(widget.postID);
                 },
               ), // Retweet simgesi (yeşil renkte)
               Spacer(),
@@ -172,7 +177,7 @@ class TwitterPostWidget extends StatelessWidget {
   }
 
   Widget _buildPostText() {
-    final words = postText.split(' ');
+    final words = widget.postText.split(' ');
 
     final textSpans = words.map((word) {
       if (word.startsWith('#')) {
@@ -213,16 +218,16 @@ class TwitterPostWidget extends StatelessWidget {
     }
 
     Widget Mediayerlesim = Row();
-    if (mediaUrls.length == 1) {
+    if (widget.mediaUrls.length == 1) {
       Mediayerlesim = Row(
         mainAxisAlignment: MainAxisAlignment
             .center, // Görüntülerin yatayda merkezlenmesini sağlar
-        children: mediaUrls.map((mediaUrl) {
+        children: widget.mediaUrls.map((mediaUrl) {
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => FullScreenImagePage(
-                  images: mediaUrls,
+                  images: widget.mediaUrls,
                   initialIndex: 0,
                 ),
               ));
@@ -233,16 +238,16 @@ class TwitterPostWidget extends StatelessWidget {
           );
         }).toList(),
       );
-    } else if (mediaUrls.length == 2) {
+    } else if (widget.mediaUrls.length == 2) {
       Mediayerlesim = Row(
         mainAxisAlignment: MainAxisAlignment
             .center, // Görüntülerin yatayda merkezlenmesini sağlar
-        children: mediaUrls.map((mediaUrl) {
+        children: widget.mediaUrls.map((mediaUrl) {
           return GestureDetector(
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => FullScreenImagePage(
-                  images: mediaUrls,
+                  images: widget.mediaUrls,
                   initialIndex: 0,
                 ),
               ));
@@ -253,17 +258,17 @@ class TwitterPostWidget extends StatelessWidget {
           );
         }).toList(),
       );
-    } else if (mediaUrls.length == 3) {
+    } else if (widget.mediaUrls.length == 3) {
       Mediayerlesim = Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: mediaUrls.sublist(0, 1).map((mediaUrl) {
+            children: widget.mediaUrls.sublist(0, 1).map((mediaUrl) {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => FullScreenImagePage(
-                      images: mediaUrls,
+                      images: widget.mediaUrls,
                       initialIndex: 0,
                     ),
                   ));
@@ -276,12 +281,12 @@ class TwitterPostWidget extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: mediaUrls.sublist(1, 3).map((mediaUrl) {
+            children: widget.mediaUrls.sublist(1, 3).map((mediaUrl) {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => FullScreenImagePage(
-                      images: mediaUrls,
+                      images: widget.mediaUrls,
                       initialIndex: 0,
                     ),
                   ));
@@ -294,17 +299,17 @@ class TwitterPostWidget extends StatelessWidget {
           ),
         ],
       );
-    } else if (mediaUrls.length >= 4) {
+    } else if (widget.mediaUrls.length >= 4) {
       Mediayerlesim = Column(
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: mediaUrls.sublist(0, 2).map((mediaUrl) {
+            children: widget.mediaUrls.sublist(0, 2).map((mediaUrl) {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => FullScreenImagePage(
-                      images: mediaUrls,
+                      images: widget.mediaUrls,
                       initialIndex: 0,
                     ),
                   ));
@@ -317,12 +322,12 @@ class TwitterPostWidget extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: mediaUrls.sublist(2, 4).map((mediaUrl) {
+            children: widget.mediaUrls.sublist(2, 4).map((mediaUrl) {
               return GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => FullScreenImagePage(
-                      images: mediaUrls,
+                      images: widget.mediaUrls,
                       initialIndex: 0,
                     ),
                   ));

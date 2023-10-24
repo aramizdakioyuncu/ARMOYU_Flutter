@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import 'Services/App.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Bu satırı eklemeyi unutmayın
   final prefs = await SharedPreferences.getInstance();
@@ -17,9 +19,8 @@ void main() async {
   if (username != null) {
     usernameController.text = username.toString();
   }
-  if (password != null) {
-    passwordController.text = password.toString();
-  }
+
+  FunctionService f = FunctionService();
 
 //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
   if (username == null || password == null) {
@@ -32,7 +33,6 @@ void main() async {
     return;
   }
 
-  FunctionService f = FunctionService();
   Map<String, dynamic> response =
       await f.login(username.toString(), password.toString(), true);
   if (response["durum"] == 1) {
@@ -44,7 +44,7 @@ void main() async {
     );
     return;
   }
-
+  App.SecurityDetail = response["projegizliliksozlesmesi"];
   prefs.remove('username');
   runApp(
     ChangeNotifierProvider(
