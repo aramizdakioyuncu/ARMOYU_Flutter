@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api
 
 import 'dart:math';
 
@@ -27,7 +27,7 @@ class _MainPageState extends State<MainPage> {
 
   int postpage = 1;
   bool postpageproccess = false;
-  bool _isRefreshing = false;
+  bool isRefreshing = false;
   ScrollController _scrollController = ScrollController();
 
   @override
@@ -58,13 +58,13 @@ class _MainPageState extends State<MainPage> {
     postpage = 1;
 
     setState(() {
-      _isRefreshing = true;
+      isRefreshing = true;
     });
 
     loadPosts(postpage);
 
     setState(() {
-      _isRefreshing = false;
+      isRefreshing = false;
     });
   }
 
