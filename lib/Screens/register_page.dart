@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors
 
+import 'package:ARMOYU/Screens/login_page.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/buttons.dart';
@@ -65,7 +66,31 @@ class _RegisterPageState extends State<RegisterPage> {
             CustomTextfields().Costum1("Şifreniz Tekrar", _passwordController,
                 true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomButtons().Costum1("Kayıt Ol", _register)
+            CustomButtons().Costum1("Kayıt Ol", _register),
+            SizedBox(height: 16),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Hesabınız varsa  ",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      "Giriş Yap",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

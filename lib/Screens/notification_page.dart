@@ -1,0 +1,75 @@
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables
+
+import 'dart:developer';
+
+import 'package:ARMOYU/Services/User.dart';
+import 'package:flutter/material.dart';
+
+import '../Services/functions_service.dart';
+import '../Widgets/notification-bars.dart';
+
+class NotificationPage extends StatefulWidget {
+  @override
+  _NotificationPage createState() => _NotificationPage();
+}
+
+bool postpageproccess = false;
+
+class _NotificationPage extends State<NotificationPage>
+    with AutomaticKeepAliveClientMixin<NotificationPage> {
+  @override
+  bool get wantKeepAlive => true;
+  @override
+  void initState() {
+    super.initState();
+
+    loadnoifications(1);
+  }
+
+  List<Widget> Widget_notifications = [];
+
+  Future<void> loadnoifications(int page) async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.getnotifications(page);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+    }
+
+    if (response["icerik"].length == 0) {
+      return;
+    }
+    int dynamicItemCount = response["icerik"].length;
+    setState(() {
+      if (page == 1) {
+        Widget_notifications.clear();
+      }
+
+      for (int i = 0; i < dynamicItemCount; i++) {
+        print(response["icerik"][i]["bildirimID"]);
+
+        Widget_notifications.add(
+          CustomMenusNotificationbars().costom1(
+              response["icerik"][i]["bildirimgonderenadsoyad"],
+              response["icerik"][i]["bildirimgonderenavatar"],
+              response["icerik"][i]["bildirimicerik"],
+              response["icerik"][i]["bildirimzaman"]),
+        );
+      }
+    });
+    postpageproccess = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          child: Column(
+            children: Widget_notifications,
+          ),
+        ),
+      ),
+    );
+  }
+}

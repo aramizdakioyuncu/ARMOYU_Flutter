@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
 import 'dart:developer';
 
@@ -16,13 +16,16 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with AutomaticKeepAliveClientMixin<ProfilePage> {
+  @override
+  bool get wantKeepAlive => true;
   String userName = "...";
   String displayName = "...";
   String banneravatar =
-      "https://aramizdakioyuncu.com/galeri/images/10482minnak11672806630.jpeg";
+      "https://upload.wikimedia.org/wikipedia/commons/b/b9/Youtube_loading_symbol_1_(wobbly).gif";
   String avatar =
-      "https://aramizdakioyuncu.com/galeri/images/10482minnak11672806630.jpeg";
+      "https://upload.wikimedia.org/wikipedia/commons/b/b9/Youtube_loading_symbol_1_(wobbly).gif";
   @override
   void initState() {
     super.initState();
@@ -45,18 +48,18 @@ class _ProfilePageState extends State<ProfilePage> {
       log("Oyuncu bulunamadı");
       return;
     }
+
     userName = response["kullaniciadi"];
     displayName = response["adim"];
     banneravatar = response["parkaresimufak"];
     avatar = response["presimminnak"];
+
+    log(userName);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(displayName),
-      ),
       body: Column(
         children: [
           Container(

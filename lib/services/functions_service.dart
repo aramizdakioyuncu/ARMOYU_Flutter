@@ -133,4 +133,11 @@ class FunctionService {
         await apiService.request("sosyal/liste/$page/", formData);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> getnotifications(int page) async {
+    Map<String, String> formData = {"sayfa": "$page"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("/bildirimler/0/0/", formData);
+    return jsonData;
+  }
 }
