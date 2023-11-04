@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, avoid_print
 
 import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Screens/pages.dart';
@@ -12,8 +12,10 @@ import '../Services/theme_service.dart';
 import '../Widgets/buttons.dart';
 import '../Widgets/textfields.dart';
 
-TextEditingController usernameController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
+final TextEditingController usernameController = TextEditingController();
+final TextEditingController passwordController = TextEditingController();
+
+bool loginProccess = false;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -26,7 +28,13 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  void asda() async {
+  void _login() async {
+    if (loginProccess) {
+      return;
+    }
+
+    loginProccess = true;
+
     String username = usernameController.text;
     String password = passwordController.text;
     FunctionService f = FunctionService();
@@ -36,12 +44,16 @@ class _LoginPageState extends State<LoginPage> {
     if (response["durum"] == 1) {
       Navigator.of(context).pop();
       Navigator.push(context, MaterialPageRoute(builder: (context) => Pages()));
+      loginProccess = false;
     } else {
+      print(response["aciklama"]);
+
       String gelenyanit = response["aciklama"];
       final snackBar = SnackBar(
         content: Text(gelenyanit),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      loginProccess = false;
     }
   }
 
@@ -52,6 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               width: 150,
@@ -72,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
             CustomTextfields().Costum1(
                 "Şifreniz", passwordController, true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomButtons().Costum1("Giriş Yap", asda),
+            CustomButtons().Costum1("Giriş Yap", _login),
             TextButton(
               onPressed: () {
                 // Şifremi unuttum düğmesine basıldığında yapılacak işlemleri burada tanımlayın

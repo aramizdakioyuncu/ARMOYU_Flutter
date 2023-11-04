@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/App_core.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 import 'User.dart';
 
@@ -14,31 +17,48 @@ class ApiService {
   AppCore app = AppCore();
 
   Future<Map<String, dynamic>> request(
-      String link, Map<String, String> formData) async {
+      String link, Map<String, dynamic> formData,
+      {List<MultipartFile>? files}) async {
     String requestUrl =
         "$ssl://$host:$port/botlar/$apiKey/${User.userName}/${User.password}/$link";
     log(requestUrl);
-    formData['versiyon'] = app.getVersion().toString(); // Yeni öğeyi ekler
-    formData['device'] = app.getDevice().toString(); // Yeni öğeyi ekler
-    formData['devicemodel'] =
-        app.getDeviceModel().toString(); // Yeni öğeyi ekler
+
+    formData['versiyon'] = app.getVersion().toString();
+    formData['device'] = app.getDevice().toString();
+    formData['devicemodel'] = app.getDeviceModel().toString();
 
     try {
-      final response = await http.post(Uri.parse(requestUrl), body: formData);
+      final request = http.MultipartRequest('POST', Uri.parse(requestUrl));
+
+      // Dosya eklemek isterseniz, files listesini işleyin
+      if (files != null) {
+        for (var file in files) {
+          request.files.add(file);
+        }
+      }
+
+      // Diğer form verilerini ekleyin
+      for (var key in formData.keys) {
+        request.fields[key] = formData[key];
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
-        // log(response.body);
-
         String responseContent = response.body;
         try {
           Map<String, dynamic> jsonData = json.decode(responseContent);
+          print(jsonData["aciklama"].toString());
           return jsonData;
         } catch (e) {
           return {"durum": 0, "aciklama": "Json verisi gelmedi."};
         }
       } else {
-        throw Exception(
-            "İstek başarısız oldu. Durum kodu: ${response.statusCode}");
+        return {
+          "durum": 0,
+          "aciklama": "İstek başarısız oldu. Durum kodu: ${response.statusCode}"
+        };
       }
     } catch (e) {
       return {"durum": 0, "aciklama": "Sunucuya bağlanılamadı."};

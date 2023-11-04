@@ -3,8 +3,9 @@ import 'package:image_picker/image_picker.dart';
 class GalleryService {
   final ImagePicker _imagePicker = ImagePicker();
 
-  Future<List<XFile>> pickImages() async {
-    final pickedImages = await _imagePicker.pickMultiImage();
-    return pickedImages ?? [];
+  Future<List<XFile>> _pickImages() async {
+    final ImagePicker _picker = ImagePicker();
+    List<XFile> images = await _picker.pickMultiImage();
+    return images;
   }
 }

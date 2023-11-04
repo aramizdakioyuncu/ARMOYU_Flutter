@@ -11,7 +11,9 @@ import 'Screens/pages.dart';
 import 'Services/App.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Bu satırı eklemeyi unutmayın
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Bu satırı eklemeyi unutmayın ilkbaşta olmak zorunda
+
   final prefs = await SharedPreferences.getInstance();
   final username = prefs.getString('username');
   final password = prefs.getString('password');
@@ -44,7 +46,10 @@ void main() async {
     );
     return;
   }
-  App.SecurityDetail = response["projegizliliksozlesmesi"];
+  try {
+    App.SecurityDetail = response["projegizliliksozlesmesi"];
+  } catch (e) {}
+
   prefs.remove('username');
   runApp(
     ChangeNotifierProvider(

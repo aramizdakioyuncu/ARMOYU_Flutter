@@ -1,57 +1,68 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:ARMOYU/Screens/profile_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
+import 'detectabletext.dart';
+
 class CustomMenusNotificationbars {
-  Widget costom1(
-      String displayname, String avatar, String context, String date) {
-    return Row(
-      children: [
-        SizedBox(height: 50.0),
-        Padding(
-          padding: EdgeInsets.all(1),
-        ),
-        GestureDetector(
-          onTap: () {},
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(avatar),
-            radius: 20,
-          ),
-        ),
-        SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget costom1(BuildContext context, int userID, String displayname,
+      String avatar, String text, String date) {
+    return GestureDetector(
+      onTap: () {
+        print("tıklanabilir içerik");
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              displayname,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
+            // 10 birimlik boşluk ekledik
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      ProfilePage(userID: userID, appbar: true),
+                ));
+              },
+              child: CircleAvatar(
+                foregroundImage: CachedNetworkImageProvider(avatar),
+                radius: 20,
               ),
             ),
-            Text(
-              context,
-              style: TextStyle(
-                fontSize: 12,
+            SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    displayname,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  CustomDedectabletext().Costum1(text, 1, 15)
+                ],
               ),
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end, // Sağa yaslamak için
+              children: [
+                Text(
+                  date,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end, // Sağa yaslamak için
-          children: [
-            Text(
-              date,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-      ],
+      ),
     );
   }
 

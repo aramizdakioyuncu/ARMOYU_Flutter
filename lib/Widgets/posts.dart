@@ -1,8 +1,11 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last
 
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Services/User.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +21,10 @@ class TwitterPostWidget extends StatefulWidget {
 
   final String postText;
   final String postDate;
+  final List<int> mediaIDs;
+  final List<int> mediaownerIDs;
   final List<String> mediaUrls;
+  final List<String> mediabetterUrls;
   final String postlikeCount;
   final String postcommentCount;
 
@@ -32,7 +38,10 @@ class TwitterPostWidget extends StatefulWidget {
     required this.postID,
     required this.postText,
     required this.postDate,
+    required this.mediaIDs,
+    required this.mediaownerIDs,
     required this.mediaUrls,
+    required this.mediabetterUrls,
     required this.postlikeCount,
     required this.postcommentCount,
     required this.postMelike,
@@ -71,106 +80,154 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
 
     return Container(
-      padding: EdgeInsets.all(16),
+      // padding: EdgeInsets.all(10),
+      margin: EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        // borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade900,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              GestureDetector(
-                  onTap: () {
-                    // Tıklama işlemlerinizi burada gerçekleştirin
-                    // Örneğin, bir işlevi çağırabilir veya bir sayfaya yönlendirebilirsiniz.
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfilePage(
-                                  userID: widget.userID,
-                                )));
-                  },
-                  child: CircleAvatar(
-                      backgroundImage: NetworkImage(widget.profileImageUrl),
-                      radius: 30)),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.username,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                    onTap: () {
+                      // Tıklama işlemlerinizi burada gerçekleştirin
+                      // Örneğin, bir işlevi çağırabilir veya bir sayfaya yönlendirebilirsiniz.
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                  userID: widget.userID, appbar: true)));
+                    },
+                    child: CircleAvatar(
+                        foregroundImage:
+                            CachedNetworkImageProvider(widget.profileImageUrl),
+                        radius: 20)),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.username,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        widget.postDate,
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    widget.postDate,
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    PopupMenuButton(
+                      itemBuilder: (BuildContext context) {
+                        List<PopupMenuEntry> Popuppostlist = [];
+
+                        if (widget.userID == User.ID) {
+                          Popuppostlist.add(PopupMenuItem(
+                            child: Text("Paylaşımı Sil"),
+                            value: "delete",
+                          ));
+                        }
+
+                        Popuppostlist.add(PopupMenuItem(
+                          child: Text("Şikayet Et"),
+                          value: "report",
+                        ));
+                        return Popuppostlist;
+                      },
+                      onSelected: (value) async {
+                        if (value == "delete") {
+                          FunctionsPosts funct = FunctionsPosts();
+                          Map<String, dynamic> response =
+                              await funct.remove(widget.postID);
+                          if (response["durum"] == 0) {
+                            log(response["aciklama"]);
+                            return;
+                          }
+                          log(response["aciklama"]);
+                        } else if (value == "report") {
+                          // Şikayet etme işlemi burada gerçekleştirin
+                        }
+                      },
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
-          SizedBox(height: 16),
-          _buildPostText(), // Tıklanabilir metin için yeni fonksiyon
-          SizedBox(height: 16),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child:
+                  _buildPostText()), // Tıklanabilir metin için yeni fonksiyon
+          SizedBox(height: 5),
           Center(
               child: _buildMediaContent(
                   context)), // Medya içeriği için yeni fonksiyon
-          SizedBox(height: 16),
 
-          Row(
-            children: [
-              Spacer(),
-              IconButton(
-                iconSize: 25,
-                icon: postlikeIcon,
-                color: postlikeColor,
-                onPressed: () {
-                  FunctionsPosts funct = FunctionsPosts();
-                  funct.likeordislike(widget.postID);
-                },
-              ),
-              SizedBox(width: 5),
-              Text(
-                widget.postlikeCount,
-                style: TextStyle(color: Colors.grey),
-              ),
-              Spacer(),
-              IconButton(
-                iconSize: 25,
-                icon: postcommentIcon,
-                color: postcommentColor,
-                onPressed: () {
-                  // FunctionsPosts funct = FunctionsPosts();
-                  // funct.likeordislike(widget.postID);
-                },
-              ),
-              SizedBox(width: 5),
-              Text(
-                widget.postcommentCount,
-                style: TextStyle(color: Colors.grey),
-              ), // Yorum simgesi
-              Spacer(),
-              IconButton(
-                iconSize: 25,
-                icon: postrepostIcon,
-                color: postrepostColor,
-                onPressed: () {
-                  FunctionsPosts funct = FunctionsPosts();
-                  funct.likeordislike(widget.postID);
-                },
-              ), // Retweet simgesi (yeşil renkte)
-              Spacer(),
-              Icon(Icons.share_outlined,
-                  color: Colors.grey), // Paylaşım simgesi
-              Spacer(),
-            ],
-          )
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+            child: Row(
+              children: [
+                Spacer(),
+                IconButton(
+                  iconSize: 25,
+                  icon: postlikeIcon,
+                  color: postlikeColor,
+                  onPressed: () async {
+                    FunctionsPosts funct = FunctionsPosts();
+                    await funct.likeordislike(widget.postID);
+
+                    setState(() {
+                      postlikeColor =
+                          Colors.red; // Yeni rengi ayarlayın (örneğin, kırmızı)
+                    });
+                  },
+                ),
+                SizedBox(width: 5),
+                Text(
+                  widget.postlikeCount,
+                  style: TextStyle(color: Colors.grey),
+                ),
+                Spacer(),
+                IconButton(
+                  iconSize: 25,
+                  icon: postcommentIcon,
+                  color: postcommentColor,
+                  onPressed: () {},
+                ),
+                SizedBox(width: 5),
+                Text(
+                  widget.postcommentCount,
+                  style: TextStyle(color: Colors.grey),
+                ), // Yorum simgesi
+                Spacer(),
+                IconButton(
+                  iconSize: 25,
+                  icon: postrepostIcon,
+                  color: postrepostColor,
+                  onPressed: () {},
+                ), // Retweet simgesi (yeşil renkte)
+                Spacer(),
+                Icon(Icons.share_outlined,
+                    color: Colors.grey), // Paylaşım simgesi
+                Spacer(),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -209,8 +266,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         {BoxFit? fit = BoxFit.cover,
         double? width = 100,
         double? height = 100}) {
-      return Image.network(
-        mediaUrl,
+      return CachedNetworkImage(
+        imageUrl: mediaUrl,
         fit: fit,
         width: width,
         height: height,
@@ -218,130 +275,89 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
 
     Widget Mediayerlesim = Row();
-    if (widget.mediaUrls.length == 1) {
-      Mediayerlesim = Row(
-        mainAxisAlignment: MainAxisAlignment
-            .center, // Görüntülerin yatayda merkezlenmesini sağlar
-        children: widget.mediaUrls.map((mediaUrl) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => FullScreenImagePage(
-                  images: widget.mediaUrls,
-                  initialIndex: 0,
-                ),
-              ));
-            },
-            child: mediaSablon(mediaUrl,
-                width: Screen.screenWidth / 1.09,
-                height: Screen.screenHeight / 2),
-          );
-        }).toList(),
-      );
-    } else if (widget.mediaUrls.length == 2) {
-      Mediayerlesim = Row(
-        mainAxisAlignment: MainAxisAlignment
-            .center, // Görüntülerin yatayda merkezlenmesini sağlar
-        children: widget.mediaUrls.map((mediaUrl) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => FullScreenImagePage(
-                  images: widget.mediaUrls,
-                  initialIndex: 0,
-                ),
-              ));
-            },
-            child: mediaSablon(mediaUrl,
-                width: Screen.screenWidth / 2.18,
-                height: Screen.screenHeight / 4),
-          );
-        }).toList(),
-      );
-    } else if (widget.mediaUrls.length == 3) {
+
+    if (widget.mediaUrls.isNotEmpty) {
+      List<Row> mediaItems = [];
+
+      List<GestureDetector> mediarow1 = [];
+      List<GestureDetector> mediarow2 = [];
+
+      for (int i = 0; i < widget.mediaUrls.length; i++) {
+        if (i > 3) {
+          continue;
+        }
+        double mediawidth = Screen.screenWidth;
+        double mediaheight = Screen.screenHeight;
+        if (widget.mediaUrls.length == 1) {
+          mediawidth = mediawidth / 1;
+          // mediawidth = mediawidth / 1.09;
+          mediaheight = mediaheight / 2;
+        } else if (widget.mediaUrls.length == 2) {
+          mediawidth = mediawidth / 2;
+          // mediawidth = mediawidth / 2.18;
+          mediaheight = mediaheight / 4;
+        } else if (widget.mediaUrls.length == 3) {
+          if (i == 0) {
+            mediawidth = mediawidth / 1;
+            // mediawidth = mediawidth / 1.09;
+            mediaheight = mediaheight / 2.5;
+          } else {
+            mediawidth = mediawidth / 2;
+            // mediawidth = mediawidth / 2.18;
+            mediaheight = mediaheight / 4;
+          }
+        } else if (widget.mediaUrls.length >= 4) {
+          mediawidth = mediawidth / 2;
+          // mediawidth = mediawidth / 2.19;
+          mediaheight = mediaheight / 4;
+        }
+
+        GestureDetector aa = GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => FullScreenImagePage(
+                images: widget.mediabetterUrls,
+                imagesID: widget.mediaIDs,
+                imagesownerID: widget.mediaownerIDs,
+                initialIndex: i,
+              ),
+            ));
+          },
+          child: mediaSablon(widget.mediaUrls[i],
+              width: mediawidth, height: mediaheight),
+        );
+        if (widget.mediaUrls.length == 3) {
+          if (i == 0) {
+            mediarow1.add(aa);
+          } else {
+            mediarow2.add(aa);
+          }
+        } else if (widget.mediaUrls.length >= 4) {
+          if (i == 0 || i == 1) {
+            mediarow1.add(aa);
+          } else {
+            mediarow2.add(aa);
+          }
+        } else {
+          mediarow1.add(aa);
+        }
+      }
+      mediaItems.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: mediarow1,
+      ));
+      mediaItems.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: mediarow2,
+      ));
+      /////////////////////////////////////////////////
+
+      /////////////////////////////////////////////////
       Mediayerlesim = Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.mediaUrls.sublist(0, 1).map((mediaUrl) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImagePage(
-                      images: widget.mediaUrls,
-                      initialIndex: 0,
-                    ),
-                  ));
-                },
-                child: mediaSablon(mediaUrl,
-                    width: Screen.screenWidth / 1.09,
-                    height: Screen.screenHeight / 2.5),
-              );
-            }).toList(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.mediaUrls.sublist(1, 3).map((mediaUrl) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImagePage(
-                      images: widget.mediaUrls,
-                      initialIndex: 0,
-                    ),
-                  ));
-                },
-                child: mediaSablon(mediaUrl,
-                    width: Screen.screenWidth / 2.18,
-                    height: Screen.screenHeight / 4),
-              );
-            }).toList(),
-          ),
-        ],
-      );
-    } else if (widget.mediaUrls.length >= 4) {
-      Mediayerlesim = Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.mediaUrls.sublist(0, 2).map((mediaUrl) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImagePage(
-                      images: widget.mediaUrls,
-                      initialIndex: 0,
-                    ),
-                  ));
-                },
-                child: mediaSablon(mediaUrl,
-                    width: Screen.screenWidth / 2.19,
-                    height: Screen.screenHeight / 4),
-              );
-            }).toList(),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: widget.mediaUrls.sublist(2, 4).map((mediaUrl) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImagePage(
-                      images: widget.mediaUrls,
-                      initialIndex: 0,
-                    ),
-                  ));
-                },
-                child: mediaSablon(mediaUrl,
-                    width: Screen.screenWidth / 2.19,
-                    height: Screen.screenHeight / 4),
-              );
-            }).toList(),
-          ),
-        ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: mediaItems,
       );
     }
-
     return Mediayerlesim;
   }
 }

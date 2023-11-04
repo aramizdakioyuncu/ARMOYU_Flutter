@@ -2,8 +2,10 @@
 
 import 'dart:math';
 
+import 'package:ARMOYU/Screens/postshare_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
+import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/posts.dart';
@@ -38,6 +40,7 @@ class _MainPageState extends State<MainPage>
     userbanner = User.banneravatar;
 
     // initState içinde sayfa yüklendiğinde yapılması gereken işlemleri gerçekleştirin
+
     loadPosts(postpage);
 
     // ScrollController'ı dinle
@@ -57,7 +60,7 @@ class _MainPageState extends State<MainPage>
       isRefreshing = true;
     });
 
-    loadPosts(postpage);
+    await loadPosts(postpage);
 
     setState(() {
       isRefreshing = false;
@@ -65,44 +68,50 @@ class _MainPageState extends State<MainPage>
   }
 
   // Yeni veri yükleme işlemi
-  void _loadMoreData() {
+  Future<void> _loadMoreData() async {
     postpage++;
 
     if (!postpageproccess) {
       postpageproccess = true;
-      loadPosts(postpage);
+      await loadPosts(postpage);
     }
   }
 
   List<Widget> Widget_Posts = [];
+  Widget? Widget_tpusers;
+  Widget? Widget_popusers;
 
-  Future<void> loadPosts(int page) async {
+  Future<void> loadPostsv2(int page) async {
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getPosts(page);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      return;
     }
 
     if (response["icerik"].length == 0) {
       return;
     }
     int dynamicItemCount = response["icerik"].length;
-    setState(() {
-      if (page == 1) {
-        Widget_Posts.clear();
-      }
-      for (int i = 0; i < dynamicItemCount; i++) {
-        List<String> medias = [];
 
-        if (response["icerik"][i]["paylasimfoto"].length != 0) {
-          int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
+    for (int i = 0; i < dynamicItemCount; i++) {
+      List<int> mediaIDs = [];
+      List<int> mediaownerIDs = [];
+      List<String> medias = [];
+      List<String> mediasbetter = [];
 
-          for (int j = 0; j < mediaItemCount; j++) {
-            medias
-                .add(response["icerik"][i]["paylasimfoto"][j]["fotominnakurl"]);
-          }
+      if (response["icerik"][i]["paylasimfoto"].length != 0) {
+        int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
+
+        for (int j = 0; j < mediaItemCount; j++) {
+          mediaIDs.add(response["icerik"][i]["paylasimfoto"][j]["fotoID"]);
+          mediaownerIDs.add(response["icerik"][i]["sahipID"]);
+          medias.add(response["icerik"][i]["paylasimfoto"][j]["fotominnakurl"]);
+          mediasbetter
+              .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
         }
-
+      }
+      setState(() {
         Widget_Posts.add(
           TwitterPostWidget(
             userID: response["icerik"][i]["sahipID"],
@@ -111,33 +120,122 @@ class _MainPageState extends State<MainPage>
             postID: response["icerik"][i]["paylasimID"],
             postText: response["icerik"][i]["paylasimicerik"],
             postDate: response["icerik"][i]["paylasimzamangecen"],
+            mediaIDs: mediaIDs,
+            mediaownerIDs: mediaownerIDs,
             mediaUrls: medias,
+            mediabetterUrls: mediasbetter,
             postlikeCount: response["icerik"][i]["begenisay"].toString(),
             postcommentCount: response["icerik"][i]["yorumsay"].toString(),
             postMecomment: response["icerik"][i]["benyorumladim"],
             postMelike: response["icerik"][i]["benbegendim"],
           ),
         );
-      }
-    });
+
+        if (i / 3 == 1) {
+          Widget_Posts.add(Widget_popusers!);
+        }
+        if (i / 7 == 1) {
+          Widget_Posts.add(Widget_tpusers!);
+        }
+      });
+    }
+  }
+
+  Future<void> loadPosts(int page) async {
+    if (page == 1) {
+      Widget_Posts.clear();
+      await loadXP_Cards(1);
+      await loadpop_Cards(1);
+    }
+    await loadPostsv2(page);
+
     postpageproccess = false;
+  }
+
+  Future<void> loadXP_Cards(int page) async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.getplayerxp();
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    List<Map<String, String>> Widget_card = [];
+    for (int i = 0; i < response["icerik"].length; i++) {
+      Widget_card.add({
+        "userID": response["icerik"][i]["oyuncuID"].toString(),
+        "image": response["icerik"][i]["oyuncuavatar"],
+        "displayname": response["icerik"][i]["oyuncuadsoyad"],
+        "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
+      });
+    }
+
+    Widget_tpusers = CustomCards(
+      content: Widget_card,
+      icon: Icon(
+        Icons.auto_graph_outlined,
+        size: 15,
+        color: Colors.white,
+      ),
+    );
+    setState(() {});
+  }
+
+  Future<void> loadpop_Cards(int page) async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.getplayerpop();
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    List<Map<String, String>> Widgetpop_card = [];
+    for (int i = 0; i < response["icerik"].length; i++) {
+      Widgetpop_card.add({
+        "userID": response["icerik"][i]["oyuncuID"].toString(),
+        "image": response["icerik"][i]["oyuncuavatar"],
+        "displayname": response["icerik"][i]["oyuncuadsoyad"],
+        "score": response["icerik"][i]["oyuncupop"].toString()
+      });
+    }
+
+    Widget_popusers = CustomCards(
+      content: Widgetpop_card,
+      icon: Icon(
+        Icons.remove_red_eye_outlined,
+        size: 15,
+        color: Colors.white,
+      ),
+    );
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: RefreshIndicator(
+        color: Colors.blue,
         onRefresh: _handleRefresh,
         child: ListView(
           controller: _scrollController,
           children: [
             Center(
-              child: Column(
-                children: Widget_Posts,
-              ),
-            ),
+                child: Column(
+              children: Widget_Posts,
+            )),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => PostSharePage(
+              appbar: true,
+            ),
+          ));
+        },
+        child: Icon(Icons.post_add),
       ),
     );
   }

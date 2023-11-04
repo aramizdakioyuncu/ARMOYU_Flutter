@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  detectable_text_field:
+    dependency: "direct main"
+    description:
+      name: detectable_text_field
+      sha256: "64c9892eec96d1944d07201afd982f4011564e7463fd79d14b6582a657b46455"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   device_info:
     dependency: "direct main"
     description:
@@ -384,6 +392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  onesignal_flutter:
+    dependency: "direct main"
+    description:
+      name: onesignal_flutter
+      sha256: cbb201463fd82ddca823516e48d3c3dfbccd82297353e95a417fb990771c38ec
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.3"
   path:
     dependency: transitive
     description:

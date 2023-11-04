@@ -1,6 +1,8 @@
 // ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:ARMOYU/Screens/login_page.dart';
+import 'package:ARMOYU/Screens/pages.dart';
+import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:flutter/material.dart';
 
 import '../Widgets/buttons.dart';
@@ -12,20 +14,65 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _rpasswordController = TextEditingController();
 
-  void _register() {
+  bool registerProccess = false;
+
+  Future<void> _register() async {
+    if (registerProccess) {
+      return;
+    }
+
+    registerProccess = true;
     // Kayıt işlemini burada gerçekleştirin
+    final username = _usernameController.text;
     final name = _nameController.text;
+    final lastname = _lastnameController.text;
     final email = _emailController.text;
     final password = _passwordController.text;
+    final rpassword = _rpasswordController.text;
 
+    if (password != rpassword) {
+      print("Parolalarınız eşleşmedi");
+      String gelenyanit = "Parolalarınız eşleşmedi";
+      final snackBar = SnackBar(
+        content: Text(gelenyanit),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      registerProccess = false;
+      return;
+    }
     // Örneğin, bu bilgileri bir API'ye gönderebilirsiniz.
+    print('username: $username');
+    print('name: $name');
+    print('lastname: $lastname');
     print('Name: $name');
     print('Email: $email');
     print('Password: $password');
+
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.register(
+        username, name, lastname, email, password, rpassword); //sa
+
+    if (response["durum"] == 0) {
+      print(response["aciklama"]);
+      String gelenyanit = response["aciklama"];
+      final snackBar = SnackBar(
+        content: Text(gelenyanit),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      registerProccess = false;
+    }
+
+    if (response["durum"] == 1) {
+      Navigator.of(context).pop();
+      registerProccess = false;
+    }
   }
 
   @override
@@ -48,14 +95,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            CustomTextfields()
-                .Costum1("Adınız", _nameController, false, Icon(Icons.person)),
+            CustomTextfields().Costum1(
+                "Adınız", _usernameController, false, Icon(Icons.person)),
             SizedBox(height: 16),
             CustomTextfields().Costum1(
                 "Soyadınız", _nameController, false, Icon(Icons.person)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1(
-                "Kullanıcı Adınız", _nameController, false, Icon(Icons.person)),
+            CustomTextfields().Costum1("Kullanıcı Adınız", _lastnameController,
+                false, Icon(Icons.person)),
             SizedBox(height: 16),
             CustomTextfields()
                 .Costum1("E-posta", _emailController, false, Icon(Icons.email)),
@@ -63,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
             CustomTextfields().Costum1("Şifreniz", _passwordController, true,
                 Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1("Şifreniz Tekrar", _passwordController,
+            CustomTextfields().Costum1("Şifreniz Tekrar", _rpasswordController,
                 true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
             CustomButtons().Costum1("Kayıt Ol", _register),

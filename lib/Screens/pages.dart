@@ -2,10 +2,12 @@
 
 import 'dart:math';
 
+import 'package:ARMOYU/Screens/chat_page.dart';
 import 'package:ARMOYU/Screens/login_page.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/notification_page.dart';
 import 'package:ARMOYU/Screens/profile_page.dart';
+import 'package:ARMOYU/Screens/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -48,6 +50,7 @@ class _PagesState extends State<Pages> {
     Map<String, dynamic> response = await f.myGroups();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      return;
     }
     if (response["icerik"].length == 0) {
       return;
@@ -76,8 +79,8 @@ class _PagesState extends State<Pages> {
           ListTile(
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: Image.network(
-                response["icerik"][i]["grupminnaklogo"],
+              child: CachedNetworkImage(
+                imageUrl: response["icerik"][i]["grupminnaklogo"],
                 width: 30,
                 height: 30,
                 fit: BoxFit.cover,
@@ -96,6 +99,7 @@ class _PagesState extends State<Pages> {
     Map<String, dynamic> response = await f.mySchools();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      return;
     }
 
     if (response["icerik"].length == 0) {
@@ -109,8 +113,8 @@ class _PagesState extends State<Pages> {
           ListTile(
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(10.0),
-              child: Image.network(
-                response["icerik"][i]["okul_minnaklogo"],
+              child: CachedNetworkImage(
+                imageUrl: response["icerik"][i]["okul_minnaklogo"],
                 width: 30,
                 height: 30,
                 fit: BoxFit.cover,
@@ -143,8 +147,11 @@ class _PagesState extends State<Pages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        // backgroundColor: Colors.grey, // Arkaplan rengini ayarlayın
+        // Arkaplan rengini ayarlayın
+        backgroundColor: Colors.black,
+
         elevation: 0,
         leading: Builder(
           builder: (BuildContext context) {
@@ -162,8 +169,8 @@ class _PagesState extends State<Pages> {
                 child: ClipRRect(
                   borderRadius:
                       BorderRadius.circular(50.0), // Kenar yarıçapını ayarlayın
-                  child: Image.network(
-                    useravatar,
+                  child: CachedNetworkImage(
+                    imageUrl: useravatar,
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
@@ -173,6 +180,31 @@ class _PagesState extends State<Pages> {
             );
           },
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SearchPage(
+                            appbar: true,
+                          )));
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.chat_bubble_rounded),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                            appbar: true,
+                          )));
+              // Settings action
+            },
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -181,7 +213,10 @@ class _PagesState extends State<Pages> {
               accountName: Text(userName),
               accountEmail: Text(userEmail),
               currentAccountPicture: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  _changePage(1);
+                  Navigator.pop(context);
+                },
                 child: CircleAvatar(
                   foregroundImage: CachedNetworkImageProvider(useravatar),
                   radius: 40.0,
@@ -268,14 +303,11 @@ class _PagesState extends State<Pages> {
           ],
         ),
       ),
-      // body: _pages[_selectedIndex],
-      // body: MainPage(),
-
       body: PageView(
         controller: _pageController,
         children: [
           MainPage(),
-          ProfilePage(userID: 20),
+          ProfilePage(userID: userID, appbar: false),
           NotificationPage(),
         ],
       ),

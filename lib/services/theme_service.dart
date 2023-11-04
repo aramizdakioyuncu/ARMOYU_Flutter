@@ -1,10 +1,10 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider with ChangeNotifier {
-  ThemeData _themeData = ThemeData.light();
+  ThemeData _themeData = ThemeData.dark();
 
   ThemeData get themeData => _themeData;
   Future<void> StartingTheme() async {
