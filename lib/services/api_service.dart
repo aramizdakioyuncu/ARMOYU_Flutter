@@ -1,10 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/App_core.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
 
 import 'User.dart';
 

@@ -1,3 +1,5 @@
+// ignore_for_file: must_call_super, prefer_const_constructors
+
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';

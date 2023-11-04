@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors
 
-import 'package:ARMOYU/Screens/login_page.dart';
-import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:flutter/material.dart';
 

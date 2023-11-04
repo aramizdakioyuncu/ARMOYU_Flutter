@@ -1,4 +1,3 @@
-import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

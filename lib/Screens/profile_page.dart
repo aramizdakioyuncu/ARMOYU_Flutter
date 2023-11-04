@@ -415,7 +415,7 @@ class _ProfilePageState extends State<ProfilePage>
                       )),
                   SizedBox(height: 5),
                   Visibility(
-                    visible: job == "" ? false : true,
+                    visible: job == "..." ? false : true,
                     child: Row(
                       children: [
                         const Icon(
@@ -425,7 +425,7 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                         const SizedBox(width: 3),
                         Text(
-                          job ?? "",
+                          job,
                           style: const TextStyle(
                             color: Colors.grey,
                           ),

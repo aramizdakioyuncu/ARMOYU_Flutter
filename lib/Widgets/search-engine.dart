@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'dart:developer';
-
 import 'package:ARMOYU/Screens/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';

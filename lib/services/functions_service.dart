@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 
-import 'package:ARMOYU/Services/App.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
