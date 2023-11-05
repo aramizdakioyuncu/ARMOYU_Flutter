@@ -4,6 +4,7 @@ import 'package:ARMOYU/Screens/login_page.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:ARMOYU/Services/theme_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +68,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     themeProvider.StartingTheme();
+
+    Intl.defaultLocale = 'tr_TR';
     return MaterialApp(
       title: 'ARMOYU',
       theme: themeProvider.themeData,

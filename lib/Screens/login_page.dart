@@ -3,6 +3,7 @@
 import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Screens/register_page.dart';
+import 'package:ARMOYU/Screens/resetpassword_page.dart';
 import 'package:ARMOYU/Screens/text_page.dart';
 import 'package:flutter/material.dart';
 
@@ -88,7 +89,12 @@ class _LoginPageState extends State<LoginPage> {
             CustomButtons().Costum1("Giriş Yap", _login),
             TextButton(
               onPressed: () {
-                // Şifremi unuttum düğmesine basıldığında yapılacak işlemleri burada tanımlayın
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ResetPasswordPage(),
+                  ),
+                );
               },
               child: Text('Şifremi Unuttum'),
             ),

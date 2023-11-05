@@ -47,6 +47,8 @@ dependencies:
   connectivity: ^3.0.6
   onesignal_flutter: ^5.0.0
   detectable_text_field: ^2.0.4
+  intl: ^0.18.1
+
 
 dev_dependencies:
   flutter_test:

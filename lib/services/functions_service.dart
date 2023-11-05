@@ -148,6 +148,39 @@ class FunctionService {
     return jsonString;
   }
 
+  Future<Map<String, dynamic>> forgotpassword(String userbirthday,
+      String username, String useremail, String userresettype) async {
+    Map<String, String> formData = {
+      "dogumtarihi": "$userbirthday",
+      "kullaniciadi": "$username",
+      "email": "$useremail",
+      "sifirlamatercihi": "$userresettype"
+    };
+    Map<String, dynamic> jsonData =
+        await apiService.request("sifremi-unuttum/0/0/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> forgotpassworddone(
+      String userbirthday,
+      String username,
+      String useremail,
+      String securitycode,
+      String password,
+      String repassword) async {
+    Map<String, String> formData = {
+      "dogumtarihi": "$userbirthday",
+      "kullaniciadi": "$username",
+      "email": "$useremail",
+      "dogrulamakodu": "$securitycode",
+      "sifre": "$password",
+      "sifretekrar": "$repassword"
+    };
+    Map<String, dynamic> jsonData =
+        await apiService.request("sifremi-unuttum-dogrula/0/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> lookProfile(int userID) async {
     Map<String, String> formData = {"oyuncubakid": "$userID"};
     Map<String, dynamic> jsonData =
