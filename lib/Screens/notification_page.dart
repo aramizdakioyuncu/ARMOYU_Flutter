@@ -94,16 +94,14 @@ class _NotificationPage extends State<NotificationPage>
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
+        // color: Colors.blue,
         onRefresh: _handleRefresh,
-        child: ListView(
+        child: ListView.builder(
           controller: _scrollController,
-          children: [
-            Center(
-              child: Column(
-                children: Widget_notifications,
-              ),
-            ),
-          ],
+          itemCount: Widget_notifications.length,
+          itemBuilder: (context, index) {
+            return Widget_notifications[index];
+          },
         ),
       ),
     );

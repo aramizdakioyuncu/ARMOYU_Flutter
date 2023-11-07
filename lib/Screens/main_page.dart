@@ -178,7 +178,6 @@ class _MainPageState extends State<MainPage>
         color: Colors.white,
       ),
     );
-    setState(() {});
   }
 
   Future<void> loadpop_Cards(int page) async {
@@ -217,14 +216,12 @@ class _MainPageState extends State<MainPage>
       body: RefreshIndicator(
         color: Colors.blue,
         onRefresh: _handleRefresh,
-        child: ListView(
+        child: ListView.builder(
           controller: _scrollController,
-          children: [
-            Center(
-                child: Column(
-              children: Widget_Posts,
-            )),
-          ],
+          itemCount: Widget_Posts.length,
+          itemBuilder: (context, index) {
+            return Widget_Posts[index];
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(

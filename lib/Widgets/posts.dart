@@ -53,30 +53,156 @@ class TwitterPostWidget extends StatefulWidget {
 }
 
 class _TwitterPostWidgetState extends State<TwitterPostWidget> {
+  //Like Buton
+  Icon postlikeIcon = Icon(Icons.favorite_outline);
+  Color postlikeColor = Colors.grey;
+
+  //Comment Buton
+  Icon postcommentIcon = Icon(Icons.comment_outlined);
+  Color postcommentColor = Colors.grey;
+
+  //Repost Buton
+  Icon postrepostIcon = Icon(Icons.cyclone_outlined);
+  Color postrepostColor = Colors.grey;
   @override
   Widget build(BuildContext context) {
-    //Like Buton
-    Icon postlikeIcon = Icon(Icons.favorite_outline);
-    Color postlikeColor = Colors.grey;
     if (widget.postMelike == 1) {
       postlikeIcon = Icon(Icons.favorite);
       postlikeColor = Colors.red;
     }
 
-    //Comment Buton
-    Icon postcommentIcon = Icon(Icons.comment_outlined);
-    Color postcommentColor = Colors.grey;
     if (widget.postMecomment == 1) {
       postcommentIcon = Icon(Icons.comment);
       postcommentColor = Colors.blue;
     }
 
-    //Repost Buton
-    Icon postrepostIcon = Icon(Icons.cyclone_outlined);
-    Color postrepostColor = Colors.grey;
     if (widget.postMecomment == 1) {
       postrepostIcon = Icon(Icons.cyclone);
       postrepostColor = Colors.green;
+    }
+
+    void astat() {
+      showModalBottomSheet<void>(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
+          ),
+        ),
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: Wrap(
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[900],
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
+                        width: Screen.screenWidth / 4,
+                        height: 5,
+                      ),
+                    ),
+                    Visibility(
+                      child: InkWell(
+                        onTap: () async {
+                          FunctionsPosts funct = FunctionsPosts();
+                          Map<String, dynamic> response =
+                              await funct.remove(widget.postID);
+                          if (response["durum"] == 0) {
+                            log(response["aciklama"]);
+                            return;
+                          }
+                          log(response["aciklama"]);
+                        },
+                        child: const ListTile(
+                          leading: Icon(
+                            Icons.star_rate_sharp,
+                          ),
+                          title: Text("Favorilere Ekle"),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: widget.userID == User.ID,
+                      child: InkWell(
+                        onTap: () async {},
+                        child: const ListTile(
+                          leading: Icon(
+                            Icons.edit_note_sharp,
+                          ),
+                          title: Text("Paylaşımı Düzenle."),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      //Çizgi ekler
+                      child: const Divider(),
+                    ),
+                    Visibility(
+                      visible: widget.userID != User.ID,
+                      child: InkWell(
+                        onTap: () {},
+                        child: const ListTile(
+                          textColor: Colors.red,
+                          leading: Icon(
+                            Icons.flag,
+                            color: Colors.red,
+                          ),
+                          title: Text("Şikayet Et."),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: widget.userID != User.ID,
+                      child: InkWell(
+                        onTap: () {},
+                        child: const ListTile(
+                          textColor: Colors.red,
+                          leading: Icon(
+                            Icons.person_off_outlined,
+                            color: Colors.red,
+                          ),
+                          title: Text("Kullanıcıyı Engelle."),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: widget.userID == User.ID,
+                      child: InkWell(
+                        onTap: () async {
+                          FunctionsPosts funct = FunctionsPosts();
+                          Map<String, dynamic> response =
+                              await funct.remove(widget.postID);
+                          if (response["durum"] == 0) {
+                            log(response["aciklama"]);
+                            return;
+                          }
+                          log(response["aciklama"]);
+                        },
+                        child: const ListTile(
+                          textColor: Colors.red,
+                          leading: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          title: Text("Paylaşımı Sil."),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      );
     }
 
     return Container(
@@ -130,42 +256,51 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   ),
                 ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    PopupMenuButton(
-                      itemBuilder: (BuildContext context) {
-                        List<PopupMenuEntry> Popuppostlist = [];
-
-                        if (widget.userID == User.ID) {
-                          Popuppostlist.add(PopupMenuItem(
-                            child: Text("Paylaşımı Sil"),
-                            value: "delete",
-                          ));
-                        }
-
-                        Popuppostlist.add(PopupMenuItem(
-                          child: Text("Şikayet Et"),
-                          value: "report",
-                        ));
-                        return Popuppostlist;
-                      },
-                      onSelected: (value) async {
-                        if (value == "delete") {
-                          FunctionsPosts funct = FunctionsPosts();
-                          Map<String, dynamic> response =
-                              await funct.remove(widget.postID);
-                          if (response["durum"] == 0) {
-                            log(response["aciklama"]);
-                            return;
-                          }
-                          log(response["aciklama"]);
-                        } else if (value == "report") {
-                          // Şikayet etme işlemi burada gerçekleştirin
-                        }
-                      },
-                    )
+                    IconButton(
+                      onPressed: astat,
+                      icon: Icon(Icons.more_vert),
+                      color: Colors.grey,
+                    ),
                   ],
-                )
+                ),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.end,
+                //   children: [
+                //     PopupMenuButton(
+                //       itemBuilder: (BuildContext context) {
+                //         List<PopupMenuEntry> Popuppostlist = [];
+
+                //         if (widget.userID == User.ID) {
+                //           Popuppostlist.add(PopupMenuItem(
+                //             child: Text("Paylaşımı Sil"),
+                //             value: "delete",
+                //           ));
+                //         }
+
+                //         Popuppostlist.add(PopupMenuItem(
+                //           child: Text("Şikayet Et"),
+                //           value: "report",
+                //         ));
+                //         return Popuppostlist;
+                //       },
+                //       onSelected: (value) async {
+                //         if (value == "delete") {
+                //           FunctionsPosts funct = FunctionsPosts();
+                //           Map<String, dynamic> response =
+                //               await funct.remove(widget.postID);
+                //           if (response["durum"] == 0) {
+                //             log(response["aciklama"]);
+                //             return;
+                //           }
+                //           log(response["aciklama"]);
+                //         } else if (value == "report") {
+                //           // Şikayet etme işlemi burada gerçekleştirin
+                //         }
+                //       },
+                //     )
+                //   ],
+                // )
               ],
             ),
           ),
@@ -188,12 +323,39 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   icon: postlikeIcon,
                   color: postlikeColor,
                   onPressed: () async {
-                    FunctionsPosts funct = FunctionsPosts();
-                    await funct.likeordislike(widget.postID);
-
                     setState(() {
-                      postlikeColor =
-                          Colors.red; // Yeni rengi ayarlayın (örneğin, kırmızı)
+                      if (postlikeColor == Colors.red) {
+                        postlikeColor = Colors.grey;
+                        postlikeIcon = Icon(Icons.favorite_border);
+                      } else {
+                        postlikeColor = Colors.red;
+                        postlikeIcon = Icon(Icons.favorite_sharp);
+                      }
+                    });
+                    FunctionsPosts funct = FunctionsPosts();
+                    Map<String, dynamic> response =
+                        await funct.likeordislike(widget.postID);
+                    if (response["durum"] == 0) {
+                      print(response["aciklama"].toString());
+                      setState(() {
+                        if (postlikeColor == Colors.red) {
+                          postlikeColor = Colors.grey;
+                          postlikeIcon = Icon(Icons.favorite_border);
+                        } else {
+                          postlikeColor = Colors.red;
+                          postlikeIcon = Icon(Icons.favorite_sharp);
+                        }
+                      });
+                      return;
+                    }
+                    setState(() {
+                      if (response['aciklama'] == "Paylaşımı beğendin.") {
+                        postlikeColor = Colors.red;
+                        postlikeIcon = Icon(Icons.favorite_sharp);
+                      } else {
+                        postlikeColor = Colors.grey;
+                        postlikeIcon = Icon(Icons.favorite_border);
+                      }
                     });
                   },
                 ),

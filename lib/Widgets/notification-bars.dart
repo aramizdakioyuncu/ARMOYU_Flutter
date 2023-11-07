@@ -9,7 +9,7 @@ import 'detectabletext.dart';
 class CustomMenusNotificationbars {
   Widget costom1(BuildContext context, int userID, String displayname,
       String avatar, String text, String date) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         print("tıklanabilir içerik");
       },

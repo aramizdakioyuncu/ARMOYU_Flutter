@@ -43,6 +43,8 @@ class _ProfilePageState extends State<ProfilePage>
   String aboutme = "";
   String burc = "...";
 
+  bool isFriend = false;
+
   @override
   void initState() {
     super.initState();
@@ -121,7 +123,16 @@ class _ProfilePageState extends State<ProfilePage>
       aboutme = response["hakkimda"];
     }
 
+    if (response["arkadasdurum"] == "1") {
+      isFriend = true;
+    } else {
+      isFriend = false;
+    }
     return;
+  }
+
+  Future<void> _handleRefresh() async {
+    await TEST();
   }
 
   @override
@@ -207,14 +218,9 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   Visibility(
+                                    visible: isFriend,
                                     child: InkWell(
                                       onTap: () async {
-                                        // OneSignalApi.sendNotification(
-                                        //     title: "Dürtüldün!",
-                                        //     content:
-                                        //         "${User.displayName} Seni Dürttü",
-                                        //     playerid: widget.userID);
-
                                         FunctionService f = FunctionService();
                                         Map<String, dynamic> response =
                                             await f.userdurting(widget.userID);
@@ -248,195 +254,202 @@ class _ProfilePageState extends State<ProfilePage>
             )
           : null, // Set the AppBar to null if it should be hidden
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              color: Colors.black, // Container'ın arka plan rengi
-              height: 160, // Container'ın yüksekliği
-              width: MediaQuery.of(context).size.width,
-              child: Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => FullScreenImagePage(
-                          images: [banneravatarbetter],
-                          initialIndex: 0,
-                        ),
-                      ));
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: banneravatar,
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => FullScreenImagePage(
-                              images: [avatarbetter],
-                              initialIndex: 0,
-                            ),
-                          ));
-                        },
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                avatar, // Yuvarlak görüntülenmesini istediğiniz resmin URL'si
-                            width: 100, // Yuvarlak resmin genişliği
-                            height: 100, // Yuvarlak resmin yüksekliği
-                            fit: BoxFit.cover,
+      body: RefreshIndicator(
+        onRefresh: () => _handleRefresh(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                color: Colors.black, // Container'ın arka plan rengi
+                height: 160, // Container'ın yüksekliği
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => FullScreenImagePage(
+                            images: [banneravatarbetter],
+                            initialIndex: 0,
                           ),
-                        ),
+                        ));
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: banneravatar,
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        displayName,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      const Icon(
-                        Icons.check_circle,
-                        color: Colors.blue,
-                        size: 20,
-                      ),
-                      const SizedBox(height: 5),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        "@" + userName,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        role,
-                        style: TextStyle(
-                          color: Color(
-                            int.parse("0xFF" + rolecolor),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Visibility(
-                      visible: aboutme == "" ? false : true,
+                    ),
+                    Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          CustomDedectabletext().Costum1(aboutme, 3, 13),
-                          SizedBox(height: 10),
-                        ],
-                      )),
-                  Visibility(
-                      visible: burc == "..." ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.window,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            burc,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      )),
-                  SizedBox(height: 5),
-                  Visibility(
-                    visible: registerdate == "..." ? false : true,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.calendar_month,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          registerdate,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Visibility(
-                      visible: country == "..." ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            country + ", " + province,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      )),
-                  SizedBox(height: 5),
-                  Visibility(
-                    visible: job == "..." ? false : true,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.school,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          job,
-                          style: const TextStyle(
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [],
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => FullScreenImagePage(
+                                images: [avatarbetter],
+                                initialIndex: 0,
+                              ),
+                            ));
+                          },
+                          child: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  avatar, // Yuvarlak görüntülenmesini istediğiniz resmin URL'si
+                              width: 100, // Yuvarlak resmin genişliği
+                              height: 100, // Yuvarlak resmin yüksekliği
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          displayName,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        const Icon(
+                          Icons.check_circle,
+                          color: Colors.blue,
+                          size: 20,
+                        ),
+                        const SizedBox(height: 5),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "@" + userName,
+                          style: const TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          role,
+                          style: TextStyle(
+                            color: Color(
+                              int.parse("0xFF" + rolecolor),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                    Visibility(
+                        visible: aboutme == "" ? false : true,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CustomDedectabletext().Costum1(aboutme, 3, 13),
+                            SizedBox(height: 10),
+                          ],
+                        )),
+                    Visibility(
+                        visible: burc == "..." ? false : true,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.window,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              burc,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        )),
+                    SizedBox(height: 5),
+                    Visibility(
+                      visible: registerdate == "..." ? false : true,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_month,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 3),
+                          Text(
+                            registerdate,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Visibility(
+                        visible: country == "..." ? false : true,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.grey,
+                              size: 20,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              country + ", " + province,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        )),
+                    SizedBox(height: 5),
+                    Visibility(
+                      visible: job == "" ? false : true,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.school,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 3),
+                          Text(
+                            job,
+                            style: const TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 300,
+                      //Maksat boşluk olsun yenilensin
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

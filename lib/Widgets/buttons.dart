@@ -7,9 +7,11 @@ class CustomButtons {
     Color background = Colors.white;
     return Container(
       child: ElevatedButton(
-        onPressed: () {
-          onPressed();
+        onPressed: () async {
           background = Colors.grey;
+
+          await onPressed();
+          background = Colors.white;
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: background, // Arka plan rengini belirleyin

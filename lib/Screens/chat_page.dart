@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import '../Services/functions_service.dart';
 import '../Widgets/search-engine.dart';
+import 'chatdetail_page.dart';
 
 class ChatPage extends StatefulWidget {
   final bool appbar;
@@ -13,30 +14,40 @@ class ChatPage extends StatefulWidget {
   ChatPage({required this.appbar});
 
   @override
-  _ChatPage createState() => _ChatPage();
+  _ChatPageState createState() => _ChatPageState();
 }
 
 final ScrollController _scrollController = ScrollController();
 
-class _ChatPage extends State<ChatPage>
+List<Widget> Widget_search = [];
+bool chatsearchprocess = false;
+
+class _ChatPageState extends State<ChatPage>
     with AutomaticKeepAliveClientMixin<ChatPage> {
   @override
   bool get wantKeepAlive => true;
-  bool chatsearchprocess = false;
-  List<Widget> Widget_search = [];
-
   @override
   void initState() {
     super.initState();
 
-    getchat();
+    if (!chatsearchprocess) {
+      getchat();
+      chatsearchprocess = true;
+    }
+  }
+
+  Future<void> _handleRefresh() async {
+    setState(() {
+      chatsearchprocess = false;
+      getchat();
+    });
   }
 
   Future<void> getchat() async {
     if (chatsearchprocess) {
       return;
     }
-
+    Widget_search.clear();
     chatsearchprocess = true;
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getchats(1);
@@ -48,17 +59,24 @@ class _ChatPage extends State<ChatPage>
     int dynamicItemCount = response["icerik"].length;
 
     for (int i = 0; i < dynamicItemCount; i++) {
-      try {
-        setState(() {
-          Widget_search.add(CustomSearchEngine().chat(
-            context,
-            response["icerik"][i]["kullid"],
-            response["icerik"][i]["adisoyadi"],
-            response["icerik"][i]["foto"],
-            response["icerik"][i]["sohbetturu"],
-          ));
-        });
-      } catch (e) {}
+      void asad() {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ChatDetailPage(
+                userID: response["icerik"][i]["kullid"],
+                appbar: true,
+                useravatar: response["icerik"][i]["foto"],
+                userdisplayname: response["icerik"][i]["adisoyadi"])));
+      }
+
+      setState(() {
+        Widget_search.add(CustomSearchEngine().chat(
+          asad,
+          response["icerik"][i]["kullid"],
+          response["icerik"][i]["adisoyadi"],
+          response["icerik"][i]["foto"],
+          response["icerik"][i]["sohbetturu"],
+        ));
+      });
     }
   }
 
@@ -81,12 +99,15 @@ class _ChatPage extends State<ChatPage>
               ],
             )
           : null,
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: Widget_search.length,
-        itemBuilder: (context, index) {
-          return Widget_search[index];
-        },
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: Widget_search.length,
+          itemBuilder: (BuildContext context, index) {
+            return Widget_search[index];
+          },
+        ),
       ),
     );
   }

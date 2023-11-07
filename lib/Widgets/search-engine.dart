@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class CustomSearchEngine {
   Widget costom1(BuildContext context, int userID, String displayname,
       String avatar, String date) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ProfilePage(userID: userID, appbar: true),
@@ -67,27 +67,23 @@ class CustomSearchEngine {
     );
   }
 
-  Widget chat(BuildContext context, int userID, String displayname,
-      String avatar, String date) {
-    return GestureDetector(
-      onTap: () {},
+  Widget chat(
+      function, int userID, String displayname, String avatar, String date) {
+    return InkWell(
+      onTap: () {
+        try {
+          function();
+        } catch (e) {
+          print("Catche düştü:\n" + e.toString());
+        }
+      },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 10 birimlik boşluk ekledik
             GestureDetector(
-              onTap: () {
-                try {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ChatDetailPage(
-                          userID: userID,
-                          appbar: true,
-                          useravatar: avatar,
-                          userdisplayname: displayname)));
-                } catch (e) {}
-              },
+              onTap: () {},
               child: CircleAvatar(
                 foregroundImage: CachedNetworkImageProvider(avatar),
                 radius: 20,

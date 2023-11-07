@@ -136,6 +136,7 @@ class _PagesState extends State<Pages> {
   void _changePage(int page) {
     setState(() {
       _currentPage = page;
+      // _pageController.jumpToPage(page);
       _pageController.animateToPage(
         page,
         duration: Duration(milliseconds: 300),
@@ -277,8 +278,8 @@ class _PagesState extends State<Pages> {
                   return;
                 }
                 passwordController.text = "";
-                Navigator.of(context).pop();
-                Navigator.push(context,
+                // Navigator.of(context).pop();
+                Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },
             ),
@@ -304,11 +305,13 @@ class _PagesState extends State<Pages> {
         ),
       ),
       body: PageView(
+        // physics: NeverScrollableScrollPhysics(), //kaydırma iptali
         controller: _pageController,
         children: [
           MainPage(),
           ProfilePage(userID: userID, appbar: false),
           NotificationPage(),
+          ChatPage(appbar: false)
         ],
       ),
       bottomNavigationBar: CustomMenus().bottommenu(_currentPage, _changePage),
