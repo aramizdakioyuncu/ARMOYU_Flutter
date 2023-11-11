@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable
 
 import 'dart:developer';
 import 'dart:ui';
 
 import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
@@ -11,7 +12,7 @@ import 'package:flutter/material.dart';
 
 import '../Functions/posts.dart';
 import '../Screens/FullScreenImagePage.dart';
-import '../Screens/profile_page.dart';
+import '../Screens/Profile/profile_page.dart';
 
 class TwitterPostWidget extends StatefulWidget {
   final int userID;
@@ -25,10 +26,10 @@ class TwitterPostWidget extends StatefulWidget {
   final List<int> mediaownerIDs;
   final List<String> mediaUrls;
   final List<String> mediabetterUrls;
-  final String postlikeCount;
-  final String postcommentCount;
+  int postlikeCount;
+  int postcommentCount;
 
-  final int postMelike;
+  int postMelike;
   final int postMecomment;
 
   TwitterPostWidget({
@@ -57,15 +58,17 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   Icon postlikeIcon = Icon(Icons.favorite_outline);
   Color postlikeColor = Colors.grey;
 
-  //Comment Buton
+//Comment Buton
   Icon postcommentIcon = Icon(Icons.comment_outlined);
   Color postcommentColor = Colors.grey;
 
-  //Repost Buton
+//Repost Buton
   Icon postrepostIcon = Icon(Icons.cyclone_outlined);
   Color postrepostColor = Colors.grey;
+
   @override
   Widget build(BuildContext context) {
+    //
     if (widget.postMelike == 1) {
       postlikeIcon = Icon(Icons.favorite);
       postlikeColor = Colors.red;
@@ -81,7 +84,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       postrepostColor = Colors.green;
     }
 
-    void astat() {
+    void postfeedback() {
       showModalBottomSheet<void>(
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -215,93 +218,64 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                    onTap: () {
-                      // Tıklama işlemlerinizi burada gerçekleştirin
-                      // Örneğin, bir işlevi çağırabilir veya bir sayfaya yönlendirebilirsiniz.
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage(
-                                  userID: widget.userID, appbar: true)));
-                    },
-                    child: CircleAvatar(
-                        foregroundImage:
-                            CachedNetworkImageProvider(widget.profileImageUrl),
-                        radius: 20)),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PostDetailPage(
+                            postID: widget.postID,
+                          )));
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage(
+                                    userID: widget.userID, appbar: true)));
+                      },
+                      child: CircleAvatar(
+                          foregroundImage: CachedNetworkImageProvider(
+                              widget.profileImageUrl),
+                          radius: 20)),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.username,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          widget.postDate,
+                          style: TextStyle(
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
                     children: [
-                      Text(
-                        widget.username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        widget.postDate,
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
+                      IconButton(
+                        onPressed: postfeedback,
+                        icon: Icon(Icons.more_vert),
+                        color: Colors.grey,
                       ),
                     ],
                   ),
-                ),
-                Column(
-                  children: [
-                    IconButton(
-                      onPressed: astat,
-                      icon: Icon(Icons.more_vert),
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.end,
-                //   children: [
-                //     PopupMenuButton(
-                //       itemBuilder: (BuildContext context) {
-                //         List<PopupMenuEntry> Popuppostlist = [];
-
-                //         if (widget.userID == User.ID) {
-                //           Popuppostlist.add(PopupMenuItem(
-                //             child: Text("Paylaşımı Sil"),
-                //             value: "delete",
-                //           ));
-                //         }
-
-                //         Popuppostlist.add(PopupMenuItem(
-                //           child: Text("Şikayet Et"),
-                //           value: "report",
-                //         ));
-                //         return Popuppostlist;
-                //       },
-                //       onSelected: (value) async {
-                //         if (value == "delete") {
-                //           FunctionsPosts funct = FunctionsPosts();
-                //           Map<String, dynamic> response =
-                //               await funct.remove(widget.postID);
-                //           if (response["durum"] == 0) {
-                //             log(response["aciklama"]);
-                //             return;
-                //           }
-                //           log(response["aciklama"]);
-                //         } else if (value == "report") {
-                //           // Şikayet etme işlemi burada gerçekleştirin
-                //         }
-                //       },
-                //     )
-                //   ],
-                // )
-              ],
+                ],
+              ),
             ),
           ),
           Container(
@@ -327,9 +301,13 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       if (postlikeColor == Colors.red) {
                         postlikeColor = Colors.grey;
                         postlikeIcon = Icon(Icons.favorite_border);
+                        widget.postlikeCount--;
+                        widget.postMelike = 0;
                       } else {
                         postlikeColor = Colors.red;
                         postlikeIcon = Icon(Icons.favorite_sharp);
+                        widget.postlikeCount++;
+                        widget.postMelike = 1;
                       }
                     });
                     FunctionsPosts funct = FunctionsPosts();
@@ -341,18 +319,24 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         if (postlikeColor == Colors.red) {
                           postlikeColor = Colors.grey;
                           postlikeIcon = Icon(Icons.favorite_border);
+                          widget.postlikeCount--;
+                          widget.postMelike = 0;
                         } else {
                           postlikeColor = Colors.red;
                           postlikeIcon = Icon(Icons.favorite_sharp);
+                          widget.postlikeCount++;
+                          widget.postMelike = 1;
                         }
                       });
                       return;
                     }
                     setState(() {
                       if (response['aciklama'] == "Paylaşımı beğendin.") {
+                        widget.postMelike = 1;
                         postlikeColor = Colors.red;
                         postlikeIcon = Icon(Icons.favorite_sharp);
                       } else {
+                        widget.postMelike = 0;
                         postlikeColor = Colors.grey;
                         postlikeIcon = Icon(Icons.favorite_border);
                       }
@@ -361,7 +345,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  widget.postlikeCount,
+                  widget.postlikeCount.toString(),
                   style: TextStyle(color: Colors.grey),
                 ),
                 Spacer(),
@@ -373,7 +357,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  widget.postcommentCount,
+                  widget.postcommentCount.toString(),
                   style: TextStyle(color: Colors.grey),
                 ), // Yorum simgesi
                 Spacer(),

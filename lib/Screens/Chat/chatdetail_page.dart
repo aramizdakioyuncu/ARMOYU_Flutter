@@ -6,7 +6,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../Services/functions_service.dart';
+import '../../Services/functions_service.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final bool appbar;

@@ -4,8 +4,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import '../Services/functions_service.dart';
-import '../Widgets/search-engine.dart';
+import '../../Services/functions_service.dart';
+import '../../Widgets/search-engine.dart';
 import 'chatdetail_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -61,7 +61,7 @@ class _ChatPageState extends State<ChatPage>
     for (int i = 0; i < dynamicItemCount; i++) {
       void asad() {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ChatDetailPage(
+            builder: (pagecontext) => ChatDetailPage(
                 userID: response["icerik"][i]["kullid"],
                 appbar: true,
                 useravatar: response["icerik"][i]["foto"],
@@ -91,10 +91,8 @@ class _ChatPageState extends State<ChatPage>
               backgroundColor: Colors.black,
               actions: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  icon: Icon(Icons.search),
+                  onPressed: () {},
                 ),
               ],
             )

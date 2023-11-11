@@ -3,8 +3,8 @@
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:flutter/material.dart';
 
-import '../Widgets/buttons.dart';
-import '../Widgets/textfields.dart';
+import '../../Widgets/buttons.dart';
+import '../../Widgets/textfields.dart';
 
 class RegisterPage extends StatefulWidget {
   @override

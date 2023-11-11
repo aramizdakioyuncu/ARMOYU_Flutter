@@ -121,14 +121,6 @@ class _SearchPagePage extends State<SearchPage>
               ),
               automaticallyImplyLeading: false,
               backgroundColor: Colors.black,
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
             )
           : null,
       body: ListView.builder(

@@ -1,13 +1,14 @@
 // ignore_for_file: use_key_in_widget_constructors, unused_local_variable
 
-import 'package:ARMOYU/Screens/login_page.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:ARMOYU/Services/theme_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import 'Screens/LoginRegister/login_page.dart';
 import 'Screens/pages.dart';
 import 'Services/App.dart';
 

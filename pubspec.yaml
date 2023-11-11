@@ -48,6 +48,8 @@ dependencies:
   onesignal_flutter: ^5.0.0
   detectable_text_field: ^2.0.4
   intl: ^0.18.1
+  camera: ^0.10.5+5
+  video_player: ^2.7.2
 
 
 dev_dependencies:

@@ -44,4 +44,11 @@ class FunctionsPosts {
         await _apiService.request("sosyal/sil/", formData);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> detailfetch(int postID) async {
+    Map<String, String> formData = {"postID": "$postID"};
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/liste/", formData);
+    return jsonData;
+  }
 }

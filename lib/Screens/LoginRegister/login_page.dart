@@ -1,17 +1,17 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, avoid_print
 
 import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
-import 'package:ARMOYU/Screens/register_page.dart';
-import 'package:ARMOYU/Screens/resetpassword_page.dart';
+import 'package:ARMOYU/Screens/LoginRegister/resetpassword_page.dart';
 import 'package:ARMOYU/Screens/text_page.dart';
 import 'package:flutter/material.dart';
 
-import '../Services/App.dart';
-import '../Services/functions_service.dart';
-import '../Services/theme_service.dart';
-import '../Widgets/buttons.dart';
-import '../Widgets/textfields.dart';
+import '../../Services/App.dart';
+import '../../Services/functions_service.dart';
+import '../../Services/theme_service.dart';
+import '../../Widgets/buttons.dart';
+import '../../Widgets/textfields.dart';
 
 final TextEditingController usernameController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();

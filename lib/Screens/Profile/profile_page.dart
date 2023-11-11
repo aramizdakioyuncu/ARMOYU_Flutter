@@ -6,8 +6,8 @@ import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../Services/functions_service.dart';
-import 'FullScreenImagePage.dart';
+import '../../Services/functions_service.dart';
+import '../FullScreenImagePage.dart';
 
 class ProfilePage extends StatefulWidget {
   final int userID; // Zorunlu olarak alınacak veri
