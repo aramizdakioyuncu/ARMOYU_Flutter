@@ -4,18 +4,16 @@ import 'package:flutter/material.dart';
 
 class CustomButtons {
   Widget Costum1(String text, onPressed) {
-    Color background = Colors.white;
+    Color background = Colors.blue;
+    Color foregroundColor = Colors.white;
     return Container(
       child: ElevatedButton(
-        onPressed: () async {
-          background = Colors.grey;
-
-          await onPressed();
-          background = Colors.white;
+        onPressed: () {
+          onPressed();
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: background, // Arka plan rengini belirleyin
-          foregroundColor: Colors.black,
+          foregroundColor: foregroundColor,
           padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           shape: RoundedRectangleBorder(
             borderRadius:

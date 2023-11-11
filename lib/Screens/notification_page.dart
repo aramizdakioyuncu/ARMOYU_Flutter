@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import '../Functions/profile.dart';
 import '../Services/functions_service.dart';
 import '../Widgets/notification-bars.dart';
 
@@ -75,15 +76,44 @@ class _NotificationPage extends State<NotificationPage>
         Widget_notifications.clear();
       }
 
+      bool noticiationbuttons = false;
       for (int i = 0; i < dynamicItemCount; i++) {
+        noticiationbuttons = false;
+
+        if (response["icerik"][i]["bildirimamac"].toString() == "arkadaslik") {
+          if (response["icerik"][i]["bildirimkategori"].toString() == "istek") {
+            noticiationbuttons = true;
+          }
+        } else if (response["icerik"][i]["bildirimamac"].toString() ==
+            "gruplar") {
+          if (response["icerik"][i]["bildirimkategori"].toString() == "davet") {
+            noticiationbuttons = true;
+          }
+        }
+
         Widget_notifications.add(
-          CustomMenusNotificationbars().costom1(
-              context,
-              response["icerik"][i]["bildirimgonderenID"],
-              response["icerik"][i]["bildirimgonderenadsoyad"],
-              response["icerik"][i]["bildirimgonderenavatar"],
-              response["icerik"][i]["bildirimicerik"],
-              response["icerik"][i]["bildirimzaman"]),
+          CustomMenusNotificationbars(
+            avatar: response["icerik"][i]["bildirimgonderenavatar"],
+            userID: response["icerik"][i]["bildirimgonderenID"],
+            category: response["icerik"][i]["bildirimamac"],
+            categorydetail: response["icerik"][i]["bildirimkategori"],
+            categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
+            date: response["icerik"][i]["bildirimzaman"],
+            displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
+            enableButtons: noticiationbuttons,
+            text: response["icerik"][i]["bildirimicerik"],
+          ),
+          // CustomMenusNotificationbars().costom1(
+          //     context,
+          //     response["icerik"][i]["bildirimgonderenID"],
+          //     response["icerik"][i]["bildirimgonderenadsoyad"],
+          //     response["icerik"][i]["bildirimgonderenavatar"],
+          //     response["icerik"][i]["bildirimicerik"],
+          //     response["icerik"][i]["bildirimzaman"],
+          //     response["icerik"][i]["bildirimamac"],
+          //     response["icerik"][i]["bildirimkategori"],
+          //     response["icerik"][i]["bildirimkategoridetay"],
+          //     noticiationbuttons),
         );
       }
     });

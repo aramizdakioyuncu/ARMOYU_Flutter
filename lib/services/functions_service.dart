@@ -265,11 +265,4 @@ class FunctionService {
         await apiService.request("arama/0/0/", formData);
     return jsonData;
   }
-
-  Future<Map<String, dynamic>> userdurting(int userID) async {
-    Map<String, String> formData = {"oyuncubakid": "$userID"};
-    Map<String, dynamic> jsonData =
-        await apiService.request("arkadas-durt/0/0/", formData);
-    return jsonData;
-  }
 }

@@ -53,6 +53,7 @@ class _MainPageState extends State<MainPage>
   }
 
   PageController _pageController = PageController(initialPage: 0);
+  PageController _pageController2 = PageController(initialPage: 1);
   int _currentPage = 0;
   bool bottombarVisible = true;
   void _changePage(int page) {
@@ -302,6 +303,7 @@ class _MainPageState extends State<MainPage>
         },
         children: [
           PageView(
+            controller: _pageController2,
             children: [
               CameraScreen(),
               SocialPage(),

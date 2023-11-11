@@ -1,91 +1,194 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+import 'package:flutter/material.dart';
+import 'dart:developer';
 
+import 'package:ARMOYU/Functions/group.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 
+import '../Functions/profile.dart';
 import 'detectabletext.dart';
 
-class CustomMenusNotificationbars {
-  Widget costom1(BuildContext context, int userID, String displayname,
-      String avatar, String text, String date) {
-    return InkWell(
-      onTap: () {
-        print("tıklanabilir içerik");
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // 10 birimlik boşluk ekledik
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      ProfilePage(userID: userID, appbar: true),
-                ));
-              },
-              child: CircleAvatar(
-                foregroundImage: CachedNetworkImageProvider(avatar),
-                radius: 20,
-              ),
-            ),
-            SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+class CustomMenusNotificationbars extends StatefulWidget {
+  int userID;
+  String displayname;
+  String avatar;
+  String text;
+  String date;
+  String category;
+  String categorydetail;
+  int categorydetailID;
+  bool enableButtons;
+
+  CustomMenusNotificationbars({
+    required this.userID,
+    required this.displayname,
+    required this.avatar,
+    required this.text,
+    required this.date,
+    required this.category,
+    required this.categorydetail,
+    required this.categorydetailID,
+    required this.enableButtons,
+  });
+
+  @override
+  State<CustomMenusNotificationbars> createState() =>
+      _CustomMenusNotificationbarsState();
+}
+
+bool natificationisVisible = true;
+
+class _CustomMenusNotificationbarsState
+    extends State<CustomMenusNotificationbars> {
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: natificationisVisible,
+      child: InkWell(
+        onTap: () {
+          print("tıklanabilir içerik");
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
                 children: [
-                  Text(
-                    displayname,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ProfilePage(userID: widget.userID, appbar: true),
+                      ));
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          foregroundImage:
+                              CachedNetworkImageProvider(widget.avatar),
+                          radius: 20,
+                        ),
+                      ],
                     ),
                   ),
-                  CustomDedectabletext().Costum1(text, 1, 15)
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.displayname,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        CustomDedectabletext().Costum1(widget.text, 1, 15),
+                        Visibility(
+                          visible: widget.enableButtons,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  if (widget.category == "arkadaslik") {
+                                    if (widget.categorydetail == "istek") {
+                                      FunctionsProfile f = FunctionsProfile();
+                                      Map<String, dynamic> response =
+                                          await f.friendrequestanswer(
+                                              widget.userID, 1);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
+                                      setState(() {
+                                        natificationisVisible = false;
+                                      });
+                                    }
+                                  } else if (widget.category == "gruplar") {
+                                    if (widget.categorydetail == "davet") {
+                                      FunctionsGroup f = FunctionsGroup();
+                                      Map<String, dynamic> response =
+                                          await f.grouprequestanswer(
+                                              widget.categorydetailID, 1);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
+                                      setState(() {
+                                        natificationisVisible = false;
+                                      });
+                                    }
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                ),
+                                child: Text("Kabul ET"),
+                              ),
+                              SizedBox(width: 16),
+                              ElevatedButton(
+                                onPressed: () async {
+                                  if (widget.category == "arkadaslik") {
+                                    if (widget.categorydetail == "istek") {
+                                      FunctionsProfile f = FunctionsProfile();
+                                      Map<String, dynamic> response =
+                                          await f.friendrequestanswer(
+                                              widget.userID, 0);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                      }
+                                    }
+                                  } else if (widget.category == "gruplar") {
+                                    if (widget.categorydetail == "davet") {
+                                      FunctionsGroup f = FunctionsGroup();
+                                      Map<String, dynamic> response =
+                                          await f.grouprequestanswer(
+                                              widget.categorydetailID, 0);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                      }
+                                    }
+                                  }
+                                  setState(() {
+                                    natificationisVisible = false;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                                child: Text("Reddet"),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.date,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-            SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end, // Sağa yaslamak için
-              children: [
-                Text(
-                  date,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ],
+              Divider(),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget costom2(int currentIndex, _onItemTapped) {
-    return BottomNavigationBar(
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Ana Sayfa',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Arama',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: 'Bildirimler',
-        ),
-      ],
-      currentIndex: currentIndex,
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey,
-      onTap: _onItemTapped,
     );
   }
 }

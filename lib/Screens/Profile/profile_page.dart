@@ -2,11 +2,15 @@
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Screens/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import '../../Functions/media.dart';
+import '../../Functions/profile.dart';
 import '../../Services/functions_service.dart';
+import '../../Widgets/buttons.dart';
 import '../FullScreenImagePage.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -45,10 +49,13 @@ class _ProfilePageState extends State<ProfilePage>
 
   bool isFriend = false;
 
+  bool isbeFriend = false;
+
   @override
   void initState() {
     super.initState();
     TEST();
+    voidas();
   }
 
   Future<void> TEST() async {
@@ -125,14 +132,51 @@ class _ProfilePageState extends State<ProfilePage>
 
     if (response["arkadasdurum"] == "1") {
       isFriend = true;
+      isbeFriend = false;
     } else {
       isFriend = false;
+      isbeFriend = true;
     }
     return;
   }
 
   Future<void> _handleRefresh() async {
     await TEST();
+    voidas();
+  }
+
+  Future<void> friendrequest() async {
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response = await f.friendrequest(widget.userID);
+    if (response["durum"] == 0) {
+      log("Oyuncu bulunamadı");
+      return;
+    }
+  }
+
+  final List<String> imageUrls = [];
+  final List<String> imageufakUrls = [];
+
+  voidas() async {
+    setState(() {
+      imageUrls.clear();
+      imageufakUrls.clear();
+    });
+
+    FunctionsMedia f = FunctionsMedia();
+    Map<String, dynamic> response = await f.fetch(widget.userID, "-1", 1);
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      setState(() {
+        imageUrls.add(response["icerik"][i]["fotominnakurl"]);
+        imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
+      });
+    }
   }
 
   @override
@@ -221,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     visible: isFriend,
                                     child: InkWell(
                                       onTap: () async {
-                                        FunctionService f = FunctionService();
+                                        FunctionsProfile f = FunctionsProfile();
                                         Map<String, dynamic> response =
                                             await f.userdurting(widget.userID);
                                         if (response["durum"] == 0) {
@@ -294,28 +338,49 @@ class _ProfilePageState extends State<ProfilePage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => FullScreenImagePage(
-                                images: [avatarbetter],
-                                initialIndex: 0,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => FullScreenImagePage(
+                                      images: [avatarbetter],
+                                      initialIndex: 0,
+                                    ),
+                                  ));
+                                },
+                                child: ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        avatar, // Yuvarlak görüntülenmesini istediğiniz resmin URL'si
+                                    width: 100, // Yuvarlak resmin genişliği
+                                    height: 100, // Yuvarlak resmin yüksekliği
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                            ));
-                          },
-                          child: ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  avatar, // Yuvarlak görüntülenmesini istediğiniz resmin URL'si
-                              width: 100, // Yuvarlak resmin genişliği
-                              height: 100, // Yuvarlak resmin yüksekliği
-                              fit: BoxFit.cover,
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
+                          Visibility(
+                            visible: isbeFriend,
+                            child: Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  CustomButtons()
+                                      .Costum1("Arkadaş Ol", friendrequest),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     Row(
                       children: [
@@ -441,10 +506,42 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ),
+                    // Container(
+                    //   height: 300,
+                    //   //Maksat boşluk olsun yenilensin
+                    // )
                     Container(
-                      height: 300,
-                      //Maksat boşluk olsun yenilensin
-                    )
+                      height: 400,
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2, // Her satırda 2 görsel
+                          crossAxisSpacing: 8.0, // Yatayda boşluk
+                          mainAxisSpacing: 8.0, // Dikeyde boşluk
+                        ),
+                        itemCount: imageUrls.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FullScreenImagePage(
+                                            images: imageufakUrls,
+                                            initialIndex: index,
+                                          )));
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrls[index],
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),

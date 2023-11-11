@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/App_core.dart';
@@ -49,7 +47,7 @@ class ApiService {
         String responseContent = response.body;
         try {
           Map<String, dynamic> jsonData = json.decode(responseContent);
-          print(jsonData["aciklama"].toString());
+          log(jsonData["aciklama"].toString());
           return jsonData;
         } catch (e) {
           return {"durum": 0, "aciklama": "Json verisi gelmedi."};
