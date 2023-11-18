@@ -51,7 +51,6 @@ dependencies:
   camera: ^0.10.5+5
   video_player: ^2.7.2
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -28,7 +28,7 @@ class CustomTextfields {
           prefixIconColor: Colors.white,
           hintText: text,
           hintStyle: const TextStyle(
-            color: Colors.white,
+            color: Colors.grey,
           ),
           filled: true,
           fillColor: Colors.grey.shade900,

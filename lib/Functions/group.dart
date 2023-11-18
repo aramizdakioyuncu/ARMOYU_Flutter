@@ -10,4 +10,11 @@ class FunctionsGroup {
         await apiService.request("gruplar-davetcevap/0/0/", formData);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> groupcreate(int grupID, int answer) async {
+    Map<String, String> formData = {"grupID": "$grupID", "cevap": "$answer"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("gruplar-olustur/0/0/", formData);
+    return jsonData;
+  }
 }

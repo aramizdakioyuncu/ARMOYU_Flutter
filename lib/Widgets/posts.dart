@@ -1,11 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable, no_leading_underscores_for_local_identifiers
 
 import 'dart:developer';
-import 'dart:ui';
-
 import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Widgets/likers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +53,7 @@ class TwitterPostWidget extends StatefulWidget {
 }
 
 class _TwitterPostWidgetState extends State<TwitterPostWidget> {
+  TextEditingController controller_message = TextEditingController();
   //Like Buton
   Icon postlikeIcon = Icon(Icons.favorite_outline);
   Color postlikeColor = Colors.grey;
@@ -68,6 +68,81 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> list_comments = [];
+    Future<void> getcommentsfetch() async {
+      setState(() {
+        list_comments.clear();
+        list_comments.add(CircularProgressIndicator());
+      });
+      FunctionsPosts funct = FunctionsPosts();
+      Map<String, dynamic> response = await funct.commentsfetch(widget.postID);
+      if (response["durum"] == 0) {
+        print(response["aciklama"]);
+        return;
+      }
+      list_comments.clear();
+      for (int i = 0; i < response["icerik"].length; i++) {
+        setState(() {
+          String displayname =
+              response["icerik"][i]["yorumcuadsoyad"].toString();
+          String avatar =
+              response["icerik"][i]["yorumcuminnakavatar"].toString();
+          String text = response["icerik"][i]["yorumcuicerik"].toString();
+          int islike = response["icerik"][i]["benbegendim"];
+          int yorumID = response["icerik"][i]["yorumID"];
+          int userID = response["icerik"][i]["yorumcuid"];
+          int postID = response["icerik"][i]["paylasimID"];
+          list_comments.add(
+            LikersListWidget(
+              comment: text,
+              commentID: yorumID,
+              displayname: displayname,
+              userID: userID,
+              profileImageUrl: avatar,
+              islike: islike,
+              postID: postID,
+              username: text,
+            ),
+          );
+        });
+      }
+    }
+
+    List<Widget> list_comments_likes = [];
+    Future<void> getcommentslikes() async {
+      FunctionsPosts funct = FunctionsPosts();
+      Map<String, dynamic> response = await funct.postlikeslist(widget.postID);
+      if (response["durum"] == 0) {
+        print(response["aciklama"].toString());
+        return;
+      }
+      if (response["durum"] == 0) {
+        print(response["aciklama"]);
+        return;
+      }
+      list_comments_likes.clear();
+      for (int i = 0; i < response["icerik"].length; i++) {
+        setState(() {
+          String displayname = response["icerik"][i]["begenenadi"].toString();
+          String avatar = response["icerik"][i]["begenenavatar"].toString();
+          String text = response["icerik"][i]["begenmezaman"].toString();
+          int userID = response["icerik"][i]["begenenID"];
+          list_comments_likes.add(
+            LikersListWidget(
+              comment: text,
+              commentID: 1,
+              displayname: displayname,
+              userID: userID,
+              profileImageUrl: avatar,
+              islike: 1,
+              postID: 12,
+              username: text,
+            ),
+          );
+        });
+      }
+    }
+
     //
     if (widget.postMelike == 1) {
       postlikeIcon = Icon(Icons.favorite);
@@ -82,6 +157,167 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     if (widget.postMecomment == 1) {
       postrepostIcon = Icon(Icons.cyclone);
       postrepostColor = Colors.green;
+    }
+
+    void postcomments() {
+      //Yorumları Çekmeye başla
+      getcommentsfetch();
+      showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
+          ),
+        ),
+        isScrollControlled: true,
+        backgroundColor: Colors.grey.shade900,
+        context: context,
+        builder: (BuildContext context) {
+          return FractionallySizedBox(
+            heightFactor: 0.8,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                getcommentsfetch();
+              },
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Text("YORUMLAR"),
+                      SizedBox(height: 5),
+                      Divider(),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView.builder(
+                            // controller: _scrollController,
+                            itemCount: list_comments.length,
+                            itemBuilder: (context, index) {
+                              return list_comments[index];
+                            },
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleAvatar(
+                                foregroundImage:
+                                    CachedNetworkImageProvider(User.avatar),
+                                radius: 20),
+                          ),
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(5),
+                              height: 50,
+                              child: Center(
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade800,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: TextField(
+                                    controller: controller_message,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                    decoration: InputDecoration(
+                                      hintText: 'Mesaj yaz',
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5.0),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                print(controller_message.text);
+                                FunctionsPosts funct = FunctionsPosts();
+                                Map<String, dynamic> response =
+                                    await funct.createcomment(
+                                        widget.postID, controller_message.text);
+                                if (response["durum"] == 0) {
+                                  print(response["aciklama"]);
+                                  return;
+                                }
+
+                                controller_message.text = "";
+                              },
+                              child: Icon(
+                                Icons.send,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+      return;
+    }
+
+    void postcommentlikeslist() {
+      //Yorumları Çekmeye başla
+      getcommentslikes();
+
+      showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(10),
+          ),
+        ),
+        isScrollControlled: true,
+        backgroundColor: Colors.grey.shade900,
+        context: context,
+        builder: (BuildContext context) {
+          return FractionallySizedBox(
+            heightFactor: 0.8,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                getcommentslikes();
+              },
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: SafeArea(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Text("BEĞENENLER"),
+                      SizedBox(height: 5),
+                      Divider(),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView.builder(
+                            // controller: _scrollController,
+                            itemCount: list_comments_likes.length,
+                            itemBuilder: (context, index) {
+                              return list_comments_likes[index];
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+      return;
     }
 
     void postfeedback() {
@@ -233,17 +469,18 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                    userID: widget.userID, appbar: true)));
-                      },
-                      child: CircleAvatar(
-                          foregroundImage: CachedNetworkImageProvider(
-                              widget.profileImageUrl),
-                          radius: 20)),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                  userID: widget.userID, appbar: true)));
+                    },
+                    child: CircleAvatar(
+                        foregroundImage:
+                            CachedNetworkImageProvider(widget.profileImageUrl),
+                        radius: 20),
+                  ),
                   SizedBox(width: 16),
                   Expanded(
                     child: Column(
@@ -344,16 +581,23 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   },
                 ),
                 SizedBox(width: 5),
-                Text(
-                  widget.postlikeCount.toString(),
-                  style: TextStyle(color: Colors.grey),
+                InkWell(
+                  onTap: () {
+                    postcommentlikeslist();
+                  },
+                  child: Text(
+                    widget.postlikeCount.toString(),
+                    style: TextStyle(color: Colors.grey),
+                  ),
                 ),
                 Spacer(),
                 IconButton(
                   iconSize: 25,
                   icon: postcommentIcon,
                   color: postcommentColor,
-                  onPressed: () {},
+                  onPressed: () {
+                    postcomments();
+                  },
                 ),
                 SizedBox(width: 5),
                 Text(

@@ -13,6 +13,16 @@ class FunctionsPosts {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> commentlikeordislike(int commentID) async {
+    Map<String, String> formData = {
+      "postID": "$commentID",
+      "kategori": "postyorum"
+    };
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/begen/", formData);
+    return jsonData;
+  }
+
 //Share
   Future<Map<String, dynamic>> share(String text, List<XFile> files) async {
     List<MultipartFile> photosCollection = [];
@@ -49,6 +59,33 @@ class FunctionsPosts {
     Map<String, String> formData = {"postID": "$postID"};
     Map<String, dynamic> jsonData =
         await _apiService.request("sosyal/liste/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> commentsfetch(int postID) async {
+    Map<String, String> formData = {"postID": "$postID"};
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/yorumlar/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> createcomment(int postID, String text) async {
+    Map<String, String> formData = {
+      "postID": "$postID",
+      "yorumicerik": "$text",
+      "kategori": "sosyal"
+    };
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/yorum-olustur/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> postlikeslist(int postID) async {
+    Map<String, String> formData = {
+      "postID": "$postID",
+    };
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/begenenler/", formData);
     return jsonData;
   }
 }

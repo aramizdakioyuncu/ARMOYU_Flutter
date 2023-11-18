@@ -148,7 +148,6 @@ class _ChatDetailPage extends State<ChatDetailPage>
                   padding: EdgeInsets.all(5),
                   height: 50,
                   child: Center(
-                    // TextField'ı Container'ın ortasına yerleştirmek için Center kullanın
                     child: Container(
                       padding: EdgeInsets.only(left: 5),
                       decoration: BoxDecoration(

@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/screen.dart';
-import 'package:ARMOYU/Screens/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -322,6 +321,9 @@ class _ProfilePageState extends State<ProfilePage>
                         imageUrl: banneravatar,
                         fit: BoxFit.cover,
                         width: MediaQuery.of(context).size.width,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                     ),
                     Center(
@@ -356,14 +358,16 @@ class _ProfilePageState extends State<ProfilePage>
                                   ));
                                 },
                                 child: ClipOval(
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        avatar, // Yuvarlak görüntülenmesini istediğiniz resmin URL'si
-                                    width: 100, // Yuvarlak resmin genişliği
-                                    height: 100, // Yuvarlak resmin yüksekliği
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
+                                    child: CachedNetworkImage(
+                                  imageUrl: avatar,
+                                  fit: BoxFit.cover,
+                                  width: 100, // Yuvarlak resmin genişliği
+                                  height: 100,
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                )),
                               ),
                             ],
                           ),

@@ -2,13 +2,9 @@
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-
 import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/Chat/chat_page.dart';
-
 import 'package:ARMOYU/Services/User.dart';
-
-import 'CameraScreen.dart';
 
 class Pages extends StatefulWidget {
   @override

@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super
 
+import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
 
 import '../Services/barcode_service.dart';
 import '../Services/functions_service.dart';
@@ -97,7 +97,10 @@ class _MainPageState extends State<MainPage>
             ),
           ),
           title: Text("Grup Oluştur"),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => GroupCreatePage()));
+          },
         ),
       );
       for (int i = 0; i < dynamicItemCount; i++) {

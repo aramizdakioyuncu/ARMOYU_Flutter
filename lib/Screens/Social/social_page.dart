@@ -7,7 +7,6 @@ import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:flutter/material.dart';
-
 import '../../Widgets/posts.dart';
 
 class SocialPage extends StatefulWidget {

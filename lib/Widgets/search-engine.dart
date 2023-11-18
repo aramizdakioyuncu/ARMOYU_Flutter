@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,8 +27,26 @@ class CustomSearchEngine {
                 ));
               },
               child: CircleAvatar(
-                foregroundImage: CachedNetworkImageProvider(avatar),
                 radius: 20,
+                backgroundColor: Colors
+                    .transparent, // Set a background color for the avatar if needed
+                child: CachedNetworkImage(
+                  imageUrl: avatar,
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: 40, // Set the width to twice the radius (2 * radius)
+                    height:
+                        40, // Set the height to twice the radius (2 * radius)
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                ),
               ),
             ),
             SizedBox(width: 10),
