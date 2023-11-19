@@ -1,0 +1,58 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginCMa",
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginCACycfc",
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginC8register4withySo07FlutterF9Registrar_p_tFZ",
+            "_Swift50Overrides",
+            "_shared_preferences_foundationVersionString",
+            "_shared_preferences_foundationVersionNumber",
+            "_Swift51Overrides",
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginCACycfC",
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginCN",
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginCfD",
+            "_$s29shared_preferences_foundation23SharedPreferencesPluginCMn"
+          ],
+          "objc_class": [
+            "PodsDummy_shared_preferences_foundation",
+            "_TtC29shared_preferences_foundation23SharedPreferencesPlugin"
+          ]
+        },
+        "text": {
+          "global": [
+            "__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E",
+            "__Z34_swiftoverride_class_getSuperclassPKN5swift14TargetMetadataINS_9InProcessEEE",
+            "__ZN5swift39swift51override_conformsToSwiftProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEN7__swift9__runtime4llvm9StringRefEPFPKNS_35TargetProtocolConformanceDescriptorIS1_EES4_S8_SC_E"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/shared_preferences_foundation.framework/shared_preferences_foundation"
+      }
+    ],
+    "swift_abi": [
+      {
+        "abi": 7
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "11",
+        "target": "arm64-ios"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

@@ -1,0 +1,68 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_SqfliteParamError",
+            "_sqfliteVersionNumber",
+            "_SqfliteMethodInsert",
+            "_SqfliteMethodExecute",
+            "_SqfliteParamResult",
+            "_SqfliteParamMethod",
+            "_SqfliteParamNoResult",
+            "_SqfliteErrorBadParam",
+            "_SqfliteParamErrorData",
+            "_sqfliteVersionString",
+            "_SqfliteParamContinueOnError",
+            "_SqfliteParamErrorMessage",
+            "_SqfliteSqlPragmaSqliteDefensiveOff",
+            "_SqfliteMethodUpdate",
+            "_SqfliteMethodQuery",
+            "_SqfliteParamInTransactionChange",
+            "_SqfliteParamErrorCode",
+            "_SqliteErrorCode",
+            "_SqfliteParamSqlArguments",
+            "_SqfliteParamSql",
+            "_SqfliteParamTransactionId"
+          ],
+          "objc_class": [
+            "SqflitePlugin",
+            "SqfliteDatabase",
+            "PodsDummy_sqflite",
+            "SqfliteCursor",
+            "SqfliteMethodCallOperation",
+            "SqfliteBatchOperation",
+            "SqfliteQueuedOperation",
+            "SqfliteOperation"
+          ]
+        },
+        "text": {
+          "global": [
+            "_sqfliteHasSqlLogLevel",
+            "_sqfliteHasVerboseLogLevel"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/sqflite.framework/sqflite"
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "11",
+        "target": "arm64-ios"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

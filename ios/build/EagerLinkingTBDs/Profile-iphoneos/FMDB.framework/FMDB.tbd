@@ -1,0 +1,53 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_FMDBVersionString",
+            "_FMDBVersionNumber"
+          ],
+          "objc_class": [
+            "FMStatement",
+            "FMDatabaseQueue",
+            "FMResultSet",
+            "FMDatabasePool",
+            "PodsDummy_FMDB",
+            "FMDatabase"
+          ],
+          "objc_ivar": [
+            "FMStatement._statement",
+            "FMStatement._query",
+            "FMStatement._useCount",
+            "FMStatement._inUse"
+          ]
+        },
+        "text": {
+          "global": [
+            "_FMDBBlockSQLiteCallBackFunction",
+            "_FMDBExecuteBulkSQLCallback"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/FMDB.framework/FMDB"
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "9",
+        "target": "arm64-ios"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

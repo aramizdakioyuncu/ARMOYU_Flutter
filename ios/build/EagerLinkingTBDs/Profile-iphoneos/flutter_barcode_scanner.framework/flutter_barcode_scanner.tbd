@@ -1,0 +1,99 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginCACycfC",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8onCancel13withArgumentsSo0E5ErrorCSgypSg_tF",
+            "_flutter_barcode_scannerVersionNumber",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC14viewControllerSo06UIViewJ0CvMZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC14viewControllerSo06UIViewJ0Cvau",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15isShowFlashIconSbvsZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC6handle_6resultySo0E10MethodCallC_yypSgctFTq",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8onCancel13withArgumentsSo0E5ErrorCSgypSg_tFTq",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC14viewControllerSo06UIViewJ0CvgZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8register4withySo0eH9Registrar_p_tFZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginCN",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC9lineColorSSvsZ",
+            "_Swift51Overrides",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16isContinuousScanSbvau",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16cancelButtonTextSSvsZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC13pendingResultyypSgcSgvpfi",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8scanModeSivgZ",
+            "_flutter_barcode_scannerVersionString",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginCMn",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15isShowFlashIconSbvau",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8onListen13withArguments9eventSinkSo0E5ErrorCSgypSg_yAJctFTq",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC14viewControllerSo06UIViewJ0CvsZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15userDidScanWith0B0ySS_tFTq",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16cancelButtonTextSSvMZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15isShowFlashIconSbvgZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16cancelButtonTextSSvpZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16isContinuousScanSbvpZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC14viewControllerSo06UIViewJ0CvpZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC9lineColorSSvpZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16isContinuousScanSbvMZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8scanModeSivau",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8scanModeSivpZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16isContinuousScanSbvgZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginCACycfc",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginCfD",
+            "_Swift50Overrides",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8onListen13withArguments9eventSinkSo0E5ErrorCSgypSg_yAJctF",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16cancelButtonTextSSvgZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15userDidScanWith0B0ySS_tF",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15isShowFlashIconSbvpZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC9lineColorSSvgZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC9lineColorSSvMZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC6handle_6resultySo0E10MethodCallC_yypSgctF",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16cancelButtonTextSSvau",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8scanModeSivMZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginCMa",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC02onF12ScanReceiver0B0ySS_tFZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC8scanModeSivsZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC15isShowFlashIconSbvMZ",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC9lineColorSSvau",
+            "_$s23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPluginC16isContinuousScanSbvsZ"
+          ],
+          "objc_class": [
+            "_TtC23flutter_barcode_scanner32SwiftFlutterBarcodeScannerPlugin",
+            "FlutterBarcodeScannerPlugin",
+            "PodsDummy_flutter_barcode_scanner"
+          ]
+        },
+        "text": {
+          "global": [
+            "__ZN5swift39swift51override_conformsToSwiftProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEN7__swift9__runtime4llvm9StringRefEPFPKNS_35TargetProtocolConformanceDescriptorIS1_EES4_S8_SC_E",
+            "__ZN5swift34swift50override_conformsToProtocolEPKNS_14TargetMetadataINS_9InProcessEEEPKNS_24TargetProtocolDescriptorIS1_EEPFPKNS_18TargetWitnessTableIS1_EES4_S8_E",
+            "__Z34_swiftoverride_class_getSuperclassPKN5swift14TargetMetadataINS_9InProcessEEE"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/flutter_barcode_scanner.framework/flutter_barcode_scanner"
+      }
+    ],
+    "swift_abi": [
+      {
+        "abi": 7
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "12",
+        "target": "arm64-ios"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

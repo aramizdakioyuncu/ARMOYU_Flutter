@@ -1,0 +1,18 @@
+{
+  "" : {
+    "diagnostics" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/flutter_barcode_scanner-master.dia",
+    "emit-module-dependencies" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/flutter_barcode_scanner-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/flutter_barcode_scanner-master-emit-module.dia",
+    "swift-dependencies" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/flutter_barcode_scanner-master.swiftdeps"
+  },
+  "/Users/berkaytikenoglu/.pub-cache/hosted/pub.dev/flutter_barcode_scanner-2.0.0/ios/Classes/SwiftFlutterBarcodeScannerPlugin.swift" : {
+    "const-values" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.swiftconstvalues",
+    "dependencies" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.d",
+    "diagnostics" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.dia",
+    "index-unit-output-path" : "/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.o",
+    "llvm-bc" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.bc",
+    "object" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.o",
+    "swift-dependencies" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin.swiftdeps",
+    "swiftmodule" : "/Users/berkaytikenoglu/mycodes/ARMOYU_Flutter/ios/build/Pods.build/Debug-iphoneos/flutter_barcode_scanner.build/Objects-normal/arm64/SwiftFlutterBarcodeScannerPlugin~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,11 @@
+framework module flutter_barcode_scanner {
+  umbrella header "flutter_barcode_scanner-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module flutter_barcode_scanner.Swift {
+  header "flutter_barcode_scanner-Swift.h"
+  requires objc
+}

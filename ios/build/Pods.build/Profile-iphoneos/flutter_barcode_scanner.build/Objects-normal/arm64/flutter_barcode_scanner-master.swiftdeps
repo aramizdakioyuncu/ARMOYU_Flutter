@@ -1,0 +1,7 @@
+version: "Apple Swift version 5.9 (swiftlang-5.9.0.128.108 clang-1500.0.40.1)"
+options: "87c64c3e6b50f2f9138265748253e88bc2da58d6980049eeb64c805c1085ad51"
+build_start_time: [1700426516, 246611000]
+build_end_time: [1700426518, 827480000]
+inputs:
+  ? "/Users/berkaytikenoglu/.pub-cache/hosted/pub.dev/flutter_barcode_scanner-2.0.0/ios/Classes/SwiftFlutterBarcodeScannerPlugin.swift"
+  : [1699547880, 982331849]
