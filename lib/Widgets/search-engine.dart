@@ -90,21 +90,16 @@ class CustomSearchEngine {
       onTap: () {
         try {
           function();
-        } catch (e) {
-          print("Catche düştü:\n" + e.toString());
-        }
+        } catch (e) {}
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            GestureDetector(
-              onTap: () {},
-              child: CircleAvatar(
-                foregroundImage: CachedNetworkImageProvider(avatar),
-                radius: 20,
-              ),
+            CircleAvatar(
+              foregroundImage: CachedNetworkImageProvider(avatar),
+              radius: 20,
             ),
             SizedBox(width: 10),
             Expanded(

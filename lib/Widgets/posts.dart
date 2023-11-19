@@ -6,8 +6,10 @@ import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 import '../Functions/posts.dart';
 import '../Screens/FullScreenImagePage.dart';
@@ -25,6 +27,7 @@ class TwitterPostWidget extends StatefulWidget {
   final List<int> mediaownerIDs;
   final List<String> mediaUrls;
   final List<String> mediabetterUrls;
+  final List<String> mediatype;
   int postlikeCount;
   int postcommentCount;
 
@@ -42,6 +45,7 @@ class TwitterPostWidget extends StatefulWidget {
     required this.mediaownerIDs,
     required this.mediaUrls,
     required this.mediabetterUrls,
+    required this.mediatype,
     required this.postlikeCount,
     required this.postcommentCount,
     required this.postMelike,
@@ -65,6 +69,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 //Repost Buton
   Icon postrepostIcon = Icon(Icons.cyclone_outlined);
   Color postrepostColor = Colors.grey;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -516,13 +525,13 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             ),
           ),
           Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child:
-                  _buildPostText()), // Tıklanabilir metin için yeni fonksiyon
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: _buildPostText(),
+          ), // Tıklanabilir metin için yeni fonksiyon
           SizedBox(height: 5),
           Center(
-              child: _buildMediaContent(
-                  context)), // Medya içeriği için yeni fonksiyon
+            child: _buildMediaContent(context),
+          ), // Medya içeriği için yeni fonksiyon
 
           Container(
             padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
@@ -641,6 +650,28 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             },
         );
       }
+
+      if (word.startsWith('@')) {
+        return TextSpan(
+          text: word + ' ',
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+          ),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
+              print('Tapped on hashtag: $word');
+
+              List getusername = word.split('@');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ProfilePage(username: getusername[1], appbar: true)));
+            },
+        );
+      }
       return TextSpan(text: word + ' ');
     }).toList();
 
@@ -655,12 +686,27 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     Widget mediaSablon(String mediaUrl,
         {BoxFit? fit = BoxFit.cover,
         double? width = 100,
-        double? height = 100}) {
+        double? height = 100,
+        bool? isvideo = false}) {
+      if (isvideo == true) {
+        // mediaUrl
+        final chewieController = ChewieController(
+          videoPlayerController:
+              VideoPlayerController.networkUrl(Uri.parse(mediaUrl)),
+          autoPlay: false,
+          looping: false,
+        );
+        return Chewie(
+          controller: chewieController,
+        );
+      }
       return CachedNetworkImage(
         imageUrl: mediaUrl,
         fit: fit,
         width: width,
         height: height,
+        // placeholder: (context, url) => CircularProgressIndicator(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
       );
     }
 
@@ -669,36 +715,47 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     if (widget.mediaUrls.isNotEmpty) {
       List<Row> mediaItems = [];
 
-      List<GestureDetector> mediarow1 = [];
-      List<GestureDetector> mediarow2 = [];
+      List<Widget> mediarow1 = [];
+      List<Widget> mediarow2 = [];
 
       for (int i = 0; i < widget.mediaUrls.length; i++) {
         if (i > 3) {
           continue;
         }
+
+        List media = widget.mediatype[i].split('/');
+
+        if (media[0] == "video") {
+          mediarow1.add(
+            mediaSablon(widget.mediaUrls[i], isvideo: true),
+          );
+          mediaItems.add(Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: mediarow1,
+          ));
+          break;
+        }
+
+        if (widget.mediatype[i] == 12) {}
         double mediawidth = Screen.screenWidth;
         double mediaheight = Screen.screenHeight;
         if (widget.mediaUrls.length == 1) {
           mediawidth = mediawidth / 1;
-          // mediawidth = mediawidth / 1.09;
+
           mediaheight = mediaheight / 2;
         } else if (widget.mediaUrls.length == 2) {
           mediawidth = mediawidth / 2;
-          // mediawidth = mediawidth / 2.18;
           mediaheight = mediaheight / 4;
         } else if (widget.mediaUrls.length == 3) {
           if (i == 0) {
             mediawidth = mediawidth / 1;
-            // mediawidth = mediawidth / 1.09;
             mediaheight = mediaheight / 2.5;
           } else {
             mediawidth = mediawidth / 2;
-            // mediawidth = mediawidth / 2.18;
             mediaheight = mediaheight / 4;
           }
         } else if (widget.mediaUrls.length >= 4) {
           mediawidth = mediawidth / 2;
-          // mediawidth = mediawidth / 2.19;
           mediaheight = mediaheight / 4;
         }
 

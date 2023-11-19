@@ -7,6 +7,7 @@ import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../Services/functions_service.dart';
+import '../Profile/profile_page.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final bool appbar;
@@ -108,11 +109,20 @@ class _ChatDetailPage extends State<ChatDetailPage>
                       padding: EdgeInsets.all(12.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(50.0),
-                        child: CachedNetworkImage(
-                          imageUrl: widget.useravatar,
-                          width: 30,
-                          height: 30,
-                          fit: BoxFit.cover,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfilePage(
+                                        userID: widget.userID, appbar: true)));
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: widget.useravatar,
+                            width: 30,
+                            height: 30,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),

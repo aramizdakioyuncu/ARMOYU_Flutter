@@ -10,19 +10,26 @@ import '../../Functions/media.dart';
 import '../../Functions/profile.dart';
 import '../../Services/functions_service.dart';
 import '../../Widgets/buttons.dart';
+import '../../Widgets/posts.dart';
 import '../FullScreenImagePage.dart';
 
 class ProfilePage extends StatefulWidget {
-  final int userID; // Zorunlu olarak alınacak veri
+  int? userID; // Zorunlu olarak alınacak veri
+  final String? username; // Zorunlu olmayan  veri
   final bool appbar; // Zorunlu olarak alınacak veri
 
-  ProfilePage({required this.userID, required this.appbar});
+  ProfilePage({
+    this.userID,
+    required this.appbar,
+    this.username,
+  });
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage>
-    with AutomaticKeepAliveClientMixin<ProfilePage> {
+    with AutomaticKeepAliveClientMixin<ProfilePage>, TickerProviderStateMixin {
+  late TabController tabController;
   @override
   bool get wantKeepAlive => true;
   int userID = -1;
@@ -54,7 +61,73 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     super.initState();
     TEST();
-    voidas();
+
+    tabController = TabController(
+      initialIndex: 0,
+      length: 2,
+      vsync: this,
+    );
+  }
+
+  List<Widget> Widget_Posts = [];
+
+  Future<void> loadPostsv2(int page, int Userid) async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.getprofilePosts(page, Userid);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    if (response["icerik"].length == 0) {
+      return;
+    }
+    int dynamicItemCount = response["icerik"].length;
+    if (dynamicItemCount > 0) {
+      Widget_Posts.clear();
+    }
+    for (int i = 0; i < dynamicItemCount; i++) {
+      List<int> mediaIDs = [];
+      List<int> mediaownerIDs = [];
+      List<String> medias = [];
+      List<String> mediasbetter = [];
+      List<String> mediastype = [];
+
+      if (response["icerik"][i]["paylasimfoto"].length != 0) {
+        int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
+
+        for (int j = 0; j < mediaItemCount; j++) {
+          mediaIDs.add(response["icerik"][i]["paylasimfoto"][j]["fotoID"]);
+          mediaownerIDs.add(response["icerik"][i]["sahipID"]);
+          medias.add(response["icerik"][i]["paylasimfoto"][j]["fotominnakurl"]);
+          mediasbetter
+              .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
+          mediastype.add(
+              response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
+        }
+      }
+      setState(() {
+        Widget_Posts.add(
+          TwitterPostWidget(
+            userID: response["icerik"][i]["sahipID"],
+            profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
+            username: response["icerik"][i]["sahipad"],
+            postID: response["icerik"][i]["paylasimID"],
+            postText: response["icerik"][i]["paylasimicerik"],
+            postDate: response["icerik"][i]["paylasimzamangecen"],
+            mediaIDs: mediaIDs,
+            mediaownerIDs: mediaownerIDs,
+            mediaUrls: medias,
+            mediabetterUrls: mediasbetter,
+            mediatype: mediastype,
+            postlikeCount: response["icerik"][i]["begenisay"],
+            postcommentCount: response["icerik"][i]["yorumsay"],
+            postMecomment: response["icerik"][i]["benyorumladim"],
+            postMelike: response["icerik"][i]["benbegendim"],
+          ),
+        );
+      });
+    }
   }
 
   Future<void> TEST() async {
@@ -85,68 +158,126 @@ class _ProfilePageState extends State<ProfilePage>
       try {
         rolecolor = User.rolecolor!;
       } catch (Ex) {}
-      return;
-    }
-
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.lookProfile(widget.userID);
-    if (response["durum"] == 0) {
-      log("Oyuncu bulunamadı");
-      return;
-    }
-
-    userID = int.parse(response["oyuncuID"]);
-    userName = response["kullaniciadi"];
-    displayName = response["adim"];
-    banneravatar = response["parkaresimminnak"];
-    banneravatarbetter = response["parkaresimufak"];
-    avatar = response["presimminnak"];
-    avatarbetter = response["presimufak"];
-
-    if (response["ulkesi"] != null) {
-      country = response["ulkesi"];
-    }
-    if (response["ili"] != null) {
-      province = response["ili"];
-    }
-    registerdate = response["kayittarihikisa"];
-
-    if (response["burc"] != null) {
-      burc = response["burc"];
-    }
-
-    if (response["isyeriadi"] != null) {
-      job = response["isyeriadi"];
-    }
-
-    if (response["yetkisiacikla"] != null) {
-      role = response["yetkisiacikla"];
-    }
-    if (response["yetkirenk"] != null) {
-      rolecolor = response["yetkirenk"];
-    }
-    if (response["hakkimda"] != null) {
-      aboutme = response["hakkimda"];
-    }
-
-    if (response["arkadasdurum"] == "1") {
-      isFriend = true;
-      isbeFriend = false;
     } else {
-      isFriend = false;
-      isbeFriend = true;
+      Map<String, dynamic> response = {};
+      if (widget.userID == null && widget.username != null) {
+        FunctionService f = FunctionService();
+        Map<String, dynamic> response =
+            await f.lookProfilewithusername(widget.username!);
+
+        log(response.toString());
+        if (response["durum"] == 0) {
+          log("Oyuncu bulunamadı");
+          return;
+        }
+        //Kullanıcı adında birisi var
+        log(response["oyuncuID"].toString());
+
+        userID = int.parse(response["oyuncuID"]);
+        userName = response["kullaniciadi"];
+        displayName = response["adim"];
+        banneravatar = response["parkaresimminnak"];
+        banneravatarbetter = response["parkaresimufak"];
+        avatar = response["presimminnak"];
+        avatarbetter = response["presimufak"];
+
+        if (response["ulkesi"] != null) {
+          country = response["ulkesi"];
+        }
+        if (response["ili"] != null) {
+          province = response["ili"];
+        }
+        registerdate = response["kayittarihikisa"];
+
+        if (response["burc"] != null) {
+          burc = response["burc"];
+        }
+
+        if (response["isyeriadi"] != null) {
+          job = response["isyeriadi"];
+        }
+
+        if (response["yetkisiacikla"] != null) {
+          role = response["yetkisiacikla"];
+        }
+        if (response["yetkirenk"] != null) {
+          rolecolor = response["yetkirenk"];
+        }
+        if (response["hakkimda"] != null) {
+          aboutme = response["hakkimda"];
+        }
+
+        if (response["arkadasdurum"] == "1") {
+          isFriend = true;
+          isbeFriend = false;
+        } else {
+          isFriend = false;
+          isbeFriend = true;
+        }
+        ///////
+      } else {
+        FunctionService f = FunctionService();
+        response = await f.lookProfile(widget.userID!);
+        if (response["durum"] == 0) {
+          log("Oyuncu bulunamadı");
+          return;
+        }
+        userID = int.parse(response["oyuncuID"]);
+        userName = response["kullaniciadi"];
+        displayName = response["adim"];
+        banneravatar = response["parkaresimminnak"];
+        banneravatarbetter = response["parkaresimufak"];
+        avatar = response["presimminnak"];
+        avatarbetter = response["presimufak"];
+
+        if (response["ulkesi"] != null) {
+          country = response["ulkesi"];
+        }
+        if (response["ili"] != null) {
+          province = response["ili"];
+        }
+        registerdate = response["kayittarihikisa"];
+
+        if (response["burc"] != null) {
+          burc = response["burc"];
+        }
+
+        if (response["isyeriadi"] != null) {
+          job = response["isyeriadi"];
+        }
+
+        if (response["yetkisiacikla"] != null) {
+          role = response["yetkisiacikla"];
+        }
+        if (response["yetkirenk"] != null) {
+          rolecolor = response["yetkirenk"];
+        }
+        if (response["hakkimda"] != null) {
+          aboutme = response["hakkimda"];
+        }
+
+        if (response["arkadasdurum"] == "1") {
+          isFriend = true;
+          isbeFriend = false;
+        } else {
+          isFriend = false;
+          isbeFriend = true;
+        }
+        /////
+      }
     }
-    return;
+
+    await voidas(userID);
+    await loadPostsv2(1, userID);
   }
 
   Future<void> _handleRefresh() async {
     await TEST();
-    voidas();
   }
 
   Future<void> friendrequest() async {
     FunctionsProfile f = FunctionsProfile();
-    Map<String, dynamic> response = await f.friendrequest(widget.userID);
+    Map<String, dynamic> response = await f.friendrequest(widget.userID!);
     if (response["durum"] == 0) {
       log("Oyuncu bulunamadı");
       return;
@@ -156,14 +287,14 @@ class _ProfilePageState extends State<ProfilePage>
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
 
-  voidas() async {
+  voidas(int Userid) async {
     setState(() {
       imageUrls.clear();
       imageufakUrls.clear();
     });
-
+    log(widget.userID.toString());
     FunctionsMedia f = FunctionsMedia();
-    Map<String, dynamic> response = await f.fetch(widget.userID, "-1", 1);
+    Map<String, dynamic> response = await f.fetch(Userid, "-1", 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -266,7 +397,7 @@ class _ProfilePageState extends State<ProfilePage>
                                       onTap: () async {
                                         FunctionsProfile f = FunctionsProfile();
                                         Map<String, dynamic> response =
-                                            await f.userdurting(widget.userID);
+                                            await f.userdurting(widget.userID!);
                                         if (response["durum"] == 0) {
                                           log(response["aciklama"]);
                                         }
@@ -510,42 +641,71 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ),
-                    // Container(
-                    //   height: 300,
-                    //   //Maksat boşluk olsun yenilensin
-                    // )
-                    Container(
-                      height: 400,
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Her satırda 2 görsel
-                          crossAxisSpacing: 8.0, // Yatayda boşluk
-                          mainAxisSpacing: 8.0, // Dikeyde boşluk
-                        ),
-                        itemCount: imageUrls.length,
+                  ],
+                ),
+              ),
+              SizedBox(
+                child: TabBar(
+                  unselectedLabelColor: Colors.grey,
+                  controller: tabController,
+                  tabs: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child:
+                          Text('Paylaşımlar', style: TextStyle(fontSize: 15.0)),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Medya", style: TextStyle(fontSize: 15.0)),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 500,
+                child: TabBarView(
+                  controller: tabController,
+                  children: [
+                    RefreshIndicator(
+                      color: Colors.blue,
+                      onRefresh: _handleRefresh,
+                      child: ListView.builder(
+                        // controller: _scrollController,
+                        itemCount: Widget_Posts.length,
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => FullScreenImagePage(
-                                            images: imageufakUrls,
-                                            initialIndex: index,
-                                          )));
-                            },
-                            child: CachedNetworkImage(
-                              imageUrl: imageUrls[index],
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                            ),
-                          );
+                          return Widget_Posts[index];
                         },
                       ),
                     ),
+                    GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // Her satırda 2 görsel
+                        crossAxisSpacing: 8.0, // Yatayda boşluk
+                        mainAxisSpacing: 8.0, // Dikeyde boşluk
+                      ),
+                      itemCount: imageUrls.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FullScreenImagePage(
+                                          images: imageufakUrls,
+                                          initialIndex: index,
+                                        )));
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: imageUrls[index],
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                          ),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),

@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import '../Services/functions_service.dart';
+import '../Functions/search.dart';
 import '../Widgets/search-engine.dart';
 
 class SearchPage extends StatefulWidget {
@@ -49,7 +49,7 @@ class _SearchPagePage extends State<SearchPage>
       if (text != controller.text) {
         return;
       }
-      FunctionService f = FunctionService();
+      FunctionsSearchEngine f = FunctionsSearchEngine();
       Map<String, dynamic> response = await f.searchengine(1, text);
       if (response["durum"] == 0) {
         log(response["aciklama"]);
@@ -73,7 +73,7 @@ class _SearchPagePage extends State<SearchPage>
             Widget_search.add(CustomSearchEngine().costom1(
               context,
               response["icerik"][i]["ID"],
-              response["icerik"][i]["adsoyad"],
+              response["icerik"][i]["Value"],
               response["icerik"][i]["avatar"],
               response["icerik"][i]["turu"],
             ));

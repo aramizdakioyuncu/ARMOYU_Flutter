@@ -5,8 +5,10 @@ import 'dart:math';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
+import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:flutter/material.dart';
+import '../../Widgets/Skeletons/posts_skeleton.dart';
 import '../../Widgets/posts.dart';
 
 class SocialPage extends StatefulWidget {
@@ -29,6 +31,11 @@ class _SocialPageState extends State<SocialPage>
   bool postpageproccess = false;
   bool isRefreshing = false;
   ScrollController _scrollController = ScrollController();
+
+  List<Widget> Widget_Posts = [];
+  List<Map<String, String>> Widget_card = [];
+  Widget? Widget_tpusers;
+  Widget? Widget_popusers;
   @override
   void initState() {
     super.initState();
@@ -40,8 +47,6 @@ class _SocialPageState extends State<SocialPage>
 
     // initState içinde sayfa yüklendiğinde yapılması gereken işlemleri gerçekleştirin
 
-    loadPosts(postpage);
-
     // ScrollController'ı dinle
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
@@ -50,20 +55,16 @@ class _SocialPageState extends State<SocialPage>
         _loadMoreData();
       }
     });
+
+    loadPosts(postpage);
   }
 
   Future<void> _handleRefresh() async {
-    postpage = 1;
+    loadSkeletonpost();
 
-    setState(() {
-      isRefreshing = true;
-    });
-
-    await loadPosts(postpage);
-
-    setState(() {
-      isRefreshing = false;
-    });
+    isRefreshing = true;
+    loadPosts(1);
+    isRefreshing = false;
   }
 
   // Yeni veri yükleme işlemi
@@ -76,10 +77,6 @@ class _SocialPageState extends State<SocialPage>
     }
   }
 
-  List<Widget> Widget_Posts = [];
-  Widget? Widget_tpusers;
-  Widget? Widget_popusers;
-
   Future<void> loadPostsv2(int page) async {
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getPosts(page);
@@ -91,13 +88,16 @@ class _SocialPageState extends State<SocialPage>
     if (response["icerik"].length == 0) {
       return;
     }
+    if (page == 1) {
+      Widget_Posts.clear();
+    }
     int dynamicItemCount = response["icerik"].length;
-
     for (int i = 0; i < dynamicItemCount; i++) {
       List<int> mediaIDs = [];
       List<int> mediaownerIDs = [];
       List<String> medias = [];
       List<String> mediasbetter = [];
+      List<String> mediastype = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
         int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
@@ -108,6 +108,8 @@ class _SocialPageState extends State<SocialPage>
           medias.add(response["icerik"][i]["paylasimfoto"][j]["fotominnakurl"]);
           mediasbetter
               .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
+          mediastype.add(
+              response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
         }
       }
       setState(() {
@@ -123,6 +125,7 @@ class _SocialPageState extends State<SocialPage>
             mediaownerIDs: mediaownerIDs,
             mediaUrls: medias,
             mediabetterUrls: mediasbetter,
+            mediatype: mediastype,
             postlikeCount: response["icerik"][i]["begenisay"],
             postcommentCount: response["icerik"][i]["yorumsay"],
             postMecomment: response["icerik"][i]["benyorumladim"],
@@ -140,9 +143,23 @@ class _SocialPageState extends State<SocialPage>
     }
   }
 
+  Future<void> loadSkeletonpost() async {
+    setState(() {
+      Widget_Posts.clear();
+      Widget_Posts.add(SkeletonSocailPosts());
+      Widget_Posts.add(SkeletonSocailPosts());
+      Widget_Posts.add(SkeletonSocailPosts());
+      Widget_Posts.add(SkeletonCustomCards(count: 5, icon: Icon(Icons.abc)));
+      Widget_Posts.add(SkeletonSocailPosts());
+      Widget_Posts.add(SkeletonSocailPosts());
+      Widget_Posts.add(SkeletonSocailPosts());
+      Widget_Posts.add(SkeletonSocailPosts());
+    });
+  }
+
   Future<void> loadPosts(int page) async {
     if (page == 1) {
-      Widget_Posts.clear();
+      postpage = 1;
       await loadXP_Cards(1);
       await loadpop_Cards(1);
     }
@@ -159,7 +176,6 @@ class _SocialPageState extends State<SocialPage>
       return;
     }
 
-    List<Map<String, String>> Widget_card = [];
     for (int i = 0; i < response["icerik"].length; i++) {
       Widget_card.add({
         "userID": response["icerik"][i]["oyuncuID"].toString(),

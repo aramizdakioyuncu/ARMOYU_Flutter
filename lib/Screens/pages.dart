@@ -1,10 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api
 
 import 'package:camera/camera.dart';
+
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/Chat/chat_page.dart';
 import 'package:ARMOYU/Services/User.dart';
+
+import '../Core/App_core.dart';
 
 class Pages extends StatefulWidget {
   @override
@@ -30,12 +33,16 @@ class _PagesState extends State<Pages> {
   }
 
   Future<void> cameratest() async {
-    try {
-      WidgetsFlutterBinding.ensureInitialized();
-      _cameras = await availableCameras();
-      print(_cameras);
-    } on CameraException catch (e) {
-      print(e);
+    AppCore a = AppCore();
+
+    if (a.getDevice() == "Android") {
+      try {
+        WidgetsFlutterBinding.ensureInitialized();
+        _cameras = await availableCameras();
+        print(_cameras);
+      } on CameraException catch (e) {
+        print(e);
+      }
     }
   }
 

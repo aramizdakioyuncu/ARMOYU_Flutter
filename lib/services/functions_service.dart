@@ -188,6 +188,13 @@ class FunctionService {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> lookProfilewithusername(String username) async {
+    Map<String, String> formData = {"oyuncubakusername": "$username"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("0/0/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> myGroups() async {
     Map<String, String> formData = {};
     Map<String, dynamic> jsonData =
@@ -204,6 +211,13 @@ class FunctionService {
 
   Future<Map<String, dynamic>> getPosts(int page) async {
     Map<String, String> formData = {};
+    Map<String, dynamic> jsonData =
+        await apiService.request("sosyal/liste/$page/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> getprofilePosts(int page, UserID) async {
+    Map<String, String> formData = {"oyuncubakid": "$UserID"};
     Map<String, dynamic> jsonData =
         await apiService.request("sosyal/liste/$page/", formData);
     return jsonData;
@@ -256,13 +270,6 @@ class FunctionService {
     };
     Map<String, dynamic> jsonData =
         await apiService.request("sohbetgonder/0/0/", formData);
-    return jsonData;
-  }
-
-  Future<Map<String, dynamic>> searchengine(int page, String searchword) async {
-    Map<String, String> formData = {"sayfa": "$page", "oyuncuadi": searchword};
-    Map<String, dynamic> jsonData =
-        await apiService.request("arama/0/0/", formData);
     return jsonData;
   }
 }
