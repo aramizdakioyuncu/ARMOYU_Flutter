@@ -61,16 +61,19 @@
       "size" : "20x20"
     },
     {
+      "filename" : "icon-40.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
+      "filename" : "armoyu58 1.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
+      "filename" : "armoyu80 1.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "40x40"
@@ -88,21 +91,16 @@
       "size" : "76x76"
     },
     {
+      "filename" : "armoyu167 1.png",
       "idiom" : "ipad",
       "scale" : "2x",
       "size" : "83.5x83.5"
     },
     {
-      "filename" : "Icon-marketing-1024x1024.png",
+      "filename" : "armoyu1024.jpg",
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"
-    },
-    {
-      "filename" : "Icon-83.5@2x.png",
-      "idiom" : "ipad",
-      "scale" : "1x",
-      "size" : "167x167"
     }
   ],
   "info" : {
