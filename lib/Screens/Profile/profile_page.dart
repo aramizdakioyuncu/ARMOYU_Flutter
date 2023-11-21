@@ -27,9 +27,10 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
+late TabController tabController;
+
 class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin<ProfilePage>, TickerProviderStateMixin {
-  late TabController tabController;
   @override
   bool get wantKeepAlive => true;
   int userID = -1;
@@ -56,7 +57,8 @@ class _ProfilePageState extends State<ProfilePage>
   bool isFriend = false;
 
   bool isbeFriend = false;
-
+  bool isAppBarExpanded = true;
+  late ScrollController _scrollControllersliverapp;
   @override
   void initState() {
     super.initState();
@@ -67,6 +69,14 @@ class _ProfilePageState extends State<ProfilePage>
       length: 2,
       vsync: this,
     );
+
+    _scrollControllersliverapp = ScrollController();
+    _scrollControllersliverapp.addListener(() {
+      setState(() {
+        isAppBarExpanded = _scrollControllersliverapp.offset <
+            100; // veya başka bir eşik değeri
+      });
+    });
   }
 
   List<Widget> Widget_Posts = [];
@@ -277,9 +287,10 @@ class _ProfilePageState extends State<ProfilePage>
 
   Future<void> friendrequest() async {
     FunctionsProfile f = FunctionsProfile();
-    Map<String, dynamic> response = await f.friendrequest(widget.userID!);
+    Map<String, dynamic> response = await f.friendrequest(userID);
+    print(response.toString());
     if (response["durum"] == 0) {
-      log("Oyuncu bulunamadı");
+      print(response["aciklama"]);
       return;
     }
   }
@@ -312,10 +323,23 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.appbar
-          ? AppBar(
-              title: Text(displayName),
+      // appBar: widget.appbar
+      //     ? AppBar(
+      //         title: Text(displayName),
+      //         backgroundColor: Colors.black,
+      //       )
+      //     : null, // Set the AppBar to null if it should be hidden
+
+      body: RefreshIndicator(
+        onRefresh: () => _handleRefresh(),
+        child: CustomScrollView(
+          controller: _scrollControllersliverapp,
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: true,
+              floating: false,
               backgroundColor: Colors.black,
+              expandedHeight: 160.0,
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.more_vert),
@@ -425,294 +449,331 @@ class _ProfilePageState extends State<ProfilePage>
                 ),
                 const SizedBox(width: 10),
               ],
-            )
-          : null, // Set the AppBar to null if it should be hidden
-
-      body: RefreshIndicator(
-        onRefresh: () => _handleRefresh(),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                color: Colors.black, // Container'ın arka plan rengi
-                height: 160, // Container'ın yüksekliği
-                width: MediaQuery.of(context).size.width,
-                child: Stack(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => FullScreenImagePage(
-                            images: [banneravatarbetter],
-                            initialIndex: 0,
-                          ),
-                        ));
-                      },
-                      child: CachedNetworkImage(
-                        imageUrl: banneravatar,
-                        fit: BoxFit.cover,
-                        width: MediaQuery.of(context).size.width,
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+              flexibleSpace: FlexibleSpaceBar(
+                title: Align(
+                  alignment: Alignment.bottomLeft,
+                  child:
+                      isAppBarExpanded ? const SizedBox() : Text(displayName),
+                ),
+                background: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => FullScreenImagePage(
+                        images: [banneravatarbetter],
+                        initialIndex: 0,
                       ),
-                    ),
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [],
-                      ),
-                    )
-                  ],
+                    ));
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: banneravatar,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Column(
+            ),
+            // SliverPersistentHeader(
+            //   delegate: MyPersistentHeaderDelegate(),
+            //   floating: true,
+            //   pinned: true,
+            // ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => FullScreenImagePage(
-                                      images: [avatarbetter],
-                                      initialIndex: 0,
+                              Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            FullScreenImagePage(
+                                          images: [avatarbetter],
+                                          initialIndex: 0,
+                                        ),
+                                      ));
+                                    },
+                                    child: ClipOval(
+                                      child: CachedNetworkImage(
+                                        imageUrl: avatar,
+                                        fit: BoxFit.cover,
+                                        width: 100, // Yuvarlak resmin genişliği
+                                        height: 100,
+                                        placeholder: (context, url) =>
+                                            CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
                                     ),
-                                  ));
-                                },
-                                child: ClipOval(
-                                    child: CachedNetworkImage(
-                                  imageUrl: avatar,
-                                  fit: BoxFit.cover,
-                                  width: 100, // Yuvarlak resmin genişliği
-                                  height: 100,
-                                  placeholder: (context, url) =>
-                                      CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
-                                )),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible: isbeFriend,
+                                child: Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      CustomButtons()
+                                          .Costum1("Arkadaş Ol", friendrequest),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              displayName,
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            const Icon(
+                              Icons.check_circle,
+                              color: Colors.blue,
+                              size: 20,
+                            ),
+                            const SizedBox(height: 5),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "@" + userName,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              role,
+                              style: TextStyle(
+                                color: Color(
+                                  int.parse("0xFF" + rolecolor),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Visibility(
+                            visible: aboutme == "" ? false : true,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                CustomDedectabletext().Costum1(aboutme, 3, 13),
+                                SizedBox(height: 10),
+                              ],
+                            )),
+                        Visibility(
+                            visible: burc == "..." ? false : true,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.window,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  burc,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            )),
+                        SizedBox(height: 5),
+                        Visibility(
+                          visible: registerdate == "..." ? false : true,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.calendar_month,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                registerdate,
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
                               ),
                             ],
                           ),
-                          Visibility(
-                            visible: isbeFriend,
-                            child: Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  CustomButtons()
-                                      .Costum1("Arkadaş Ol", friendrequest),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          displayName,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        const Icon(
-                          Icons.check_circle,
-                          color: Colors.blue,
-                          size: 20,
                         ),
                         const SizedBox(height: 5),
+                        Visibility(
+                            visible: country == "..." ? false : true,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  country + ", " + province,
+                                  style: const TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            )),
+                        SizedBox(height: 5),
+                        Visibility(
+                          visible: job == "" ? false : true,
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.school,
+                                color: Colors.grey,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                job,
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    Row(
+                  ),
+                  SizedBox(
+                    child: TabBar(
+                      unselectedLabelColor: Colors.grey,
+                      controller: tabController,
+                      isScrollable: true,
+                      indicatorColor: Colors.blue,
+                      tabs: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('Paylaşımlar',
+                              style: TextStyle(fontSize: 15.0)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child:
+                              Text("Medya", style: TextStyle(fontSize: 15.0)),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: Screen.screenHeight - 300,
+                    child: TabBarView(
+                      controller: tabController,
                       children: [
-                        Text(
-                          "@" + userName,
-                          style: const TextStyle(
-                            color: Colors.grey,
+                        RefreshIndicator(
+                          color: Colors.blue,
+                          onRefresh: _handleRefresh,
+                          child: ListView.builder(
+                            // controller: _scrollController,
+                            itemCount: Widget_Posts.length,
+                            itemBuilder: (context, index) {
+                              return Widget_Posts[index];
+                            },
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Text(
-                          role,
-                          style: TextStyle(
-                            color: Color(
-                              int.parse("0xFF" + rolecolor),
-                            ),
+                        GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Her satırda 2 görsel
+                            crossAxisSpacing: 8.0, // Yatayda boşluk
+                            mainAxisSpacing: 8.0, // Dikeyde boşluk
                           ),
-                        ),
+                          itemCount: imageUrls.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            FullScreenImagePage(
+                                              images: imageufakUrls,
+                                              initialIndex: index,
+                                            )));
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: imageUrls[index],
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
+                            );
+                          },
+                        )
                       ],
                     ),
-                    const SizedBox(height: 5),
-                    Visibility(
-                        visible: aboutme == "" ? false : true,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CustomDedectabletext().Costum1(aboutme, 3, 13),
-                            SizedBox(height: 10),
-                          ],
-                        )),
-                    Visibility(
-                        visible: burc == "..." ? false : true,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.window,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              burc,
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        )),
-                    SizedBox(height: 5),
-                    Visibility(
-                      visible: registerdate == "..." ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.calendar_month,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            registerdate,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Visibility(
-                        visible: country == "..." ? false : true,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              country + ", " + province,
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        )),
-                    SizedBox(height: 5),
-                    Visibility(
-                      visible: job == "" ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.school,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          Text(
-                            job,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              SizedBox(
-                child: TabBar(
-                  unselectedLabelColor: Colors.grey,
-                  controller: tabController,
-                  tabs: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child:
-                          Text('Paylaşımlar', style: TextStyle(fontSize: 15.0)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Medya", style: TextStyle(fontSize: 15.0)),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 500,
-                child: TabBarView(
-                  controller: tabController,
-                  children: [
-                    RefreshIndicator(
-                      color: Colors.blue,
-                      onRefresh: _handleRefresh,
-                      child: ListView.builder(
-                        // controller: _scrollController,
-                        itemCount: Widget_Posts.length,
-                        itemBuilder: (context, index) {
-                          return Widget_Posts[index];
-                        },
-                      ),
-                    ),
-                    GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // Her satırda 2 görsel
-                        crossAxisSpacing: 8.0, // Yatayda boşluk
-                        mainAxisSpacing: 8.0, // Dikeyde boşluk
-                      ),
-                      itemCount: imageUrls.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => FullScreenImagePage(
-                                          images: imageufakUrls,
-                                          initialIndex: index,
-                                        )));
-                          },
-                          child: CachedNetworkImage(
-                            imageUrl: imageUrls[index],
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                Icon(Icons.error),
-                          ),
-                        );
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+}
+
+class MyPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // Başlık içeriğini oluşturun
+    return Container(
+      alignment: Alignment.center,
+      child: TabBar(
+        unselectedLabelColor: Colors.grey,
+        controller: tabController,
+        isScrollable: true,
+        indicatorColor: Colors.blue,
+        tabs: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Paylaşımlar', style: TextStyle(fontSize: 15.0)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Medya", style: TextStyle(fontSize: 15.0)),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 50.0; // Başlığın maksimum yüksekliği
+
+  @override
+  double get minExtent => 50.0; // Başlığın minimum yüksekliği
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }
