@@ -3,8 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-import '../Core/App_core.dart';
-
 class CameraScreen extends StatefulWidget {
   @override
   _CameraScreenState createState() => _CameraScreenState();
