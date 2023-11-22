@@ -1,4 +1,4 @@
-// ignore_for_file: must_call_super, prefer_const_constructors
+// ignore_for_file: must_call_super, prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, use_build_context_synchronously, unnecessary_overrides
 
 import 'dart:developer';
 import 'dart:io';
@@ -84,7 +84,12 @@ class _PostSharePageState extends State<PostSharePage>
                       log(response["aciklama"]);
                       return;
                     }
-                    log(response["aciklama"]);
+
+                    if (response["durum"] == 1) {
+                      log(response["aciklama"]);
+
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: Text("Paylaş"),
                 ),

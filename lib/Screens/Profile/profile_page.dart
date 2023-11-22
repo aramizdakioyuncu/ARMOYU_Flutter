@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -220,6 +221,9 @@ class _ProfilePageState extends State<ProfilePage>
         if (response["arkadasdurum"] == "1") {
           isFriend = true;
           isbeFriend = false;
+        } else if (response["arkadasdurum"] == "2") {
+          isFriend = false;
+          isbeFriend = false;
         } else {
           isFriend = false;
           isbeFriend = true;
@@ -269,6 +273,9 @@ class _ProfilePageState extends State<ProfilePage>
         if (response["arkadasdurum"] == "1") {
           isFriend = true;
           isbeFriend = false;
+        } else if (response["arkadasdurum"] == "2") {
+          isFriend = false;
+          isbeFriend = false;
         } else {
           isFriend = false;
           isbeFriend = true;
@@ -288,12 +295,26 @@ class _ProfilePageState extends State<ProfilePage>
   Future<void> friendrequest() async {
     FunctionsProfile f = FunctionsProfile();
     Map<String, dynamic> response = await f.friendrequest(userID);
-    print(response.toString());
+
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"]);
       return;
     }
   }
+
+  Future<void> sendmessage() async {
+    log("Sohbet açılacak");
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => ChatDetailPage(
+        appbar: true,
+        userID: userID,
+        useravatar: avatar,
+        userdisplayname: userName,
+      ),
+    ));
+  }
+
+  Future<void> cancelfriendrequest() async {}
 
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
@@ -519,13 +540,37 @@ class _ProfilePageState extends State<ProfilePage>
                                 ],
                               ),
                               Visibility(
-                                visible: isbeFriend,
+                                visible: isbeFriend && !isFriend,
                                 child: Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       CustomButtons()
                                           .Costum1("Arkadaş Ol", friendrequest),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: !isbeFriend && !isFriend,
+                                child: Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      CustomButtons().Costum1(
+                                          "Bekleniyor", cancelfriendrequest),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: !isbeFriend && isFriend,
+                                child: Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      CustomButtons()
+                                          .Costum1("Mesaj Gönder", sendmessage),
                                     ],
                                   ),
                                 ),

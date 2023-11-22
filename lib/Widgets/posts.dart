@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable, no_leading_underscores_for_local_identifiers
+// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable, no_leading_underscores_for_local_identifiers, use_build_context_synchronously
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/screen.dart';
@@ -58,6 +58,8 @@ class TwitterPostWidget extends StatefulWidget {
 
 class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   TextEditingController controller_message = TextEditingController();
+
+  bool postVisible = true;
   //Like Buton
   Icon postlikeIcon = Icon(Icons.favorite_outline);
   Color postlikeColor = Colors.grey;
@@ -431,7 +433,13 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                             log(response["aciklama"]);
                             return;
                           }
-                          log(response["aciklama"]);
+                          if (response["durum"] == 1) {
+                            log(response["aciklama"]);
+                            setState(() {
+                              postVisible = false;
+                            });
+                            Navigator.pop(context);
+                          }
                         },
                         child: const ListTile(
                           textColor: Colors.red,
@@ -453,114 +461,98 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       );
     }
 
-    return Container(
-      // padding: EdgeInsets.all(10),
-      margin: EdgeInsets.only(bottom: 2),
-      decoration: BoxDecoration(
-        // borderRadius: BorderRadius.circular(12),
-        color: Colors.grey.shade900,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PostDetailPage(
-                            postID: widget.postID,
-                          )));
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage(
-                                  userID: widget.userID, appbar: true)));
-                    },
-                    child: CircleAvatar(
-                        foregroundImage:
-                            CachedNetworkImageProvider(widget.profileImageUrl),
-                        radius: 20),
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+    return Visibility(
+      visible: postVisible,
+      child: Container(
+        // padding: EdgeInsets.all(10),
+        margin: EdgeInsets.only(bottom: 2),
+        decoration: BoxDecoration(
+          // borderRadius: BorderRadius.circular(12),
+          color: Colors.grey.shade900,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PostDetailPage(
+                              postID: widget.postID,
+                            )));
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfilePage(
+                                    userID: widget.userID, appbar: true)));
+                      },
+                      child: CircleAvatar(
+                          foregroundImage: CachedNetworkImageProvider(
+                              widget.profileImageUrl),
+                          radius: 20),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.username,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Text(
+                            widget.postDate,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
                       children: [
-                        Text(
-                          widget.username,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          widget.postDate,
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
+                        IconButton(
+                          onPressed: postfeedback,
+                          icon: Icon(Icons.more_vert),
+                          color: Colors.grey,
                         ),
                       ],
                     ),
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        onPressed: postfeedback,
-                        icon: Icon(Icons.more_vert),
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            child: _buildPostText(),
-          ), // Tıklanabilir metin için yeni fonksiyon
-          SizedBox(height: 5),
-          Center(
-            child: _buildMediaContent(context),
-          ), // Medya içeriği için yeni fonksiyon
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: _buildPostText(),
+            ), // Tıklanabilir metin için yeni fonksiyon
+            SizedBox(height: 5),
+            Center(
+              child: _buildMediaContent(context),
+            ), // Medya içeriği için yeni fonksiyon
 
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
-            child: Row(
-              children: [
-                Spacer(),
-                IconButton(
-                  iconSize: 25,
-                  icon: postlikeIcon,
-                  color: postlikeColor,
-                  onPressed: () async {
-                    setState(() {
-                      if (postlikeColor == Colors.red) {
-                        postlikeColor = Colors.grey;
-                        postlikeIcon = Icon(Icons.favorite_border);
-                        widget.postlikeCount--;
-                        widget.postMelike = 0;
-                      } else {
-                        postlikeColor = Colors.red;
-                        postlikeIcon = Icon(Icons.favorite_sharp);
-                        widget.postlikeCount++;
-                        widget.postMelike = 1;
-                      }
-                    });
-                    FunctionsPosts funct = FunctionsPosts();
-                    Map<String, dynamic> response =
-                        await funct.likeordislike(widget.postID);
-                    if (response["durum"] == 0) {
-                      print(response["aciklama"].toString());
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+              child: Row(
+                children: [
+                  Spacer(),
+                  IconButton(
+                    iconSize: 25,
+                    icon: postlikeIcon,
+                    color: postlikeColor,
+                    onPressed: () async {
                       setState(() {
                         if (postlikeColor == Colors.red) {
                           postlikeColor = Colors.grey;
@@ -574,60 +566,79 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           widget.postMelike = 1;
                         }
                       });
-                      return;
-                    }
-                    setState(() {
-                      if (response['aciklama'] == "Paylaşımı beğendin.") {
-                        widget.postMelike = 1;
-                        postlikeColor = Colors.red;
-                        postlikeIcon = Icon(Icons.favorite_sharp);
-                      } else {
-                        widget.postMelike = 0;
-                        postlikeColor = Colors.grey;
-                        postlikeIcon = Icon(Icons.favorite_border);
+                      FunctionsPosts funct = FunctionsPosts();
+                      Map<String, dynamic> response =
+                          await funct.likeordislike(widget.postID);
+                      if (response["durum"] == 0) {
+                        print(response["aciklama"].toString());
+                        setState(() {
+                          if (postlikeColor == Colors.red) {
+                            postlikeColor = Colors.grey;
+                            postlikeIcon = Icon(Icons.favorite_border);
+                            widget.postlikeCount--;
+                            widget.postMelike = 0;
+                          } else {
+                            postlikeColor = Colors.red;
+                            postlikeIcon = Icon(Icons.favorite_sharp);
+                            widget.postlikeCount++;
+                            widget.postMelike = 1;
+                          }
+                        });
+                        return;
                       }
-                    });
-                  },
-                ),
-                SizedBox(width: 5),
-                InkWell(
-                  onTap: () {
-                    postcommentlikeslist();
-                  },
-                  child: Text(
-                    widget.postlikeCount.toString(),
-                    style: TextStyle(color: Colors.grey),
+                      setState(() {
+                        if (response['aciklama'] == "Paylaşımı beğendin.") {
+                          widget.postMelike = 1;
+                          postlikeColor = Colors.red;
+                          postlikeIcon = Icon(Icons.favorite_sharp);
+                        } else {
+                          widget.postMelike = 0;
+                          postlikeColor = Colors.grey;
+                          postlikeIcon = Icon(Icons.favorite_border);
+                        }
+                      });
+                    },
                   ),
-                ),
-                Spacer(),
-                IconButton(
-                  iconSize: 25,
-                  icon: postcommentIcon,
-                  color: postcommentColor,
-                  onPressed: () {
-                    postcomments();
-                  },
-                ),
-                SizedBox(width: 5),
-                Text(
-                  widget.postcommentCount.toString(),
-                  style: TextStyle(color: Colors.grey),
-                ), // Yorum simgesi
-                Spacer(),
-                IconButton(
-                  iconSize: 25,
-                  icon: postrepostIcon,
-                  color: postrepostColor,
-                  onPressed: () {},
-                ), // Retweet simgesi (yeşil renkte)
-                Spacer(),
-                Icon(Icons.share_outlined,
-                    color: Colors.grey), // Paylaşım simgesi
-                Spacer(),
-              ],
+                  SizedBox(width: 5),
+                  InkWell(
+                    onTap: () {
+                      postcommentlikeslist();
+                    },
+                    child: Text(
+                      widget.postlikeCount.toString(),
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    iconSize: 25,
+                    icon: postcommentIcon,
+                    color: postcommentColor,
+                    onPressed: () {
+                      postcomments();
+                    },
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    widget.postcommentCount.toString(),
+                    style: TextStyle(color: Colors.grey),
+                  ), // Yorum simgesi
+                  Spacer(),
+                  IconButton(
+                    iconSize: 25,
+                    icon: postrepostIcon,
+                    color: postrepostColor,
+                    onPressed: () {},
+                  ), // Retweet simgesi (yeşil renkte)
+                  Spacer(),
+                  Icon(Icons.share_outlined,
+                      color: Colors.grey), // Paylaşım simgesi
+                  Spacer(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
