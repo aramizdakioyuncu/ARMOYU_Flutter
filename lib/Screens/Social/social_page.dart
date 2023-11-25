@@ -130,6 +130,7 @@ class _SocialPageState extends State<SocialPage>
             postcommentCount: response["icerik"][i]["yorumsay"],
             postMecomment: response["icerik"][i]["benyorumladim"],
             postMelike: response["icerik"][i]["benbegendim"],
+            isPostdetail: false,
           ),
         );
 

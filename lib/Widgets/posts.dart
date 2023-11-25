@@ -5,13 +5,14 @@ import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
+import 'package:ARMOYU/Widgets/post-comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import '../Functions/posts.dart';
+import '../API_Functions/posts.dart';
 import '../Screens/FullScreenImagePage.dart';
 import '../Screens/Profile/profile_page.dart';
 
@@ -33,6 +34,7 @@ class TwitterPostWidget extends StatefulWidget {
 
   int postMelike;
   final int postMecomment;
+  bool? isPostdetail = false;
 
   TwitterPostWidget({
     required this.userID,
@@ -50,6 +52,7 @@ class TwitterPostWidget extends StatefulWidget {
     required this.postcommentCount,
     required this.postMelike,
     required this.postMecomment,
+    this.isPostdetail,
   });
 
   @override
@@ -72,6 +75,430 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   Icon postrepostIcon = Icon(Icons.cyclone_outlined);
   Color postrepostColor = Colors.grey;
 
+  Future<void> getcommentsfetch(int PostID, List<Widget> list_comments) async {
+    setState(() {
+      list_comments.clear();
+      list_comments.add(CircularProgressIndicator());
+    });
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response = await funct.commentsfetch(PostID);
+    if (response["durum"] == 0) {
+      print(response["aciklama"]);
+      return;
+    }
+
+    setState(() {
+      list_comments.clear();
+    });
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      setState(() {
+        String displayname = response["icerik"][i]["yorumcuadsoyad"].toString();
+        String avatar = response["icerik"][i]["yorumcuminnakavatar"].toString();
+        String text = response["icerik"][i]["yorumcuicerik"].toString();
+        int islike = response["icerik"][i]["benbegendim"];
+        int yorumID = response["icerik"][i]["yorumID"];
+        int userID = response["icerik"][i]["yorumcuid"];
+        int postID = response["icerik"][i]["paylasimID"];
+        list_comments.add(
+          Widget_PostComments(
+            comment: text,
+            commentID: yorumID,
+            displayname: displayname,
+            userID: userID,
+            profileImageUrl: avatar,
+            islike: islike,
+            postID: postID,
+            username: text,
+          ),
+        );
+      });
+    }
+  }
+
+  Future<void> getcommentslikes(
+      int PostID, List<Widget> list_comments_likes) async {
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response = await funct.postlikeslist(PostID);
+    if (response["durum"] == 0) {
+      print(response["aciklama"].toString());
+      return;
+    }
+    if (response["durum"] == 0) {
+      print(response["aciklama"]);
+      return;
+    }
+    setState(() {
+      list_comments_likes.clear();
+    });
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      setState(() {
+        String displayname = response["icerik"][i]["begenenadi"].toString();
+        String avatar = response["icerik"][i]["begenenavatar"].toString();
+        String text = response["icerik"][i]["begenmezaman"].toString();
+        int userID = response["icerik"][i]["begenenID"];
+        list_comments_likes.add(
+          LikersListWidget(
+            comment: text,
+            commentID: 1,
+            displayname: displayname,
+            userID: userID,
+            profileImageUrl: avatar,
+            islike: 1,
+            postID: 12,
+            username: text,
+          ),
+        );
+      });
+    }
+  }
+
+  void postcomments(int PostID, List<Widget> list_comments) {
+    //Yorumları Çekmeye başla
+    getcommentsfetch(PostID, list_comments);
+    showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+        ),
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.grey.shade900,
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.8,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              getcommentsfetch(PostID, list_comments);
+            },
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Text("YORUMLAR"),
+                    SizedBox(height: 5),
+                    Divider(),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.builder(
+                          // controller: _scrollController,
+                          itemCount: list_comments.length,
+                          itemBuilder: (context, index) {
+                            return list_comments[index];
+                          },
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                              foregroundImage:
+                                  CachedNetworkImageProvider(User.avatar),
+                              radius: 20),
+                        ),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.all(5),
+                            height: 50,
+                            child: Center(
+                              child: Container(
+                                padding: EdgeInsets.only(left: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade800,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: TextField(
+                                  controller: controller_message,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                  decoration: InputDecoration(
+                                    hintText: 'Mesaj yaz',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(5.0),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              print(controller_message.text);
+                              FunctionsPosts funct = FunctionsPosts();
+                              Map<String, dynamic> response =
+                                  await funct.createcomment(
+                                      widget.postID, controller_message.text);
+                              if (response["durum"] == 0) {
+                                print(response["aciklama"]);
+                                return;
+                              }
+                              getcommentsfetch(widget.postID, list_comments);
+                              controller_message.text = "";
+                            },
+                            child: Icon(
+                              Icons.send,
+                              size: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    return;
+  }
+
+  Future<void> post_like({bool onlyLike = false}) async {
+    if (onlyLike) {
+      if (postlikeColor == Colors.red) {
+        return;
+      }
+    }
+    setState(() {
+      if (postlikeColor == Colors.red) {
+        postlikeColor = Colors.grey;
+        postlikeIcon = Icon(Icons.favorite_border);
+        widget.postlikeCount--;
+        widget.postMelike = 0;
+      } else {
+        postlikeColor = Colors.red;
+        postlikeIcon = Icon(Icons.favorite_sharp);
+        widget.postlikeCount++;
+        widget.postMelike = 1;
+      }
+    });
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response = await funct.likeordislike(widget.postID);
+    if (response["durum"] == 0) {
+      print(response["aciklama"].toString());
+      setState(() {
+        if (postlikeColor == Colors.red) {
+          postlikeColor = Colors.grey;
+          postlikeIcon = Icon(Icons.favorite_border);
+          widget.postlikeCount--;
+          widget.postMelike = 0;
+        } else {
+          postlikeColor = Colors.red;
+          postlikeIcon = Icon(Icons.favorite_sharp);
+          widget.postlikeCount++;
+          widget.postMelike = 1;
+        }
+      });
+      return;
+    }
+    setState(() {
+      if (response['aciklama'] == "Paylaşımı beğendin.") {
+        widget.postMelike = 1;
+        postlikeColor = Colors.red;
+        postlikeIcon = Icon(Icons.favorite_sharp);
+      } else {
+        widget.postMelike = 0;
+        postlikeColor = Colors.grey;
+        postlikeIcon = Icon(Icons.favorite_border);
+      }
+    });
+  }
+
+  void postcommentlikeslist(List<Widget> list_comments_likes) {
+    //Yorumları Çekmeye başla
+    getcommentslikes(widget.postID, list_comments_likes);
+
+    showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+        ),
+      ),
+      isScrollControlled: true,
+      backgroundColor: Colors.grey.shade900,
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.8,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              getcommentslikes(widget.postID, list_comments_likes);
+            },
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Text("BEĞENENLER"),
+                    SizedBox(height: 5),
+                    Divider(),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.builder(
+                          // controller: _scrollController,
+                          itemCount: list_comments_likes.length,
+                          itemBuilder: (context, index) {
+                            return list_comments_likes[index];
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+    return;
+  }
+
+  void postfeedback() {
+    showModalBottomSheet<void>(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+        ),
+      ),
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey[900],
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(30),
+                        ),
+                      ),
+                      width: Screen.screenWidth / 4,
+                      height: 5,
+                    ),
+                  ),
+                  Visibility(
+                    child: InkWell(
+                      onTap: () async {
+                        FunctionsPosts funct = FunctionsPosts();
+                        Map<String, dynamic> response =
+                            await funct.remove(widget.postID);
+                        if (response["durum"] == 0) {
+                          log(response["aciklama"]);
+                          return;
+                        }
+                        log(response["aciklama"]);
+                      },
+                      child: const ListTile(
+                        leading: Icon(
+                          Icons.star_rate_sharp,
+                        ),
+                        title: Text("Favorilere Ekle"),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.userID == User.ID,
+                    child: InkWell(
+                      onTap: () async {},
+                      child: const ListTile(
+                        leading: Icon(
+                          Icons.edit_note_sharp,
+                        ),
+                        title: Text("Paylaşımı Düzenle."),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    //Çizgi ekler
+                    child: const Divider(),
+                  ),
+                  Visibility(
+                    visible: widget.userID != User.ID,
+                    child: InkWell(
+                      onTap: () {},
+                      child: const ListTile(
+                        textColor: Colors.red,
+                        leading: Icon(
+                          Icons.flag,
+                          color: Colors.red,
+                        ),
+                        title: Text("Şikayet Et."),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.userID != User.ID,
+                    child: InkWell(
+                      onTap: () {},
+                      child: const ListTile(
+                        textColor: Colors.red,
+                        leading: Icon(
+                          Icons.person_off_outlined,
+                          color: Colors.red,
+                        ),
+                        title: Text("Kullanıcıyı Engelle."),
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.userID == User.ID,
+                    child: InkWell(
+                      onTap: () async {
+                        FunctionsPosts funct = FunctionsPosts();
+                        Map<String, dynamic> response =
+                            await funct.remove(widget.postID);
+                        if (response["durum"] == 0) {
+                          log(response["aciklama"]);
+                          return;
+                        }
+                        if (response["durum"] == 1) {
+                          log(response["aciklama"]);
+                          setState(() {
+                            postVisible = false;
+                          });
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const ListTile(
+                        textColor: Colors.red,
+                        leading: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        title: Text("Paylaşımı Sil."),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  List<Widget> list_comments_likes = [];
+  List<Widget> list_comments = [];
+
   @override
   void initState() {
     super.initState();
@@ -79,82 +506,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> list_comments = [];
-    Future<void> getcommentsfetch() async {
-      setState(() {
-        list_comments.clear();
-        list_comments.add(CircularProgressIndicator());
-      });
-      FunctionsPosts funct = FunctionsPosts();
-      Map<String, dynamic> response = await funct.commentsfetch(widget.postID);
-      if (response["durum"] == 0) {
-        print(response["aciklama"]);
-        return;
-      }
-      list_comments.clear();
-      for (int i = 0; i < response["icerik"].length; i++) {
-        setState(() {
-          String displayname =
-              response["icerik"][i]["yorumcuadsoyad"].toString();
-          String avatar =
-              response["icerik"][i]["yorumcuminnakavatar"].toString();
-          String text = response["icerik"][i]["yorumcuicerik"].toString();
-          int islike = response["icerik"][i]["benbegendim"];
-          int yorumID = response["icerik"][i]["yorumID"];
-          int userID = response["icerik"][i]["yorumcuid"];
-          int postID = response["icerik"][i]["paylasimID"];
-          list_comments.add(
-            LikersListWidget(
-              comment: text,
-              commentID: yorumID,
-              displayname: displayname,
-              userID: userID,
-              profileImageUrl: avatar,
-              islike: islike,
-              postID: postID,
-              username: text,
-            ),
-          );
-        });
-      }
-    }
-
-    List<Widget> list_comments_likes = [];
-    Future<void> getcommentslikes() async {
-      FunctionsPosts funct = FunctionsPosts();
-      Map<String, dynamic> response = await funct.postlikeslist(widget.postID);
-      if (response["durum"] == 0) {
-        print(response["aciklama"].toString());
-        return;
-      }
-      if (response["durum"] == 0) {
-        print(response["aciklama"]);
-        return;
-      }
-      list_comments_likes.clear();
-      for (int i = 0; i < response["icerik"].length; i++) {
-        setState(() {
-          String displayname = response["icerik"][i]["begenenadi"].toString();
-          String avatar = response["icerik"][i]["begenenavatar"].toString();
-          String text = response["icerik"][i]["begenmezaman"].toString();
-          int userID = response["icerik"][i]["begenenID"];
-          list_comments_likes.add(
-            LikersListWidget(
-              comment: text,
-              commentID: 1,
-              displayname: displayname,
-              userID: userID,
-              profileImageUrl: avatar,
-              islike: 1,
-              postID: 12,
-              username: text,
-            ),
-          );
-        });
-      }
-    }
-
-    //
     if (widget.postMelike == 1) {
       postlikeIcon = Icon(Icons.favorite);
       postlikeColor = Colors.red;
@@ -170,304 +521,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       postrepostColor = Colors.green;
     }
 
-    void postcomments() {
-      //Yorumları Çekmeye başla
-      getcommentsfetch();
-      showModalBottomSheet(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10),
-          ),
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.grey.shade900,
-        context: context,
-        builder: (BuildContext context) {
-          return FractionallySizedBox(
-            heightFactor: 0.8,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                getcommentsfetch();
-              },
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: SafeArea(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      Text("YORUMLAR"),
-                      SizedBox(height: 5),
-                      Divider(),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                            // controller: _scrollController,
-                            itemCount: list_comments.length,
-                            itemBuilder: (context, index) {
-                              return list_comments[index];
-                            },
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CircleAvatar(
-                                foregroundImage:
-                                    CachedNetworkImageProvider(User.avatar),
-                                radius: 20),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              padding: EdgeInsets.all(5),
-                              height: 50,
-                              child: Center(
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey.shade800,
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: TextField(
-                                    controller: controller_message,
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
-                                    decoration: InputDecoration(
-                                      hintText: 'Mesaj yaz',
-                                      border: InputBorder.none,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(5.0),
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                print(controller_message.text);
-                                FunctionsPosts funct = FunctionsPosts();
-                                Map<String, dynamic> response =
-                                    await funct.createcomment(
-                                        widget.postID, controller_message.text);
-                                if (response["durum"] == 0) {
-                                  print(response["aciklama"]);
-                                  return;
-                                }
-
-                                controller_message.text = "";
-                              },
-                              child: Icon(
-                                Icons.send,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      );
-      return;
-    }
-
-    void postcommentlikeslist() {
-      //Yorumları Çekmeye başla
-      getcommentslikes();
-
-      showModalBottomSheet(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10),
-          ),
-        ),
-        isScrollControlled: true,
-        backgroundColor: Colors.grey.shade900,
-        context: context,
-        builder: (BuildContext context) {
-          return FractionallySizedBox(
-            heightFactor: 0.8,
-            child: RefreshIndicator(
-              onRefresh: () async {
-                getcommentslikes();
-              },
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: SafeArea(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 10),
-                      Text("BEĞENENLER"),
-                      SizedBox(height: 5),
-                      Divider(),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                            // controller: _scrollController,
-                            itemCount: list_comments_likes.length,
-                            itemBuilder: (context, index) {
-                              return list_comments_likes[index];
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      );
-      return;
-    }
-
-    void postfeedback() {
-      showModalBottomSheet<void>(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(10),
-          ),
-        ),
-        context: context,
-        builder: (BuildContext context) {
-          return SafeArea(
-            child: Wrap(
-              children: [
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[900],
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(30),
-                          ),
-                        ),
-                        width: Screen.screenWidth / 4,
-                        height: 5,
-                      ),
-                    ),
-                    Visibility(
-                      child: InkWell(
-                        onTap: () async {
-                          FunctionsPosts funct = FunctionsPosts();
-                          Map<String, dynamic> response =
-                              await funct.remove(widget.postID);
-                          if (response["durum"] == 0) {
-                            log(response["aciklama"]);
-                            return;
-                          }
-                          log(response["aciklama"]);
-                        },
-                        child: const ListTile(
-                          leading: Icon(
-                            Icons.star_rate_sharp,
-                          ),
-                          title: Text("Favorilere Ekle"),
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.userID == User.ID,
-                      child: InkWell(
-                        onTap: () async {},
-                        child: const ListTile(
-                          leading: Icon(
-                            Icons.edit_note_sharp,
-                          ),
-                          title: Text("Paylaşımı Düzenle."),
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      //Çizgi ekler
-                      child: const Divider(),
-                    ),
-                    Visibility(
-                      visible: widget.userID != User.ID,
-                      child: InkWell(
-                        onTap: () {},
-                        child: const ListTile(
-                          textColor: Colors.red,
-                          leading: Icon(
-                            Icons.flag,
-                            color: Colors.red,
-                          ),
-                          title: Text("Şikayet Et."),
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.userID != User.ID,
-                      child: InkWell(
-                        onTap: () {},
-                        child: const ListTile(
-                          textColor: Colors.red,
-                          leading: Icon(
-                            Icons.person_off_outlined,
-                            color: Colors.red,
-                          ),
-                          title: Text("Kullanıcıyı Engelle."),
-                        ),
-                      ),
-                    ),
-                    Visibility(
-                      visible: widget.userID == User.ID,
-                      child: InkWell(
-                        onTap: () async {
-                          FunctionsPosts funct = FunctionsPosts();
-                          Map<String, dynamic> response =
-                              await funct.remove(widget.postID);
-                          if (response["durum"] == 0) {
-                            log(response["aciklama"]);
-                            return;
-                          }
-                          if (response["durum"] == 1) {
-                            log(response["aciklama"]);
-                            setState(() {
-                              postVisible = false;
-                            });
-                            Navigator.pop(context);
-                          }
-                        },
-                        child: const ListTile(
-                          textColor: Colors.red,
-                          leading: Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          title: Text("Paylaşımı Sil."),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    }
-
     return Visibility(
       visible: postVisible,
       child: Container(
-        // padding: EdgeInsets.all(10),
         margin: EdgeInsets.only(bottom: 2),
         decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(12),
           color: Colors.grey.shade900,
         ),
         child: Column(
@@ -475,12 +533,16 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           children: [
             InkWell(
               onTap: () {
-                Navigator.push(
+                if (!widget.isPostdetail!) {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => PostDetailPage(
-                              postID: widget.postID,
-                            )));
+                      builder: (context) => PostDetailPage(
+                        postID: widget.postID,
+                      ),
+                    ),
+                  );
+                }
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -537,72 +599,42 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: _buildPostText(),
-            ), // Tıklanabilir metin için yeni fonksiyon
+            ),
             SizedBox(height: 5),
             Center(
               child: _buildMediaContent(context),
-            ), // Medya içeriği için yeni fonksiyon
-
+            ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
               child: Row(
                 children: [
                   Spacer(),
-                  IconButton(
-                    iconSize: 25,
-                    icon: postlikeIcon,
-                    color: postlikeColor,
-                    onPressed: () async {
-                      setState(() {
-                        if (postlikeColor == Colors.red) {
-                          postlikeColor = Colors.grey;
-                          postlikeIcon = Icon(Icons.favorite_border);
-                          widget.postlikeCount--;
-                          widget.postMelike = 0;
-                        } else {
-                          postlikeColor = Colors.red;
-                          postlikeIcon = Icon(Icons.favorite_sharp);
-                          widget.postlikeCount++;
-                          widget.postMelike = 1;
-                        }
-                      });
-                      FunctionsPosts funct = FunctionsPosts();
-                      Map<String, dynamic> response =
-                          await funct.likeordislike(widget.postID);
-                      if (response["durum"] == 0) {
-                        print(response["aciklama"].toString());
-                        setState(() {
-                          if (postlikeColor == Colors.red) {
-                            postlikeColor = Colors.grey;
-                            postlikeIcon = Icon(Icons.favorite_border);
-                            widget.postlikeCount--;
-                            widget.postMelike = 0;
-                          } else {
-                            postlikeColor = Colors.red;
-                            postlikeIcon = Icon(Icons.favorite_sharp);
-                            widget.postlikeCount++;
-                            widget.postMelike = 1;
-                          }
-                        });
-                        return;
+                  InkWell(
+                    onLongPress: () {
+                      if (widget.isPostdetail == false) {
+                        postcommentlikeslist(list_comments_likes);
                       }
-                      setState(() {
-                        if (response['aciklama'] == "Paylaşımı beğendin.") {
-                          widget.postMelike = 1;
-                          postlikeColor = Colors.red;
-                          postlikeIcon = Icon(Icons.favorite_sharp);
-                        } else {
-                          widget.postMelike = 0;
-                          postlikeColor = Colors.grey;
-                          postlikeIcon = Icon(Icons.favorite_border);
-                        }
-                      });
                     },
+                    child: IconButton(
+                      iconSize: 25,
+                      icon: postlikeIcon,
+                      color: postlikeColor,
+                      onPressed: () async {
+                        await post_like();
+                      },
+                    ),
                   ),
                   SizedBox(width: 5),
                   InkWell(
                     onTap: () {
-                      postcommentlikeslist();
+                      if (widget.isPostdetail == false) {
+                        postcommentlikeslist(list_comments_likes);
+                      }
+                    },
+                    onLongPress: () {
+                      if (widget.isPostdetail == false) {
+                        postcommentlikeslist(list_comments_likes);
+                      }
                     },
                     child: Text(
                       widget.postlikeCount.toString(),
@@ -615,7 +647,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     icon: postcommentIcon,
                     color: postcommentColor,
                     onPressed: () {
-                      postcomments();
+                      postcomments(widget.postID, list_comments);
                     },
                   ),
                   SizedBox(width: 5),
@@ -676,10 +708,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
               List getusername = word.split('@');
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage(username: getusername[1], appbar: true)));
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ProfilePage(username: getusername[1], appbar: true),
+                ),
+              );
             },
         );
       }
@@ -780,6 +814,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 initialIndex: i,
               ),
             ));
+          },
+          onDoubleTap: () {
+            post_like(onlyLike: true);
           },
           child: mediaSablon(widget.mediaUrls[i],
               width: mediawidth, height: mediaheight),

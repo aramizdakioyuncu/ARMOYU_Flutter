@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import '../Functions/search.dart';
+import '../API_Functions/search.dart';
 import '../Widgets/search-engine.dart';
 
 class SearchPage extends StatefulWidget {

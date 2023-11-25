@@ -11,10 +11,12 @@ class ThemeProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final thememode = prefs.getString('thememode');
 
-    if (thememode.toString() == "dark") {
+    if (thememode.toString() == "dark" || thememode.toString() == "null") {
       _themeData = ThemeData.dark();
+      prefs.setString('thememode', "dark");
     } else {
       _themeData = ThemeData.light();
+      prefs.setString('thememode', "light");
     }
 
     notifyListeners();

@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors
+// ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors, use_build_context_synchronously, prefer_interpolation_to_compose_strings
 
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +35,14 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text;
     final rpassword = _rpasswordController.text;
 
+    print("username :" + username);
+    print("name :" + name);
+    print("lastname :" + lastname);
+
+    print("email :" + email);
+    print("password :" + password);
+    print("rpassword :" + rpassword);
+
     if (password != rpassword) {
       print("Parolalarınız eşleşmedi");
       String gelenyanit = "Parolalarınız eşleşmedi";
@@ -46,12 +54,6 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
     // Örneğin, bu bilgileri bir API'ye gönderebilirsiniz.
-    print('username: $username');
-    print('name: $name');
-    print('lastname: $lastname');
-    print('Name: $name');
-    print('Email: $email');
-    print('Password: $password');
 
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.register(
@@ -81,6 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 60),
             Container(
               width: 150,
               height: 150,
@@ -93,13 +96,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            CustomTextfields().Costum1(
-                "Adınız", _usernameController, false, Icon(Icons.person)),
+            CustomTextfields()
+                .Costum1("Adınız", _nameController, false, Icon(Icons.person)),
             SizedBox(height: 16),
             CustomTextfields().Costum1(
-                "Soyadınız", _nameController, false, Icon(Icons.person)),
+                "Soyadınız", _lastnameController, false, Icon(Icons.person)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1("Kullanıcı Adınız", _lastnameController,
+            CustomTextfields().Costum1("Kullanıcı Adınız", _usernameController,
                 false, Icon(Icons.person)),
             SizedBox(height: 16),
             CustomTextfields()

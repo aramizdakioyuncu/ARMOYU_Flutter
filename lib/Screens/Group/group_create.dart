@@ -5,7 +5,7 @@ import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../Functions/category.dart';
+import '../../API_Functions/category.dart';
 import '../../Widgets/textfields.dart';
 
 const double _kItemExtent = 32.0;

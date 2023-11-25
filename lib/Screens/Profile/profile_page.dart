@@ -7,8 +7,8 @@ import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../../Functions/media.dart';
-import '../../Functions/profile.dart';
+import '../../API_Functions/media.dart';
+import '../../API_Functions/profile.dart';
 import '../../Services/functions_service.dart';
 import '../../Widgets/buttons.dart';
 import '../../Widgets/posts.dart';
@@ -60,6 +60,9 @@ class _ProfilePageState extends State<ProfilePage>
   bool isbeFriend = false;
   bool isAppBarExpanded = true;
   late ScrollController _scrollControllersliverapp;
+  bool galleryproccess = false;
+  bool first_galleryproccess = false;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +73,17 @@ class _ProfilePageState extends State<ProfilePage>
       length: 2,
       vsync: this,
     );
+    // Add a listener to be notified when the index changes
+    tabController.addListener(() {
+      if (tabController.indexIsChanging) {
+        if (tabController.index == 1) {
+          if (!first_galleryproccess) {
+            gallery(userID);
+            first_galleryproccess = true;
+          }
+        }
+      }
+    });
 
     _scrollControllersliverapp = ScrollController();
     _scrollControllersliverapp.addListener(() {
@@ -78,6 +92,12 @@ class _ProfilePageState extends State<ProfilePage>
             100; // veya başka bir eşik değeri
       });
     });
+  }
+
+  @override
+  void dispose() {
+    // TEST.cancel();
+    super.dispose();
   }
 
   List<Widget> Widget_Posts = [];
@@ -284,7 +304,6 @@ class _ProfilePageState extends State<ProfilePage>
       }
     }
 
-    await voidas(userID);
     await loadPostsv2(1, userID);
   }
 
@@ -319,7 +338,10 @@ class _ProfilePageState extends State<ProfilePage>
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
 
-  voidas(int Userid) async {
+  gallery(int Userid) async {
+    if (galleryproccess) {
+      galleryproccess = true;
+    }
     setState(() {
       imageUrls.clear();
       imageufakUrls.clear();
@@ -339,25 +361,19 @@ class _ProfilePageState extends State<ProfilePage>
         imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
       });
     }
+    galleryproccess = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: widget.appbar
-      //     ? AppBar(
-      //         title: Text(displayName),
-      //         backgroundColor: Colors.black,
-      //       )
-      //     : null, // Set the AppBar to null if it should be hidden
-
       body: RefreshIndicator(
         onRefresh: () => _handleRefresh(),
         child: CustomScrollView(
           controller: _scrollControllersliverapp,
           slivers: <Widget>[
             SliverAppBar(
-              pinned: true,
+              pinned: User.ID != userID ? true : false,
               floating: false,
               backgroundColor: Colors.black,
               expandedHeight: 160.0,
@@ -411,6 +427,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     child: const Divider(),
                                   ),
                                   Visibility(
+                                    visible: userID != User.ID,
                                     child: InkWell(
                                       onTap: () {},
                                       child: const ListTile(
@@ -424,6 +441,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   Visibility(
+                                    visible: userID != User.ID,
                                     child: InkWell(
                                       onTap: () {},
                                       child: const ListTile(
@@ -485,6 +503,73 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                     ));
                   },
+                  onLongPress: () {
+                    if (User.ID != userID) {
+                      return;
+                    }
+                    showModalBottomSheet<void>(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(10),
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SafeArea(
+                          child: Wrap(
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[900],
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(30),
+                                        ),
+                                      ),
+                                      width: Screen.screenWidth / 4,
+                                      height: 5,
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: User.ID == userID,
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: const ListTile(
+                                        leading: Icon(Icons.camera_alt),
+                                        title: Text("Fotoğrafı değiştir."),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    //Çizgi ekler
+                                    child: const Divider(),
+                                  ),
+                                  Visibility(
+                                    visible: userID == User.ID,
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: const ListTile(
+                                        textColor: Colors.red,
+                                        leading: Icon(
+                                          Icons.person_off_outlined,
+                                          color: Colors.red,
+                                        ),
+                                        title: Text("Varsayılana dönder."),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
                   child: CachedNetworkImage(
                     imageUrl: banneravatar,
                     fit: BoxFit.cover,
@@ -524,6 +609,7 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                       ));
                                     },
+                                    onLongPress: () {},
                                     child: ClipOval(
                                       child: CachedNetworkImage(
                                         imageUrl: avatar,
@@ -540,7 +626,9 @@ class _ProfilePageState extends State<ProfilePage>
                                 ],
                               ),
                               Visibility(
-                                visible: isbeFriend && !isFriend,
+                                visible: isbeFriend &&
+                                    !isFriend &&
+                                    userID != User.ID,
                                 child: Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -552,7 +640,10 @@ class _ProfilePageState extends State<ProfilePage>
                                 ),
                               ),
                               Visibility(
-                                visible: !isbeFriend && !isFriend,
+                                visible: !isbeFriend &&
+                                    !isFriend &&
+                                    userID != User.ID &&
+                                    userID != -1,
                                 child: Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -564,7 +655,9 @@ class _ProfilePageState extends State<ProfilePage>
                                 ),
                               ),
                               Visibility(
-                                visible: !isbeFriend && isFriend,
+                                visible: !isbeFriend &&
+                                    isFriend &&
+                                    userID != User.ID,
                                 child: Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -771,7 +864,7 @@ class _ProfilePageState extends State<ProfilePage>
                               ),
                             );
                           },
-                        )
+                        ),
                       ],
                     ),
                   ),

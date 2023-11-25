@@ -1,7 +1,8 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors_in_immutables
 
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
 import 'package:ARMOYU/Screens/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -50,6 +51,30 @@ class _MainPageState extends State<MainPage>
     userEmail = User.mail;
     useravatar = User.avatar;
     userbanner = User.banneravatar;
+
+    Widget_mySchools.add(
+      ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Icon(Icons.add, size: 30, color: Colors.blue),
+        ),
+        title: Text("Okula Katıl"),
+        onTap: () {},
+      ),
+    );
+    Widget_myGroups.add(
+      ListTile(
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(10.0),
+          child: Icon(Icons.add, size: 30, color: Colors.blue),
+        ),
+        title: Text("Grup Oluştur"),
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => GroupCreatePage()));
+        },
+      ),
+    );
   }
 
   PageController _pageController = PageController(initialPage: 0);
@@ -84,25 +109,8 @@ class _MainPageState extends State<MainPage>
     int dynamicItemCount = response["icerik"].length;
 
     setState(() {
-      Widget_myGroups.clear();
-      Widget_myGroups.add(
-        ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Icon(
-              Icons.add, // İkon türünü burada belirtin
-              size: 30, // İkonun boyutunu burada ayarlayabilirsiniz
-              color: Colors
-                  .blue, // İkonun rengini değiştirmek için burayı kullanabilirsiniz
-            ),
-          ),
-          title: Text("Grup Oluştur"),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => GroupCreatePage()));
-          },
-        ),
-      );
+      // Widget_myGroups.clear();
+
       for (int i = 0; i < dynamicItemCount; i++) {
         Widget_myGroups.add(
           ListTile(
@@ -136,7 +144,7 @@ class _MainPageState extends State<MainPage>
     }
     int dynamicItemCount = response["icerik"].length;
     setState(() {
-      Widget_mySchools.clear();
+      // Widget_mySchools.clear();
       for (int i = 0; i < dynamicItemCount; i++) {
         Widget_mySchools.add(
           ListTile(
@@ -206,11 +214,16 @@ class _MainPageState extends State<MainPage>
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text(userName),
-              accountEmail: Text(userEmail),
+              accountName: Text(
+                userName,
+                style: TextStyle(color: Colors.white),
+              ),
+              accountEmail:
+                  Text(userEmail, style: TextStyle(color: Colors.white)),
               currentAccountPicture: GestureDetector(
                 onTap: () {
                   _changePage(3);
+                  Navigator.of(context).pop();
                 },
                 child: CircleAvatar(
                   foregroundImage: CachedNetworkImageProvider(useravatar),
@@ -253,6 +266,31 @@ class _MainPageState extends State<MainPage>
                 children: Widget_mySchools,
               ),
             ),
+            ExpansionTile(
+              leading: Icon(Icons.local_drink),
+              title: Text('Yemek'),
+              children: [
+                ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          "https://aramizdakioyuncu.com/galeri/images/1orijinal11700864001.png",
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  title: const Text("Blackjack F'B Coffee"),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RestourantPage()));
+                  },
+                )
+              ],
+            ),
             ListTile(
               leading: const Icon(Icons.settings),
               title: const Text("Ayarlar"),
@@ -272,7 +310,7 @@ class _MainPageState extends State<MainPage>
                   return;
                 }
                 passwordController.text = "";
-                // Navigator.of(context).pop();
+
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => LoginPage()));
               },

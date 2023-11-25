@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>If the user wants to share the location with posts, she can add it to her posts</string>
+	<string>Paylaşımlarınızda konum etiketini koyabilmek için erişimine izin ver</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -17,7 +19,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>armoyu</string>
+	<string>ARMOYU</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -29,11 +31,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>my app uses take photos for posts</string>
+	<string>Barkodları okutmak ve paylaşımlara hızlıca fotoğraf çekebilmek için kamera erişimine izin ver</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>my app uses take video for posts</string>
+	<string>Video kayıtlarında ve ses kaydı gönderirken erişimine izin ver</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>My app uses photos for mutating blue frogs</string>
+	<string>Paylaşım yaparken doğrudan galeriden seçim yapma erişimine izin ver</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -57,7 +59,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 </dict>
 </plist>

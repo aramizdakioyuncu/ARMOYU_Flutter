@@ -59,6 +59,7 @@ class ApiService {
         };
       }
     } catch (e) {
+      log("Sunucuya bağlanılamadı.");
       return {"durum": 0, "aciklama": "Sunucuya bağlanılamadı."};
     }
   }

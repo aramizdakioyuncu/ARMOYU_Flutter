@@ -3,7 +3,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../Functions/posts.dart';
+import '../API_Functions/posts.dart';
 
 class LikersListWidget extends StatefulWidget {
   final int userID;
