@@ -2,6 +2,11 @@
 
 // import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:convert';
+import 'dart:developer';
+import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
+import 'package:ARMOYU/Screens/Group/group_create.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
@@ -55,5 +60,40 @@ class OneSignalApi {
     OneSignal.User.addTags(tags);
     OneSignal.User.addEmail(mail);
     OneSignal.Location.setShared(true);
+
+    OneSignal.Notifications.addClickListener((event) {
+      try {
+        String jsonAdditionalData =
+            json.encode(event.notification.additionalData);
+        Map<String, dynamic> responseData = json.decode(jsonAdditionalData);
+
+        log(event.notification.additionalData.toString());
+
+        if (responseData["category"].toString() == "chat") {
+          // AppCore.navigatorKey.currentState?.push(
+          //     MaterialPageRoute(builder: (context) => GroupCreatePage()));
+
+          String avatar = "";
+          String displayname = "";
+          for (Map<String, dynamic> element in responseData["content"]) {
+            avatar = element["avatar"];
+            displayname = element["displayname"];
+          }
+
+          AppCore.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (context) => ChatDetailPage(
+                appbar: true,
+                userID: int.parse(responseData["categoryvalue"].toString()),
+                useravatar: avatar,
+                userdisplayname: displayname,
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        log("JSON Decode Hatası: $e");
+      }
+    });
   }
 }

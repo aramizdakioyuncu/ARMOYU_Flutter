@@ -163,7 +163,7 @@ class _RestourantPage extends State<RestourantPage> {
                               child: Column(
                                 children: [
                                   SizedBox(
-                                    height: 130,
+                                    height: 125,
                                     child: CachedNetworkImage(
                                       imageUrl:
                                           "https://images.deliveryhero.io/image/fd-tr/LH/u9xe-hero.jpg?width=560&height=300&quality=100",

@@ -1,8 +1,12 @@
 import 'package:device_info/device_info.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+
 class AppCore {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
   String getVersion() {
     return "1.0.0";

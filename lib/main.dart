@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors, unused_local_variable
 
+import 'package:ARMOYU/Core/app_core.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:ARMOYU/Services/theme_service.dart';
 
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
       theme: themeProvider.themeData,
       home: homePage,
       debugShowCheckedModeBanner: false,
+      navigatorKey: AppCore.navigatorKey,
     );
   }
 }

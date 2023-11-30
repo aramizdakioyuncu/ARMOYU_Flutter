@@ -101,7 +101,7 @@ class FunctionService {
     // App.getDeviceModel
     AppCore app = AppCore();
     String cevap = app.getDevice();
-    print(cevap);
+
     if (cevap != "Bilinmeyen") {
       OneSignalApi.setupOneSignal(
           User.ID, User.userName, User.mail, User.role.toString());
