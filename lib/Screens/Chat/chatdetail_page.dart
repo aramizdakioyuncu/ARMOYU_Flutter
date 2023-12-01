@@ -1,8 +1,11 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_interpolation_to_compose_strings, must_call_super
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_interpolation_to_compose_strings, must_call_super, annotate_overrides, avoid_print
 
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
+import 'dart:isolate';
 
+import 'package:ARMOYU/Services/Socket/socket.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -36,12 +39,62 @@ class _ChatDetailPage extends State<ChatDetailPage>
   final TextEditingController _messageController = TextEditingController();
   List<Widget> Widget_search = [];
   bool postsearchprocess = false;
+  Isolate? isolate;
+  ReceivePort? receiveport;
 
   @override
   void initState() {
     super.initState();
     Widget_search.clear();
     getchat();
+
+    isolatestart();
+  }
+
+  void dispose() {
+    super.dispose();
+    receiveport!.close();
+    isolate!.kill();
+  }
+
+  void isolatestart() async {
+    receiveport = ReceivePort();
+    isolate = await Isolate.spawn(example,
+        [receiveport!.sendPort, User.ID.toString(), widget.userID.toString()]);
+    receiveport!.listen((message) async {
+      setState(() {
+        Widget_search.add(MessageBubble(
+          avatar: widget.useravatar,
+          message: message,
+          isMe: false,
+        ));
+      });
+      try {
+        await Future.delayed(Duration(milliseconds: 20));
+        await _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 20),
+          curve: Curves.easeOut,
+        );
+      } catch (e) {}
+      print(message);
+    });
+  }
+
+  static Future<void> example(List<dynamic> arguments) async {
+    final SendPort sendPort = arguments.first;
+    final String SenderID = arguments[1];
+    final String ReceiverID = arguments.last;
+    sendPort.send(SenderID + " >>>> " + ReceiverID);
+
+    try {
+      var socket = await Socket.connect(
+          ARMOYU_Socket.serverHost, ARMOYU_Socket.serverPort);
+      ARMOYU_Socket socket2 = ARMOYU_Socket(socket, SenderID, ReceiverID);
+      socket2.receiveMessages(sendPort);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> getchat() async {
