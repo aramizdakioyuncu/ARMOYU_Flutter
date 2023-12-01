@@ -5,7 +5,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 class Socket2 {
-  static String serverHost = 'localhost';
+  static String serverHost = 'mc.armoyu.com';
   static int serverPort = 12345;
   Socket socket;
   String clientID;
@@ -85,7 +85,7 @@ Future<void> isolateFunction(dynamic message) async {
   while (true) {
     Socket2 socket2 = Socket2(socket, clientID, receiverID);
     socket2.sendMessage();
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(seconds: 1));
   }
 }
 
@@ -98,5 +98,5 @@ Future<void> isolateFunction2(dynamic message) async {
   var socket = await Socket.connect(Socket2.serverHost, Socket2.serverPort);
   Socket2 socket2 = Socket2(socket, clientID, receiverID);
   socket2.receiveMessages();
-  await Future.delayed(Duration(seconds: 1));
+  // await Future.delayed(Duration(seconds: 1));
 }
