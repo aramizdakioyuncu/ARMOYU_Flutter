@@ -58,6 +58,8 @@ class _PostDetailPage extends State<PostDetailPage>
         int yorumID = response["icerik"][i]["yorumID"];
         int userID = response["icerik"][i]["yorumcuid"];
         int postID = response["icerik"][i]["paylasimID"];
+        int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
+
         list_comments.add(
           Widget_PostComments(
             comment: text,
@@ -68,6 +70,7 @@ class _PostDetailPage extends State<PostDetailPage>
             islike: islike,
             postID: postID,
             username: text,
+            commentslikecount: commentlikescount,
           ),
         );
       });

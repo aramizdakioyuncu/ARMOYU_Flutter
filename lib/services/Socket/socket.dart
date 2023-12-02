@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, camel_case_types
+// ignore_for_file: avoid_print, camel_case_types, non_constant_identifier_names
 
 import 'dart:convert';
 import 'dart:io';
@@ -10,20 +10,24 @@ class ARMOYU_Socket {
   Socket socket;
   String clientID;
   String receiverID;
+  String client_username;
+  String client_security;
 
-  ARMOYU_Socket(this.socket, this.clientID, this.receiverID);
+  ARMOYU_Socket(this.socket, this.clientID, this.client_username,
+      this.client_security, this.receiverID);
 
-  void sendMessage(SendPort sendport) {
-    var input = stdin.readLineSync()!;
+  void sendMessage(SendPort sendport, String input) {
     var message = {
       "KEY": "1234",
       "sender_id": clientID,
+      "sender_username": client_username,
+      "sender_security": client_security,
       "receiver_id": receiverID,
+      "message_type": "ozel",
       "message": input
     };
-
-    // print('$clientID: $input');
-    sendport.send('$clientID: $input');
+    // print('[Listen]>$clientID: $input');
+    sendport.send(jsonEncode(message));
 
     socket.write(jsonEncode(message));
   }
@@ -32,14 +36,14 @@ class ARMOYU_Socket {
     print("Dinlenme başlatılıyor.");
     socket.listen((event) {
       var jsonString = String.fromCharCodes(event);
-      var jsonData = jsonDecode(jsonString);
+      var jsonData = jsonDecode(utf8.decode(jsonString.codeUnits));
 
       Map<String, dynamic> responseData = jsonData;
 
       if (responseData["receiver_id"].toString() == clientID) {
-        // print('${responseData["sender_id"]}: ${responseData["message"]}');
-        sendport
-            .send('${responseData["sender_id"]}: ${responseData["message"]}');
+        // print(
+        //     '[SEND]>${responseData["sender_id"]}: ${responseData["message"]}');
+        sendport.send(jsonString);
       }
     });
   }

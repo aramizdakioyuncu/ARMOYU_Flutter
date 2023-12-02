@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_interpolation_to_compose_strings, must_call_super, annotate_overrides, avoid_print
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
@@ -39,8 +40,13 @@ class _ChatDetailPage extends State<ChatDetailPage>
   final TextEditingController _messageController = TextEditingController();
   List<Widget> Widget_search = [];
   bool postsearchprocess = false;
-  Isolate? isolate;
-  ReceivePort? receiveport;
+
+/////////
+  Isolate? isolate_listen;
+  ReceivePort? receiveport_listen;
+
+  Isolate? isolate_send;
+  ReceivePort? receiveport_send;
 
   @override
   void initState() {
@@ -53,19 +59,46 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
   void dispose() {
     super.dispose();
-    receiveport!.close();
-    isolate!.kill();
+    receiveport_listen!.close();
+    isolate_listen!.kill();
+
+    receiveport_send!.close();
+    // isolate_send!.kill();
   }
 
   void isolatestart() async {
-    receiveport = ReceivePort();
-    isolate = await Isolate.spawn(example,
-        [receiveport!.sendPort, User.ID.toString(), widget.userID.toString()]);
-    receiveport!.listen((message) async {
+    receiveport_listen = ReceivePort();
+
+    receiveport_send = ReceivePort();
+
+    isolate_listen = await Isolate.spawn(SocketListenmessage, [
+      receiveport_listen!.sendPort,
+      User.ID.toString(),
+      widget.userID.toString()
+    ]);
+
+    receiveport_listen!.listen((message) async {
+      String message2 = "";
+
+      try {
+        var jsonData = jsonDecode(utf8.decode(message.codeUnits));
+        Map<String, dynamic> responseData = jsonData;
+
+        if (responseData["sender_id"].toString() == User.ID.toString()) {
+          return;
+        }
+
+        if (responseData["receiver_id"].toString() == User.ID.toString()) {
+          message2 = responseData["message"].toString();
+        }
+      } catch (e) {
+        print("json hatası");
+      }
+
       setState(() {
         Widget_search.add(MessageBubble(
           avatar: widget.useravatar,
-          message: message,
+          message: message2,
           isMe: false,
         ));
       });
@@ -79,18 +112,33 @@ class _ChatDetailPage extends State<ChatDetailPage>
       } catch (e) {}
       print(message);
     });
+
+    var socket = await Socket.connect(
+        ARMOYU_Socket.serverHost, ARMOYU_Socket.serverPort);
+    ARMOYU_Socket socket2 = ARMOYU_Socket(socket, User.ID.toString(),
+        User.userName, User.password, widget.userID.toString());
+
+    receiveport_send!.listen(
+      (message) {
+        print("Send:" + message);
+        if (message != "") {
+          socket2.sendMessage(receiveport_listen!.sendPort, message);
+        }
+      },
+    );
   }
 
-  static Future<void> example(List<dynamic> arguments) async {
+  static Future<void> SocketListenmessage(List<dynamic> arguments) async {
     final SendPort sendPort = arguments.first;
     final String SenderID = arguments[1];
     final String ReceiverID = arguments.last;
-    sendPort.send(SenderID + " >>>> " + ReceiverID);
+    print(SenderID + " >>>> " + ReceiverID);
 
     try {
       var socket = await Socket.connect(
           ARMOYU_Socket.serverHost, ARMOYU_Socket.serverPort);
-      ARMOYU_Socket socket2 = ARMOYU_Socket(socket, SenderID, ReceiverID);
+      ARMOYU_Socket socket2 = ARMOYU_Socket(
+          socket, SenderID, User.userName, User.password, ReceiverID);
       socket2.receiveMessages(sendPort);
     } catch (e) {
       print(e);
@@ -243,13 +291,16 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         isMe: true,
                       ));
                     });
-                    FunctionService f = FunctionService();
-                    Map<String, dynamic> response = await f.sendchatmessage(
-                        widget.userID, _messageController.text, "ozel");
-                    if (response["durum"] == 0) {
-                      log(response["aciklama"]);
-                      return;
-                    }
+
+                    receiveport_send!.sendPort.send(_messageController.text);
+
+                    // FunctionService f = FunctionService();
+                    // Map<String, dynamic> response = await f.sendchatmessage(
+                    //     widget.userID, _messageController.text, "ozel");
+                    // if (response["durum"] == 0) {
+                    //   log(response["aciklama"]);
+                    //   return;
+                    // }
 
                     _messageController.text = "";
                     try {
@@ -319,7 +370,7 @@ class MessageBubble extends StatelessWidget {
             ),
           Container(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - 50),
+                maxWidth: MediaQuery.of(context).size.width - 70),
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: isMe ? Colors.blue : Colors.grey,

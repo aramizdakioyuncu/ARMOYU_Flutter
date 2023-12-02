@@ -63,6 +63,9 @@ class _ProfilePageState extends State<ProfilePage>
   bool galleryproccess = false;
   bool first_galleryproccess = false;
 
+  String friendStatus = "Bekleniyor";
+  Color friendStatuscolor = Colors.blue;
+
   @override
   void initState() {
     super.initState();
@@ -155,6 +158,7 @@ class _ProfilePageState extends State<ProfilePage>
             postcommentCount: response["icerik"][i]["yorumsay"],
             postMecomment: response["icerik"][i]["benyorumladim"],
             postMelike: response["icerik"][i]["benbegendim"],
+            isPostdetail: false,
           ),
         );
       });
@@ -302,6 +306,20 @@ class _ProfilePageState extends State<ProfilePage>
         }
         /////
       }
+
+      if (isbeFriend && !isFriend && userID != User.ID) {
+        friendStatus = "Arkadaş Ol";
+        friendStatuscolor = Colors.blue;
+      } else if (!isbeFriend &&
+          !isFriend &&
+          userID != User.ID &&
+          userID != -1) {
+        friendStatus = "Bekleniyor";
+        friendStatuscolor = Colors.black;
+      } else if (!isbeFriend && isFriend && userID != User.ID) {
+        friendStatus = "Mesaj Gönder";
+        friendStatuscolor = Colors.blue;
+      }
     }
 
     await loadPostsv2(1, userID);
@@ -319,6 +337,9 @@ class _ProfilePageState extends State<ProfilePage>
       log(response["aciklama"]);
       return;
     }
+
+    friendStatus = "Bekleniyor";
+    friendStatuscolor = Colors.black;
   }
 
   Future<void> sendmessage() async {
@@ -333,7 +354,9 @@ class _ProfilePageState extends State<ProfilePage>
     ));
   }
 
-  Future<void> cancelfriendrequest() async {}
+  Future<void> cancelfriendrequest() async {
+    print("istek iptal edilecek ");
+  }
 
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
@@ -451,6 +474,28 @@ class _ProfilePageState extends State<ProfilePage>
                                           color: Colors.red,
                                         ),
                                         title: Text("Profili bildir."),
+                                      ),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: isFriend,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        FunctionsProfile f = FunctionsProfile();
+                                        Map<String, dynamic> response = await f
+                                            .friendremove(widget.userID!);
+                                        if (response["durum"] == 0) {
+                                          log(response["aciklama"]);
+                                        }
+                                        log(response["aciklama"]);
+                                      },
+                                      child: const ListTile(
+                                        textColor: Colors.red,
+                                        leading: Icon(
+                                          Icons.person_remove,
+                                          color: Colors.pink,
+                                        ),
+                                        title: Text("Arkadaşlıktan Çıkar."),
                                       ),
                                     ),
                                   ),
@@ -626,6 +671,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 ],
                               ),
                               Visibility(
+                                //Arkadaş ol
                                 visible: isbeFriend &&
                                     !isFriend &&
                                     userID != User.ID,
@@ -633,13 +679,16 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      CustomButtons()
-                                          .Costum1("Arkadaş Ol", friendrequest),
+                                      CustomButtons().friendbuttons(
+                                          friendStatus,
+                                          friendrequest,
+                                          friendStatuscolor),
                                     ],
                                   ),
                                 ),
                               ),
                               Visibility(
+                                //Bekliyor
                                 visible: !isbeFriend &&
                                     !isFriend &&
                                     userID != User.ID &&
@@ -648,13 +697,16 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      CustomButtons().Costum1(
-                                          "Bekleniyor", cancelfriendrequest),
+                                      CustomButtons().friendbuttons(
+                                          friendStatus,
+                                          cancelfriendrequest,
+                                          friendStatuscolor),
                                     ],
                                   ),
                                 ),
                               ),
                               Visibility(
+                                //Mesaj Gönder
                                 visible: !isbeFriend &&
                                     isFriend &&
                                     userID != User.ID,
@@ -662,8 +714,10 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      CustomButtons()
-                                          .Costum1("Mesaj Gönder", sendmessage),
+                                      CustomButtons().friendbuttons(
+                                          friendStatus,
+                                          sendmessage,
+                                          friendStatuscolor),
                                     ],
                                   ),
                                 ),

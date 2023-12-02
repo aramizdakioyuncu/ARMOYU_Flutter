@@ -27,4 +27,11 @@ class FunctionsProfile {
         await apiService.request("arkadas-durt/0/0/", formData);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> friendremove(int userID) async {
+    Map<String, String> formData = {"oyuncubakid": "$userID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("arkadas-cikar/0/0/", formData);
+    return jsonData;
+  }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: must_call_super, prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, use_build_context_synchronously, unnecessary_overrides
+// ignore_for_file: must_call_super, prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, use_build_context_synchronously, unnecessary_overrides, prefer_const_literals_to_create_immutables
 
 import 'dart:developer';
 import 'dart:io';
@@ -24,6 +24,8 @@ class _PostSharePageState extends State<PostSharePage>
   TextEditingController textController = TextEditingController();
   List<XFile> imagePath = []; // Birden fazla görseli tutmak için liste
 
+  TextEditingController postsharetext = TextEditingController();
+  bool postshareStatus = false;
   @override
   void initState() {
     super.initState();
@@ -37,22 +39,21 @@ class _PostSharePageState extends State<PostSharePage>
               backgroundColor: Colors.black,
             )
           : null,
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Metin yazma alanı
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Expanded(
+              // height: 30,
+              child: Column(children: [
                 TextField(
                   controller: textController,
                   decoration: InputDecoration(hintText: "Bir şeyler yaz..."),
                   maxLines: null,
                 ),
-
-                // Görsel ekleme alanı
                 ElevatedButton(
+                  // Görsel ekleme alanı
+
                   onPressed: () async {
                     List<XFile> selectedImages = await _pickImages();
                     if (selectedImages.isNotEmpty) {
@@ -66,7 +67,7 @@ class _PostSharePageState extends State<PostSharePage>
 
                 // Görsellerin önizlemesi
                 if (imagePath.isNotEmpty)
-                  Column(
+                  Row(
                     children: imagePath.map((image) {
                       return Image.file(
                         File(image.path),
@@ -75,28 +76,61 @@ class _PostSharePageState extends State<PostSharePage>
                       );
                     }).toList(),
                   ),
-                ElevatedButton(
-                  onPressed: () async {
-                    FunctionsPosts funct = FunctionsPosts();
-                    Map<String, dynamic> response =
-                        await funct.share(textController.text, imagePath);
-                    if (response["durum"] == 0) {
-                      log(response["aciklama"]);
-                      return;
-                    }
-
-                    if (response["durum"] == 1) {
-                      log(response["aciklama"]);
-
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: Text("Paylaş"),
-                ),
-              ],
+              ]),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 400,
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (postshareStatus) {
+                        return;
+                      }
+
+                      postshareStatus = true;
+                      FunctionsPosts funct = FunctionsPosts();
+                      Map<String, dynamic> response =
+                          await funct.share(textController.text, imagePath);
+                      if (response["durum"] == 0) {
+                        postsharetext.text = response["aciklama"].toString();
+                        postshareStatus = false;
+                        return;
+                      }
+
+                      if (response["durum"] == 1) {
+                        postsharetext.text = response["aciklama"].toString();
+                        postshareStatus = false;
+
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        Visibility(
+                          visible: !postshareStatus,
+                          child: Text("Paylaş"),
+                        ),
+                        Visibility(
+                          visible: postshareStatus,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: CircularProgressIndicator(),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(postsharetext.text),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

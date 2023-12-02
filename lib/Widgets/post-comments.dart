@@ -16,6 +16,7 @@ class Widget_PostComments extends StatefulWidget {
   final String comment;
   final int commentID;
   int islike;
+  int commentslikecount;
 
   Widget_PostComments({
     required this.userID,
@@ -26,6 +27,7 @@ class Widget_PostComments extends StatefulWidget {
     required this.comment,
     required this.commentID,
     required this.islike,
+    required this.commentslikecount,
   });
 
   @override
@@ -87,6 +89,16 @@ class _Widget_PostComments extends State<Widget_PostComments> {
           ),
           IconButton(
             onPressed: () async {
+              int currentstatus = widget.islike;
+              setState(() {
+                if (currentstatus == 1) {
+                  widget.islike = 0;
+                  widget.commentslikecount--;
+                } else {
+                  widget.islike = 1;
+                  widget.commentslikecount++;
+                }
+              });
               FunctionsPosts funct = FunctionsPosts();
               Map<String, dynamic> response =
                   await funct.commentlikeordislike(widget.commentID);
@@ -96,17 +108,24 @@ class _Widget_PostComments extends State<Widget_PostComments> {
               }
               if (response['aciklama'] == "Paylaşımı beğendin.") {
                 setState(() {
-                  widget.islike = 1;
+                  if (currentstatus == 1) {
+                    widget.islike = 1;
+                    // widget.commentslikecount++;
+                  }
                 });
               } else {
                 setState(() {
-                  widget.islike = 0;
+                  if (currentstatus == 0) {
+                    widget.islike = 0;
+                    // widget.commentslikecount--;
+                  }
                 });
               }
             },
             icon: favoritestatus,
             color: favoritelikestatus,
           ),
+          Text(widget.commentslikecount.toString()),
           Visibility(
             visible: User.ID != widget.userID,
             child: IconButton(
