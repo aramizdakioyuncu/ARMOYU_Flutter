@@ -51,7 +51,8 @@ dependencies:
   video_player: ^2.8.1
   chewie: ^1.7.1
   skeletons: ^0.0.3
-  # change_app_package_name: ^1.1.0
+  audioplayers: ^5.2.1
+  mic_stream: ^0.7.1+2
 
 dev_dependencies:
   flutter_test:

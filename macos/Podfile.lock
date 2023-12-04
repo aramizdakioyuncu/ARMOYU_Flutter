@@ -1,4 +1,6 @@
 PODS:
+  - audioplayers_darwin (0.0.1):
+    - FlutterMacOS
   - connectivity_macos (0.0.1):
     - FlutterMacOS
     - Reachability
@@ -27,6 +29,7 @@ PODS:
     - FlutterMacOS
 
 DEPENDENCIES:
+  - audioplayers_darwin (from `Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos`)
   - connectivity_macos (from `Flutter/ephemeral/.symlinks/plugins/connectivity_macos/macos`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
@@ -43,6 +46,8 @@ SPEC REPOS:
     - Reachability
 
 EXTERNAL SOURCES:
+  audioplayers_darwin:
+    :path: Flutter/ephemeral/.symlinks/plugins/audioplayers_darwin/macos
   connectivity_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/connectivity_macos/macos
   file_selector_macos:
@@ -63,6 +68,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
 
 SPEC CHECKSUMS:
+  audioplayers_darwin: dcad41de4fbd0099cb3749f7ab3b0cb8f70b810c
   connectivity_macos: 5dae6ee11d320fac7c05f0d08bd08fc32b5514d9
   file_selector_macos: 468fb6b81fac7c0e88d71317f3eec34c3b008ff9
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24

@@ -3,9 +3,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
+
 import 'dart:isolate';
 
+import 'package:ARMOYU/Screens/Chat/chatcall_page.dart';
 import 'package:ARMOYU/Services/Socket/socket.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -30,16 +31,15 @@ class ChatDetailPage extends StatefulWidget {
   _ChatDetailPage createState() => _ChatDetailPage();
 }
 
+final TextEditingController _messageController = TextEditingController();
+
 final ScrollController _scrollController = ScrollController();
+final List<Widget> Widget_search = [];
 
 class _ChatDetailPage extends State<ChatDetailPage>
-    with AutomaticKeepAliveClientMixin<ChatDetailPage> {
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
-  final TextEditingController _messageController = TextEditingController();
-  List<Widget> Widget_search = [];
-  bool postsearchprocess = false;
 
 /////////
   Isolate? isolate_listen;
@@ -48,15 +48,18 @@ class _ChatDetailPage extends State<ChatDetailPage>
   Isolate? isolate_send;
   ReceivePort? receiveport_send;
 
+  bool isUserOnline = false;
+
   @override
   void initState() {
     super.initState();
-    Widget_search.clear();
-    getchat();
 
-    isolatestart();
+    getchat().then((_) {
+      isolatestart();
+    });
   }
 
+  @override
   void dispose() {
     super.dispose();
     receiveport_listen!.close();
@@ -78,10 +81,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
     ]);
 
     receiveport_listen!.listen((message) async {
-      String message2 = "";
-
       try {
         var jsonData = jsonDecode(utf8.decode(message.codeUnits));
+
         Map<String, dynamic> responseData = jsonData;
 
         if (responseData["sender_id"].toString() == User.ID.toString()) {
@@ -89,34 +91,32 @@ class _ChatDetailPage extends State<ChatDetailPage>
         }
 
         if (responseData["receiver_id"].toString() == User.ID.toString()) {
-          message2 = responseData["message"].toString();
+          message = responseData["message"].toString();
         }
+
+        setState(() {
+          Widget_search.add(MessageBubble(
+            avatar: widget.useravatar,
+            message: message,
+            isMe: false,
+          ));
+        });
+        try {
+          await Future.delayed(Duration(milliseconds: 20));
+          await _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 20),
+            curve: Curves.easeOut,
+          );
+        } catch (e) {}
+        print(message);
       } catch (e) {
         print("json hatası");
       }
-
-      setState(() {
-        Widget_search.add(MessageBubble(
-          avatar: widget.useravatar,
-          message: message2,
-          isMe: false,
-        ));
-      });
-      try {
-        await Future.delayed(Duration(milliseconds: 20));
-        await _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 20),
-          curve: Curves.easeOut,
-        );
-      } catch (e) {}
-      print(message);
     });
 
-    var socket = await Socket.connect(
-        ARMOYU_Socket.serverHost, ARMOYU_Socket.serverPort);
-    ARMOYU_Socket socket2 = ARMOYU_Socket(socket, User.ID.toString(),
-        User.userName, User.password, widget.userID.toString());
+    ARMOYU_Socket socket2 = ARMOYU_Socket(User.ID.toString(), User.userName,
+        User.password, widget.userID.toString());
 
     receiveport_send!.listen(
       (message) {
@@ -135,10 +135,8 @@ class _ChatDetailPage extends State<ChatDetailPage>
     print(SenderID + " >>>> " + ReceiverID);
 
     try {
-      var socket = await Socket.connect(
-          ARMOYU_Socket.serverHost, ARMOYU_Socket.serverPort);
-      ARMOYU_Socket socket2 = ARMOYU_Socket(
-          socket, SenderID, User.userName, User.password, ReceiverID);
+      ARMOYU_Socket socket2 =
+          ARMOYU_Socket(SenderID, User.userName, User.password, ReceiverID);
       socket2.receiveMessages(sendPort);
     } catch (e) {
       print(e);
@@ -176,17 +174,18 @@ class _ChatDetailPage extends State<ChatDetailPage>
             isMe: ismee,
           ));
         });
+      } catch (e) {
+        log("Sohbet getirilemedi!");
+      }
 
-        if (i == dynamicItemCount - 1) {
-          try {
-            await Future.delayed(Duration(milliseconds: 20));
-            await _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 20),
-              curve: Curves.easeOut,
-            );
-          } catch (e) {}
-        }
+      try {
+        Future.delayed(Duration(milliseconds: 100), () {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent + 100,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
       } catch (e) {}
     }
 
@@ -199,31 +198,51 @@ class _ChatDetailPage extends State<ChatDetailPage>
       backgroundColor: Colors.grey.shade900,
       appBar: widget.appbar
           ? AppBar(
-              title: Text(widget.userdisplayname),
+              title: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.userdisplayname,
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                  Visibility(
+                    visible: isUserOnline,
+                    child: Text(
+                      "Çevrimiçi",
+                      style: TextStyle(fontSize: 10, color: Colors.green),
+                    ),
+                  ),
+                  Visibility(
+                    visible: !isUserOnline,
+                    child: Text(
+                      "Çevrimdışı",
+                      style: TextStyle(fontSize: 10, color: Colors.red),
+                    ),
+                  ),
+                ],
+              ),
               leading: Builder(
                 builder: (BuildContext context) {
-                  return GestureDetector(
-                    onTap: () {
-                      // İçerik eklemek istediğiniz işlemleri burada yapabilirsiniz.
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(12.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfilePage(
-                                        userID: widget.userID, appbar: true)));
-                          },
-                          child: CachedNetworkImage(
-                            imageUrl: widget.useravatar,
-                            width: 30,
-                            height: 30,
-                            fit: BoxFit.cover,
-                          ),
+                  return Container(
+                    padding: EdgeInsets.all(12.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(50.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(
+                                  userID: widget.userID, appbar: true),
+                            ),
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.useravatar,
+                          width: 30,
+                          height: 30,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -233,6 +252,21 @@ class _ChatDetailPage extends State<ChatDetailPage>
               automaticallyImplyLeading: false,
               backgroundColor: Colors.black,
               actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.call),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatCallPage(
+                          userID: widget.userID,
+                          useravatar: widget.useravatar,
+                          userdisplayname: widget.userdisplayname,
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 IconButton(
                   icon: Icon(Icons.refresh),
                   onPressed: () {
@@ -248,79 +282,90 @@ class _ChatDetailPage extends State<ChatDetailPage>
               ],
             )
           : null,
-      body: Column(
-        children: [
-          ChatInterface(messages: Widget_search),
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(5),
-                  height: 50,
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade800,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: TextField(
-                        controller: _messageController,
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                        decoration: InputDecoration(
-                          hintText: 'Mesaj yaz',
-                          border: InputBorder.none,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: CachedNetworkImageProvider(
+                'https://i.pinimg.com/originals/f7/ae/e8/f7aee8753832af613b63e51d5f07011a.jpg'), // Resim dosyasının yolu
+            fit: BoxFit.fill,
+            repeat: ImageRepeat.noRepeat,
+          ),
+        ),
+        child: Column(
+          children: [
+            ChatInterface(messages: Widget_search),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.all(5),
+                    height: 50,
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.only(left: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade800,
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: TextField(
+                          controller: _messageController,
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                          decoration: InputDecoration(
+                            hintText: 'Mesaj yaz',
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(5.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_messageController.text == "") {
-                      return;
-                    }
-                    setState(() {
-                      Widget_search.add(MessageBubble(
-                        avatar: User.avatar,
-                        message: _messageController.text,
-                        isMe: true,
-                      ));
-                    });
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_messageController.text == "") {
+                        return;
+                      }
+                      String message = _messageController.text;
+                      _messageController.text = "";
+                      setState(() {
+                        Widget_search.add(MessageBubble(
+                          avatar: User.avatar,
+                          message: message,
+                          isMe: true,
+                        ));
+                        try {
+                          Future.delayed(Duration(milliseconds: 100), () {
+                            _scrollController.animateTo(
+                              _scrollController.position.maxScrollExtent + 100,
+                              duration: Duration(milliseconds: 500),
+                              curve: Curves.easeInOut,
+                            );
+                          });
+                        } catch (e) {}
+                      });
 
-                    receiveport_send!.sendPort.send(_messageController.text);
+                      FunctionService f = FunctionService();
+                      Map<String, dynamic> response = await f.sendchatmessage(
+                          widget.userID, message, "ozel");
+                      if (response["durum"] == 0) {
+                        log(response["aciklama"]);
+                        return;
+                      }
 
-                    // FunctionService f = FunctionService();
-                    // Map<String, dynamic> response = await f.sendchatmessage(
-                    //     widget.userID, _messageController.text, "ozel");
-                    // if (response["durum"] == 0) {
-                    //   log(response["aciklama"]);
-                    //   return;
-                    // }
-
-                    _messageController.text = "";
-                    try {
-                      await Future.delayed(Duration(milliseconds: 20));
-                      await _scrollController.animateTo(
-                        _scrollController.position.maxScrollExtent,
-                        duration: Duration(milliseconds: 20),
-                        curve: Curves.easeOut,
-                      );
-                    } catch (e) {}
-                  },
-                  child: Icon(
-                    Icons.send,
-                    size: 16,
+                      receiveport_send!.sendPort.send(message);
+                    },
+                    child: Icon(
+                      Icons.send,
+                      size: 16,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -373,7 +418,8 @@ class MessageBubble extends StatelessWidget {
                 maxWidth: MediaQuery.of(context).size.width - 70),
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: isMe ? Colors.blue : Colors.grey,
+              color:
+                  isMe ? Colors.blue : const Color.fromARGB(255, 212, 78, 69),
               borderRadius: isMe
                   ? BorderRadius.only(
                       topLeft: Radius.circular(12),
@@ -388,11 +434,33 @@ class MessageBubble extends StatelessWidget {
                       bottomRight: Radius.circular(12),
                     ),
             ),
-            child: Text(
-              message,
-              style: TextStyle(
-                color: isMe ? Colors.white : Colors.black,
-              ),
+            child: Column(
+              children: [
+                Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          color: isMe ? Colors.white : Colors.white,
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      child: Positioned(
+                        bottom: -3,
+                        right: 0,
+                        child: Icon(
+                          Icons.done_all,
+                          color: Color.fromRGBO(116, 243, 20, 1),
+                          size: 14,
+                        ), // Okundu işareti
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

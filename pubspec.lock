@@ -17,6 +17,62 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  audioplayers:
+    dependency: "direct main"
+    description:
+      name: audioplayers
+      sha256: c05c6147124cd63e725e861335a8b4d57300b80e6e92cea7c145c739223bbaef
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
+  audioplayers_android:
+    dependency: transitive
+    description:
+      name: audioplayers_android
+      sha256: b00e1a0e11365d88576320ec2d8c192bc21f1afb6c0e5995d1c57ae63156acb5
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.3"
+  audioplayers_darwin:
+    dependency: transitive
+    description:
+      name: audioplayers_darwin
+      sha256: "3034e99a6df8d101da0f5082dcca0a2a99db62ab1d4ddb3277bed3f6f81afe08"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.2"
+  audioplayers_linux:
+    dependency: transitive
+    description:
+      name: audioplayers_linux
+      sha256: "60787e73fefc4d2e0b9c02c69885402177e818e4e27ef087074cf27c02246c9e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  audioplayers_platform_interface:
+    dependency: transitive
+    description:
+      name: audioplayers_platform_interface
+      sha256: "365c547f1bb9e77d94dd1687903a668d8f7ac3409e48e6e6a3668a1ac2982adb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.0"
+  audioplayers_web:
+    dependency: transitive
+    description:
+      name: audioplayers_web
+      sha256: "22cd0173e54d92bd9b2c80b1204eb1eb159ece87475ab58c9788a70ec43c2a62"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
+  audioplayers_windows:
+    dependency: transitive
+    description:
+      name: audioplayers_windows
+      sha256: "9536812c9103563644ada2ef45ae523806b0745f7a78e89d1b5fb1951de90e1a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -456,6 +512,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  mic_stream:
+    dependency: "direct main"
+    description:
+      name: mic_stream
+      sha256: "1db1ec77bdd8ffc0d1c5cc606398612930312a96462220add5ea24aa9da73210"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1+2"
   mime:
     dependency: transitive
     description:
@@ -560,6 +624,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  permission_handler:
+    dependency: transitive
+    description:
+      name: permission_handler
+      sha256: "860c6b871c94c78e202dc69546d4d8fd84bd59faeb36f8fb9888668a53ff4f78"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.0"
+  permission_handler_android:
+    dependency: transitive
+    description:
+      name: permission_handler_android
+      sha256: "2f1bec180ee2f5665c22faada971a8f024761f632e93ddc23310487df52dcfa6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.0.1"
+  permission_handler_apple:
+    dependency: transitive
+    description:
+      name: permission_handler_apple
+      sha256: "1a816084338ada8d574b1cb48390e6e8b19305d5120fe3a37c98825bacc78306"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.2.0"
+  permission_handler_html:
+    dependency: transitive
+    description:
+      name: permission_handler_html
+      sha256: d96ff56a757b7f04fa825c469d296c5aebc55f743e87bd639fef91a466a24da8
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0+1"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      sha256: d87349312f7eaf6ce0adaf668daf700ac5b06af84338bd8b8574dfbd93ffe1a1
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.2"
+  permission_handler_windows:
+    dependency: transitive
+    description:
+      name: permission_handler_windows
+      sha256: "1e8640c1e39121128da6b816d236e714d2cf17fac5a105dd6acdd3403a628004"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   petitparser:
     dependency: transitive
     description:
