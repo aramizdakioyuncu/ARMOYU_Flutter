@@ -24,11 +24,11 @@ class AppCore {
   Future<String> getDeviceModel() async {
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      print(androidInfo.model);
+      // print(androidInfo.model);
       return androidInfo.model.toString();
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      print(iosInfo.utsname.machine);
+      // print(iosInfo.utsname.machine);
       return iosInfo.utsname.machine;
     }
     return "Bilinmeyen Cihaz";
