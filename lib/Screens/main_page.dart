@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors_in_immutables
 
+import 'dart:math';
+
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
@@ -43,6 +45,8 @@ class _MainPageState extends State<MainPage>
   bool postpageproccess = false;
   bool isRefreshing = false;
   ScrollController _scrollController = ScrollController();
+
+  ScrollController homepageScrollController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -82,6 +86,20 @@ class _MainPageState extends State<MainPage>
   int _currentPage = 0;
   bool bottombarVisible = true;
   void _changePage(int page) {
+    if (_currentPage.toString() == "0" && page.toString() == "0") {
+      //Anasayfa butonuna anasayfadaykan basarsan en üstte çıkartan kod
+      try {
+        Future.delayed(Duration(milliseconds: 100), () {
+          homepageScrollController.animateTo(
+            0,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
+      } catch (e) {}
+      return;
+    }
+
     setState(() {
       _currentPage = page;
       // _pageController.jumpToPage(page);
@@ -191,7 +209,7 @@ class _MainPageState extends State<MainPage>
                   borderRadius:
                       BorderRadius.circular(50.0), // Kenar yarıçapını ayarlayın
                   child: CachedNetworkImage(
-                    imageUrl: useravatar,
+                    imageUrl: User.avatar,
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
@@ -226,13 +244,13 @@ class _MainPageState extends State<MainPage>
                   Navigator.of(context).pop();
                 },
                 child: CircleAvatar(
-                  foregroundImage: CachedNetworkImageProvider(useravatar),
+                  foregroundImage: CachedNetworkImageProvider(User.avatar),
                   radius: 40.0,
                 ),
               ),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(userbanner),
+                  image: CachedNetworkImageProvider(User.banneravatar),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -340,14 +358,14 @@ class _MainPageState extends State<MainPage>
         physics: NeverScrollableScrollPhysics(), //kaydırma iptali
         controller: _pageController,
         onPageChanged: (int page) {
-          // _changePage(page);
+          //  _changePage(page);
         },
         children: [
           PageView(
             controller: _pageController2,
             children: [
               CameraScreen(),
-              SocialPage(),
+              SocialPage(homepageScrollController: homepageScrollController),
             ],
           ),
           SearchPage(appbar: true),

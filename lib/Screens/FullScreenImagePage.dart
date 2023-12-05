@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors, unrelated_type_equality_checks
+// ignore_for_file: prefer_const_constructors, unrelated_type_equality_checks, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+
+import 'dart:io';
 
 import 'package:ARMOYU/Core/screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -14,12 +16,14 @@ class FullScreenImagePage extends StatelessWidget {
   final List<int>? imagesID; // Gezdirilecek fotoğrafların ID listesi
   final List<int>? imagesownerID; // Gezdirilecek fotoğrafların ID listesi
   final int initialIndex; // Başlangıçtaki fotoğrafin indexi
+  bool? isFile = false; // Yerel mi
 
   FullScreenImagePage({
     required this.images,
     required this.initialIndex,
     this.imagesID,
     this.imagesownerID,
+    this.isFile,
   });
 
   @override
@@ -52,12 +56,19 @@ class FullScreenImagePage extends StatelessWidget {
                   child: Center(
                     child: Hero(
                       tag: 'imageTag',
-                      child: CachedNetworkImage(
-                        imageUrl: images[index],
-                        height: Screen.screenHeight / 1,
-                        width: Screen.screenHeight / 1,
-                        fit: BoxFit.contain,
-                      ),
+                      child: isFile == true
+                          ? Image.file(
+                              File(images[index]),
+                              height: Screen.screenHeight / 1,
+                              width: Screen.screenHeight / 1,
+                              fit: BoxFit.contain,
+                            )
+                          : CachedNetworkImage(
+                              imageUrl: images[index],
+                              height: Screen.screenHeight / 1,
+                              width: Screen.screenHeight / 1,
+                              fit: BoxFit.contain,
+                            ),
                     ),
                   ),
                 ),

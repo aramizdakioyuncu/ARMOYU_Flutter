@@ -1,3 +1,7 @@
+import 'package:ARMOYU/Core/app_core.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+
 import '../Services/api_service.dart';
 
 class FunctionsProfile {
@@ -32,6 +36,32 @@ class FunctionsProfile {
     Map<String, String> formData = {"oyuncubakid": "$userID"};
     Map<String, dynamic> jsonData =
         await apiService.request("arkadas-cikar/0/0/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> changeavatar(List<XFile> files) async {
+    List<MultipartFile> photosCollection = [];
+    for (var file in files) {
+      photosCollection.add(await AppCore.generateImageFile("resim", file));
+    }
+
+    Map<String, String> formData = {"text": "$files"};
+
+    Map<String, dynamic> jsonData = await apiService
+        .request("avatar-guncelle/0/0/", formData, files: photosCollection);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> changebanner(List<XFile> files) async {
+    List<MultipartFile> photosCollection = [];
+    for (var file in files) {
+      photosCollection.add(await AppCore.generateImageFile("resim", file));
+    }
+
+    Map<String, String> formData = {"text": "$files"};
+
+    Map<String, dynamic> jsonData = await apiService
+        .request("arkaplan-guncelle/0/0/", formData, files: photosCollection);
     return jsonData;
   }
 }

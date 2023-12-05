@@ -475,7 +475,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           setState(() {
                             postVisible = false;
                           });
-                          Navigator.pop(context);
+                          try {
+                            Navigator.pop(context);
+                          } catch (e) {}
                         }
                       },
                       child: const ListTile(

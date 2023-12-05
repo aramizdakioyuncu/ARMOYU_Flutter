@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, prefer_const_constructors_in_immutables
 
 import 'dart:math';
 
@@ -12,6 +12,10 @@ import '../../Widgets/Skeletons/posts_skeleton.dart';
 import '../../Widgets/posts.dart';
 
 class SocialPage extends StatefulWidget {
+  final ScrollController homepageScrollController;
+
+  SocialPage({required this.homepageScrollController});
+
   @override
   _SocialPageState createState() => _SocialPageState();
 }
@@ -20,6 +24,8 @@ class _SocialPageState extends State<SocialPage>
     with AutomaticKeepAliveClientMixin<SocialPage> {
   @override
   bool get wantKeepAlive => true;
+
+  late ScrollController _scrollController = widget.homepageScrollController;
 
   int userID = -1;
   String userName = 'User Name';
@@ -30,7 +36,6 @@ class _SocialPageState extends State<SocialPage>
   int postpage = 1;
   bool postpageproccess = false;
   bool isRefreshing = false;
-  ScrollController _scrollController = ScrollController();
 
   List<Widget> Widget_Posts = [];
   List<Map<String, String>> Widget_card = [];

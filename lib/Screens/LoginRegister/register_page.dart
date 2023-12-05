@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors, use_build_context_synchronously, prefer_interpolation_to_compose_strings
 
+import 'dart:developer';
+
 import 'package:ARMOYU/Services/functions_service.dart';
+import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:flutter/material.dart';
 
 import '../../Widgets/buttons.dart';
@@ -25,8 +28,9 @@ class _RegisterPageState extends State<RegisterPage> {
     if (registerProccess) {
       return;
     }
-
-    registerProccess = true;
+    setState(() {
+      registerProccess = true;
+    });
     // Kayıt işlemini burada gerçekleştirin
     final username = _usernameController.text;
     final name = _nameController.text;
@@ -35,43 +39,51 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text;
     final rpassword = _rpasswordController.text;
 
-    print("username :" + username);
-    print("name :" + name);
-    print("lastname :" + lastname);
+    if (name == "" ||
+        username == "" ||
+        lastname == "" ||
+        email == "" ||
+        password == "" ||
+        rpassword == "") {
+      String text = "Boş alan bırakmayınız!";
+      CustomNotifications.stackbarNotification(context, text);
+      log(text);
 
-    print("email :" + email);
-    print("password :" + password);
-    print("rpassword :" + rpassword);
-
-    if (password != rpassword) {
-      print("Parolalarınız eşleşmedi");
-      String gelenyanit = "Parolalarınız eşleşmedi";
-      final snackBar = SnackBar(
-        content: Text(gelenyanit),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      registerProccess = false;
+      setState(() {
+        registerProccess = false;
+      });
       return;
     }
-    // Örneğin, bu bilgileri bir API'ye gönderebilirsiniz.
+    if (password != rpassword) {
+      String text = "Parolalarınız eşleşmedi!";
+      CustomNotifications.stackbarNotification(context, text);
+      log(text);
+
+      setState(() {
+        registerProccess = false;
+      });
+      return;
+    }
 
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.register(
         username, name, lastname, email, password, rpassword); //sa
 
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
-      String gelenyanit = response["aciklama"];
-      final snackBar = SnackBar(
-        content: Text(gelenyanit),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      registerProccess = false;
+      String text = response["aciklama"];
+      CustomNotifications.stackbarNotification(context, text);
+      log(text);
+      setState(() {
+        registerProccess = false;
+      });
+      return;
     }
 
     if (response["durum"] == 1) {
       Navigator.of(context).pop();
-      registerProccess = false;
+      setState(() {
+        registerProccess = false;
+      });
     }
   }
 
@@ -114,31 +126,30 @@ class _RegisterPageState extends State<RegisterPage> {
             CustomTextfields().Costum1("Şifreniz Tekrar", _rpasswordController,
                 true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomButtons().Costum1("Kayıt Ol", _register),
+            CustomButtons().Costum1("Kayıt Ol", _register, registerProccess),
             SizedBox(height: 16),
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Hesabınız varsa  ",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text(
-                      "Giriş Yap",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Hesabınız varsa  ",
+                  style: TextStyle(color: Colors.white),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    "Giriş Yap",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            SizedBox(height: 60),
           ],
         ),
       ),

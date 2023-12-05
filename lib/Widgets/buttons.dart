@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 
@@ -28,28 +28,43 @@ class CustomButtons {
     );
   }
 
-  Widget Costum1(String text, onPressed) {
+  Widget Costum1(String text, onPressed, bool loadingStatus) {
     Color background = Colors.blue;
+
+    if (loadingStatus) {
+      background = Colors.transparent;
+    }
     Color foregroundColor = Colors.white;
-    return Container(
-      child: ElevatedButton(
-        onPressed: () {
-          onPressed();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: background, // Arka plan rengini belirleyin
-          foregroundColor: foregroundColor,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(10), // Kenar yarıçapını ayarlayın
+    return Column(
+      children: [
+        Visibility(
+          visible: !loadingStatus,
+          child: ElevatedButton(
+            onPressed: () {
+              if (!loadingStatus) {
+                onPressed();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: background, // Arka plan rengini belirleyin
+              foregroundColor: foregroundColor,
+              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(10), // Kenar yarıçapını ayarlayın
+              ),
+            ),
+            child: Text(text,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
           ),
         ),
-        child: Text(
-          text,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        Visibility(
+          visible: loadingStatus,
+          child: Column(
+            children: [CircularProgressIndicator()],
+          ),
         ),
-      ),
+      ],
     );
   }
 

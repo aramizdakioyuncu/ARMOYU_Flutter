@@ -260,7 +260,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 ),
               ),
               SizedBox(height: 16),
-              buttons.Costum1("Oluştur", onPressed),
+              buttons.Costum1("Oluştur", onPressed, true),
             ],
           ),
         ),

@@ -1,12 +1,14 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'dart:developer';
+import 'package:ARMOYU/Core/app_core.dart';
 import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../API_Functions/media.dart';
 import '../../API_Functions/profile.dart';
 import '../../Services/functions_service.dart';
@@ -329,6 +331,48 @@ class _ProfilePageState extends State<ProfilePage>
     await TEST();
   }
 
+  Future<void> changeavatar() async {
+    XFile? selectedImage = await AppCore.pickImage();
+    if (selectedImage == null) {
+      return;
+    }
+    FunctionsProfile f = FunctionsProfile();
+    List<XFile> imagePath = [];
+    imagePath.add(selectedImage);
+    Map<String, dynamic> response = await f.changeavatar(imagePath);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+    setState(() {
+      User.avatar = response["aciklamadetay"].toString();
+      User.avatarbetter = response["aciklamadetay"].toString();
+
+      _handleRefresh();
+    });
+  }
+
+  Future<void> changebanner() async {
+    XFile? selectedImage = await AppCore.pickImage();
+    if (selectedImage == null) {
+      return;
+    }
+    FunctionsProfile f = FunctionsProfile();
+    List<XFile> imagePath = [];
+    imagePath.add(selectedImage);
+    Map<String, dynamic> response = await f.changebanner(imagePath);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+    setState(() {
+      User.banneravatar = response["aciklamadetay"].toString();
+      User.banneravatarbetter = response["aciklamadetay"].toString();
+
+      _handleRefresh();
+    });
+  }
+
   Future<void> friendrequest() async {
     FunctionsProfile f = FunctionsProfile();
     Map<String, dynamic> response = await f.friendrequest(userID);
@@ -582,10 +626,12 @@ class _ProfilePageState extends State<ProfilePage>
                                   Visibility(
                                     visible: User.ID == userID,
                                     child: InkWell(
-                                      onTap: () {},
+                                      onTap: () async {
+                                        await changebanner();
+                                      },
                                       child: const ListTile(
                                         leading: Icon(Icons.camera_alt),
-                                        title: Text("Fotoğrafı değiştir."),
+                                        title: Text("Arkaplan değiştir."),
                                       ),
                                     ),
                                   ),
@@ -654,7 +700,88 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                       ));
                                     },
-                                    onLongPress: () {},
+                                    onLongPress: () {
+                                      if (User.ID != userID) {
+                                        return;
+                                      }
+                                      showModalBottomSheet<void>(
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(10),
+                                          ),
+                                        ),
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return SafeArea(
+                                            child: Wrap(
+                                              children: [
+                                                Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10),
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Colors.grey[900],
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            Radius.circular(30),
+                                                          ),
+                                                        ),
+                                                        width:
+                                                            Screen.screenWidth /
+                                                                4,
+                                                        height: 5,
+                                                      ),
+                                                    ),
+                                                    Visibility(
+                                                      visible:
+                                                          User.ID == userID,
+                                                      child: InkWell(
+                                                        onTap: () async {
+                                                          await changeavatar();
+                                                        },
+                                                        child: const ListTile(
+                                                          leading: Icon(
+                                                              Icons.camera_alt),
+                                                          title: Text(
+                                                              "Avatar değiştir."),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Visibility(
+                                                      //Çizgi ekler
+                                                      child: const Divider(),
+                                                    ),
+                                                    Visibility(
+                                                      visible:
+                                                          userID == User.ID,
+                                                      child: InkWell(
+                                                        onTap: () {},
+                                                        child: const ListTile(
+                                                          textColor: Colors.red,
+                                                          leading: Icon(
+                                                            Icons
+                                                                .person_off_outlined,
+                                                            color: Colors.red,
+                                                          ),
+                                                          title: Text(
+                                                              "Varsayılana dönder."),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    },
                                     child: ClipOval(
                                       child: CachedNetworkImage(
                                         imageUrl: avatar,

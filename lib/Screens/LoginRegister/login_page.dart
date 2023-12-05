@@ -16,36 +16,38 @@ import '../../Widgets/textfields.dart';
 final TextEditingController usernameController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 
-bool loginProccess = false;
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool loginProcess = false;
+
   @override
   void initState() {
     super.initState();
   }
 
   void _login() async {
-    if (loginProccess) {
+    if (loginProcess) {
       return;
     }
-
-    loginProccess = true;
+    setState(() {
+      loginProcess = true;
+    });
 
     String username = usernameController.text;
     String password = passwordController.text;
     FunctionService f = FunctionService();
-    Map<String, dynamic> response =
-        await f.login(username, password, false); //sa
+    Map<String, dynamic> response = await f.login(username, password, false);
 
     if (response["durum"] == 1) {
       Navigator.of(context).pop();
       Navigator.push(context, MaterialPageRoute(builder: (context) => Pages()));
-      loginProccess = false;
+      setState(() {
+        loginProcess = false;
+      });
     } else {
       print(response["aciklama"]);
 
@@ -54,7 +56,9 @@ class _LoginPageState extends State<LoginPage> {
         content: Text(gelenyanit),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      loginProccess = false;
+      setState(() {
+        loginProcess = false;
+      });
     }
   }
 
@@ -87,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
             CustomTextfields().Costum1(
                 "Şifreniz", passwordController, true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomButtons().Costum1("Giriş Yap", _login),
+            CustomButtons().Costum1("Giriş Yap", _login, loginProcess),
             TextButton(
               onPressed: () {
                 Navigator.push(

@@ -1,3 +1,4 @@
+import 'package:ARMOYU/Core/app_core.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -27,7 +28,8 @@ class FunctionsPosts {
   Future<Map<String, dynamic>> share(String text, List<XFile> files) async {
     List<MultipartFile> photosCollection = [];
     for (var file in files) {
-      photosCollection.add(await generateImageFile(file));
+      photosCollection
+          .add(await AppCore.generateImageFile("paylasimfoto[]", file));
     }
 
     Map<String, String> formData = {
@@ -37,12 +39,6 @@ class FunctionsPosts {
     Map<String, dynamic> jsonData = await _apiService
         .request("sosyal/olustur/", formData, files: photosCollection);
     return jsonData;
-  }
-
-  Future<MultipartFile> generateImageFile(XFile file) async {
-    final fileBytes = await file.readAsBytes();
-    return MultipartFile.fromBytes('paylasimfoto[]', fileBytes,
-        filename: file.name);
   }
 
   //*Share

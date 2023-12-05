@@ -9,30 +9,27 @@ class CustomTextfields {
     bool isPassword,
     Icon icon,
   ) {
-    return Container(
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.name,
-        textInputAction: TextInputAction.next,
-        autofillHints: const [AutofillHints.username],
-        obscureText: isPassword,
-        style: const TextStyle(
-          color: Colors.white,
+    return TextField(
+      controller: controller,
+      //sadece isim için olunca @ ! gibi işaretler olmuyor
+      // keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      autofillHints: const [AutofillHints.username],
+      obscureText: isPassword,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide.none,
         ),
-        decoration: InputDecoration(
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: icon,
-          prefixIconColor: Colors.white,
-          hintText: text,
-          hintStyle: const TextStyle(
-            color: Colors.grey,
-          ),
-          filled: true,
-          fillColor: Colors.grey.shade900,
+        prefixIcon: icon,
+        prefixIconColor: Colors.white,
+        hintText: text,
+        hintStyle: const TextStyle(
+          color: Colors.grey,
         ),
+        filled: true,
+        fillColor: Colors.grey.shade900,
       ),
     );
   }
@@ -43,31 +40,29 @@ class CustomTextfields {
     int length,
     Icon icon,
   ) {
-    return Container(
-      child: TextField(
-        controller: controller,
-        keyboardType: TextInputType.number,
-        maxLength: length,
-        textInputAction: TextInputAction.next,
-        autofillHints: const [AutofillHints.username],
-        style: const TextStyle(
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      maxLength: length,
+      textInputAction: TextInputAction.next,
+      autofillHints: const [AutofillHints.username],
+      style: const TextStyle(
+        color: Colors.white,
+      ),
+      decoration: InputDecoration(
+        counterText: "", //Limiti gizler
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide.none,
+        ),
+        prefixIcon: icon,
+        prefixIconColor: Colors.white,
+        hintText: text,
+        hintStyle: const TextStyle(
           color: Colors.white,
         ),
-        decoration: InputDecoration(
-          counterText: "", //Limiti gizler
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
-          ),
-          prefixIcon: icon,
-          prefixIconColor: Colors.white,
-          hintText: text,
-          hintStyle: const TextStyle(
-            color: Colors.white,
-          ),
-          filled: true,
-          fillColor: Colors.grey.shade900,
-        ),
+        filled: true,
+        fillColor: Colors.grey.shade900,
       ),
     );
   }

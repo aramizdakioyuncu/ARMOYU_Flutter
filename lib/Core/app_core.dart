@@ -2,6 +2,8 @@ import 'package:device_info/device_info.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AppCore {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -32,5 +34,23 @@ class AppCore {
       return iosInfo.utsname.machine;
     }
     return "Bilinmeyen Cihaz";
+  }
+
+  static Future<List<XFile>> pickImages() async {
+    final ImagePicker _picker = ImagePicker();
+    List<XFile> images = await _picker.pickMultiImage();
+    return images;
+  }
+
+  static Future<XFile?> pickImage() async {
+    final ImagePicker _picker = ImagePicker();
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    return image;
+  }
+
+  static Future<MultipartFile> generateImageFile(
+      String text, XFile file) async {
+    final fileBytes = await file.readAsBytes();
+    return MultipartFile.fromBytes(text, fileBytes, filename: file.name);
   }
 }

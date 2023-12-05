@@ -148,10 +148,10 @@ class FunctionService {
     return jsonString;
   }
 
-  Future<Map<String, dynamic>> forgotpassword(String userbirthday,
+  Future<Map<String, dynamic>> forgotpassword(
       String username, String useremail, String userresettype) async {
     Map<String, String> formData = {
-      "dogumtarihi": "$userbirthday",
+      // "dogumtarihi": "$userbirthday",
       "kullaniciadi": "$username",
       "email": "$useremail",
       "sifirlamatercihi": "$userresettype"
@@ -162,14 +162,13 @@ class FunctionService {
   }
 
   Future<Map<String, dynamic>> forgotpassworddone(
-      String userbirthday,
       String username,
       String useremail,
       String securitycode,
       String password,
       String repassword) async {
     Map<String, String> formData = {
-      "dogumtarihi": "$userbirthday",
+      // "dogumtarihi": "$userbirthday",
       "kullaniciadi": "$username",
       "email": "$useremail",
       "dogrulamakodu": "$securitycode",
