@@ -5,6 +5,7 @@ import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Screens/LoginRegister/resetpassword_page.dart';
 import 'package:ARMOYU/Screens/text_page.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 
 import '../../Services/App.dart';
@@ -92,8 +93,11 @@ class _LoginPageState extends State<LoginPage> {
                 "Şifreniz", passwordController, true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
             CustomButtons().Costum1("Giriş Yap", _login, loginProcess),
-            TextButton(
-              onPressed: () {
+            SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -101,12 +105,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 );
               },
-              child: Text('Şifremi Unuttum'),
+              child: CustomText().Costum1("Şifremi Unuttum"),
             ),
             IconButton(
               icon: Icon(Icons.nightlight), // Sağdaki butonun ikonu
               onPressed: () {
-                ThemeProvider().toggleTheme();
+                setState(() {
+                  ThemeProvider().toggleTheme();
+                });
               },
             ),
             Row(
