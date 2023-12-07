@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'dart:io';
 
@@ -52,5 +53,14 @@ class AppCore {
       String text, XFile file) async {
     final fileBytes = await file.readAsBytes();
     return MultipartFile.fromBytes(text, fileBytes, filename: file.name);
+  }
+
+  static Future<bool> checkInternetConnection() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.none) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

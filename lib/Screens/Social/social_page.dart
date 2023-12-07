@@ -50,8 +50,7 @@ class _SocialPageState extends State<SocialPage>
     useravatar = User.avatar;
     userbanner = User.banneravatar;
 
-    // initState içinde sayfa yüklendiğinde yapılması gereken işlemleri gerçekleştirin
-
+    loadSkeletonpost();
     // ScrollController'ı dinle
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==

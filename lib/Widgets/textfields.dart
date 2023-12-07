@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
+import 'dart:developer';
+
+import 'package:ARMOYU/Services/theme_service.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfields {
@@ -9,6 +12,14 @@ class CustomTextfields {
     bool isPassword,
     Icon icon,
   ) {
+    Color colors = Colors.grey.shade900;
+
+    if (ThemeProvider().themeData == ThemeData.dark()) {
+      colors = Colors.grey.shade900;
+    } else {
+      colors = Colors.grey;
+    }
+
     return TextField(
       controller: controller,
       //sadece isim için olunca @ ! gibi işaretler olmuyor
@@ -29,7 +40,7 @@ class CustomTextfields {
           color: Colors.grey,
         ),
         filled: true,
-        fillColor: Colors.grey.shade900,
+        fillColor: colors,
       ),
     );
   }

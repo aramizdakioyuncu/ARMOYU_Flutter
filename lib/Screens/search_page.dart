@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, unused_element, must_call_super
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, unused_element, must_call_super, prefer_interpolation_to_compose_strings
 
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
 import 'package:flutter/material.dart';
 import '../API_Functions/search.dart';
 import '../Widgets/search-engine.dart';
@@ -32,19 +33,35 @@ class _SearchPagePage extends State<SearchPage>
     super.initState();
   }
 
+  Future<void> loadSkeletonpost() async {
+    setState(() {
+      Widget_search.clear();
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+      Widget_search.add(SkeletonSearch());
+    });
+  }
+
   Future<void> searchfunction(
     TextEditingController controller,
     String text,
   ) async {
-    if (text == controller.text && controller.text == "") {
-      Widget_search.clear();
+    if (controller.text == "") {
+      setState(() {
+        Widget_search.clear();
+      });
       return;
     }
     _searchTimer = Timer(Duration(milliseconds: 300), () async {
+      loadSkeletonpost();
       log(text + " " + controller.text);
-      // if (controller.text.length <= 3) {
-      //   return;
-      // }
 
       if (text != controller.text) {
         return;

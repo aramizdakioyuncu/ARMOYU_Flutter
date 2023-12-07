@@ -29,7 +29,7 @@ class CustomButtons {
   }
 
   Widget Costum1(String text, onPressed, bool loadingStatus) {
-    Color background = Colors.blue;
+    Color background = const Color.fromARGB(130, 33, 149, 243);
 
     if (loadingStatus) {
       background = Colors.transparent;

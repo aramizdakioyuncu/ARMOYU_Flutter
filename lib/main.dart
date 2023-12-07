@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, unused_local_variable
 
 import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Screens/NoConnection_page.dart';
 import 'package:ARMOYU/Services/functions_service.dart';
 import 'package:ARMOYU/Services/theme_service.dart';
 
@@ -14,8 +15,18 @@ import 'Screens/pages.dart';
 import 'Services/App.dart';
 
 void main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Bu satırı eklemeyi unutmayın ilkbaşta olmak zorunda
+  WidgetsFlutterBinding.ensureInitialized();
+
+// İnternet var mı diye kontrol ediyoruz!
+  if (!await AppCore.checkInternetConnection()) {
+    runApp(
+      ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+        child: MyApp(homePage: NoConnectionPage()),
+      ),
+    );
+    return;
+  }
 
   final prefs = await SharedPreferences.getInstance();
   final username = prefs.getString('username');
@@ -53,13 +64,14 @@ void main() async {
     App.SecurityDetail = response["projegizliliksozlesmesi"];
   } catch (e) {}
 
-  prefs.remove('username');
+  // prefs.remove('username');
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
       child: MyApp(homePage: LoginPage()),
     ),
   );
+  return;
 }
 
 class MyApp extends StatelessWidget {

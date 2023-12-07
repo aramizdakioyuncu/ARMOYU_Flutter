@@ -35,6 +35,8 @@ class _GroupCreatePageState extends State<GroupCreatePage>
   int _selectedcupertinolist3 = 0;
   CustomButtons buttons = CustomButtons();
 
+  bool groupcreateProcess = false;
+
   @override
   void initState() {
     super.initState();
@@ -106,6 +108,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
 
   CustomTextfields asa = CustomTextfields();
   TextEditingController a = TextEditingController();
+  TextEditingController abc = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +123,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
           child: Column(
             children: [
               SizedBox(height: 16),
-              asa.Costum1("Grup Adı", a, false, Icon(Icons.business)),
+              asa.Costum1("Grup Adı", abc, false, Icon(Icons.business)),
               SizedBox(height: 16),
               asa.Costum1("Grup Kısa Adı", a, false, Icon(Icons.label)),
               SizedBox(height: 16),
@@ -260,7 +263,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 ),
               ),
               SizedBox(height: 16),
-              buttons.Costum1("Oluştur", onPressed, true),
+              buttons.Costum1("Oluştur", onPressed, groupcreateProcess),
             ],
           ),
         ),

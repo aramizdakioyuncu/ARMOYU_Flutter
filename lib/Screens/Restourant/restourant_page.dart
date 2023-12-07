@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
 
+import 'dart:developer';
+
 import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Services/theme_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -160,27 +163,38 @@ class _RestourantPage extends State<RestourantPage> {
                                 color: Colors.grey.shade900,
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 125,
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "https://images.deliveryhero.io/image/fd-tr/LH/u9xe-hero.jpg?width=560&height=300&quality=100",
-                                      fit: BoxFit.cover,
+                              child: InkWell(
+                                onTap: () {
+                                  if (ThemeProvider().themeData ==
+                                      ThemeData.dark()) {
+                                    log("DARK");
+                                  } else {
+                                    log("light");
+                                  }
+                                  // log(ThemeProvider().themeData.toString());
+                                },
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 125,
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            "https://images.deliveryhero.io/image/fd-tr/LH/u9xe-hero.jpg?width=560&height=300&quality=100",
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4, horizontal: 5),
-                                    child: Column(
-                                      children: [
-                                        Text("Latte Macchiato"),
-                                        Text("100TL"),
-                                      ],
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 5),
+                                      child: Column(
+                                        children: [
+                                          Text("Latte Macchiato"),
+                                          Text("100TL"),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             )),
                       );

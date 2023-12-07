@@ -24,7 +24,6 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
     return SizedBox(
       height: 220,
       child: ListView.separated(
-        // controller: widget.controller,
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         scrollDirection: Axis.horizontal,
@@ -36,14 +35,6 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
             onTap: () {},
             child: SizedBox(
               width: 150,
-              // decoration: BoxDecoration(
-              //   borderRadius: BorderRadius.circular(15),
-              //   // image: DecorationImage(
-              //   //   fit: BoxFit.cover,
-              //   //   filterQuality: FilterQuality.high,
-              //   //   image: CachedNetworkImageProvider(cardData["image"]!),
-              //   // ),
-              // ),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
