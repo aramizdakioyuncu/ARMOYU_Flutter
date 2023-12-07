@@ -1,7 +1,5 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
-import 'dart:developer';
-
 import 'package:ARMOYU/Services/theme_service.dart';
 import 'package:flutter/material.dart';
 
