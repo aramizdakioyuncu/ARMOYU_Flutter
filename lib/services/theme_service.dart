@@ -18,15 +18,15 @@ class ThemeProvider with ChangeNotifier {
       _themeData = ThemeData.dark();
       prefs.setString('thememode', "dark");
 
-      AppCore.textColor = Colors.white;
-      AppCore.textbackColor = const Color.fromARGB(255, 255, 255, 255);
-      AppCore.texthintColor = Color.fromARGB(255, 169, 169, 169);
+      AppCore.textColor = const Color.fromARGB(255, 255, 255, 255);
+      AppCore.textbackColor = Color.fromARGB(255, 56, 56, 56);
+      AppCore.texthintColor = Color.fromARGB(255, 195, 195, 195);
     } else {
       _themeData = ThemeData.light();
       prefs.setString('thememode', "light");
 
       AppCore.textColor = Colors.black;
-      AppCore.textbackColor = Color.fromARGB(255, 169, 169, 169);
+      AppCore.textbackColor = Color.fromARGB(255, 193, 193, 193);
       AppCore.texthintColor = Color.fromARGB(255, 169, 169, 169);
     }
 
@@ -42,19 +42,21 @@ class ThemeProvider with ChangeNotifier {
       prefs.setString('thememode', "light");
       log(thememode.toString() + " => light");
 
-      AppCore.textColor = Color.fromARGB(255, 188, 205, 60);
-      AppCore.textbackColor = Color.fromARGB(255, 14, 12, 16);
+      AppCore.textColor = Colors.black;
+      AppCore.textbackColor = Color.fromARGB(255, 193, 193, 193);
       AppCore.texthintColor = Color.fromARGB(255, 169, 169, 169);
     } else {
       _themeData = ThemeData.dark();
       prefs.setString('thememode', "dark");
       log(thememode.toString() + " => dark");
 
-      AppCore.textColor = Color.fromARGB(255, 200, 18, 18);
-      AppCore.textbackColor = const Color.fromARGB(255, 255, 255, 255);
-      AppCore.texthintColor = Color.fromARGB(255, 169, 169, 169);
+      AppCore.textColor = const Color.fromARGB(255, 255, 255, 255);
+      AppCore.textbackColor = Color.fromARGB(255, 56, 56, 56);
+      AppCore.texthintColor = Color.fromARGB(255, 195, 195, 195);
     }
 
     notifyListeners();
   }
 }
+
+const a = Color.fromRGBO(1, 1, 1, 1);
