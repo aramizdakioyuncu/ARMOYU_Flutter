@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 60),
+            SizedBox(height: 110),
             Container(
               width: 150,
               height: 150,
@@ -118,13 +118,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Hesabın yok mu?",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white,
-                  ),
-                ),
+                CustomText().Costum1("Hesabınız yok mu?"),
                 SizedBox(
                   width: Screen.screenWidth / 40,
                 ),
@@ -137,14 +131,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   },
-                  child: const Text(
-                    "Kayıt Ol",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: CustomText()
+                      .Costum1("Kayıt Ol", size: 16, weight: FontWeight.bold),
                 )
               ],
             ),
@@ -155,10 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Devam ederek  ",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      CustomText().Costum1("Devam ederek"),
                       InkWell(
                         onTap: () {
                           Navigator.push(
@@ -171,20 +156,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           );
                         },
-                        child: const Text(
-                          "Gizlilik Politikamızı ",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        child: CustomText().Costum1(" Gizlilik Politikasını",
+                            size: 16, weight: FontWeight.bold),
                       ),
-                      const Text(
-                        "ve",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
+                      CustomText().Costum1(" ve"),
                     ],
                   )
                 ],
@@ -205,22 +180,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   },
-                  child: const Text(
-                    "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: CustomText().Costum1(
+                      "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
+                      size: 16,
+                      weight: FontWeight.bold),
                 ),
               ],
             ),
-            const Text(
-              "kabul etmiş olursunuz.",
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
+            CustomText().Costum1("kabul etmiş olursunuz."),
           ],
         ),
       ),
