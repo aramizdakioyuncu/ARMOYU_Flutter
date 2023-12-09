@@ -1,15 +1,15 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, prefer_const_constructors_in_immutables
 
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Services/User.dart';
-import 'package:ARMOYU/Services/functions_service.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:flutter/material.dart';
-import '../../Widgets/Skeletons/posts_skeleton.dart';
-import '../../Widgets/posts.dart';
+import 'package:ARMOYU/Widgets/Skeletons/posts_skeleton.dart';
+import 'package:ARMOYU/Widgets/posts.dart';
 
 class SocialPage extends StatefulWidget {
   final ScrollController homepageScrollController;

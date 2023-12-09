@@ -1,9 +1,9 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'dart:developer';
 
-import 'package:ARMOYU/Core/screen.dart';
-import 'package:ARMOYU/Services/theme_service.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Services/Utility/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -145,7 +145,7 @@ class _RestourantPage extends State<RestourantPage> {
             delegate: SliverChildListDelegate(
               [
                 SizedBox(
-                  height: Screen.screenHeight * 0.8,
+                  height: ARMOYU.screenHeight * 0.8,
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2, // Her satırda 2 görsel

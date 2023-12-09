@@ -1,13 +1,14 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, must_call_super, prefer_const_constructors, non_constant_identifier_names
 
-import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
+
 import 'package:ARMOYU/Widgets/post-comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../API_Functions/posts.dart';
-import '../../Services/User.dart';
-import '../../Widgets/posts.dart';
+import 'package:ARMOYU/Functions/API_Functions/posts.dart';
+import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Widgets/posts.dart';
 
 class PostDetailPage extends StatefulWidget {
   final int postID;
@@ -77,11 +78,11 @@ class _PostDetailPage extends State<PostDetailPage>
     }
 
     if (list_comments.length >= 6) {
-      commentheight = Screen.screenHeight * 0.6;
+      commentheight = ARMOYU.screenHeight * 0.6;
     } else if (list_comments.length >= 4) {
-      commentheight = Screen.screenHeight * 0.4;
+      commentheight = ARMOYU.screenHeight * 0.4;
     } else {
-      commentheight = Screen.screenHeight * 0.2;
+      commentheight = ARMOYU.screenHeight * 0.2;
     }
   }
 

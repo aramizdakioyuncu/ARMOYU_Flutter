@@ -2,12 +2,13 @@
 
 import 'dart:developer';
 
-import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
-import 'package:ARMOYU/Services/App.dart';
-import 'package:ARMOYU/Services/functions_service.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,7 +62,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         return;
       }
       try {
-        App.SecurityDetail = response["projegizliliksozlesmesi"];
+        ARMOYU.SecurityDetail = response["projegizliliksozlesmesi"];
       } catch (e) {}
 
       Navigator.pushReplacement(
@@ -97,7 +98,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
             ),
             SizedBox(height: 20),
             CustomButtons().Costum1(
-                "Giriş Yap", checkInternetConnection2, connectionProcess),
+                "Tekrar dene", checkInternetConnection2, connectionProcess),
           ],
         ),
       ),

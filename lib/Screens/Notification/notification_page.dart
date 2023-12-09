@@ -3,8 +3,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import '../Services/functions_service.dart';
-import '../Widgets/notification-bars.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Widgets/notification-bars.dart';
 
 class NotificationPage extends StatefulWidget {
   @override

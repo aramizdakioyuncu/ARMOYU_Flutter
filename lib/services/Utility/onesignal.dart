@@ -3,7 +3,7 @@
 // import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

@@ -1,13 +1,13 @@
 // ignore_for_file: must_call_super, prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, use_build_context_synchronously, unnecessary_overrides, prefer_const_literals_to_create_immutables
 
 import 'dart:io';
-import 'package:ARMOYU/Core/app_core.dart';
-import 'package:ARMOYU/Screens/FullScreenImagePage.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Screens/Utility/FullScreenImagePage.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Functions/API_Functions/posts.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../API_Functions/posts.dart';
 
 class PostSharePage extends StatefulWidget {
   final bool appbar;

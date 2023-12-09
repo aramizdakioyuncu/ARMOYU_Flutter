@@ -1,8 +1,8 @@
 // ignore_for_file: non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, prefer_const_constructors
 
 import 'dart:developer';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 
-import 'package:ARMOYU/Core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,16 +18,16 @@ class ThemeProvider with ChangeNotifier {
       _themeData = ThemeData.dark();
       prefs.setString('thememode', "dark");
 
-      AppCore.textColor = const Color.fromARGB(255, 255, 255, 255);
-      AppCore.textbackColor = Color.fromARGB(255, 56, 56, 56);
-      AppCore.texthintColor = Color.fromARGB(255, 195, 195, 195);
+      ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
+      ARMOYU.textbackColor = Color.fromARGB(255, 56, 56, 56);
+      ARMOYU.texthintColor = Color.fromARGB(255, 195, 195, 195);
     } else {
       _themeData = ThemeData.light();
       prefs.setString('thememode', "light");
 
-      AppCore.textColor = Colors.black;
-      AppCore.textbackColor = Color.fromARGB(255, 193, 193, 193);
-      AppCore.texthintColor = Color.fromARGB(255, 169, 169, 169);
+      ARMOYU.textColor = Colors.black;
+      ARMOYU.textbackColor = Color.fromARGB(255, 193, 193, 193);
+      ARMOYU.texthintColor = Color.fromARGB(255, 169, 169, 169);
     }
 
     notifyListeners();
@@ -42,17 +42,17 @@ class ThemeProvider with ChangeNotifier {
       prefs.setString('thememode', "light");
       log(thememode.toString() + " => light");
 
-      AppCore.textColor = Colors.black;
-      AppCore.textbackColor = Color.fromARGB(255, 193, 193, 193);
-      AppCore.texthintColor = Color.fromARGB(255, 169, 169, 169);
+      ARMOYU.textColor = Colors.black;
+      ARMOYU.textbackColor = Color.fromARGB(255, 193, 193, 193);
+      ARMOYU.texthintColor = Color.fromARGB(255, 169, 169, 169);
     } else {
       _themeData = ThemeData.dark();
       prefs.setString('thememode', "dark");
       log(thememode.toString() + " => dark");
 
-      AppCore.textColor = const Color.fromARGB(255, 255, 255, 255);
-      AppCore.textbackColor = Color.fromARGB(255, 56, 56, 56);
-      AppCore.texthintColor = Color.fromARGB(255, 195, 195, 195);
+      ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
+      ARMOYU.textbackColor = Color.fromARGB(255, 56, 56, 56);
+      ARMOYU.texthintColor = Color.fromARGB(255, 195, 195, 195);
     }
 
     notifyListeners();

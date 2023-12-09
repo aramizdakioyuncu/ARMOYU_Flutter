@@ -11,10 +11,6 @@ class AppCore {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
 
-  static Color? textColor;
-  static Color? textbackColor;
-  static Color? texthintColor;
-
   String getVersion() {
     return "1.0.0";
   }

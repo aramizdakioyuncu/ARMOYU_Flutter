@@ -11,8 +11,8 @@ import 'package:ARMOYU/Services/Socket/socket.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../../Services/functions_service.dart';
-import '../Profile/profile_page.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final bool appbar;

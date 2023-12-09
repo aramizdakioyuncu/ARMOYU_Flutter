@@ -2,12 +2,11 @@
 
 import 'dart:io';
 
-import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
+import 'package:ARMOYU/Services/User.dart';
 
-import '../Services/User.dart';
+import 'package:flutter/material.dart';
 
 // ...
 
@@ -59,14 +58,14 @@ class FullScreenImagePage extends StatelessWidget {
                       child: isFile == true
                           ? Image.file(
                               File(images[index]),
-                              height: Screen.screenHeight / 1,
-                              width: Screen.screenHeight / 1,
+                              height: ARMOYU.screenHeight / 1,
+                              width: ARMOYU.screenHeight / 1,
                               fit: BoxFit.contain,
                             )
                           : CachedNetworkImage(
                               imageUrl: images[index],
-                              height: Screen.screenHeight / 1,
-                              width: Screen.screenHeight / 1,
+                              height: ARMOYU.screenHeight / 1,
+                              width: ARMOYU.screenHeight / 1,
                               fit: BoxFit.contain,
                             ),
                     ),

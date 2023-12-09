@@ -3,11 +3,11 @@
 import 'package:flutter/material.dart';
 import 'dart:developer';
 
-import 'package:ARMOYU/API_Functions/group.dart';
+import 'package:ARMOYU/Functions/API_Functions/group.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import '../API_Functions/profile.dart';
+import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'detectabletext.dart';
 
 class CustomMenusNotificationbars extends StatefulWidget {

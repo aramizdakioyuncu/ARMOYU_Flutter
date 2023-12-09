@@ -2,11 +2,11 @@
 
 import 'dart:async';
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import '../../Services/functions_service.dart';
-import '../../Widgets/search-engine.dart';
-import 'chatdetail_page.dart';
+
+import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Widgets/search-engine.dart';
+import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 
 class ChatPage extends StatefulWidget {
   final bool appbar;

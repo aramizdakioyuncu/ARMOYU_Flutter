@@ -2,12 +2,12 @@
 
 import 'dart:developer';
 
-import 'package:ARMOYU/Services/functions_service.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:flutter/material.dart';
 
-import '../../Widgets/buttons.dart';
-import '../../Widgets/textfields.dart';
+import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Widgets/textfields.dart';
 
 class ResetPasswordPage extends StatefulWidget {
   @override

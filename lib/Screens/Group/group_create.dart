@@ -1,12 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings
 
-import 'dart:developer';
-import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ARMOYU/Functions/API_Functions/category.dart';
+import 'package:ARMOYU/Widgets/textfields.dart';
+
 import 'package:flutter/material.dart';
-import '../../API_Functions/category.dart';
-import '../../Widgets/textfields.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:developer';
 
 const double _kItemExtent = 32.0;
 List<Map<String, String>> cupertinolist = [
@@ -177,7 +178,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                   );
                 },
                 child: Container(
-                  width: Screen.screenWidth - 10,
+                  width: ARMOYU.screenWidth - 10,
                   padding: EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
@@ -214,7 +215,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                   ),
                 ),
                 child: Container(
-                  width: Screen.screenWidth - 10,
+                  width: ARMOYU.screenWidth - 10,
                   padding: EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
@@ -251,7 +252,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                   ),
                 ),
                 child: Container(
-                  width: Screen.screenWidth - 10,
+                  width: ARMOYU.screenWidth - 10,
                   padding: EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(

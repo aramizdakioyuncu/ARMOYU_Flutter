@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable, no_leading_underscores_for_local_identifiers
 
-import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -76,7 +76,7 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
           Center(
             child: SkeletonAvatar(
               style: SkeletonAvatarStyle(
-                width: Screen.screenWidth / 1,
+                width: ARMOYU.screenWidth / 1,
                 height: 400,
               ),
             ),

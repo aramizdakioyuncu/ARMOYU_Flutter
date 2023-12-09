@@ -1,11 +1,11 @@
 // ignore_for_file: use_key_in_widget_constructors, camel_case_types, must_be_immutable, prefer_const_constructors
 
-import 'package:ARMOYU/API_Functions/posts.dart';
+import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../Services/User.dart';
+import 'package:ARMOYU/Services/User.dart';
 
 class Widget_PostComments extends StatefulWidget {
   final int userID;

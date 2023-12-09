@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
-import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomText {
@@ -8,7 +8,7 @@ class CustomText {
     return Text(
       text,
       style: TextStyle(
-        color: AppCore.textColor,
+        color: ARMOYU.textColor,
         fontSize: size,
         fontWeight: weight,
       ),

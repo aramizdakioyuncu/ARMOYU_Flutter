@@ -9,7 +9,7 @@ import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/Chat/chat_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 
-import '../Core/App_core.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
 
 class Pages extends StatefulWidget {
   @override

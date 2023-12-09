@@ -1,20 +1,23 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors
 
 import 'dart:developer';
-import 'package:ARMOYU/Core/app_core.dart';
-import 'package:ARMOYU/Core/screen.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
+
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
+import 'package:ARMOYU/Screens/Utility/FullScreenImagePage.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../API_Functions/media.dart';
-import '../../API_Functions/profile.dart';
-import '../../Services/functions_service.dart';
-import '../../Widgets/buttons.dart';
-import '../../Widgets/posts.dart';
-import '../FullScreenImagePage.dart';
+
+import 'package:ARMOYU/Functions/API_Functions/media.dart';
+import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Widgets/posts.dart';
 
 class ProfilePage extends StatefulWidget {
   int? userID; // Zorunlu olarak alınacak veri
@@ -471,7 +474,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           Radius.circular(30),
                                         ),
                                       ),
-                                      width: Screen.screenWidth / 4,
+                                      width: ARMOYU.screenWidth / 4,
                                       height: 5,
                                     ),
                                   ),
@@ -619,7 +622,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           Radius.circular(30),
                                         ),
                                       ),
-                                      width: Screen.screenWidth / 4,
+                                      width: ARMOYU.screenWidth / 4,
                                       height: 5,
                                     ),
                                   ),
@@ -733,7 +736,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                           ),
                                                         ),
                                                         width:
-                                                            Screen.screenWidth /
+                                                            ARMOYU.screenWidth /
                                                                 4,
                                                         height: 5,
                                                       ),
@@ -1000,7 +1003,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   ),
                   SizedBox(
-                    height: Screen.screenHeight - 300,
+                    height: ARMOYU.screenHeight - 300,
                     child: TabBarView(
                       controller: tabController,
                       children: [

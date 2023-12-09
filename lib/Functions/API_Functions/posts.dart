@@ -1,8 +1,8 @@
-import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../Services/api_service.dart';
+import '../../Services/API/api_service.dart';
 
 class FunctionsPosts {
   final ApiService _apiService = ApiService();

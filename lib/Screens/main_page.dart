@@ -3,19 +3,19 @@
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
-import 'package:ARMOYU/Screens/search_page.dart';
+import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Screens/Utility/CameraScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../Services/barcode_service.dart';
-import '../Services/functions_service.dart';
-import '../Services/theme_service.dart';
-import '../Widgets/menus.dart';
-import 'CameraScreen.dart';
+import 'package:ARMOYU/Services/Utility/barcode.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Services/Utility/theme.dart';
+import 'package:ARMOYU/Widgets/menus.dart';
 import 'LoginRegister/login_page.dart';
 import 'Social/social_page.dart';
-import 'notification_page.dart';
+import 'Notification/notification_page.dart';
 
 class MainPage extends StatefulWidget {
   final changePage;

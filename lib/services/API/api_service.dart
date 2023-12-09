@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:ARMOYU/Core/App_core.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Core/API.dart';
+import 'package:ARMOYU/Services/User.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-import 'User.dart';
-
 class ApiService {
-  final String apiKey = "8cdee5526476b101869401a37c03e379";
-  final String host = "aramizdakioyuncu.com";
-  final String port = ""; // Port numarası
-  final String ssl = "https";
+  final String apiKey = API.KEY; // KEY
+  final String host = API.HOST; // IP
+  final String port = API.PORT; // Port numarası
+  final String ssl = API.SSL; // https // https
 
   AppCore app = AppCore();
 

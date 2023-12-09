@@ -6,9 +6,9 @@ import 'package:ARMOYU/Services/User.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../Core/App_core.dart';
-import 'api_service.dart';
-import 'onesignal.dart';
+import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
+import 'package:ARMOYU/Services/Utility/onesignal.dart';
 
 class FunctionService {
   /*

@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
-import 'package:ARMOYU/Core/app_core.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfields {
@@ -20,13 +20,13 @@ class CustomTextfields {
           borderSide: BorderSide.none,
         ),
         prefixIcon: icon,
-        prefixIconColor: AppCore.textColor,
+        prefixIconColor: ARMOYU.textColor,
         hintText: text,
         hintStyle: TextStyle(
-          color: AppCore.texthintColor,
+          color: ARMOYU.texthintColor,
         ),
         filled: true,
-        fillColor: AppCore.textbackColor,
+        fillColor: ARMOYU.textbackColor,
       ),
     );
   }

@@ -1,18 +1,18 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, avoid_print
 
-import 'package:ARMOYU/Core/screen.dart';
 import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Screens/LoginRegister/resetpassword_page.dart';
-import 'package:ARMOYU/Screens/text_page.dart';
-import 'package:ARMOYU/Widgets/text.dart';
-import 'package:flutter/material.dart';
+import 'package:ARMOYU/Screens/Utility/text_page.dart';
 
-import '../../Services/App.dart';
-import '../../Services/functions_service.dart';
-import '../../Services/theme_service.dart';
-import '../../Widgets/buttons.dart';
-import '../../Widgets/textfields.dart';
+import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Services/Utility/theme.dart';
+import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Widgets/textfields.dart';
+import 'package:ARMOYU/Widgets/text.dart';
+
+import 'package:flutter/material.dart';
 
 final TextEditingController usernameController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 CustomText().Costum1("Hesabınız yok mu?"),
                 SizedBox(
-                  width: Screen.screenWidth / 40,
+                  width: ARMOYU.screenWidth / 40,
                 ),
                 InkWell(
                   onTap: () {
@@ -151,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                             MaterialPageRoute(
                               builder: (context) => TextPage(
                                 texttitle: "Güvenlik Politikası",
-                                textcontent: App.SecurityDetail,
+                                textcontent: ARMOYU.SecurityDetail,
                               ),
                             ),
                           );
@@ -175,7 +175,7 @@ class _LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(
                         builder: (context) => TextPage(
                           texttitle: "Güvenlik Politikası",
-                          textcontent: App.SecurityDetail,
+                          textcontent: ARMOYU.SecurityDetail,
                         ),
                       ),
                     );
