@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors_in_immutables
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
@@ -184,10 +185,10 @@ class _MainPageState extends State<MainPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
         // Arkaplan rengini ayarlayın
-        backgroundColor: Colors.black,
+        backgroundColor: ARMOYU.appbarColor,
 
         elevation: 0,
         leading: Builder(
@@ -219,7 +220,10 @@ class _MainPageState extends State<MainPage>
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.chat_bubble_rounded),
+            icon: Icon(
+              Icons.chat_bubble_rounded,
+              color: ARMOYU.color,
+            ),
             onPressed: () {
               widget.changePage(1);
             },
@@ -256,12 +260,16 @@ class _MainPageState extends State<MainPage>
             Visibility(
               visible: "-12" == "-1" ? true : false,
               child: ListTile(
+                textColor: ARMOYU.textColor,
+                iconColor: ARMOYU.textColor,
                 leading: const Icon(Icons.group),
                 title: const Text("Toplantı"),
                 onTap: () {},
               ),
             ),
             ListTile(
+              textColor: ARMOYU.textColor,
+              iconColor: ARMOYU.textColor,
               leading: const Icon(Icons.article),
               title: const Text("Haberler"),
               onTap: () {},
@@ -269,7 +277,8 @@ class _MainPageState extends State<MainPage>
             Visibility(
               visible: Widget_myGroups.length == 0 ? false : true,
               child: ExpansionTile(
-                leading: Icon(Icons.group),
+                textColor: ARMOYU.textColor,
+                leading: Icon(Icons.group, color: ARMOYU.textColor),
                 title: Text('Gruplarım'),
                 children: Widget_myGroups,
               ),
@@ -277,13 +286,14 @@ class _MainPageState extends State<MainPage>
             Visibility(
               visible: Widget_mySchools.length == 0 ? false : true,
               child: ExpansionTile(
-                leading: Icon(Icons.school),
+                textColor: ARMOYU.textColor,
+                leading: Icon(Icons.school, color: ARMOYU.textColor),
                 title: Text('Okullarım'),
                 children: Widget_mySchools,
               ),
             ),
             ExpansionTile(
-              leading: Icon(Icons.local_drink),
+              leading: Icon(Icons.local_drink, color: ARMOYU.textColor),
               title: Text('Yemek'),
               children: [
                 ListTile(
@@ -308,11 +318,15 @@ class _MainPageState extends State<MainPage>
               ],
             ),
             ListTile(
+              textColor: ARMOYU.textColor,
+              iconColor: ARMOYU.textColor,
               leading: const Icon(Icons.settings),
               title: const Text("Ayarlar"),
               onTap: () {},
             ),
             ListTile(
+              textColor: ARMOYU.textColor,
+              iconColor: ARMOYU.textColor,
               leading: Icon(Icons.exit_to_app),
               title: Text('Çıkış Yap'),
               tileColor: Colors
@@ -334,14 +348,18 @@ class _MainPageState extends State<MainPage>
             ListTile(
               // Sağ tarafta bir buton
               trailing: IconButton(
-                icon: Icon(Icons.nightlight), // Sağdaki butonun ikonu
+                icon: Icon(Icons.nightlight,
+                    color: ARMOYU.textColor), // Sağdaki butonun ikonu
                 onPressed: () {
-                  ThemeProvider().toggleTheme();
+                  setState(() {
+                    ThemeProvider().toggleTheme();
+                  });
                 },
               ),
               // Sol tarafta bir buton
               leading: IconButton(
-                icon: Icon(Icons.qr_code_2_rounded), // Soldaki butonun ikonu
+                icon: Icon(Icons.qr_code_2_rounded,
+                    color: ARMOYU.textColor), // Soldaki butonun ikonu
                 onPressed: () async {
                   BarcodeService bc = BarcodeService();
                   String responsew = await bc.scanQR();

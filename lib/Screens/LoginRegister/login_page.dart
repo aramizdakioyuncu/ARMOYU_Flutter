@@ -9,6 +9,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Services/Utility/theme.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 
@@ -53,10 +54,9 @@ class _LoginPageState extends State<LoginPage> {
       print(response["aciklama"]);
 
       String gelenyanit = response["aciklama"];
-      final snackBar = SnackBar(
-        content: Text(gelenyanit),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+      CustomNotifications.stackbarNotification(context, gelenyanit);
+
       setState(() {
         loginProcess = false;
       });

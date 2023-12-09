@@ -1,16 +1,18 @@
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CustomCards extends StatefulWidget {
-  // final ScrollController controller;
   final List<Map<String, String>> content;
   final Icon icon;
+  final Color effectcolor;
 
   CustomCards({
-    // required this.controller,
     required this.content,
     required this.icon,
+    required this.effectcolor,
   });
 
   @override
@@ -23,7 +25,6 @@ class _CustomCardsState extends State<CustomCards> {
     return SizedBox(
       height: 220,
       child: ListView.separated(
-        // controller: widget.controller,
         shrinkWrap: true,
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         scrollDirection: Axis.horizontal,
@@ -59,7 +60,7 @@ class _CustomCardsState extends State<CustomCards> {
                   borderRadius: BorderRadius.circular(15),
                   gradient: LinearGradient(
                     colors: [
-                      Colors.black.withOpacity(0.7),
+                      widget.effectcolor,
                       Colors.transparent,
                     ],
                     stops: const [0.0, 0.4],

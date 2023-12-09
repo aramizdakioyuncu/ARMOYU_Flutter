@@ -13,7 +13,7 @@ class CustomTextfields {
       textInputAction: TextInputAction.next,
       autofillHints: const [AutofillHints.username],
       obscureText: isPassword,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: ARMOYU.textColor),
       decoration: InputDecoration(
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),

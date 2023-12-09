@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -191,6 +192,7 @@ class _SocialPageState extends State<SocialPage>
     }
 
     Widget_tpusers = CustomCards(
+      effectcolor: Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
       content: Widget_card,
       icon: Icon(
         Icons.auto_graph_outlined,
@@ -219,6 +221,7 @@ class _SocialPageState extends State<SocialPage>
     }
 
     Widget_popusers = CustomCards(
+      effectcolor: Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
       content: Widgetpop_card,
       icon: Icon(
         Icons.remove_red_eye_outlined,
@@ -232,7 +235,7 @@ class _SocialPageState extends State<SocialPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
         color: Colors.blue,
         onRefresh: _handleRefresh,
@@ -252,7 +255,7 @@ class _SocialPageState extends State<SocialPage>
             ),
           ));
         },
-        backgroundColor: Colors.blue,
+        backgroundColor: ARMOYU.buttonColor,
         child: Icon(
           Icons.post_add,
           color: Colors.white,

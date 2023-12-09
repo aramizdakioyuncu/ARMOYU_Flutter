@@ -65,6 +65,7 @@ class _ProfilePageState extends State<ProfilePage>
   bool isbeFriend = false;
   bool isAppBarExpanded = true;
   late ScrollController _scrollControllersliverapp;
+  late ScrollController galleryscrollcontroller;
   bool galleryproccess = false;
   bool first_galleryproccess = false;
 
@@ -86,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage>
       if (tabController.indexIsChanging) {
         if (tabController.index == 1) {
           if (!first_galleryproccess) {
-            gallery(userID);
+            gallery();
             first_galleryproccess = true;
           }
         }
@@ -99,6 +100,15 @@ class _ProfilePageState extends State<ProfilePage>
         isAppBarExpanded = _scrollControllersliverapp.offset <
             100; // veya başka bir eşik değeri
       });
+    });
+
+    galleryscrollcontroller = ScrollController();
+
+    galleryscrollcontroller.addListener(() {
+      if (galleryscrollcontroller.position.pixels ==
+          galleryscrollcontroller.position.maxScrollExtent) {
+        gallery();
+      }
     });
   }
 
@@ -408,17 +418,22 @@ class _ProfilePageState extends State<ProfilePage>
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
 
-  gallery(int Userid) async {
+  int gallerycounter = 0;
+  gallery() async {
     if (galleryproccess) {
       galleryproccess = true;
     }
-    setState(() {
-      imageUrls.clear();
-      imageufakUrls.clear();
-    });
-    log(widget.userID.toString());
+
+    if (gallerycounter == 0) {
+      setState(() {
+        imageUrls.clear();
+        imageufakUrls.clear();
+      });
+    }
+
     FunctionsMedia f = FunctionsMedia();
-    Map<String, dynamic> response = await f.fetch(Userid, "-1", 1);
+    Map<String, dynamic> response =
+        await f.fetch(userID, "-1", gallerycounter + 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -432,6 +447,7 @@ class _ProfilePageState extends State<ProfilePage>
       });
     }
     galleryproccess = false;
+    gallerycounter++;
   }
 
   @override
@@ -1019,6 +1035,7 @@ class _ProfilePageState extends State<ProfilePage>
                           ),
                         ),
                         GridView.builder(
+                          controller: galleryscrollcontroller,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2, // Her satırda 2 görsel

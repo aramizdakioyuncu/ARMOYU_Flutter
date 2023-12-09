@@ -10,24 +10,46 @@ class ThemeProvider with ChangeNotifier {
   ThemeData _themeData = ThemeData.dark();
 
   ThemeData get themeData => _themeData;
+
+  void DarkMode(SharedPreferences prefs) {
+    prefs.setString('thememode', "dark");
+    _themeData = ThemeData.dark();
+
+    ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
+    ARMOYU.textbackColor = Colors.grey.shade900;
+    ARMOYU.texthintColor = Color.fromARGB(255, 195, 195, 195);
+
+    ARMOYU.color = Colors.white;
+    ARMOYU.bacgroundcolor = Colors.grey.shade900;
+    ARMOYU.appbarColor = Colors.black;
+    ARMOYU.bodyColor = Colors.black;
+
+    ARMOYU.buttonColor = Colors.black;
+  }
+
+  void LightMode(SharedPreferences prefs) {
+    prefs.setString('thememode', "light");
+    _themeData = ThemeData.light();
+
+    ARMOYU.textColor = Colors.black;
+    ARMOYU.textbackColor = Colors.grey.shade100;
+    ARMOYU.texthintColor = Color.fromARGB(255, 169, 169, 169);
+
+    ARMOYU.color = Colors.black;
+    ARMOYU.bacgroundcolor = Colors.white;
+    ARMOYU.appbarColor = Colors.white10;
+    ARMOYU.bodyColor = Color.fromARGB(134, 242, 238, 238);
+    ARMOYU.buttonColor = Colors.blue;
+  }
+
   Future<void> StartingTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final thememode = prefs.getString('thememode');
 
     if (thememode.toString() == "dark" || thememode.toString() == "null") {
-      _themeData = ThemeData.dark();
-      prefs.setString('thememode', "dark");
-
-      ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
-      ARMOYU.textbackColor = Color.fromARGB(255, 56, 56, 56);
-      ARMOYU.texthintColor = Color.fromARGB(255, 195, 195, 195);
+      DarkMode(prefs);
     } else {
-      _themeData = ThemeData.light();
-      prefs.setString('thememode', "light");
-
-      ARMOYU.textColor = Colors.black;
-      ARMOYU.textbackColor = Color.fromARGB(255, 193, 193, 193);
-      ARMOYU.texthintColor = Color.fromARGB(255, 169, 169, 169);
+      LightMode(prefs);
     }
 
     notifyListeners();
@@ -38,21 +60,11 @@ class ThemeProvider with ChangeNotifier {
     final thememode = prefs.getString('thememode');
 
     if (thememode.toString() == "dark") {
-      _themeData = ThemeData.light();
-      prefs.setString('thememode', "light");
       log(thememode.toString() + " => light");
-
-      ARMOYU.textColor = Colors.black;
-      ARMOYU.textbackColor = Color.fromARGB(255, 193, 193, 193);
-      ARMOYU.texthintColor = Color.fromARGB(255, 169, 169, 169);
+      LightMode(prefs);
     } else {
-      _themeData = ThemeData.dark();
-      prefs.setString('thememode', "dark");
       log(thememode.toString() + " => dark");
-
-      ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
-      ARMOYU.textbackColor = Color.fromARGB(255, 56, 56, 56);
-      ARMOYU.texthintColor = Color.fromARGB(255, 195, 195, 195);
+      DarkMode(prefs);
     }
 
     notifyListeners();

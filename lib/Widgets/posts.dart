@@ -7,6 +7,7 @@ import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
 import 'package:ARMOYU/Widgets/post-comments.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/gestures.dart';
@@ -182,7 +183,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 child: Column(
                   children: [
                     SizedBox(height: 10),
-                    Text("YORUMLAR"),
+                    CustomText().Costum1("YORUMLAR"),
                     SizedBox(height: 5),
                     Divider(),
                     Expanded(
@@ -529,9 +530,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     return Visibility(
       visible: postVisible,
       child: Container(
-        margin: EdgeInsets.only(bottom: 2),
+        margin: EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: ARMOYU.bacgroundcolor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -572,19 +573,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.username,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Text(
-                            widget.postDate,
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
+                          CustomText().Costum1(widget.username,
+                              size: 16, weight: FontWeight.bold),
+                          CustomText().Costum1(widget.postDate,
+                              size: 16, weight: FontWeight.normal),
                         ],
                       ),
                     ),
@@ -722,7 +714,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             },
         );
       }
-      return TextSpan(text: word + ' ');
+      return TextSpan(text: word + ' ', style: TextStyle(color: ARMOYU.color));
     }).toList();
 
     return RichText(
