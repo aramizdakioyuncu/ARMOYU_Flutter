@@ -61,9 +61,6 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
 
         return;
       }
-      try {
-        ARMOYU.SecurityDetail = response["projegizliliksozlesmesi"];
-      } catch (e) {}
 
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));

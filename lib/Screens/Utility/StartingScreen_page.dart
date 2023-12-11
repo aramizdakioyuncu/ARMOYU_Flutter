@@ -70,9 +70,6 @@ class _StartingScreen extends State<StartingScreen> {
       );
       return;
     }
-    try {
-      ARMOYU.SecurityDetail = response["projegizliliksozlesmesi"];
-    } catch (e) {}
 
     Navigator.pushReplacement(
       context,

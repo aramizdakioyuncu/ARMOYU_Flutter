@@ -145,7 +145,19 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       CustomText().Costum1("Devam ederek"),
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
+                          if (ARMOYU.SecurityDetail == "0") {
+                            FunctionService f = FunctionService();
+                            Map<String, dynamic> response =
+                                await f.getappdetail();
+
+                            if (response["durum"] == 0) {
+                              return;
+                            }
+                            ARMOYU.SecurityDetail =
+                                response["projegizliliksozlesmesi"];
+                          }
+
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -169,7 +181,18 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 InkWell(
-                  onTap: () {
+                  onTap: () async {
+                    if (ARMOYU.SecurityDetail == "0") {
+                      FunctionService f = FunctionService();
+                      Map<String, dynamic> response = await f.getappdetail();
+
+                      if (response["durum"] == 0) {
+                        return;
+                      }
+                      ARMOYU.SecurityDetail =
+                          response["projegizliliksozlesmesi"];
+                    }
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
