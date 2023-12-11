@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
-import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 
