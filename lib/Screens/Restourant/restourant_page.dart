@@ -1,9 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors
 
-import 'dart:developer';
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Services/Utility/theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -160,19 +157,11 @@ class _RestourantPage extends State<RestourantPage> {
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey.shade900,
+                                color: ARMOYU.bacgroundcolor,
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: InkWell(
-                                onTap: () {
-                                  if (ThemeProvider().themeData ==
-                                      ThemeData.dark()) {
-                                    log("DARK");
-                                  } else {
-                                    log("light");
-                                  }
-                                  // log(ThemeProvider().themeData.toString());
-                                },
+                                onTap: () {},
                                 child: Column(
                                   children: [
                                     SizedBox(

@@ -4,6 +4,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
+import 'package:ARMOYU/Screens/School/school_login.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Screens/Utility/CameraScreen.dart';
@@ -62,7 +63,10 @@ class _MainPageState extends State<MainPage>
           child: Icon(Icons.add, size: 30, color: Colors.blue),
         ),
         title: Text("Okula Katıl"),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SchoolLoginPage()));
+        },
       ),
     );
     Widget_myGroups.add(

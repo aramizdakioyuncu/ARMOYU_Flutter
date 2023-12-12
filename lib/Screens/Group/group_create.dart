@@ -1,8 +1,12 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, library_private_types_in_public_api, use_build_context_synchronously
+
+import 'dart:async';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/group.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/category.dart';
+import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 
 import 'package:flutter/material.dart';
@@ -38,6 +42,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
 
   bool groupcreateProcess = false;
 
+  bool isProcces = false;
   @override
   void initState() {
     super.initState();
@@ -58,7 +63,6 @@ class _GroupCreatePageState extends State<GroupCreatePage>
       return;
     }
 
-    print(response);
     listname.clear();
     for (dynamic element in response['icerik']) {
       listname.add({
@@ -77,7 +81,6 @@ class _GroupCreatePageState extends State<GroupCreatePage>
       return;
     }
 
-    print(response);
     listname.clear();
     for (dynamic element in response['icerik']) {
       listname.add({
@@ -87,7 +90,27 @@ class _GroupCreatePageState extends State<GroupCreatePage>
     }
   }
 
-  void onPressed() {}
+  Future<void> creategroupfunction() async {
+    if (groupcreateProcess) {
+      return;
+    }
+    groupcreateProcess = true;
+    FunctionsGroup f = FunctionsGroup();
+    Map<String, dynamic> response = await f.groupcreate(
+        groupname.text,
+        groupshortname.text,
+        _selectedcupertinolist,
+        _selectedcupertinolist2,
+        _selectedcupertinolist3);
+    if (response["durum"] == 0) {
+      String text = response["aciklama"];
+      CustomNotifications.stackbarNotification(context, text);
+      groupcreateProcess = false;
+
+      return;
+    }
+    groupcreateProcess = false;
+  }
 
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
@@ -107,9 +130,10 @@ class _GroupCreatePageState extends State<GroupCreatePage>
     );
   }
 
+  TextEditingController groupshortname = TextEditingController();
+  TextEditingController groupname = TextEditingController();
+
   CustomTextfields asa = CustomTextfields();
-  TextEditingController a = TextEditingController();
-  TextEditingController abc = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,13 +148,19 @@ class _GroupCreatePageState extends State<GroupCreatePage>
           child: Column(
             children: [
               SizedBox(height: 16),
-              asa.Costum1("Grup Adı", abc, false, Icon(Icons.business)),
+              asa.Costum1("Grup Adı", groupname, false, Icon(Icons.business)),
               SizedBox(height: 16),
-              asa.Costum1("Grup Kısa Adı", a, false, Icon(Icons.label)),
+              asa.Costum1(
+                  "Grup Kısa Adı", groupshortname, false, Icon(Icons.label)),
               SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () async {
+                  if (isProcces) {
+                    return;
+                  }
+
+                  isProcces = true;
                   _showDialog(
                     CupertinoPicker(
                       magnification: 1.22,
@@ -145,28 +175,43 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                           _selectedcupertinolist = selectedItem;
                         });
 
-                        groupdetailfetch(
-                            cupertinolist[selectedItem]["ID"].toString(),
-                            cupertinolist2);
+                        Timer _searchTimer =
+                            Timer(Duration(milliseconds: 300), () async {
+                          // log(_selectedcupertinolist.toString());
+                          // log(selectedItem.toString());
+                          if (_selectedcupertinolist.toString() !=
+                              selectedItem.toString()) {
+                            isProcces = false;
+                            return;
+                          }
 
-                        print(cupertinolist[selectedItem]["value"].toString());
+                          groupdetailfetch(
+                              cupertinolist[selectedItem]["ID"].toString(),
+                              cupertinolist2);
 
-                        if (cupertinolist[selectedItem]["value"].toString() ==
-                            "E-spor") {
-                          groupcreaterequest("E-spor", cupertinolist3);
+                          if (cupertinolist[selectedItem]["value"].toString() ==
+                              "E-spor") {
+                            groupcreaterequest("E-spor", cupertinolist3);
+                            isProcces = false;
 
-                          return;
-                        }
-                        if (cupertinolist[selectedItem]["value"].toString() ==
-                            "Spor") {
-                          groupcreaterequest("Spor", cupertinolist3);
-                          return;
-                        }
-                        if (cupertinolist[selectedItem]["value"].toString() ==
-                            "Yazılım & Geliştirme") {
-                          groupcreaterequest("projeler", cupertinolist3);
-                          return;
-                        }
+                            return;
+                          }
+                          if (cupertinolist[selectedItem]["value"].toString() ==
+                              "Spor") {
+                            groupcreaterequest("Spor", cupertinolist3);
+                            isProcces = false;
+
+                            return;
+                          }
+                          if (cupertinolist[selectedItem]["value"].toString() ==
+                              "Yazılım & Geliştirme") {
+                            groupcreaterequest("projeler", cupertinolist3);
+                            isProcces = false;
+
+                            return;
+                          }
+                          isProcces = false;
+                        });
                       },
                       children: List<Widget>.generate(cupertinolist.length,
                           (int index) {
@@ -264,7 +309,8 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 ),
               ),
               SizedBox(height: 16),
-              buttons.Costum1("Oluştur", onPressed, groupcreateProcess),
+              buttons.Costum1(
+                  "Oluştur", creategroupfunction, groupcreateProcess),
             ],
           ),
         ),
