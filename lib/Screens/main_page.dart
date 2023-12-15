@@ -5,6 +5,7 @@ import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
 import 'package:ARMOYU/Screens/School/school_login.dart';
+import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Screens/Utility/CameraScreen.dart';
@@ -165,7 +166,6 @@ class _MainPageState extends State<MainPage>
     }
     int dynamicItemCount = response["icerik"].length;
     setState(() {
-      // Widget_mySchools.clear();
       for (int i = 0; i < dynamicItemCount; i++) {
         Widget_mySchools.add(
           ListTile(
@@ -179,7 +179,12 @@ class _MainPageState extends State<MainPage>
               ),
             ),
             title: Text(response["icerik"][i]["okul_adi"]),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SchoolPage(SchoolID: 1)));
+            },
           ),
         );
       }

@@ -175,10 +175,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                           _selectedcupertinolist = selectedItem;
                         });
 
-                        Timer _searchTimer =
-                            Timer(Duration(milliseconds: 300), () async {
-                          // log(_selectedcupertinolist.toString());
-                          // log(selectedItem.toString());
+                        Timer(Duration(milliseconds: 700), () async {
                           if (_selectedcupertinolist.toString() !=
                               selectedItem.toString()) {
                             isProcces = false;

@@ -21,6 +21,12 @@ List<Map<String, String>> cupertinolist = [
     'logo': "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png"
   }
 ];
+List<Map<String, String>> cupertinolist2 = [
+  {
+    'ID': '-1',
+    'value': 'Sınıf Seç',
+  }
+];
 
 class SchoolLoginPage extends StatefulWidget {
   // GroupCreatePage({});
@@ -34,6 +40,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   bool get wantKeepAlive => true;
 
   int _selectedcupertinolist = 0;
+  int _selectedcupertinolist2 = 0;
 
   CustomButtons buttons = CustomButtons();
   bool groupcreateProcess = false;
@@ -57,6 +64,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     }
 
     listname.clear();
+    listname.add({'ID': "-1", 'value': "Okul Seç", 'logo': Schoollogo});
     for (dynamic element in response['icerik']) {
       listname.add({
         'ID': element["ID"].toString(),
@@ -66,7 +74,48 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     }
   }
 
-  Future<void> loginschool() async {}
+  Future<void> getschoolclass(
+      String schoolID, List<Map<String, String>> listname) async {
+    FunctionsSchool f = FunctionsSchool();
+
+    log(schoolID);
+    Map<String, dynamic> response = await f.getschoolclass(schoolID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    listname.clear();
+    listname.add({
+      'ID': "-1",
+      'value': "Sınıf Seç",
+    });
+
+    for (dynamic element in response['icerik']) {
+      listname.add({
+        'ID': element["ID"].toString(),
+        'value': element["Value"],
+      });
+    }
+  }
+
+  Future<void> loginschool() async {
+    FunctionsSchool f = FunctionsSchool();
+
+    String? schoolID = cupertinolist[_selectedcupertinolist]["ID"];
+    String? classID = cupertinolist2[_selectedcupertinolist2]["ID"];
+    String? jobID = "123";
+    String classPassword = schoolpassword.text;
+
+    Map<String, dynamic> response =
+        await f.joinschool(schoolID!, classID!, jobID!, classPassword);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    Navigator.pop(context);
+  }
 
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
@@ -93,10 +142,9 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Grup Oluştur"),
+        title: Text("Okul Seçim"),
         backgroundColor: Colors.black,
-      ), // Set the AppBar to null if it should be hidden
-
+      ),
       body: RefreshIndicator(
         onRefresh: () => _handleRefresh(),
         child: SingleChildScrollView(
@@ -105,7 +153,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
               SizedBox(height: 16),
               CachedNetworkImage(
                 imageUrl: Schoollogo,
-                width: ARMOYU.screenWidth * 0.8,
+                height: 250,
                 fit: BoxFit.cover,
               ),
               SizedBox(height: 16),
@@ -129,6 +177,20 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                             Schoollogo = cupertinolist[_selectedcupertinolist]
                                     ["logo"]
                                 .toString();
+
+                            Timer(Duration(milliseconds: 700), () async {
+                              if (_selectedcupertinolist.toString() !=
+                                  selectedItem.toString()) {
+                                // isProcces = false;
+                                return;
+                              }
+
+                              getschoolclass(
+                                  cupertinolist[_selectedcupertinolist]["ID"]!,
+                                  cupertinolist2);
+
+                              // isProcces = false;
+                            });
                           } catch (e) {}
                         });
                       },
@@ -147,6 +209,45 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                   color: Colors.grey.shade900,
                   child: Text(
                     cupertinolist[_selectedcupertinolist]["value"].toString(),
+                    style: const TextStyle(
+                      fontSize: 22.0,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: () async {
+                  _showDialog(
+                    CupertinoPicker(
+                      magnification: 1.22,
+                      squeeze: 1.2,
+                      useMagnifier: true,
+                      itemExtent: _kItemExtent,
+                      scrollController: FixedExtentScrollController(
+                        initialItem: _selectedcupertinolist2,
+                      ),
+                      onSelectedItemChanged: (int selectedItem) async {
+                        setState(() {
+                          _selectedcupertinolist2 = selectedItem;
+                        });
+                      },
+                      children: List<Widget>.generate(cupertinolist2.length,
+                          (int index) {
+                        return Center(
+                            child: Text(
+                                cupertinolist2[index]["value"].toString()));
+                      }),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: ARMOYU.screenWidth - 10,
+                  padding: EdgeInsets.all(16.0),
+                  color: Colors.grey.shade900,
+                  child: Text(
+                    cupertinolist2[_selectedcupertinolist2]["value"].toString(),
                     style: const TextStyle(
                       fontSize: 22.0,
                     ),

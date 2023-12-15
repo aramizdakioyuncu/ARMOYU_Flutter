@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, must_call_super, prefer_const_constructors, non_constant_identifier_names
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, must_call_super, prefer_const_constructors, non_constant_identifier_names, avoid_print
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 

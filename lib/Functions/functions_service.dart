@@ -222,15 +222,15 @@ class FunctionService {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getplayerxp() async {
-    Map<String, String> formData = {};
+  Future<Map<String, dynamic>> getplayerxp(int page) async {
+    Map<String, String> formData = {"sayfa": "$page"};
     Map<String, dynamic> jsonData =
         await apiService.request("xpsiralama/0/0/", formData);
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getplayerpop() async {
-    Map<String, String> formData = {};
+  Future<Map<String, dynamic>> getplayerpop(int page) async {
+    Map<String, String> formData = {"sayfa": "$page"};
     Map<String, dynamic> jsonData =
         await apiService.request("popsiralama/0/0/", formData);
     return jsonData;

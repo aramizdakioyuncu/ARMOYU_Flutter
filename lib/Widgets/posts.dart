@@ -211,7 +211,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           child: Container(
                             alignment: Alignment.center,
                             padding: EdgeInsets.all(5),
-                            height: 50,
+                            height: 55,
                             child: Center(
                               child: Container(
                                 padding: EdgeInsets.only(left: 5),
@@ -273,19 +273,21 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         return;
       }
     }
-    setState(() {
-      if (postlikeColor == Colors.red) {
-        postlikeColor = Colors.grey;
-        postlikeIcon = Icon(Icons.favorite_border);
-        widget.postlikeCount--;
-        widget.postMelike = 0;
-      } else {
-        postlikeColor = Colors.red;
-        postlikeIcon = Icon(Icons.favorite_sharp);
-        widget.postlikeCount++;
-        widget.postMelike = 1;
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (postlikeColor == Colors.red) {
+          postlikeColor = Colors.grey;
+          postlikeIcon = Icon(Icons.favorite_border);
+          widget.postlikeCount--;
+          widget.postMelike = 0;
+        } else {
+          postlikeColor = Colors.red;
+          postlikeIcon = Icon(Icons.favorite_sharp);
+          widget.postlikeCount++;
+          widget.postMelike = 1;
+        }
+      });
+    }
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.likeordislike(widget.postID);
     if (response["durum"] == 0) {

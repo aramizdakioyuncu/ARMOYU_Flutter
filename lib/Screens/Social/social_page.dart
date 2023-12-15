@@ -7,7 +7,9 @@ import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
+import 'package:ARMOYU/Widgets/Skeletons/storycircle_skeleton.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
+import 'package:ARMOYU/Widgets/storycircle.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
@@ -40,6 +42,16 @@ class _SocialPageState extends State<SocialPage>
 
   List<Widget> Widget_Posts = [];
   List<Map<String, String>> Widget_card = [];
+  List<Map<String, String>> Widget_storiescard = [];
+
+  final List<String> stories = [
+    'https://aramizdakioyuncu.com/galeri/profilresimleri/11324profilresimminnak1696280335.jpeg',
+    'https://aramizdakioyuncu.com/galeri/profilresimleri/81profilresimminnak1645707880.jpg',
+    'https://aramizdakioyuncu.com/galeri/profilresimleri/10544profilresimminnak1653678424.jpeg',
+    'ahttps://aramizdakioyuncu.com/galeri/profilresimleri/10904profilresimminnak1683937729.jpeg',
+  ];
+  Widget? Widget_stories;
+
   Widget? Widget_tpusers;
   Widget? Widget_popusers;
   @override
@@ -62,6 +74,33 @@ class _SocialPageState extends State<SocialPage>
     });
 
     loadPosts(postpage);
+  }
+
+  Future<void> fetchstoryWidget() async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.getplayerxp(1);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    Widget_storiescard.add({
+      "userID": User.ID.toString(),
+      "image": User.avatarbetter,
+      "displayname": User.displayName,
+    });
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      Widget_storiescard.add({
+        "userID": response["icerik"][i]["oyuncuID"].toString(),
+        "image": response["icerik"][i]["oyuncuavatar"],
+        "displayname": response["icerik"][i]["oyuncuadsoyad"],
+      });
+    }
+
+    setState(() {
+      Widget_stories = Widget_Storycircle(content: Widget_storiescard);
+    });
   }
 
   Future<void> _handleRefresh() async {
@@ -95,6 +134,8 @@ class _SocialPageState extends State<SocialPage>
     }
     if (page == 1) {
       Widget_Posts.clear();
+
+      Widget_Posts.add(Widget_stories!);
     }
     int dynamicItemCount = response["icerik"].length;
     for (int i = 0; i < dynamicItemCount; i++) {
@@ -152,6 +193,8 @@ class _SocialPageState extends State<SocialPage>
   Future<void> loadSkeletonpost() async {
     setState(() {
       Widget_Posts.clear();
+      Widget_Posts.add(SkeletonStorycircle(count: 11));
+
       Widget_Posts.add(SkeletonSocailPosts());
       Widget_Posts.add(SkeletonSocailPosts());
       Widget_Posts.add(SkeletonSocailPosts());
@@ -166,6 +209,8 @@ class _SocialPageState extends State<SocialPage>
   Future<void> loadPosts(int page) async {
     if (page == 1) {
       postpage = 1;
+      await fetchstoryWidget();
+
       await loadXP_Cards(1);
       await loadpop_Cards(1);
     }
@@ -176,7 +221,7 @@ class _SocialPageState extends State<SocialPage>
 
   Future<void> loadXP_Cards(int page) async {
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getplayerxp();
+    Map<String, dynamic> response = await f.getplayerxp(1);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -190,8 +235,11 @@ class _SocialPageState extends State<SocialPage>
         "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
       });
     }
+    ScrollController scrollController = ScrollController();
 
     Widget_tpusers = CustomCards(
+      title: "TP",
+      scrollController: scrollController,
       effectcolor: Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
       content: Widget_card,
       icon: Icon(
@@ -204,7 +252,7 @@ class _SocialPageState extends State<SocialPage>
 
   Future<void> loadpop_Cards(int page) async {
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getplayerpop();
+    Map<String, dynamic> response = await f.getplayerpop(1);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -219,8 +267,11 @@ class _SocialPageState extends State<SocialPage>
         "score": response["icerik"][i]["oyuncupop"].toString()
       });
     }
+    ScrollController scrollController = ScrollController();
 
     Widget_popusers = CustomCards(
+      scrollController: scrollController,
+      title: "POP",
       effectcolor: Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
       content: Widgetpop_card,
       icon: Icon(
@@ -229,7 +280,6 @@ class _SocialPageState extends State<SocialPage>
         color: Colors.white,
       ),
     );
-    setState(() {});
   }
 
   @override
