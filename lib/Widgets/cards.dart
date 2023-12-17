@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_final_fields
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_final_fields, must_be_immutable
 
 import 'dart:developer';
 

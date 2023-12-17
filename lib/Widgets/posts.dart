@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
 import 'package:ARMOYU/Widgets/post-comments.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -78,10 +79,15 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   Color postrepostColor = Colors.grey;
 
   Future<void> getcommentsfetch(int PostID, List<Widget> list_comments) async {
-    setState(() {
-      list_comments.clear();
-      list_comments.add(CircularProgressIndicator());
-    });
+    if (list_comments.isEmpty) {
+      setState(() {
+        list_comments.clear();
+        list_comments.add(SkeletonComments());
+        list_comments.add(SkeletonComments());
+        list_comments.add(SkeletonComments());
+      });
+    }
+
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.commentsfetch(PostID);
     if (response["durum"] == 0) {

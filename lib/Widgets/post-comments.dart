@@ -107,19 +107,21 @@ class _Widget_PostComments extends State<Widget_PostComments> {
                 return;
               }
               if (response['aciklama'] == "Paylaşımı beğendin.") {
-                setState(() {
-                  if (currentstatus == 1) {
-                    widget.islike = 1;
-                    // widget.commentslikecount++;
-                  }
-                });
+                if (mounted) {
+                  setState(() {
+                    if (currentstatus == 1) {
+                      widget.islike = 1;
+                    }
+                  });
+                }
               } else {
-                setState(() {
-                  if (currentstatus == 0) {
-                    widget.islike = 0;
-                    // widget.commentslikecount--;
-                  }
-                });
+                if (mounted) {
+                  setState(() {
+                    if (currentstatus == 0) {
+                      widget.islike = 0;
+                    }
+                  });
+                }
               }
             },
             icon: favoritestatus,

@@ -108,7 +108,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     String classPassword = schoolpassword.text;
 
     Map<String, dynamic> response =
-        await f.joinschool(schoolID!, classID!, jobID!, classPassword);
+        await f.joinschool(schoolID!, classID!, jobID, classPassword);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
