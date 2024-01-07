@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/school.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Widgets/notifications.dart';
 
 import 'package:ARMOYU/Widgets/textfields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -39,11 +40,11 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   @override
   bool get wantKeepAlive => true;
 
+  bool SchoolProcess = false;
   int _selectedcupertinolist = 0;
   int _selectedcupertinolist2 = 0;
 
   CustomButtons buttons = CustomButtons();
-  bool groupcreateProcess = false;
 
   String Schoollogo = "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png";
   @override
@@ -100,8 +101,11 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   }
 
   Future<void> loginschool() async {
+    if (SchoolProcess) {
+      return;
+    }
+    SchoolProcess = true;
     FunctionsSchool f = FunctionsSchool();
-
     String? schoolID = cupertinolist[_selectedcupertinolist]["ID"];
     String? classID = cupertinolist2[_selectedcupertinolist2]["ID"];
     String? jobID = "123";
@@ -109,12 +113,16 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
 
     Map<String, dynamic> response =
         await f.joinschool(schoolID!, classID!, jobID, classPassword);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      return;
+
+    String gelenyanit = response["aciklama"];
+    if (mounted) {
+      CustomNotifications.stackbarNotification(context, gelenyanit);
     }
 
-    Navigator.pop(context);
+    if (response["durum"] == 1) {
+      Navigator.of(context).pop();
+    }
+    SchoolProcess = false;
   }
 
   void _showDialog(Widget child) {
@@ -255,9 +263,10 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 ),
               ),
               SizedBox(height: 16),
-              asa.Costum1("Parola", schoolpassword, true, Icon(Icons.security)),
+              asa.Costum1("Parola", schoolpassword, true, Icon(Icons.security),
+                  TextInputType.number),
               SizedBox(height: 16),
-              buttons.Costum1("Katıl", loginschool, groupcreateProcess),
+              buttons.Costum1("Katıl", loginschool, SchoolProcess),
             ],
           ),
         ),

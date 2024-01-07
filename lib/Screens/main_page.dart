@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors_in_immutables, empty_catches
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
@@ -40,7 +40,11 @@ class _MainPageState extends State<MainPage>
   String useravatar = 'assets/images/armoyu128.png';
   String userbanner = 'assets/images/test.jpg';
 
-  int drawerilkacilis = 0;
+  bool drawermyschool = false;
+  bool drawermygroup = false;
+  bool appbar_Search = false;
+  final TextEditingController appbar_SearchTextController =
+      TextEditingController();
 
   int postpage = 1;
   bool postpageproccess = false;
@@ -104,6 +108,14 @@ class _MainPageState extends State<MainPage>
       return;
     }
 
+    if (page.toString() == "1") {
+      setState(() {
+        appbar_Search = true;
+      });
+    } else {
+      appbar_Search = false;
+    }
+
     setState(() {
       _currentPage = page;
       // _pageController.jumpToPage(page);
@@ -130,27 +142,28 @@ class _MainPageState extends State<MainPage>
     }
     int dynamicItemCount = response["icerik"].length;
 
-    setState(() {
-      // Widget_myGroups.clear();
-
-      for (int i = 0; i < dynamicItemCount; i++) {
-        Widget_myGroups.add(
-          ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: CachedNetworkImage(
-                imageUrl: response["icerik"][i]["grupminnaklogo"],
-                width: 30,
-                height: 30,
-                fit: BoxFit.cover,
+    if (mounted) {
+      drawermygroup = true;
+      setState(() {
+        for (int i = 0; i < dynamicItemCount; i++) {
+          Widget_myGroups.add(
+            ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: CachedNetworkImage(
+                  imageUrl: response["icerik"][i]["grupminnaklogo"],
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                ),
               ),
+              title: Text(response["icerik"][i]["grupadi"]),
+              onTap: () {},
             ),
-            title: Text(response["icerik"][i]["grupadi"]),
-            onTap: () {},
-          ),
-        );
-      }
-    });
+          );
+        }
+      });
+    }
   }
 
   Future<void> loadMySchools() async {
@@ -165,30 +178,34 @@ class _MainPageState extends State<MainPage>
       return;
     }
     int dynamicItemCount = response["icerik"].length;
-    setState(() {
-      for (int i = 0; i < dynamicItemCount; i++) {
-        Widget_mySchools.add(
-          ListTile(
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: CachedNetworkImage(
-                imageUrl: response["icerik"][i]["okul_minnaklogo"],
-                width: 30,
-                height: 30,
-                fit: BoxFit.cover,
+
+    if (mounted) {
+      drawermyschool = true;
+      setState(() {
+        for (int i = 0; i < dynamicItemCount; i++) {
+          Widget_mySchools.add(
+            ListTile(
+              leading: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: CachedNetworkImage(
+                  imageUrl: response["icerik"][i]["okul_minnaklogo"],
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                ),
               ),
+              title: Text(response["icerik"][i]["okul_adi"]),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SchoolPage(SchoolID: 1)));
+              },
             ),
-            title: Text(response["icerik"][i]["okul_adi"]),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SchoolPage(SchoolID: 1)));
-            },
-          ),
-        );
-      }
-    });
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -205,10 +222,11 @@ class _MainPageState extends State<MainPage>
             return GestureDetector(
               onTap: () {
                 Scaffold.of(context).openDrawer();
-                if (drawerilkacilis == 0) {
-                  loadMyGroups();
+                if (!drawermyschool) {
                   loadMySchools();
-                  drawerilkacilis = 1;
+                }
+                if (!drawermygroup) {
+                  loadMyGroups();
                 }
               },
               child: Container(
@@ -226,6 +244,33 @@ class _MainPageState extends State<MainPage>
               ),
             );
           },
+        ),
+        title: Visibility(
+          visible: appbar_Search,
+          child: Container(
+            height: 35,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius:
+                  BorderRadius.circular(10.0), // Köşe yuvarlama eklemek
+            ),
+            child: TextField(
+              controller: appbar_SearchTextController,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  Icons.search,
+                  size: 20,
+                ),
+                hintText: 'Ara',
+                border: InputBorder.none,
+                hintStyle: TextStyle(color: Colors.grey),
+              ),
+            ),
+          ),
         ),
         actions: <Widget>[
           IconButton(
@@ -393,7 +438,8 @@ class _MainPageState extends State<MainPage>
               SocialPage(homepageScrollController: homepageScrollController),
             ],
           ),
-          SearchPage(appbar: true),
+          SearchPage(
+              appbar: true, searchController: appbar_SearchTextController),
           NotificationPage(),
           ProfilePage(userID: userID, appbar: false),
         ],

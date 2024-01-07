@@ -4,12 +4,13 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfields {
-  Widget Costum1(String text, TextEditingController controller, bool isPassword,
-      Icon icon) {
+  Widget Costum1(
+      String text, TextEditingController controller, bool isPassword, Icon icon,
+      [TextInputType? type]) {
     return TextField(
       controller: controller,
       //sadece isim için olunca @ ! gibi işaretler olmuyor
-      // keyboardType: TextInputType.name,
+      keyboardType: type,
       textInputAction: TextInputAction.next,
       autofillHints: const [AutofillHints.username],
       obscureText: isPassword,

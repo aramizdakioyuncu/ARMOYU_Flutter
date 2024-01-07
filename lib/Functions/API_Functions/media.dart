@@ -8,6 +8,7 @@ class FunctionsMedia {
     Map<String, String> formData = {
       "oyuncubakid": "$uyeID",
       "kategori": "$category",
+      "limit": "30",
       "sayfa": "$page"
     };
     Map<String, dynamic> jsonData =

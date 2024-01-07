@@ -52,9 +52,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     } else {
       print(response["aciklama"]);
-
       String gelenyanit = response["aciklama"];
-
       CustomNotifications.stackbarNotification(context, gelenyanit);
 
       setState(() {
@@ -86,8 +84,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             SizedBox(height: 16.0),
-            CustomTextfields().Costum1("Kullanıcı Adınız", usernameController,
-                false, Icon(Icons.person)),
+            CustomTextfields().Costum1(
+              "Kullanıcı Adı/E-posta",
+              usernameController,
+              false,
+              Icon(Icons.person),
+              TextInputType.emailAddress,
+            ),
             SizedBox(height: 16),
             CustomTextfields().Costum1(
                 "Şifreniz", passwordController, true, Icon(Icons.lock_outline)),

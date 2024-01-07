@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:flutter/material.dart';
 
@@ -80,6 +81,8 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     if (response["durum"] == 1) {
+      usernameController.text = _usernameController.text;
+
       Navigator.of(context).pop();
       setState(() {
         registerProccess = false;
@@ -117,8 +120,13 @@ class _RegisterPageState extends State<RegisterPage> {
             CustomTextfields().Costum1("Kullanıcı Adınız", _usernameController,
                 false, Icon(Icons.person)),
             SizedBox(height: 16),
-            CustomTextfields()
-                .Costum1("E-posta", _emailController, false, Icon(Icons.email)),
+            CustomTextfields().Costum1(
+              "E-posta",
+              _emailController,
+              false,
+              Icon(Icons.email),
+              TextInputType.emailAddress,
+            ),
             SizedBox(height: 16),
             CustomTextfields().Costum1("Şifreniz", _passwordController, true,
                 Icon(Icons.lock_outline)),

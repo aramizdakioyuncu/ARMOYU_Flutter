@@ -10,8 +10,9 @@ import 'package:ARMOYU/Widgets/search-engine.dart';
 
 class SearchPage extends StatefulWidget {
   final bool appbar;
+  final TextEditingController searchController;
 
-  SearchPage({required this.appbar});
+  SearchPage({required this.appbar, required this.searchController});
 
   @override
   _SearchPagePage createState() => _SearchPagePage();
@@ -26,11 +27,27 @@ class _SearchPagePage extends State<SearchPage>
   bool get wantKeepAlive => true;
 
   final ScrollController _scrollController = ScrollController();
-  final TextEditingController _searchController = TextEditingController();
+  // final TextEditingController _searchController = TextEditingController();
   List<Widget> Widget_search = [];
   @override
   void initState() {
     super.initState();
+    widget.searchController.addListener(_onSearchTextChanged);
+
+    log(widget.searchController.text);
+  }
+
+  // Function to handle changes in the text field
+  void _onSearchTextChanged() {
+    searchfunction(widget.searchController, widget.searchController.text);
+    // You can perform additional actions here based on the changed text
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed
+    widget.searchController.dispose();
+    super.dispose();
   }
 
   Future<void> loadSkeletonpost() async {
@@ -106,40 +123,6 @@ class _SearchPagePage extends State<SearchPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
-      appBar: widget.appbar
-          ? AppBar(
-              title: Container(
-                height: 35,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade900,
-                  borderRadius:
-                      BorderRadius.circular(10.0), // Köşe yuvarlama eklemek
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                  ),
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 20,
-                    ),
-                    hintText: 'Ara',
-                    border: InputBorder.none,
-                    hintStyle: TextStyle(color: Colors.grey),
-                  ),
-                  onChanged: (text) {
-                    // Her metin değişikliğinde fonksiyonu çağırın
-                    searchfunction(_searchController, text);
-                  },
-                ),
-              ),
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.black,
-            )
-          : null,
       body: ListView.builder(
         controller: _scrollController,
         itemCount: Widget_search.length,

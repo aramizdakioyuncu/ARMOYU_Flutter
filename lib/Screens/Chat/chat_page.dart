@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:developer';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -20,6 +21,8 @@ class ChatPage extends StatefulWidget {
 final ScrollController _scrollController = ScrollController();
 
 List<Widget> Widget_search = [];
+List<Widget> filtered_Widget_search = [];
+
 bool chatsearchprocess = false;
 
 class _ChatPageState extends State<ChatPage>
@@ -78,6 +81,9 @@ class _ChatPageState extends State<ChatPage>
         ));
       });
     }
+
+    filtered_Widget_search.addAll(Widget_search);
+    // widget.searchController.addListener(_onSearchChanged);
   }
 
   @override
@@ -105,6 +111,14 @@ class _ChatPageState extends State<ChatPage>
           itemBuilder: (BuildContext context, index) {
             return Widget_search[index];
           },
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: ARMOYU.buttonColor,
+        child: Icon(
+          Icons.chat,
+          color: Colors.white,
         ),
       ),
     );

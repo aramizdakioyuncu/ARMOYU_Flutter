@@ -44,7 +44,6 @@ class _GalleryScreenState extends State<GalleryScreen>
 
   Future<void> startingfunction() async {
     await galleryfetch();
-    await galleryfetch();
   }
 
   Future<void> galleryfetch() async {

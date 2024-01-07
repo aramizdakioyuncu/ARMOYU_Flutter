@@ -42,6 +42,8 @@ class _SocialPageState extends State<SocialPage>
 
   List<Widget> Widget_Posts = [];
   List<Map<String, String>> Widget_card = [];
+  List<Map<String, String>> Widgetpop_card = [];
+
   List<Map<String, String>> Widget_storiescard = [];
 
   final List<String> stories = [
@@ -76,7 +78,7 @@ class _SocialPageState extends State<SocialPage>
     loadPosts(postpage);
   }
 
-  Future<void> fetchstoryWidget() async {
+  Future<void> fetchstoryWidget(int page) async {
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getplayerxp(1);
     if (response["durum"] == 0) {
@@ -206,14 +208,19 @@ class _SocialPageState extends State<SocialPage>
     });
   }
 
+  Future<void> fetchInternetdatas() async {
+    fetchstoryWidget(1);
+    loadXP_Cards(1);
+    loadpop_Cards(1);
+  }
+
   Future<void> loadPosts(int page) async {
     if (page == 1) {
       postpage = 1;
-      await fetchstoryWidget();
 
-      await loadXP_Cards(1);
-      await loadpop_Cards(1);
+      await fetchInternetdatas();
     }
+
     await loadPostsv2(page);
 
     postpageproccess = false;
@@ -226,7 +233,9 @@ class _SocialPageState extends State<SocialPage>
       log(response["aciklama"]);
       return;
     }
-
+    if (page == 1) {
+      Widget_card.clear();
+    }
     for (int i = 0; i < response["icerik"].length; i++) {
       Widget_card.add({
         "userID": response["icerik"][i]["oyuncuID"].toString(),
@@ -257,8 +266,9 @@ class _SocialPageState extends State<SocialPage>
       log(response["aciklama"]);
       return;
     }
-
-    List<Map<String, String>> Widgetpop_card = [];
+    if (page == 1) {
+      Widgetpop_card.clear();
+    }
     for (int i = 0; i < response["icerik"].length; i++) {
       Widgetpop_card.add({
         "userID": response["icerik"][i]["oyuncuID"].toString(),

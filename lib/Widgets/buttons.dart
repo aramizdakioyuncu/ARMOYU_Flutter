@@ -71,22 +71,20 @@ class CustomButtons {
   }
 
   Widget Costum2(Icon icon, String text, onPressed) {
-    return Container(
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey.shade900,
-          foregroundColor: Colors.white,
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.grey.shade900,
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[icon, SizedBox(width: 10), Text(text)],
-        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[icon, SizedBox(width: 10), Text(text)],
       ),
     );
   }

@@ -425,10 +425,12 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     if (gallerycounter == 0) {
-      setState(() {
-        imageUrls.clear();
-        imageufakUrls.clear();
-      });
+      if (mounted) {
+        setState(() {
+          imageUrls.clear();
+          imageufakUrls.clear();
+        });
+      }
     }
 
     FunctionsMedia f = FunctionsMedia();
@@ -441,10 +443,12 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      setState(() {
-        imageUrls.add(response["icerik"][i]["fotominnakurl"]);
-        imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
-      });
+      if (mounted) {
+        setState(() {
+          imageUrls.add(response["icerik"][i]["fotominnakurl"]);
+          imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
+        });
+      }
     }
     galleryproccess = false;
     gallerycounter++;
@@ -1038,7 +1042,7 @@ class _ProfilePageState extends State<ProfilePage>
                           controller: galleryscrollcontroller,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // Her satırda 2 görsel
+                            crossAxisCount: 3, // Her satırda 2 görsel
                             crossAxisSpacing: 8.0, // Yatayda boşluk
                             mainAxisSpacing: 8.0, // Dikeyde boşluk
                           ),
