@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, unnecessary_string_interpolations
+// ignore_for_file: non_constant_identifier_names, unnecessary_string_interpolations, prefer_if_null_operators
 
 import 'dart:convert';
 
@@ -81,17 +81,23 @@ class FunctionService {
     User.avatarbetter = response["presimufak"];
     User.banneravatar = response["parkaresimminnak"];
     User.banneravatarbetter = response["parkaresimufak"];
+
+    User.level = response["seviye"];
+    User.friendsCount = response["arkadaslar"];
+    User.postsCount = response["gonderiler"];
+    User.awardsCount = response["oduller"];
+
     User.mail = response["eposta"];
 
-    User.country = response["ulkesi"];
-    User.province = response["ili"];
+    User.country = response["ulkesi"] == null ? "" : response["ulkesi"];
+    User.province = response["ili"] == null ? "" : response["ili"];
     User.registerdate = response["kayittarihikisa"];
     User.job = response["isyeriadi"];
     User.role = response["yetkisiacikla"];
     User.rolecolor = response["yetkirenk"];
 
     User.aboutme = response["hakkimda"];
-    User.burc = response["burc"];
+    User.burc = response["burc"] == null ? "" : response["burc"];
 
     final prefs = await SharedPreferences.getInstance();
 
@@ -237,7 +243,7 @@ class FunctionService {
   }
 
   Future<Map<String, dynamic>> getnotifications(int page) async {
-    Map<String, String> formData = {"sayfa": "$page"};
+    Map<String, String> formData = {"sayfa": "$page", "limit": "20"};
     Map<String, dynamic> jsonData =
         await apiService.request("bildirimler/0/0/", formData);
     return jsonData;

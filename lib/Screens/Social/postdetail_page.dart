@@ -45,10 +45,11 @@ class _PostDetailPage extends State<PostDetailPage>
       print(response["aciklama"]);
       return;
     }
-
-    setState(() {
-      list_comments.clear();
-    });
+    if (mounted) {
+      setState(() {
+        list_comments.clear();
+      });
+    }
 
     for (int i = 0; i < response["icerik"].length; i++) {
       setState(() {

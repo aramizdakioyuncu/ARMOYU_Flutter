@@ -6,6 +6,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
+import 'package:ARMOYU/Widgets/Utility.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
 import 'package:ARMOYU/Widgets/post-comments.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -603,7 +604,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: _buildPostText(),
+              child: specialText(context, widget.postText),
             ),
             SizedBox(height: 5),
             Center(
@@ -676,58 +677,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildPostText() {
-    final words = widget.postText.split(' ');
-
-    final textSpans = words.map((word) {
-      if (word.startsWith('#')) {
-        return TextSpan(
-          text: word + ' ',
-          style: TextStyle(
-            color: Colors.blue,
-            fontWeight: FontWeight.bold,
-          ),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              // Burada # işaretine tıklandığında yapılacak işlemi ekleyin
-              print('Tapped on hashtag: $word');
-            },
-        );
-      }
-
-      if (word.startsWith('@')) {
-        return TextSpan(
-          text: word + ' ',
-          style: TextStyle(
-            color: Colors.blue,
-            fontWeight: FontWeight.bold,
-          ),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
-              print('Tapped on hashtag: $word');
-
-              List getusername = word.split('@');
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      ProfilePage(username: getusername[1], appbar: true),
-                ),
-              );
-            },
-        );
-      }
-      return TextSpan(text: word + ' ', style: TextStyle(color: ARMOYU.color));
-    }).toList();
-
-    return RichText(
-      text: TextSpan(
-        children: textSpans,
       ),
     );
   }

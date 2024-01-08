@@ -41,7 +41,6 @@ class _CustomCardsState extends State<CustomCards> {
       if (widget.scrollController.position.pixels ==
           widget.scrollController.position.maxScrollExtent) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
-
         morefetchinfo();
       }
     });

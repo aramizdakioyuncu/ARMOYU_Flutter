@@ -7,7 +7,9 @@ import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Utility/FullScreenImagePage.dart';
 import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Widgets/Utility.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +53,13 @@ class _ProfilePageState extends State<ProfilePage>
       "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif";
   String avatarbetter =
       "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif";
+
+  int level = 0;
+
+  int friendsCount = 0;
+  int postsCount = 0;
+  int awardsCount = 0;
+
   String country = "...";
   String province = "";
   String registerdate = "...";
@@ -63,6 +72,14 @@ class _ProfilePageState extends State<ProfilePage>
   bool isFriend = false;
 
   bool isbeFriend = false;
+
+  List<String> listFriendTOP3 = [
+    "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
+    "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
+    "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif"
+  ];
+  String friendTextLine = "";
+
   bool isAppBarExpanded = true;
   late ScrollController _scrollControllersliverapp;
   late ScrollController galleryscrollcontroller;
@@ -155,28 +172,30 @@ class _ProfilePageState extends State<ProfilePage>
               response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
         }
       }
-      setState(() {
-        Widget_Posts.add(
-          TwitterPostWidget(
-            userID: response["icerik"][i]["sahipID"],
-            profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
-            username: response["icerik"][i]["sahipad"],
-            postID: response["icerik"][i]["paylasimID"],
-            postText: response["icerik"][i]["paylasimicerik"],
-            postDate: response["icerik"][i]["paylasimzamangecen"],
-            mediaIDs: mediaIDs,
-            mediaownerIDs: mediaownerIDs,
-            mediaUrls: medias,
-            mediabetterUrls: mediasbetter,
-            mediatype: mediastype,
-            postlikeCount: response["icerik"][i]["begenisay"],
-            postcommentCount: response["icerik"][i]["yorumsay"],
-            postMecomment: response["icerik"][i]["benyorumladim"],
-            postMelike: response["icerik"][i]["benbegendim"],
-            isPostdetail: false,
-          ),
-        );
-      });
+      if (mounted) {
+        setState(() {
+          Widget_Posts.add(
+            TwitterPostWidget(
+              userID: response["icerik"][i]["sahipID"],
+              profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
+              username: response["icerik"][i]["sahipad"],
+              postID: response["icerik"][i]["paylasimID"],
+              postText: response["icerik"][i]["paylasimicerik"],
+              postDate: response["icerik"][i]["paylasimzamangecen"],
+              mediaIDs: mediaIDs,
+              mediaownerIDs: mediaownerIDs,
+              mediaUrls: medias,
+              mediabetterUrls: mediasbetter,
+              mediatype: mediastype,
+              postlikeCount: response["icerik"][i]["begenisay"],
+              postcommentCount: response["icerik"][i]["yorumsay"],
+              postMecomment: response["icerik"][i]["benyorumladim"],
+              postMelike: response["icerik"][i]["benbegendim"],
+              isPostdetail: false,
+            ),
+          );
+        });
+      }
     }
   }
 
@@ -189,24 +208,28 @@ class _ProfilePageState extends State<ProfilePage>
       banneravatarbetter = User.banneravatarbetter;
       avatar = User.avatar;
       avatarbetter = User.avatarbetter;
+      level = User.level;
+      friendsCount = User.friendsCount;
+      postsCount = User.postsCount;
+      awardsCount = User.awardsCount;
 
-      country = User.country!;
-      province = User.province!;
-      registerdate = User.registerdate!;
+      country = User.country;
+      province = User.province;
+      registerdate = User.registerdate;
 
-      aboutme = User.aboutme!;
+      aboutme = User.aboutme;
 
-      burc = User.burc!;
+      burc = User.burc;
 
       try {
-        job = User.job!;
+        job = User.job;
       } catch (Ex) {}
 
       try {
-        role = User.role!;
+        role = User.role;
       } catch (Ex) {}
       try {
-        rolecolor = User.rolecolor!;
+        rolecolor = User.rolecolor;
       } catch (Ex) {}
     } else {
       Map<String, dynamic> response = {};
@@ -215,13 +238,11 @@ class _ProfilePageState extends State<ProfilePage>
         Map<String, dynamic> response =
             await f.lookProfilewithusername(widget.username!);
 
-        log(response.toString());
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
           return;
         }
         //Kullanıcı adında birisi var
-        log(response["oyuncuID"].toString());
 
         userID = int.parse(response["oyuncuID"]);
         userName = response["kullaniciadi"];
@@ -230,6 +251,11 @@ class _ProfilePageState extends State<ProfilePage>
         banneravatarbetter = response["parkaresimufak"];
         avatar = response["presimminnak"];
         avatarbetter = response["presimufak"];
+
+        level = response["seviye"];
+        friendsCount = response["arkadaslar"];
+        postsCount = response["gonderiler"];
+        awardsCount = response["oduller"];
 
         if (response["ulkesi"] != null) {
           country = response["ulkesi"];
@@ -267,6 +293,28 @@ class _ProfilePageState extends State<ProfilePage>
           isFriend = false;
           isbeFriend = true;
         }
+        listFriendTOP3.clear();
+        for (int i = 0; i < response["arkadasliste"].length; i++) {
+          if (mounted) {
+            setState(() {
+              if (i < 2) {
+                if (i == 0) {
+                  friendTextLine += "@" +
+                      response["arkadasliste"][i]["oyuncukullaniciadi"] +
+                      " ";
+                } else {
+                  friendTextLine += ", @" +
+                      response["arkadasliste"][i]["oyuncukullaniciadi"] +
+                      " ";
+                }
+              }
+              listFriendTOP3
+                  .add(response["arkadasliste"][i]["oyuncuminnakavatar"]);
+            });
+          }
+        }
+        friendTextLine += "ve 100 diğer kişi arkadaş";
+
         ///////
       } else {
         FunctionService f = FunctionService();
@@ -283,6 +331,11 @@ class _ProfilePageState extends State<ProfilePage>
         avatar = response["presimminnak"];
         avatarbetter = response["presimufak"];
 
+        level = response["seviye"];
+        friendsCount = response["arkadaslar"];
+        postsCount = response["gonderiler"];
+        awardsCount = response["oduller"];
+
         if (response["ulkesi"] != null) {
           country = response["ulkesi"];
         }
@@ -319,6 +372,28 @@ class _ProfilePageState extends State<ProfilePage>
           isFriend = false;
           isbeFriend = true;
         }
+
+        listFriendTOP3.clear();
+        for (int i = 0; i < response["arkadasliste"].length; i++) {
+          if (mounted) {
+            setState(() {
+              if (i < 2) {
+                if (i == 0) {
+                  friendTextLine += "@" +
+                      response["arkadasliste"][i]["oyuncukullaniciadi"] +
+                      " ";
+                } else {
+                  friendTextLine += ", @" +
+                      response["arkadasliste"][i]["oyuncukullaniciadi"] +
+                      " ";
+                }
+              }
+              listFriendTOP3
+                  .add(response["arkadasliste"][i]["oyuncuminnakavatar"]);
+            });
+          }
+        }
+        friendTextLine += "ve 100 diğer kişi arkadaş";
         /////
       }
 
@@ -329,7 +404,7 @@ class _ProfilePageState extends State<ProfilePage>
           !isFriend &&
           userID != User.ID &&
           userID != -1) {
-        friendStatus = "Bekleniyor";
+        friendStatus = "İstek Gönderildi";
         friendStatuscolor = Colors.black;
       } else if (!isbeFriend && isFriend && userID != User.ID) {
         friendStatus = "Mesaj Gönder";
@@ -454,6 +529,34 @@ class _ProfilePageState extends State<ProfilePage>
     gallerycounter++;
   }
 
+  Widget Widget_friendList(bool isclip, double left, String imageUrl) {
+    if (isclip) {
+      return ClipOval(
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          width: 25,
+          height: 25,
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      );
+    }
+    return Positioned(
+      left: left,
+      child: ClipOval(
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
+          fit: BoxFit.cover,
+          width: 25,
+          height: 25,
+          placeholder: (context, url) => CircularProgressIndicator(),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -553,8 +656,8 @@ class _ProfilePageState extends State<ProfilePage>
                                             .friendremove(widget.userID!);
                                         if (response["durum"] == 0) {
                                           log(response["aciklama"]);
+                                          return;
                                         }
-                                        log(response["aciklama"]);
                                       },
                                       child: const ListTile(
                                         textColor: Colors.red,
@@ -575,8 +678,8 @@ class _ProfilePageState extends State<ProfilePage>
                                             await f.userdurting(widget.userID!);
                                         if (response["durum"] == 0) {
                                           log(response["aciklama"]);
+                                          return;
                                         }
-                                        log(response["aciklama"]);
                                       },
                                       child: const ListTile(
                                         textColor: Colors.orange,
@@ -700,15 +803,15 @@ class _ProfilePageState extends State<ProfilePage>
               delegate: SliverChildListDelegate(
                 [
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.symmetric(vertical: 5),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Column(
                                 children: [
@@ -805,73 +908,53 @@ class _ProfilePageState extends State<ProfilePage>
                                         },
                                       );
                                     },
-                                    child: ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl: avatar,
-                                        fit: BoxFit.cover,
-                                        width: 100, // Yuvarlak resmin genişliği
-                                        height: 100,
-                                        placeholder: (context, url) =>
-                                            CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl: avatar,
+                                          fit: BoxFit.cover,
+                                          width: 60,
+                                          height: 60,
+                                          placeholder: (context, url) =>
+                                              CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              Visibility(
-                                //Arkadaş ol
-                                visible: isbeFriend &&
-                                    !isFriend &&
-                                    userID != User.ID,
-                                child: Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      CustomButtons().friendbuttons(
-                                          friendStatus,
-                                          friendrequest,
-                                          friendStatuscolor),
-                                    ],
-                                  ),
-                                ),
+                              // Spacer(),
+                              // Column(
+                              //   children: [
+                              //     CustomText().Costum1(level.toString()),
+                              //     Text("Seviye"),
+                              //   ],
+                              // ),
+                              Spacer(),
+                              Column(
+                                children: [
+                                  CustomText().Costum1(postsCount.toString()),
+                                  Text("Gönderi"),
+                                ],
                               ),
-                              Visibility(
-                                //Bekliyor
-                                visible: !isbeFriend &&
-                                    !isFriend &&
-                                    userID != User.ID &&
-                                    userID != -1,
-                                child: Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      CustomButtons().friendbuttons(
-                                          friendStatus,
-                                          cancelfriendrequest,
-                                          friendStatuscolor),
-                                    ],
-                                  ),
-                                ),
+                              Spacer(),
+                              Column(
+                                children: [
+                                  CustomText().Costum1(friendsCount.toString()),
+                                  Text("Arkadaş"),
+                                ],
                               ),
-                              Visibility(
-                                //Mesaj Gönder
-                                visible: !isbeFriend &&
-                                    isFriend &&
-                                    userID != User.ID,
-                                child: Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      CustomButtons().friendbuttons(
-                                          friendStatus,
-                                          sendmessage,
-                                          friendStatuscolor),
-                                    ],
-                                  ),
-                                ),
-                              )
+                              Spacer(),
+                              Column(
+                                children: [
+                                  CustomText().Costum1(awardsCount.toString()),
+                                  Text("Ödül"),
+                                ],
+                              ),
+                              Spacer()
                             ],
                           ),
                         ),
@@ -880,15 +963,9 @@ class _ProfilePageState extends State<ProfilePage>
                             Text(
                               displayName,
                               style: const TextStyle(
-                                fontSize: 22,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
-                            ),
-                            const SizedBox(width: 5),
-                            const Icon(
-                              Icons.check_circle,
-                              color: Colors.blue,
-                              size: 20,
                             ),
                             const SizedBox(height: 5),
                           ],
@@ -912,16 +989,82 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 10),
                         Visibility(
-                            visible: aboutme == "" ? false : true,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                CustomDedectabletext().Costum1(aboutme, 3, 13),
-                                SizedBox(height: 10),
-                              ],
-                            )),
+                          visible: User.ID != userID,
+                          child: Row(
+                            children: [
+                              Stack(
+                                children: [
+                                  ...List.generate(listFriendTOP3.length,
+                                      (index) {
+                                    final reversedIndex =
+                                        listFriendTOP3.length - 1 - index;
+                                    if (reversedIndex == 0) {
+                                      return Widget_friendList(
+                                        true,
+                                        0,
+                                        listFriendTOP3[reversedIndex]
+                                            .toString(),
+                                      );
+                                    }
+                                    return Widget_friendList(
+                                      false,
+                                      reversedIndex * 15,
+                                      listFriendTOP3[reversedIndex].toString(),
+                                    );
+                                  }),
+                                  SizedBox(
+                                      width: listFriendTOP3.length * 65 / 3),
+                                ],
+                              ),
+                              Expanded(
+                                child: specialText(context, friendTextLine),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          children: [
+                            Visibility(
+                              //Arkadaş ol
+                              visible:
+                                  isbeFriend && !isFriend && userID != User.ID,
+                              child: Expanded(
+                                child: CustomButtons().friendbuttons(
+                                    friendStatus,
+                                    friendrequest,
+                                    friendStatuscolor),
+                              ),
+                            ),
+                            Visibility(
+                              //Bekliyor
+                              visible: !isbeFriend &&
+                                  !isFriend &&
+                                  userID != User.ID &&
+                                  userID != -1,
+                              child: Expanded(
+                                child: CustomButtons().friendbuttons(
+                                    friendStatus,
+                                    cancelfriendrequest,
+                                    friendStatuscolor),
+                              ),
+                            ),
+                            Visibility(
+                              //Mesaj Gönder
+                              visible:
+                                  !isbeFriend && isFriend && userID != User.ID,
+                              child: Expanded(
+                                child: CustomButtons().friendbuttons(
+                                    friendStatus,
+                                    sendmessage,
+                                    friendStatuscolor),
+                              ),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 5),
                         Visibility(
                             visible: burc == "..." ? false : true,
                             child: Row(
@@ -996,6 +1139,18 @@ class _ProfilePageState extends State<ProfilePage>
                                   color: Colors.grey,
                                 ),
                               ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Visibility(
+                          visible: aboutme == "" ? false : true,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomDedectabletext().Costum1(aboutme, 3, 13),
+                              SizedBox(height: 10),
                             ],
                           ),
                         ),

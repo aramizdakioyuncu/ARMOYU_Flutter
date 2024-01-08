@@ -14,14 +14,14 @@ class CustomButtons {
       style: ElevatedButton.styleFrom(
         backgroundColor: background, // Arka plan rengini belirleyin
         foregroundColor: foregroundColor,
-        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: 1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10), // Kenar yarıçapını ayarlayın
+          borderRadius: BorderRadius.circular(8), // Kenar yarıçapını ayarlayın
         ),
       ),
       child: Text(
         text,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
       ),
     );
   }
