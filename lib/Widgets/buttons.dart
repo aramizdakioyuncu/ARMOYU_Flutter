@@ -46,7 +46,7 @@ class CustomButtons {
             style: ElevatedButton.styleFrom(
               backgroundColor: background, // Arka plan rengini belirleyin
               foregroundColor: foregroundColor,
-              padding: EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 18),
               shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(10), // Kenar yarıçapını ayarlayın

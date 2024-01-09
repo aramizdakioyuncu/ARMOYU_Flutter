@@ -12,7 +12,7 @@ import 'package:ARMOYU/Widgets/post-comments.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
-import 'package:flutter/gestures.dart';
+// import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -95,35 +95,40 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       print(response["aciklama"]);
       return;
     }
-
-    setState(() {
-      list_comments.clear();
-    });
+    if (mounted) {
+      setState(() {
+        list_comments.clear();
+      });
+    }
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      setState(() {
-        String displayname = response["icerik"][i]["yorumcuadsoyad"].toString();
-        String avatar = response["icerik"][i]["yorumcuminnakavatar"].toString();
-        String text = response["icerik"][i]["yorumcuicerik"].toString();
-        int islike = response["icerik"][i]["benbegendim"];
-        int yorumID = response["icerik"][i]["yorumID"];
-        int userID = response["icerik"][i]["yorumcuid"];
-        int postID = response["icerik"][i]["paylasimID"];
-        int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
-        list_comments.add(
-          Widget_PostComments(
-            comment: text,
-            commentID: yorumID,
-            displayname: displayname,
-            userID: userID,
-            profileImageUrl: avatar,
-            islike: islike,
-            postID: postID,
-            username: text,
-            commentslikecount: commentlikescount,
-          ),
-        );
-      });
+      if (mounted) {
+        setState(() {
+          String displayname =
+              response["icerik"][i]["yorumcuadsoyad"].toString();
+          String avatar =
+              response["icerik"][i]["yorumcuminnakavatar"].toString();
+          String text = response["icerik"][i]["yorumcuicerik"].toString();
+          int islike = response["icerik"][i]["benbegendim"];
+          int yorumID = response["icerik"][i]["yorumID"];
+          int userID = response["icerik"][i]["yorumcuid"];
+          int postID = response["icerik"][i]["paylasimID"];
+          int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
+          list_comments.add(
+            Widget_PostComments(
+              comment: text,
+              commentID: yorumID,
+              displayname: displayname,
+              userID: userID,
+              profileImageUrl: avatar,
+              islike: islike,
+              postID: postID,
+              username: text,
+              commentslikecount: commentlikescount,
+            ),
+          );
+        });
+      }
     }
   }
 
@@ -196,12 +201,17 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ListView.builder(
-                          // controller: _scrollController,
-                          itemCount: list_comments.length,
-                          itemBuilder: (context, index) {
-                            return list_comments[index];
-                          },
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: list_comments.isEmpty
+                              ? CustomText()
+                                  .Costum1("Yorum yok ilk yorumu sen yaz.")
+                              : ListView.builder(
+                                  itemCount: list_comments.length,
+                                  itemBuilder: (context, index) {
+                                    return list_comments[index];
+                                  },
+                                ),
                         ),
                       ),
                     ),
@@ -723,6 +733,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         }
 
         List media = widget.mediatype[i].split('/');
+
+        //video
+        if (media[0] == "video") {
+          continue;
+        }
 
         if (media[0] == "video") {
           mediarow1.add(

@@ -7,6 +7,17 @@ import '../../Services/API/api_service.dart';
 class FunctionsProfile {
   final ApiService apiService = ApiService();
 
+  Future<Map<String, dynamic>> friendlist(int userID, int page) async {
+    Map<String, String> formData = {
+      "oyuncubakid": "$userID",
+      "sayfa": "$page",
+      "limit": "30"
+    };
+    Map<String, dynamic> jsonData =
+        await apiService.request("arkadaslarim/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> friendrequest(int userID) async {
     Map<String, String> formData = {"oyuncubakid": "$userID"};
     Map<String, dynamic> jsonData =

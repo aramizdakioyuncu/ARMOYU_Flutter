@@ -34,7 +34,6 @@ class _StartingScreen extends State<StartingScreen> {
           builder: (context) => NoConnectionPage(),
         ),
       );
-
       return;
     }
 
@@ -66,6 +65,14 @@ class _StartingScreen extends State<StartingScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => Pages(),
+        ),
+      );
+      return;
+    } else if (response["durum"] == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NoConnectionPage(),
         ),
       );
       return;

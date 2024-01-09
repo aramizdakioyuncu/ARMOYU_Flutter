@@ -1,5 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, camel_case_types, must_be_immutable, prefer_const_constructors
 
+import 'dart:developer';
+
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -143,7 +145,7 @@ class _Widget_PostComments extends State<Widget_PostComments> {
                 Map<String, dynamic> response =
                     await funct.removecomment(widget.commentID);
                 if (response["durum"] == 0) {
-                  print(response["aciklama"]);
+                  log(response["aciklama"]);
                   return;
                 }
                 setState(() {

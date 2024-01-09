@@ -73,7 +73,7 @@ class FunctionService {
     }
 
     User.ID = int.parse(response["oyuncuID"]);
-
+    User.userName = response["kullaniciadi"];
     User.firstName = response["adi"];
     User.lastName = response["soyadi"];
     User.displayName = response["adim"];

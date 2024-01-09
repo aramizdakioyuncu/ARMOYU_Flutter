@@ -42,7 +42,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
       final password = prefs.getString('password');
       FunctionService f = FunctionService();
 
-//Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
+      //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
       if (username == null || password == null) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
@@ -57,7 +57,9 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Pages()));
         connectionProcess = false;
-
+        return;
+      } else if (response["durum"] == 0) {
+        connectionProcess = false;
         return;
       }
 
