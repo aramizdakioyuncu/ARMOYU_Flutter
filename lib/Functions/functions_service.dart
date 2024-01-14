@@ -92,7 +92,10 @@ class FunctionService {
     User.country = response["ulkesi"] == null ? "" : response["ulkesi"];
     User.province = response["ili"] == null ? "" : response["ili"];
     User.registerdate = response["kayittarihikisa"];
-    User.job = response["isyeriadi"];
+
+    if (response["isyeriadi"] != null) {
+      User.job = response["isyeriadi"];
+    }
     User.role = response["yetkisiacikla"];
     User.rolecolor = response["yetkirenk"];
 

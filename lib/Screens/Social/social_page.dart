@@ -91,6 +91,9 @@ class _SocialPageState extends State<SocialPage>
     });
 
     for (int i = 0; i < response["icerik"].length; i++) {
+      if (response["icerik"][i]["oyuncuID"].toString() == User.ID.toString()) {
+        continue;
+      }
       Widget_storiescard.add({
         "userID": response["icerik"][i]["oyuncuID"].toString(),
         "image": response["icerik"][i]["oyuncuavatar"],
@@ -98,9 +101,11 @@ class _SocialPageState extends State<SocialPage>
       });
     }
 
-    setState(() {
-      Widget_stories = Widget_Storycircle(content: Widget_storiescard);
-    });
+    if (mounted) {
+      setState(() {
+        Widget_stories = Widget_Storycircle(content: Widget_storiescard);
+      });
+    }
   }
 
   Future<void> _handleRefresh() async {
@@ -158,62 +163,65 @@ class _SocialPageState extends State<SocialPage>
               response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
         }
       }
-      setState(() {
-        Widget_Posts.add(
-          TwitterPostWidget(
-            userID: response["icerik"][i]["sahipID"],
-            profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
-            username: response["icerik"][i]["sahipad"],
-            postID: response["icerik"][i]["paylasimID"],
-            postText: response["icerik"][i]["paylasimicerik"],
-            postDate: response["icerik"][i]["paylasimzamangecen"],
-            mediaIDs: mediaIDs,
-            mediaownerIDs: mediaownerIDs,
-            mediaUrls: medias,
-            mediabetterUrls: mediasbetter,
-            mediatype: mediastype,
-            postlikeCount: response["icerik"][i]["begenisay"],
-            postcommentCount: response["icerik"][i]["yorumsay"],
-            postMecomment: response["icerik"][i]["benyorumladim"],
-            postMelike: response["icerik"][i]["benbegendim"],
-            isPostdetail: false,
-          ),
-        );
 
-        if (i / 3 == 1) {
-          ScrollController scrollControllerPOP = ScrollController();
-
-          Widget_popusers = CustomCards(
-            scrollController: scrollControllerPOP,
-            title: "POP",
-            effectcolor: Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
-            content: Widgetpop_card,
-            icon: Icon(
-              Icons.remove_red_eye_outlined,
-              size: 15,
-              color: Colors.white,
+      if (mounted) {
+        setState(() {
+          Widget_Posts.add(
+            TwitterPostWidget(
+              userID: response["icerik"][i]["sahipID"],
+              profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
+              username: response["icerik"][i]["sahipad"],
+              postID: response["icerik"][i]["paylasimID"],
+              postText: response["icerik"][i]["paylasimicerik"],
+              postDate: response["icerik"][i]["paylasimzamangecen"],
+              mediaIDs: mediaIDs,
+              mediaownerIDs: mediaownerIDs,
+              mediaUrls: medias,
+              mediabetterUrls: mediasbetter,
+              mediatype: mediastype,
+              postlikeCount: response["icerik"][i]["begenisay"],
+              postcommentCount: response["icerik"][i]["yorumsay"],
+              postMecomment: response["icerik"][i]["benyorumladim"],
+              postMelike: response["icerik"][i]["benbegendim"],
+              isPostdetail: false,
             ),
           );
 
-          Widget_Posts.add(Widget_popusers);
-        }
-        if (i / 7 == 1) {
-          ScrollController scrollControllerTP = ScrollController();
+          if (i / 3 == 1) {
+            ScrollController scrollControllerPOP = ScrollController();
 
-          Widget_tpusers = CustomCards(
-            title: "TP",
-            scrollController: scrollControllerTP,
-            effectcolor: Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
-            content: Widgettp_card,
-            icon: Icon(
-              Icons.auto_graph_outlined,
-              size: 15,
-              color: Colors.white,
-            ),
-          );
-          Widget_Posts.add(Widget_tpusers);
-        }
-      });
+            Widget_popusers = CustomCards(
+              scrollController: scrollControllerPOP,
+              title: "POP",
+              effectcolor: Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
+              content: Widgetpop_card,
+              icon: Icon(
+                Icons.remove_red_eye_outlined,
+                size: 15,
+                color: Colors.white,
+              ),
+            );
+
+            Widget_Posts.add(Widget_popusers);
+          }
+          if (i / 7 == 1) {
+            ScrollController scrollControllerTP = ScrollController();
+
+            Widget_tpusers = CustomCards(
+              title: "TP",
+              scrollController: scrollControllerTP,
+              effectcolor: Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
+              content: Widgettp_card,
+              icon: Icon(
+                Icons.auto_graph_outlined,
+                size: 15,
+                color: Colors.white,
+              ),
+            );
+            Widget_Posts.add(Widget_tpusers);
+          }
+        });
+      }
     }
   }
 
