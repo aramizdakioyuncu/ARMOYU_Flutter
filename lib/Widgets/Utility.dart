@@ -1,7 +1,5 @@
 // ignore_for_file: file_names, avoid_print
 
-import 'dart:developer';
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/gestures.dart';
