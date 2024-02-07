@@ -285,8 +285,8 @@ class _MainPageState extends State<MainPage>
         ],
       ),
       drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
+        child: Column(
+          children: [
             UserAccountsDrawerHeader(
               accountName: Text(
                 userName,
@@ -300,10 +300,9 @@ class _MainPageState extends State<MainPage>
                   Navigator.of(context).pop();
                 },
                 child: CircleAvatar(
-                  foregroundImage: CachedNetworkImageProvider(User.avatar),
-                  radius: 40.0,
-                ),
+                    foregroundImage: CachedNetworkImageProvider(User.avatar)),
               ),
+              currentAccountPictureSize: Size.square(70),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: CachedNetworkImageProvider(User.banneravatar),
@@ -311,114 +310,126 @@ class _MainPageState extends State<MainPage>
                 ),
               ),
             ),
-            Visibility(
-              visible: "-12" == "-1" ? true : false,
-              child: ListTile(
-                textColor: ARMOYU.textColor,
-                iconColor: ARMOYU.textColor,
-                leading: const Icon(Icons.group),
-                title: const Text("Toplantı"),
-                onTap: () {},
-              ),
-            ),
-            ListTile(
-              textColor: ARMOYU.textColor,
-              iconColor: ARMOYU.textColor,
-              leading: const Icon(Icons.article),
-              title: const Text("Haberler"),
-              onTap: () {},
-            ),
-            Visibility(
-              visible: Widget_myGroups.length == 0 ? false : true,
-              child: ExpansionTile(
-                textColor: ARMOYU.textColor,
-                leading: Icon(Icons.group, color: ARMOYU.textColor),
-                title: Text('Gruplarım'),
-                children: Widget_myGroups,
-              ),
-            ),
-            Visibility(
-              visible: Widget_mySchools.length == 0 ? false : true,
-              child: ExpansionTile(
-                textColor: ARMOYU.textColor,
-                leading: Icon(Icons.school, color: ARMOYU.textColor),
-                title: Text('Okullarım'),
-                children: Widget_mySchools,
-              ),
-            ),
-            ExpansionTile(
-              leading: Icon(Icons.local_drink, color: ARMOYU.textColor),
-              title: Text('Yemek'),
-              children: [
-                ListTile(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          "https://aramizdakioyuncu.com/galeri/images/1orijinal11700864001.png",
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
+            Expanded(
+              child: Container(
+                alignment: Alignment.topCenter,
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: [
+                    Visibility(
+                      visible: "-11" == "-1" ? true : false,
+                      child: ListTile(
+                        textColor: ARMOYU.textColor,
+                        iconColor: ARMOYU.textColor,
+                        leading: const Icon(Icons.group),
+                        title: const Text("Toplantı"),
+                        onTap: () {},
+                      ),
                     ),
-                  ),
-                  title: const Text("Blackjack F'B Coffee"),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RestourantPage()));
-                  },
-                )
-              ],
-            ),
-            ListTile(
-              textColor: ARMOYU.textColor,
-              iconColor: ARMOYU.textColor,
-              leading: const Icon(Icons.settings),
-              title: const Text("Ayarlar"),
-              onTap: () {},
-            ),
-            ListTile(
-              textColor: ARMOYU.textColor,
-              iconColor: ARMOYU.textColor,
-              leading: Icon(Icons.exit_to_app),
-              title: Text('Çıkış Yap'),
-              tileColor: Colors
-                  .red, // TileColor özelliği ile arka plan rengini ayarlayın
-              onTap: () async {
-                FunctionService f = FunctionService();
-                Map<String, dynamic> response = await f.logOut();
+                    ListTile(
+                      textColor: ARMOYU.textColor,
+                      iconColor: ARMOYU.textColor,
+                      leading: const Icon(Icons.article),
+                      title: const Text("Haberler"),
+                      onTap: () {},
+                    ),
+                    Visibility(
+                      visible: Widget_myGroups.length == 0 ? false : true,
+                      child: ExpansionTile(
+                        textColor: ARMOYU.textColor,
+                        leading: Icon(Icons.group, color: ARMOYU.textColor),
+                        title: Text('Gruplarım'),
+                        children: Widget_myGroups,
+                      ),
+                    ),
+                    Visibility(
+                      visible: Widget_mySchools.length == 0 ? false : true,
+                      child: ExpansionTile(
+                        textColor: ARMOYU.textColor,
+                        leading: Icon(Icons.school, color: ARMOYU.textColor),
+                        title: Text('Okullarım'),
+                        children: Widget_mySchools,
+                      ),
+                    ),
+                    ExpansionTile(
+                      leading: Icon(Icons.local_drink, color: ARMOYU.textColor),
+                      title: Text('Yemek'),
+                      children: [
+                        ListTile(
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  "https://aramizdakioyuncu.com/galeri/images/1orijinal11700864001.png",
+                              width: 30,
+                              height: 30,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          title: const Text("Blackjack F'B Coffee"),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RestourantPage()));
+                          },
+                        )
+                      ],
+                    ),
+                    ListTile(
+                      textColor: ARMOYU.textColor,
+                      iconColor: ARMOYU.textColor,
+                      leading: const Icon(Icons.settings),
+                      title: const Text("Ayarlar"),
+                      onTap: () {},
+                    ),
+                    ListTile(
+                      textColor: ARMOYU.textColor,
+                      iconColor: ARMOYU.textColor,
+                      leading: Icon(Icons.exit_to_app),
+                      title: Text('Çıkış Yap'),
+                      tileColor: Colors
+                          .red, // TileColor özelliği ile arka plan rengini ayarlayın
+                      onTap: () async {
+                        FunctionService f = FunctionService();
+                        Map<String, dynamic> response = await f.logOut();
 
-                if (response["durum"] == 0) {
-                  print(response["aciklama"]);
-                  return;
-                }
-                passwordController.text = "";
+                        if (response["durum"] == 0) {
+                          print(response["aciklama"]);
+                          return;
+                        }
+                        passwordController.text = "";
 
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-            ),
-            ListTile(
-              // Sağ tarafta bir buton
-              trailing: IconButton(
-                icon: Icon(Icons.nightlight,
-                    color: ARMOYU.textColor), // Sağdaki butonun ikonu
-                onPressed: () {
-                  setState(() {
-                    ThemeProvider().toggleTheme();
-                  });
-                },
-              ),
-              // Sol tarafta bir buton
-              leading: IconButton(
-                icon: Icon(Icons.qr_code_2_rounded,
-                    color: ARMOYU.textColor), // Soldaki butonun ikonu
-                onPressed: () async {
-                  BarcodeService bc = BarcodeService();
-                  String responsew = await bc.scanQR();
-                  print(responsew);
-                },
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()));
+                      },
+                    ),
+                    ListTile(
+                      // Sağ tarafta bir buton
+                      trailing: IconButton(
+                        icon: Icon(Icons.nightlight,
+                            color: ARMOYU.textColor), // Sağdaki butonun ikonu
+                        onPressed: () {
+                          setState(() {
+                            ThemeProvider().toggleTheme();
+                          });
+                        },
+                      ),
+                      // Sol tarafta bir buton
+                      leading: IconButton(
+                        icon: Icon(Icons.qr_code_2_rounded,
+                            color: ARMOYU.textColor), // Soldaki butonun ikonu
+                        onPressed: () async {
+                          BarcodeService bc = BarcodeService();
+                          String responsew = await bc.scanQR();
+                          print(responsew);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

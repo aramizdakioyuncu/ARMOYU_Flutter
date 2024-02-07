@@ -52,30 +52,34 @@ class _PostDetailPage extends State<PostDetailPage>
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      setState(() {
-        String displayname = response["icerik"][i]["yorumcuadsoyad"].toString();
-        String avatar = response["icerik"][i]["yorumcuminnakavatar"].toString();
-        String text = response["icerik"][i]["yorumcuicerik"].toString();
-        int islike = response["icerik"][i]["benbegendim"];
-        int yorumID = response["icerik"][i]["yorumID"];
-        int userID = response["icerik"][i]["yorumcuid"];
-        int postID = response["icerik"][i]["paylasimID"];
-        int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
+      if (mounted) {
+        setState(() {
+          String displayname =
+              response["icerik"][i]["yorumcuadsoyad"].toString();
+          String avatar =
+              response["icerik"][i]["yorumcuminnakavatar"].toString();
+          String text = response["icerik"][i]["yorumcuicerik"].toString();
+          int islike = response["icerik"][i]["benbegendim"];
+          int yorumID = response["icerik"][i]["yorumID"];
+          int userID = response["icerik"][i]["yorumcuid"];
+          int postID = response["icerik"][i]["paylasimID"];
+          int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
 
-        list_comments.add(
-          Widget_PostComments(
-            comment: text,
-            commentID: yorumID,
-            displayname: displayname,
-            userID: userID,
-            profileImageUrl: avatar,
-            islike: islike,
-            postID: postID,
-            username: text,
-            commentslikecount: commentlikescount,
-          ),
-        );
-      });
+          list_comments.add(
+            Widget_PostComments(
+              comment: text,
+              commentID: yorumID,
+              displayname: displayname,
+              userID: userID,
+              profileImageUrl: avatar,
+              islike: islike,
+              postID: postID,
+              username: text,
+              commentslikecount: commentlikescount,
+            ),
+          );
+        });
+      }
     }
 
     if (list_comments.length >= 6) {
@@ -139,6 +143,7 @@ class _PostDetailPage extends State<PostDetailPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.bacgroundcolor,
       appBar: AppBar(
         title: Text('Paylaşım', style: TextStyle(fontSize: 18)),
         toolbarHeight: 40,

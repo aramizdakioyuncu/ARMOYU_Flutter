@@ -37,7 +37,7 @@ class ThemeProvider with ChangeNotifier {
 
     ARMOYU.color = Colors.black;
     ARMOYU.bacgroundcolor = Colors.white;
-    ARMOYU.appbarColor = Colors.white10;
+    ARMOYU.appbarColor = Colors.white;
     ARMOYU.bodyColor = Color.fromARGB(134, 242, 238, 238);
     ARMOYU.buttonColor = Colors.blue;
   }

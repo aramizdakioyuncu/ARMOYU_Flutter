@@ -551,7 +551,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       child: Container(
         margin: EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
-          color: ARMOYU.bacgroundcolor,
+          color: ARMOYU.bodyColor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -86,6 +86,7 @@ class _SocialPageState extends State<SocialPage>
 
     Widget_storiescard.add({
       "userID": User.ID.toString(),
+      "username": User.userName.toString(),
       "image": User.avatarbetter,
       "displayname": User.displayName,
     });
@@ -96,6 +97,7 @@ class _SocialPageState extends State<SocialPage>
       }
       Widget_storiescard.add({
         "userID": response["icerik"][i]["oyuncuID"].toString(),
+        "username": response["icerik"][i]["oyuncukullaniciadi"].toString(),
         "image": response["icerik"][i]["oyuncuavatar"],
         "displayname": response["icerik"][i]["oyuncuadsoyad"],
       });
@@ -302,7 +304,7 @@ class _SocialPageState extends State<SocialPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.bacgroundcolor,
       body: RefreshIndicator(
         color: Colors.blue,
         onRefresh: _handleRefresh,

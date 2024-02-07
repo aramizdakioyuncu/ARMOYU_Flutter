@@ -1,18 +1,11 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class RestourantPage extends StatefulWidget {
-  // RestourantPage({
-
-  // });
-  @override
-  _RestourantPage createState() => _RestourantPage();
-}
-
-class _RestourantPage extends State<RestourantPage> {
+class RestourantPage extends StatelessWidget {
   final List<Product> products = [
     Product(
         name: 'Ürün 1',
@@ -60,6 +53,7 @@ class _RestourantPage extends State<RestourantPage> {
             'https://image.milimaj.com/i/milliyet/75/0x410/5c8dcd3845d2a09e009fb6c3.jpg',
         price: 29.99),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,7 +67,7 @@ class _RestourantPage extends State<RestourantPage> {
             }),
             backgroundColor: Colors.black,
             expandedHeight: 160.0,
-            actions: <Widget>[],
+            // actions: <Widget>[],
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.only(left: 00.0),
               centerTitle: false,
@@ -138,59 +132,53 @@ class _RestourantPage extends State<RestourantPage> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                SizedBox(
-                  height: ARMOYU.screenHeight * 0.8,
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Her satırda 2 görsel
-                      crossAxisSpacing: 5.0, // Yatayda boşluk
-                      mainAxisSpacing: 5.0, // Dikeyde boşluk
-                    ),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Her satırda 2 görsel
+              crossAxisSpacing: 5.0, // Yatayda boşluk
+              mainAxisSpacing: 5.0, // Dikeyde boşluk
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: ARMOYU
+                            .appbarColor, // ARMOYU.bacgroundcolor yerine Colors.white kullanıldı
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: InkWell(
                         onTap: () {},
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: ARMOYU.bacgroundcolor,
-                                borderRadius: BorderRadius.circular(10),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 125,
+                              child: Image.network(
+                                "https://images.deliveryhero.io/image/fd-tr/LH/u9xe-hero.jpg?width=560&height=300&quality=100",
+                                fit: BoxFit.cover,
                               ),
-                              child: InkWell(
-                                onTap: () {},
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 125,
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            "https://images.deliveryhero.io/image/fd-tr/LH/u9xe-hero.jpg?width=560&height=300&quality=100",
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4, horizontal: 5),
-                                      child: Column(
-                                        children: [
-                                          Text("Latte Macchiato"),
-                                          Text("100TL"),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 5),
+                              child: Column(
+                                children: [
+                                  CustomText().Costum1("Latte Macchiato"),
+                                  CustomText().Costum1("100TL"),
+                                ],
                               ),
-                            )),
-                      );
-                    },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                );
+              },
+              childCount: products.length,
             ),
           ),
         ],
