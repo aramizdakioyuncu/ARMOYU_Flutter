@@ -33,6 +33,7 @@ class TwitterPostWidget extends StatefulWidget {
   final List<String> mediaUrls;
   final List<String> mediabetterUrls;
   final List<String> mediatype;
+  final List<String> mediadirection;
   int postlikeCount;
   int postcommentCount;
 
@@ -52,6 +53,7 @@ class TwitterPostWidget extends StatefulWidget {
     required this.mediaUrls,
     required this.mediabetterUrls,
     required this.mediatype,
+    required this.mediadirection,
     required this.postlikeCount,
     required this.postcommentCount,
     required this.postMelike,
@@ -553,139 +555,139 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         decoration: BoxDecoration(
           color: ARMOYU.bodyColor,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            InkWell(
-              onTap: () {
-                if (!widget.isPostdetail!) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PostDetailPage(
-                        postID: widget.postID,
+        child: GestureDetector(
+          onDoubleTap: () {
+            post_like(onlyLike: true);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () {
+                  post_like(onlyLike: true);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ProfilePage(
+                                      userID: widget.userID, appbar: true)));
+                        },
+                        child: CircleAvatar(
+                            foregroundImage: CachedNetworkImageProvider(
+                                widget.profileImageUrl),
+                            radius: 20),
                       ),
-                    ),
-                  );
-                }
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                    userID: widget.userID, appbar: true)));
-                      },
-                      child: CircleAvatar(
-                          foregroundImage: CachedNetworkImageProvider(
-                              widget.profileImageUrl),
-                          radius: 20),
-                    ),
-                    SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText().Costum1(widget.username,
+                                size: 16, weight: FontWeight.bold),
+                            CustomText().Costum1(widget.postDate,
+                                size: 16, weight: FontWeight.normal),
+                          ],
+                        ),
+                      ),
+                      Column(
                         children: [
-                          CustomText().Costum1(widget.username,
-                              size: 16, weight: FontWeight.bold),
-                          CustomText().Costum1(widget.postDate,
-                              size: 16, weight: FontWeight.normal),
+                          IconButton(
+                            onPressed: postfeedback,
+                            icon: Icon(Icons.more_vert),
+                            color: Colors.grey,
+                          ),
                         ],
                       ),
+                    ],
+                  ),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                child: GestureDetector(
+                    onDoubleTap: () {
+                      post_like(onlyLike: true);
+                    },
+                    child: specialText(context, widget.postText)),
+              ),
+              SizedBox(height: 5),
+              Center(
+                child: _buildMediaContent(context),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+                child: Row(
+                  children: [
+                    Spacer(),
+                    InkWell(
+                      onLongPress: () {
+                        if (widget.isPostdetail == false) {
+                          postcommentlikeslist(list_comments_likes);
+                        }
+                      },
+                      child: IconButton(
+                        iconSize: 25,
+                        icon: postlikeIcon,
+                        color: postlikeColor,
+                        onPressed: () async {
+                          await post_like();
+                        },
+                      ),
                     ),
-                    Column(
-                      children: [
-                        IconButton(
-                          onPressed: postfeedback,
-                          icon: Icon(Icons.more_vert),
-                          color: Colors.grey,
-                        ),
-                      ],
+                    SizedBox(width: 5),
+                    InkWell(
+                      onTap: () {
+                        if (widget.isPostdetail == false) {
+                          postcommentlikeslist(list_comments_likes);
+                        }
+                      },
+                      onLongPress: () {
+                        if (widget.isPostdetail == false) {
+                          postcommentlikeslist(list_comments_likes);
+                        }
+                      },
+                      child: Text(
+                        widget.postlikeCount.toString(),
+                        style: TextStyle(color: Colors.grey),
+                      ),
                     ),
+                    Spacer(),
+                    IconButton(
+                      iconSize: 25,
+                      icon: postcommentIcon,
+                      color: postcommentColor,
+                      onPressed: () {
+                        postcomments(widget.postID, list_comments);
+                      },
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      widget.postcommentCount.toString(),
+                      style: TextStyle(color: Colors.grey),
+                    ), // Yorum simgesi
+                    Spacer(),
+                    IconButton(
+                      iconSize: 25,
+                      icon: postrepostIcon,
+                      color: postrepostColor,
+                      onPressed: () {},
+                    ), // Retweet simgesi (yeşil renkte)
+                    Spacer(),
+                    Icon(Icons.share_outlined,
+                        color: Colors.grey), // Paylaşım simgesi
+                    Spacer(),
                   ],
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: specialText(context, widget.postText),
-            ),
-            SizedBox(height: 5),
-            Center(
-              child: _buildMediaContent(context),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
-              child: Row(
-                children: [
-                  Spacer(),
-                  InkWell(
-                    onLongPress: () {
-                      if (widget.isPostdetail == false) {
-                        postcommentlikeslist(list_comments_likes);
-                      }
-                    },
-                    child: IconButton(
-                      iconSize: 25,
-                      icon: postlikeIcon,
-                      color: postlikeColor,
-                      onPressed: () async {
-                        await post_like();
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  InkWell(
-                    onTap: () {
-                      if (widget.isPostdetail == false) {
-                        postcommentlikeslist(list_comments_likes);
-                      }
-                    },
-                    onLongPress: () {
-                      if (widget.isPostdetail == false) {
-                        postcommentlikeslist(list_comments_likes);
-                      }
-                    },
-                    child: Text(
-                      widget.postlikeCount.toString(),
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  Spacer(),
-                  IconButton(
-                    iconSize: 25,
-                    icon: postcommentIcon,
-                    color: postcommentColor,
-                    onPressed: () {
-                      postcomments(widget.postID, list_comments);
-                    },
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    widget.postcommentCount.toString(),
-                    style: TextStyle(color: Colors.grey),
-                  ), // Yorum simgesi
-                  Spacer(),
-                  IconButton(
-                    iconSize: 25,
-                    icon: postrepostIcon,
-                    color: postrepostColor,
-                    onPressed: () {},
-                  ), // Retweet simgesi (yeşil renkte)
-                  Spacer(),
-                  Icon(Icons.share_outlined,
-                      color: Colors.grey), // Paylaşım simgesi
-                  Spacer(),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -749,8 +751,13 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           ));
           break;
         }
+        BoxFit mediadirection = BoxFit.contain;
+        if (widget.mediadirection[i].toString() == "dikey") {
+          mediadirection = BoxFit.cover;
+          log(widget.mediadirection[i].toString());
+          log(widget.mediaIDs[i].toString());
+        }
 
-        if (widget.mediatype[i] == 12) {}
         double mediawidth = ARMOYU.screenWidth;
         double mediaheight = ARMOYU.screenHeight;
         if (widget.mediaUrls.length == 1) {

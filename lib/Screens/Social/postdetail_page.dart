@@ -105,6 +105,7 @@ class _PostDetailPage extends State<PostDetailPage>
     List<String> medias = [];
     List<String> mediasbetter = [];
     List<String> mediastype = [];
+    List<String> mediadirection = [];
 
     if (response["icerik"][0]["paylasimfoto"].length != 0) {
       int mediaItemCount = response["icerik"][0]["paylasimfoto"].length;
@@ -117,6 +118,8 @@ class _PostDetailPage extends State<PostDetailPage>
             .add(response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"]);
         mediastype
             .add(response["icerik"][0]["paylasimfoto"][j]["paylasimkategori"]);
+        mediadirection
+            .add(response["icerik"][0]["paylasimfoto"][j]["medyayonu"]);
       }
     }
 
@@ -132,6 +135,7 @@ class _PostDetailPage extends State<PostDetailPage>
       mediaUrls: medias,
       mediabetterUrls: mediasbetter,
       mediatype: mediastype,
+      mediadirection: mediadirection,
       postlikeCount: response["icerik"][0]["begenisay"],
       postcommentCount: response["icerik"][0]["yorumsay"],
       postMecomment: response["icerik"][0]["benyorumladim"],

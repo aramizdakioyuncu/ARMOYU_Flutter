@@ -62,8 +62,8 @@ class _SocialPageState extends State<SocialPage>
     loadSkeletonpost();
     // ScrollController'ı dinle
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.5) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
         _loadMoreData();
       }
@@ -120,9 +120,9 @@ class _SocialPageState extends State<SocialPage>
 
   // Yeni veri yükleme işlemi
   Future<void> _loadMoreData() async {
-    postpage++;
-
     if (!postpageproccess) {
+      postpage++;
+
       postpageproccess = true;
       await loadPosts(postpage);
     }
@@ -151,6 +151,7 @@ class _SocialPageState extends State<SocialPage>
       List<String> medias = [];
       List<String> mediasbetter = [];
       List<String> mediastype = [];
+      List<String> mediadirection = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
         int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
@@ -163,6 +164,8 @@ class _SocialPageState extends State<SocialPage>
               .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
           mediastype.add(
               response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
+          mediadirection
+              .add(response["icerik"][i]["paylasimfoto"][j]["medyayonu"]);
         }
       }
 
@@ -181,6 +184,7 @@ class _SocialPageState extends State<SocialPage>
               mediaUrls: medias,
               mediabetterUrls: mediasbetter,
               mediatype: mediastype,
+              mediadirection: mediadirection,
               postlikeCount: response["icerik"][i]["begenisay"],
               postcommentCount: response["icerik"][i]["yorumsay"],
               postMecomment: response["icerik"][i]["benyorumladim"],

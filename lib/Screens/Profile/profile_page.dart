@@ -91,6 +91,15 @@ class _ProfilePageState extends State<ProfilePage>
   String friendStatus = "Bekleniyor";
   Color friendStatuscolor = Colors.blue;
 
+  bool ispostsVisible = true;
+  bool isgalleryVisible = false;
+
+  bool postsfetchproccess = false;
+
+  int postscounter = 1;
+  int gallerycounter = 1;
+
+  bool firstgalleryfetcher = false;
   @override
   void initState() {
     super.initState();
@@ -98,6 +107,15 @@ class _ProfilePageState extends State<ProfilePage>
 
     pageMainscroller = ScrollController();
     pageMainscroller.addListener(() {
+      if (pageMainscroller.position.pixels >=
+          pageMainscroller.position.maxScrollExtent * 0.5) {
+        if (ispostsVisible) {
+          profileloadPosts(postscounter, userID);
+        }
+        if (isgalleryVisible) {
+          gallery(gallerycounter, userID);
+        }
+      }
       setState(() {
         isAppBarExpanded = pageMainscroller.offset <
             ARMOYU.screenHeight * 0.20; // veya başka bir eşik değeri
@@ -112,29 +130,22 @@ class _ProfilePageState extends State<ProfilePage>
     tabController.addListener(() {
       if (tabController.indexIsChanging ||
           tabController.index != tabController.previousIndex) {
-        if (tabController.index == 1) {
-          if (!first_galleryproccess) {
-            gallery();
-            first_galleryproccess = true;
-          }
+        if (tabController.index == 0) {
+          setState(() {
+            isgalleryVisible = false;
+            ispostsVisible = true;
+          });
         }
-      }
-    });
+        if (tabController.index == 1) {
+          if (!firstgalleryfetcher) {
+            gallery(gallerycounter, userID);
+          }
 
-    postsscrollcontroller = ScrollController();
-    postsscrollcontroller.addListener(() {
-      if (postsscrollcontroller.position.pixels ==
-          postsscrollcontroller.position.maxScrollExtent) {
-        // gallery();
-        log("sd");
-      }
-    });
-
-    galleryscrollcontroller = ScrollController();
-    galleryscrollcontroller.addListener(() {
-      if (galleryscrollcontroller.position.pixels ==
-          galleryscrollcontroller.position.maxScrollExtent) {
-        gallery();
+          setState(() {
+            isgalleryVisible = true;
+            ispostsVisible = false;
+          });
+        }
       }
     });
   }
@@ -149,27 +160,32 @@ class _ProfilePageState extends State<ProfilePage>
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
 
-  Future<void> loadPostsv2(int page, int Userid) async {
+  profileloadPosts(int page, int Userid) async {
+    if (postsfetchproccess) {
+      return;
+    }
+    postsfetchproccess = true;
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getprofilePosts(page, Userid);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      postsfetchproccess = false;
       return;
     }
 
     if (response["icerik"].length == 0) {
+      postsfetchproccess = false;
       return;
     }
     int dynamicItemCount = response["icerik"].length;
-    if (dynamicItemCount > 0) {
-      Widget_Posts.clear();
-    }
+
     for (int i = 0; i < dynamicItemCount; i++) {
       List<int> mediaIDs = [];
       List<int> mediaownerIDs = [];
       List<String> medias = [];
       List<String> mediasbetter = [];
       List<String> mediastype = [];
+      List<String> mediadirection = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
         int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
@@ -182,6 +198,8 @@ class _ProfilePageState extends State<ProfilePage>
               .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
           mediastype.add(
               response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
+          mediadirection
+              .add(response["icerik"][i]["paylasimfoto"][j]["medyayonu"]);
         }
       }
       if (mounted) {
@@ -199,6 +217,7 @@ class _ProfilePageState extends State<ProfilePage>
               mediaUrls: medias,
               mediabetterUrls: mediasbetter,
               mediatype: mediastype,
+              mediadirection: mediadirection,
               postlikeCount: response["icerik"][i]["begenisay"],
               postcommentCount: response["icerik"][i]["yorumsay"],
               postMecomment: response["icerik"][i]["benyorumladim"],
@@ -209,6 +228,50 @@ class _ProfilePageState extends State<ProfilePage>
         });
       }
     }
+    postscounter = postscounter + 1;
+    postsfetchproccess = false;
+  }
+
+  gallery(int page, int userID) async {
+    firstgalleryfetcher = true;
+
+    if (galleryproccess) {
+      return;
+    }
+    galleryproccess = true;
+
+    if (page == 1) {
+      if (mounted) {
+        setState(() {
+          imageUrls.clear();
+          imageufakUrls.clear();
+        });
+      }
+    }
+
+    FunctionsMedia f = FunctionsMedia();
+    Map<String, dynamic> response = await f.fetch(userID, "-1", page);
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    if (response["icerik"].length == 0) {
+      log("Sayfa Sonu");
+      return;
+    }
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      if (mounted) {
+        setState(() {
+          imageUrls.add(response["icerik"][i]["fotominnakurl"]);
+          imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
+        });
+      }
+    }
+    galleryproccess = false;
+    gallerycounter++;
   }
 
   Future<void> TEST() async {
@@ -451,7 +514,7 @@ class _ProfilePageState extends State<ProfilePage>
       }
     }
 
-    await loadPostsv2(1, userID);
+    await profileloadPosts(postscounter, userID);
   }
 
   Future<void> _handleRefresh() async {
@@ -529,42 +592,6 @@ class _ProfilePageState extends State<ProfilePage>
     print("istek iptal edilecek ");
   }
 
-  int gallerycounter = 0;
-  gallery() async {
-    if (galleryproccess) {
-      galleryproccess = true;
-    }
-
-    if (gallerycounter == 0) {
-      if (mounted) {
-        setState(() {
-          imageUrls.clear();
-          imageufakUrls.clear();
-        });
-      }
-    }
-
-    FunctionsMedia f = FunctionsMedia();
-    Map<String, dynamic> response =
-        await f.fetch(userID, "-1", gallerycounter + 1);
-
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      return;
-    }
-
-    for (int i = 0; i < response["icerik"].length; i++) {
-      if (mounted) {
-        setState(() {
-          imageUrls.add(response["icerik"][i]["fotominnakurl"]);
-          imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
-        });
-      }
-    }
-    galleryproccess = false;
-    gallerycounter++;
-  }
-
   Widget Widget_friendList(bool isclip, double left, String imageUrl) {
     if (isclip) {
       return Padding(
@@ -601,643 +628,639 @@ class _ProfilePageState extends State<ProfilePage>
     return Scaffold(
       backgroundColor: ARMOYU.appbarColor,
       // extendBodyBehindAppBar: true,
-      body: NestedScrollView(
+
+      body: CustomScrollView(
         controller: pageMainscroller,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              pinned: User.ID != userID ? true : false,
-              floating: false,
-              backgroundColor: Colors.black,
-              expandedHeight: ARMOYU.screenHeight * 0.20,
-              actions: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(10),
-                        ),
+        slivers: [
+          SliverAppBar(
+            pinned: User.ID != userID ? true : false,
+            backgroundColor: Colors.black,
+            expandedHeight: ARMOYU.screenHeight * 0.25,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.more_vert),
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(10),
                       ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SafeArea(
-                          child: Wrap(
-                            children: [
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[900],
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(30),
-                                        ),
-                                      ),
-                                      width: ARMOYU.screenWidth / 4,
-                                      height: 5,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: const ListTile(
-                                      leading: Icon(Icons.share_outlined),
-                                      title: Text("Profili paylaş."),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: const ListTile(
-                                      leading: Icon(Icons.content_copy),
-                                      title: Text("Profil linkini kopyala."),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    //Çizgi ekler
-                                    child: const Divider(),
-                                  ),
-                                  Visibility(
-                                    visible: userID != User.ID,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: const ListTile(
-                                        textColor: Colors.red,
-                                        leading: Icon(
-                                          Icons.person_off_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        title: Text("Kullanıcıyı Engelle."),
+                    ),
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SafeArea(
+                        child: Wrap(
+                          children: [
+                            Column(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[900],
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(30),
                                       ),
                                     ),
-                                  ),
-                                  Visibility(
-                                    visible: userID != User.ID,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: const ListTile(
-                                        textColor: Colors.red,
-                                        leading: Icon(
-                                          Icons.flag_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        title: Text("Profili bildir."),
-                                      ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: isFriend,
-                                    child: InkWell(
-                                      onTap: () async {
-                                        FunctionsProfile f = FunctionsProfile();
-                                        Map<String, dynamic> response = await f
-                                            .friendremove(widget.userID!);
-                                        if (response["durum"] == 0) {
-                                          log(response["aciklama"]);
-                                          return;
-                                        }
-                                      },
-                                      child: const ListTile(
-                                        textColor: Colors.red,
-                                        leading: Icon(
-                                          Icons.person_remove,
-                                          color: Colors.pink,
-                                        ),
-                                        title: Text("Arkadaşlıktan Çıkar."),
-                                      ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: isFriend,
-                                    child: InkWell(
-                                      onTap: () async {
-                                        FunctionsProfile f = FunctionsProfile();
-                                        Map<String, dynamic> response =
-                                            await f.userdurting(widget.userID!);
-                                        if (response["durum"] == 0) {
-                                          log(response["aciklama"]);
-                                          return;
-                                        }
-                                      },
-                                      child: const ListTile(
-                                        textColor: Colors.orange,
-                                        leading: Icon(
-                                          Icons.local_fire_department,
-                                          color: Colors.pink,
-                                        ),
-                                        title: Text("Profili Dürt."),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(width: 10),
-              ],
-              flexibleSpace: FlexibleSpaceBar(
-                title: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: userID == User.ID
-                      ? const SizedBox()
-                      : CustomText().Costum1(displayName),
-                ),
-                background: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => FullScreenImagePage(
-                        images: [banneravatarbetter],
-                        initialIndex: 0,
-                      ),
-                    ));
-                  },
-                  onLongPress: () {
-                    if (User.ID != userID) {
-                      return;
-                    }
-                    showModalBottomSheet<void>(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(10),
-                        ),
-                      ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SafeArea(
-                          child: Wrap(
-                            children: [
-                              Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[900],
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(30),
-                                        ),
-                                      ),
-                                      width: ARMOYU.screenWidth / 4,
-                                      height: 5,
-                                    ),
-                                  ),
-                                  Visibility(
-                                    visible: User.ID == userID,
-                                    child: InkWell(
-                                      onTap: () async {
-                                        await changebanner();
-                                      },
-                                      child: const ListTile(
-                                        leading: Icon(Icons.camera_alt),
-                                        title: Text("Arkaplan değiştir."),
-                                      ),
-                                    ),
-                                  ),
-                                  Visibility(
-                                    //Çizgi ekler
-                                    child: const Divider(),
-                                  ),
-                                  Visibility(
-                                    visible: userID == User.ID,
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: const ListTile(
-                                        textColor: Colors.red,
-                                        leading: Icon(
-                                          Icons.person_off_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        title: Text("Varsayılana dönder."),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: CachedNetworkImage(
-                    imageUrl: banneravatar,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => FullScreenImagePage(
-                                      images: [avatarbetter],
-                                      initialIndex: 0,
-                                    ),
-                                  ));
-                                },
-                                onLongPress: () {
-                                  if (User.ID != userID) {
-                                    return;
-                                  }
-                                  showModalBottomSheet<void>(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(10),
-                                      ),
-                                    ),
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return SafeArea(
-                                        child: Wrap(
-                                          children: [
-                                            Column(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 10),
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.grey[900],
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .all(
-                                                        Radius.circular(30),
-                                                      ),
-                                                    ),
-                                                    width:
-                                                        ARMOYU.screenWidth / 4,
-                                                    height: 5,
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  visible: User.ID == userID,
-                                                  child: InkWell(
-                                                    onTap: () async {
-                                                      await changeavatar();
-                                                    },
-                                                    child: const ListTile(
-                                                      leading: Icon(
-                                                          Icons.camera_alt),
-                                                      title: Text(
-                                                          "Avatar değiştir."),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Visibility(
-                                                  //Çizgi ekler
-                                                  child: const Divider(),
-                                                ),
-                                                Visibility(
-                                                  visible: userID == User.ID,
-                                                  child: InkWell(
-                                                    onTap: () {},
-                                                    child: const ListTile(
-                                                      textColor: Colors.red,
-                                                      leading: Icon(
-                                                        Icons
-                                                            .person_off_outlined,
-                                                        color: Colors.red,
-                                                      ),
-                                                      title: Text(
-                                                          "Varsayılana dönder."),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
-                                child: ClipOval(
-                                  child: CachedNetworkImage(
-                                    imageUrl: avatar,
-                                    fit: BoxFit.cover,
-                                    width: 60,
-                                    height: 60,
-                                    placeholder: (context, url) =>
-                                        CircularProgressIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
+                                    width: ARMOYU.screenWidth / 4,
+                                    height: 5,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Expanded(
-                            child: Column(
+                                InkWell(
+                                  onTap: () {},
+                                  child: const ListTile(
+                                    leading: Icon(Icons.share_outlined),
+                                    title: Text("Profili paylaş."),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: const ListTile(
+                                    leading: Icon(Icons.content_copy),
+                                    title: Text("Profil linkini kopyala."),
+                                  ),
+                                ),
+                                Visibility(
+                                  //Çizgi ekler
+                                  child: const Divider(),
+                                ),
+                                Visibility(
+                                  visible: userID != User.ID,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: const ListTile(
+                                      textColor: Colors.red,
+                                      leading: Icon(
+                                        Icons.person_off_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      title: Text("Kullanıcıyı Engelle."),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: userID != User.ID,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: const ListTile(
+                                      textColor: Colors.red,
+                                      leading: Icon(
+                                        Icons.flag_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      title: Text("Profili bildir."),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: isFriend,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      FunctionsProfile f = FunctionsProfile();
+                                      Map<String, dynamic> response =
+                                          await f.friendremove(widget.userID!);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
+                                    },
+                                    child: const ListTile(
+                                      textColor: Colors.red,
+                                      leading: Icon(
+                                        Icons.person_remove,
+                                        color: Colors.pink,
+                                      ),
+                                      title: Text("Arkadaşlıktan Çıkar."),
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: isFriend,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      FunctionsProfile f = FunctionsProfile();
+                                      Map<String, dynamic> response =
+                                          await f.userdurting(widget.userID!);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
+                                    },
+                                    child: const ListTile(
+                                      textColor: Colors.orange,
+                                      leading: Icon(
+                                        Icons.local_fire_department,
+                                        color: Colors.pink,
+                                      ),
+                                      title: Text("Profili Dürt."),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+              const SizedBox(width: 10),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              title: Align(
+                alignment: Alignment.bottomLeft,
+                child: userID == User.ID
+                    ? const SizedBox()
+                    : CustomText().Costum1(displayName),
+              ),
+              background: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => FullScreenImagePage(
+                      images: [banneravatarbetter],
+                      initialIndex: 0,
+                    ),
+                  ));
+                },
+                onLongPress: () {
+                  if (User.ID != userID) {
+                    return;
+                  }
+                  showModalBottomSheet<void>(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(10),
+                      ),
+                    ),
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SafeArea(
+                        child: Wrap(
+                          children: [
+                            Column(
                               children: [
-                                Row(
-                                  children: [
-                                    // Spacer(),
-                                    // Column(
-                                    //   children: [
-                                    //     CustomText()
-                                    //         .Costum1(level.toString()),
-                                    //      CustomText().Costum1("Seviye"),
-                                    //   ],
-                                    // ),
-                                    Spacer(),
-                                    Column(
-                                      children: [
-                                        CustomText().Costum1(
-                                            postsCount.toString(),
-                                            weight: FontWeight.bold),
-                                        CustomText().Costum1("Gönderi"),
-                                      ],
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[900],
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(30),
+                                      ),
                                     ),
-                                    Spacer(),
-                                    Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    FriendlistPage(
-                                                  username: userName,
-                                                  userid: userID,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Column(
-                                            children: [
-                                              CustomText().Costum1(
-                                                  friendsCount.toString(),
-                                                  weight: FontWeight.bold),
-                                              CustomText().Costum1("Arkadaş"),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                    width: ARMOYU.screenWidth / 4,
+                                    height: 5,
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: User.ID == userID,
+                                  child: InkWell(
+                                    onTap: () async {
+                                      await changebanner();
+                                    },
+                                    child: const ListTile(
+                                      leading: Icon(Icons.camera_alt),
+                                      title: Text("Arkaplan değiştir."),
                                     ),
-                                    Spacer(),
-                                    Column(
-                                      children: [
-                                        CustomText().Costum1(
-                                            awardsCount.toString(),
-                                            weight: FontWeight.bold),
-                                        CustomText().Costum1("Ödül"),
-                                      ],
+                                  ),
+                                ),
+                                Visibility(
+                                  //Çizgi ekler
+                                  child: const Divider(),
+                                ),
+                                Visibility(
+                                  visible: userID == User.ID,
+                                  child: InkWell(
+                                    onTap: () {},
+                                    child: const ListTile(
+                                      textColor: Colors.red,
+                                      leading: Icon(
+                                        Icons.person_off_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      title: Text("Varsayılana dönder."),
                                     ),
-                                    Spacer()
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    CustomText().Costum1(
-                      displayName,
-                      size: 16,
-                      weight: FontWeight.bold,
-                    ),
-                    Row(
-                      children: [
-                        CustomText().Costum1(
-                          "@" + userName,
+                          ],
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          role,
-                          style: TextStyle(
-                            color: Color(
-                              int.parse("0xFF" + rolecolor),
+                      );
+                    },
+                  );
+                },
+                child: CachedNetworkImage(
+                  imageUrl: banneravatar,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => FullScreenImagePage(
+                                    images: [avatarbetter],
+                                    initialIndex: 0,
+                                  ),
+                                ));
+                              },
+                              onLongPress: () {
+                                if (User.ID != userID) {
+                                  return;
+                                }
+                                showModalBottomSheet<void>(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(10),
+                                    ),
+                                  ),
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SafeArea(
+                                      child: Wrap(
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.grey[900],
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.circular(30),
+                                                    ),
+                                                  ),
+                                                  width: ARMOYU.screenWidth / 4,
+                                                  height: 5,
+                                                ),
+                                              ),
+                                              Visibility(
+                                                visible: User.ID == userID,
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    await changeavatar();
+                                                  },
+                                                  child: const ListTile(
+                                                    leading:
+                                                        Icon(Icons.camera_alt),
+                                                    title: Text(
+                                                        "Avatar değiştir."),
+                                                  ),
+                                                ),
+                                              ),
+                                              Visibility(
+                                                //Çizgi ekler
+                                                child: const Divider(),
+                                              ),
+                                              Visibility(
+                                                visible: userID == User.ID,
+                                                child: InkWell(
+                                                  onTap: () {},
+                                                  child: const ListTile(
+                                                    textColor: Colors.red,
+                                                    leading: Icon(
+                                                      Icons.person_off_outlined,
+                                                      color: Colors.red,
+                                                    ),
+                                                    title: Text(
+                                                        "Varsayılana dönder."),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: avatar,
+                                  fit: BoxFit.cover,
+                                  width: 60,
+                                  height: 60,
+                                  placeholder: (context, url) =>
+                                      CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  // Spacer(),
+                                  // Column(
+                                  //   children: [
+                                  //     CustomText()
+                                  //         .Costum1(level.toString()),
+                                  //      CustomText().Costum1("Seviye"),
+                                  //   ],
+                                  // ),
+                                  Spacer(),
+                                  Column(
+                                    children: [
+                                      CustomText().Costum1(
+                                          postsCount.toString(),
+                                          weight: FontWeight.bold),
+                                      CustomText().Costum1("Gönderi"),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FriendlistPage(
+                                                username: userName,
+                                                userid: userID,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Column(
+                                          children: [
+                                            CustomText().Costum1(
+                                                friendsCount.toString(),
+                                                weight: FontWeight.bold),
+                                            CustomText().Costum1("Arkadaş"),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Spacer(),
+                                  Column(
+                                    children: [
+                                      CustomText().Costum1(
+                                          awardsCount.toString(),
+                                          weight: FontWeight.bold),
+                                      CustomText().Costum1("Ödül"),
+                                    ],
+                                  ),
+                                  Spacer()
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 15),
-                    Visibility(
-                      visible: registerdate == "..." ? false : true,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  CustomText().Costum1(
+                    displayName,
+                    size: 16,
+                    weight: FontWeight.bold,
+                  ),
+                  Row(
+                    children: [
+                      CustomText().Costum1(
+                        "@" + userName,
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        role,
+                        style: TextStyle(
+                          color: Color(
+                            int.parse("0xFF" + rolecolor),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  Visibility(
+                    visible: registerdate == "..." ? false : true,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_month,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 3),
+                        CustomText().Costum1(
+                          registerdate,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Visibility(
+                      visible: burc == "..." ? false : true,
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.calendar_month,
+                            Icons.window,
                             color: Colors.grey,
                             size: 20,
                           ),
                           const SizedBox(width: 3),
                           CustomText().Costum1(
-                            registerdate,
+                            burc,
                           ),
                         ],
-                      ),
+                      )),
+                  const SizedBox(height: 5),
+                  Visibility(
+                    visible: country == "..." ? false : true,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 3),
+                        CustomText().Costum1(
+                          country + ", " + province,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 5),
-                    Visibility(
-                        visible: burc == "..." ? false : true,
-                        child: Row(
+                  ),
+                  SizedBox(height: 5),
+                  Visibility(
+                    visible: job == "" ? false : true,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.school,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 3),
+                        CustomText().Costum1(job),
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: User.ID != userID,
+                    child: Row(
+                      children: [
+                        Stack(
                           children: [
-                            const Icon(
-                              Icons.window,
-                              color: Colors.grey,
-                              size: 20,
-                            ),
-                            const SizedBox(width: 3),
-                            CustomText().Costum1(
-                              burc,
-                            ),
-                          ],
-                        )),
-                    const SizedBox(height: 5),
-                    Visibility(
-                      visible: country == "..." ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          CustomText().Costum1(
-                            country + ", " + province,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Visibility(
-                      visible: job == "" ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.school,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          CustomText().Costum1(job),
-                        ],
-                      ),
-                    ),
-                    Visibility(
-                      visible: User.ID != userID,
-                      child: Row(
-                        children: [
-                          Stack(
-                            children: [
-                              ...List.generate(listFriendTOP3.length, (index) {
-                                final reversedIndex =
-                                    listFriendTOP3.length - 1 - index;
-                                if (reversedIndex == 0) {
-                                  return Widget_friendList(
-                                    true,
-                                    0,
-                                    listFriendTOP3[reversedIndex].toString(),
-                                  );
-                                }
+                            ...List.generate(listFriendTOP3.length, (index) {
+                              final reversedIndex =
+                                  listFriendTOP3.length - 1 - index;
+                              if (reversedIndex == 0) {
                                 return Widget_friendList(
-                                  false,
-                                  reversedIndex * 15,
+                                  true,
+                                  0,
                                   listFriendTOP3[reversedIndex].toString(),
                                 );
-                              }),
-                              SizedBox(width: listFriendTOP3.length * 65 / 3),
+                              }
+                              return Widget_friendList(
+                                false,
+                                reversedIndex * 15,
+                                listFriendTOP3[reversedIndex].toString(),
+                              );
+                            }),
+                            SizedBox(width: listFriendTOP3.length * 65 / 3),
+                          ],
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 20),
+                              specialText(context, friendTextLine)
                             ],
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                SizedBox(height: 20),
-                                specialText(context, friendTextLine)
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Visibility(
-                          //Arkadaş ol
-                          visible: isbeFriend && !isFriend && userID != User.ID,
-                          child: Expanded(
-                            child: CustomButtons().friendbuttons(
-                                friendStatus, friendrequest, friendStatuscolor),
-                          ),
-                        ),
-                        Visibility(
-                          //Bekliyor
-                          visible: !isbeFriend &&
-                              !isFriend &&
-                              userID != User.ID &&
-                              userID != -1,
-                          child: Expanded(
-                            child: CustomButtons().friendbuttons(friendStatus,
-                                cancelfriendrequest, friendStatuscolor),
-                          ),
-                        ),
-                        Visibility(
-                          //Mesaj Gönder
-                          visible: !isbeFriend && isFriend && userID != User.ID,
-                          child: Expanded(
-                            child: CustomButtons().friendbuttons(
-                                friendStatus, sendmessage, friendStatuscolor),
                           ),
                         )
                       ],
                     ),
-                    SizedBox(height: 5),
-                    Visibility(
-                      visible: aboutme == "" ? false : true,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomDedectabletext().Costum1(aboutme, 3, 13),
-                          SizedBox(height: 10),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: Profileusersharedmedias(),
-            ),
-          ];
-        },
-        body: TabBarView(
-          controller: tabController,
-          children: [
-            ListView.builder(
-              padding: EdgeInsets.zero,
-              controller: postsscrollcontroller,
-              itemCount: Widget_Posts.length,
-              itemBuilder: (context, index) {
-                return Widget_Posts[index];
-              },
-            ),
-            GridView.builder(
-              padding: EdgeInsets.zero,
-              controller: galleryscrollcontroller,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, // Her satırda 2 görsel
-                crossAxisSpacing: 8.0, // Yatayda boşluk
-                mainAxisSpacing: 8.0, // Dikeyde boşluk
-              ),
-              itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImagePage(
-                          images: imageufakUrls,
-                          initialIndex: index,
+                  ),
+                  Row(
+                    children: [
+                      Visibility(
+                        //Arkadaş ol
+                        visible: isbeFriend && !isFriend && userID != User.ID,
+                        child: Expanded(
+                          child: CustomButtons().friendbuttons(
+                              friendStatus, friendrequest, friendStatuscolor),
                         ),
                       ),
-                    );
-                  },
-                  child: CachedNetworkImage(
-                    imageUrl: imageUrls[index],
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                      Visibility(
+                        //Bekliyor
+                        visible: !isbeFriend &&
+                            !isFriend &&
+                            userID != User.ID &&
+                            userID != -1,
+                        child: Expanded(
+                          child: CustomButtons().friendbuttons(friendStatus,
+                              cancelfriendrequest, friendStatuscolor),
+                        ),
+                      ),
+                      Visibility(
+                        //Mesaj Gönder
+                        visible: !isbeFriend && isFriend && userID != User.ID,
+                        child: Expanded(
+                          child: CustomButtons().friendbuttons(
+                              friendStatus, sendmessage, friendStatuscolor),
+                        ),
+                      )
+                    ],
                   ),
-                );
-              },
+                  SizedBox(height: 5),
+                  Visibility(
+                    visible: aboutme == "" ? false : true,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomDedectabletext().Costum1(aboutme, 3, 13),
+                        SizedBox(height: 10),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: Profileusersharedmedias(),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return !ispostsVisible ? null : Widget_Posts[index];
+              },
+              childCount: Widget_Posts.length,
+            ),
+          ),
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3, // Her satırda 2 görsel
+              crossAxisSpacing: 8.0, // Yatayda boşluk
+              mainAxisSpacing: 8.0, // Dikeyde boşluk
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return !isgalleryVisible
+                    ? null
+                    : GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FullScreenImagePage(
+                                images: imageufakUrls,
+                                initialIndex: index,
+                              ),
+                            ),
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: imageUrls[index],
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        ),
+                      );
+              },
+              childCount: !isgalleryVisible ? null : imageUrls.length,
+            ),
+          ),
+        ],
       ),
     );
   }
