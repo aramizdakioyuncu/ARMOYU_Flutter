@@ -1,4 +1,4 @@
-import '../../Services/API/api_service.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsSchool {
   final ApiService apiService = ApiService();

@@ -3,6 +3,9 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/story.dart';
+import 'package:ARMOYU/Models/Story/story.dart';
+import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -44,7 +47,7 @@ class _SocialPageState extends State<SocialPage>
   List<Map<String, String>> Widgettp_card = [];
   List<Map<String, String>> Widgetpop_card = [];
 
-  List<Map<String, String>> Widget_storiescard = [];
+  List<StoryList> Widget_storiescard = [];
 
   Widget? Widget_stories;
 
@@ -72,9 +75,10 @@ class _SocialPageState extends State<SocialPage>
     loadPosts(postpage);
   }
 
+  //Hikaye Fonksiyon
   Future<void> fetchstoryWidget(int page) async {
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getplayerxp(1);
+    FunctionsStory f = FunctionsStory();
+    Map<String, dynamic> response = await f.stories();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -84,28 +88,44 @@ class _SocialPageState extends State<SocialPage>
       Widget_storiescard.clear();
     }
 
-    Widget_storiescard.add({
-      "userID": User.ID.toString(),
-      "username": User.userName.toString(),
-      "image": User.avatarbetter,
-      "displayname": User.displayName,
-    });
+    Widget_storiescard.add(
+      StoryList(User.ID, "Hikayen", User.avatarbetter, null),
+    );
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      if (response["icerik"][i]["oyuncuID"].toString() == User.ID.toString()) {
+      if (response["icerik"][i]["oyuncu_ID"].toString() == User.ID.toString()) {
         continue;
       }
-      Widget_storiescard.add({
-        "userID": response["icerik"][i]["oyuncuID"].toString(),
-        "username": response["icerik"][i]["oyuncukullaniciadi"].toString(),
-        "image": response["icerik"][i]["oyuncuavatar"],
-        "displayname": response["icerik"][i]["oyuncuadsoyad"],
-      });
+      List<Story> Widget_Story = [];
+
+      for (var j = 0; j < response["icerik"][i]["hikaye_icerik"].length; j++) {
+        Widget_Story.add(
+          Story(
+            response["icerik"][i]["hikaye_icerik"][j]["hikaye_ID"],
+            response["icerik"][i]["oyuncu_ID"],
+            response["icerik"][i]["oyuncu_kadi"],
+            response["icerik"][i]["oyuncu_avatar"],
+            response["icerik"][i]["hikaye_icerik"][j]["hikaye_zaman"],
+            response["icerik"][i]["hikaye_icerik"][j]["hikaye_medya"],
+          ),
+        );
+      }
+
+      Widget_storiescard.add(
+        StoryList(
+          response["icerik"][i]["oyuncu_ID"],
+          response["icerik"][i]["oyuncu_kadi"],
+          response["icerik"][i]["oyuncu_avatar"],
+          Widget_Story,
+        ),
+      );
     }
 
     if (mounted) {
       setState(() {
-        Widget_stories = Widget_Storycircle(content: Widget_storiescard);
+        Widget_stories = Widget_Storycircle(
+          content: Widget_storiescard,
+        );
       });
     }
   }

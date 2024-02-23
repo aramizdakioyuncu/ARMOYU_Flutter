@@ -1,4 +1,4 @@
-import '../../Services/API/api_service.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsMedia {
   final ApiService apiService = ApiService();
@@ -7,7 +7,7 @@ class FunctionsMedia {
       int uyeID, String category, int page) async {
     Map<String, String> formData = {
       "oyuncubakid": "$uyeID",
-      "kategori": "$category",
+      "kategori": category,
       "limit": "30",
       "sayfa": "$page"
     };

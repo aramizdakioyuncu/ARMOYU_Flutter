@@ -66,7 +66,7 @@ class RestourantPage extends StatelessWidget {
               Navigator.pop(context);
             }),
             backgroundColor: Colors.black,
-            expandedHeight: 160.0,
+            expandedHeight: ARMOYU.screenHeight * 0.25,
             // actions: <Widget>[],
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: EdgeInsets.only(left: 00.0),

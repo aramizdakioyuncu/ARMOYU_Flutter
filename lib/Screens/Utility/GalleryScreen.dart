@@ -2,9 +2,12 @@
 
 import 'dart:developer';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
+import 'package:ARMOYU/Screens/Story/StoryPublish_page.dart';
 import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class GalleryScreen extends StatefulWidget {
   @override
@@ -17,9 +20,12 @@ int gallerycounter = 0;
 bool ismediaProcces = false;
 
 bool pageisactive = false;
+late TabController tabController;
 
 class _GalleryScreenState extends State<GalleryScreen>
-    with AutomaticKeepAliveClientMixin<GalleryScreen> {
+    with
+        AutomaticKeepAliveClientMixin<GalleryScreen>,
+        TickerProviderStateMixin {
   final ScrollController galleryscrollcontroller = ScrollController();
 
   @override
@@ -38,6 +44,23 @@ class _GalleryScreenState extends State<GalleryScreen>
           galleryscrollcontroller.position.maxScrollExtent) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
         galleryfetch();
+      }
+    });
+
+    tabController = TabController(
+      initialIndex: 0,
+      length: 2,
+      vsync: this,
+    );
+    tabController.addListener(() {
+      if (tabController.indexIsChanging ||
+          tabController.index != tabController.previousIndex) {
+        if (tabController.index == 0) {
+          setState(() {});
+        }
+        if (tabController.index == 1) {
+          setState(() {});
+        }
       }
     });
   }
@@ -83,29 +106,66 @@ class _GalleryScreenState extends State<GalleryScreen>
       ),
       body: Column(
         children: [
+          TabBar(
+            unselectedLabelColor: Colors.grey,
+            labelColor: Colors.white,
+            controller: tabController,
+            isScrollable: false,
+            indicatorColor: Colors.blue,
+            tabs: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomText().Costum1('ARMOYU Cloud', size: 15.0),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CustomText().Costum1('Telefon', size: 15.0),
+              )
+            ],
+          ),
           Expanded(
-            child: imageufakUrls.isEmpty
-                ? Center(
-                    child: Text('Galeri Boş'),
-                  )
-                : GridView.builder(
-                    controller: galleryscrollcontroller,
-                    itemCount: imageufakUrls.length,
-                    itemBuilder: (context, index) {
-                      return CachedNetworkImage(
-                        imageUrl: imageUrls[index],
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
-                      );
-                    },
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, // Her satırda 3 görsel
-                      crossAxisSpacing: 5.0, // Yatayda boşluk
-                      mainAxisSpacing: 5.0, // Dikeyde boşluk
-                    ),
-                  ),
+            child: TabBarView(
+              controller: tabController,
+              children: [
+                imageufakUrls.isEmpty
+                    ? Center(
+                        child: Text('Galeri Boş'),
+                      )
+                    : GridView.builder(
+                        controller: galleryscrollcontroller,
+                        itemCount: imageufakUrls.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => StoryPublishPage(
+                                    imageID: 1,
+                                    imageURL: imageUrls[index],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrls[index],
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  CircularProgressIndicator(),
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                            ),
+                          );
+                        },
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3, // Her satırda 3 görsel
+                          crossAxisSpacing: 5.0, // Yatayda boşluk
+                          mainAxisSpacing: 5.0, // Dikeyde boşluk
+                        ),
+                      ),
+                Text("data"),
+              ],
+            ),
           ),
         ],
       ),

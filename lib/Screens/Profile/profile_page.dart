@@ -42,8 +42,8 @@ class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin<ProfilePage>, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
-  int userID = -1;
 
+  int userID = -1;
   String userName = "...";
   String displayName = "...";
   String banneravatar =

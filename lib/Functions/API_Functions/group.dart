@@ -1,4 +1,4 @@
-import '../../Services/API/api_service.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsGroup {
   final ApiService apiService = ApiService();
@@ -14,8 +14,8 @@ class FunctionsGroup {
   Future<Map<String, dynamic>> groupcreate(String grupadi, String kisaltmaadi,
       int grupkategori, int grupkategoridetay, int varsayilanoyun) async {
     Map<String, String> formData = {
-      "grupadi": "$grupadi",
-      "kisaltmaadi": "$kisaltmaadi",
+      "grupadi": grupadi,
+      "kisaltmaadi": kisaltmaadi,
       "grupkategori": "$grupkategori",
       "grupkategoridetay": "$grupkategoridetay",
       "varsayilanoyun": "$varsayilanoyun"

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -45,7 +46,7 @@ class _ProfilePageState extends State<SchoolPage>
               pinned: false,
               floating: false,
               backgroundColor: Colors.black,
-              expandedHeight: 180.0,
+              expandedHeight: ARMOYU.screenHeight * 0.25,
               actions: <Widget>[],
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: EdgeInsets.only(left: 00.0),

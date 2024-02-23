@@ -3,7 +3,6 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/Utility.dart';
@@ -580,9 +579,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                                       userID: widget.userID, appbar: true)));
                         },
                         child: CircleAvatar(
-                            foregroundImage: CachedNetworkImageProvider(
-                                widget.profileImageUrl),
-                            radius: 20),
+                          foregroundImage: CachedNetworkImageProvider(
+                              widget.profileImageUrl),
+                          radius: 20,
+                        ),
                       ),
                       SizedBox(width: 16),
                       Expanded(
@@ -716,7 +716,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         fit: fit,
         width: width,
         height: height,
-        // placeholder: (context, url) => CircularProgressIndicator(),
+        placeholder: (context, url) => CircularProgressIndicator(),
         errorWidget: (context, url, error) => Icon(Icons.error),
       );
     }
@@ -754,8 +754,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         BoxFit mediadirection = BoxFit.contain;
         if (widget.mediadirection[i].toString() == "dikey") {
           mediadirection = BoxFit.cover;
-          log(widget.mediadirection[i].toString());
-          log(widget.mediaIDs[i].toString());
         }
 
         double mediawidth = ARMOYU.screenWidth;

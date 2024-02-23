@@ -1,8 +1,7 @@
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../Services/API/api_service.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsPosts {
   final ApiService _apiService = ApiService();
@@ -75,7 +74,7 @@ class FunctionsPosts {
   Future<Map<String, dynamic>> createcomment(int postID, String text) async {
     Map<String, String> formData = {
       "postID": "$postID",
-      "yorumicerik": "$text",
+      "yorumicerik": text,
       "kategori": "sosyal"
     };
     Map<String, dynamic> jsonData =
