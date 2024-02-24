@@ -7,6 +7,7 @@ import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
 import 'package:ARMOYU/Screens/School/school_login.dart';
 import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
+import 'package:ARMOYU/Screens/Utility/Settings_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Screens/Utility/CameraScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,7 +17,6 @@ import 'package:ARMOYU/Services/Utility/barcode.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Services/Utility/theme.dart';
 import 'package:ARMOYU/Widgets/menus.dart';
-import 'LoginRegister/login_page.dart';
 import 'Social/social_page.dart';
 import 'Notification/notification_page.dart';
 
@@ -248,16 +248,16 @@ class _MainPageState extends State<MainPage>
         title: Visibility(
           visible: appbar_Search,
           child: Container(
-            height: 35,
+            height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey.shade900,
+              color: ARMOYU.textbackColor,
               borderRadius:
                   BorderRadius.circular(10.0), // Köşe yuvarlama eklemek
             ),
             child: TextField(
               controller: appbar_SearchTextController,
               style: TextStyle(
-                color: Colors.white,
+                color: ARMOYU.textColor,
                 fontSize: 14,
               ),
               decoration: InputDecoration(
@@ -267,7 +267,7 @@ class _MainPageState extends State<MainPage>
                 ),
                 hintText: 'Ara',
                 border: InputBorder.none,
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(color: ARMOYU.textColor),
               ),
             ),
           ),
@@ -381,29 +381,13 @@ class _MainPageState extends State<MainPage>
                       iconColor: ARMOYU.textColor,
                       leading: const Icon(Icons.settings),
                       title: const Text("Ayarlar"),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      textColor: ARMOYU.textColor,
-                      iconColor: ARMOYU.textColor,
-                      leading: Icon(Icons.exit_to_app),
-                      title: Text('Çıkış Yap'),
-                      tileColor: Colors
-                          .red, // TileColor özelliği ile arka plan rengini ayarlayın
-                      onTap: () async {
-                        FunctionService f = FunctionService();
-                        Map<String, dynamic> response = await f.logOut();
-
-                        if (response["durum"] == 0) {
-                          print(response["aciklama"]);
-                          return;
-                        }
-                        passwordController.text = "";
-
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SettingsPage(),
+                          ),
+                        );
                       },
                     ),
                     ListTile(
@@ -455,9 +439,8 @@ class _MainPageState extends State<MainPage>
           ProfilePage(userID: userID, appbar: false),
         ],
       ),
-      bottomNavigationBar: Visibility(
-          visible: true,
-          child: CustomMenus().mainbottommenu(_currentPage, _changePage)),
+      bottomNavigationBar:
+          CustomMenus().mainbottommenu(_currentPage, _changePage),
     );
   }
 }

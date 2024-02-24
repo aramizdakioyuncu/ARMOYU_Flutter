@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,7 @@ class CustomSearchEngine {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: ARMOYU.textColor,
                     ),
                   ),
                   // CustomDedectabletext().Costum1(text, 1, 15)
@@ -126,6 +128,7 @@ class CustomSearchEngine {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
+                    color: ARMOYU.textColor,
                   ),
                 ),
               ],

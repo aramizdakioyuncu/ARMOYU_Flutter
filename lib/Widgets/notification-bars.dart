@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
 
@@ -22,6 +23,7 @@ class CustomMenusNotificationbars extends StatefulWidget {
   bool enableButtons;
 
   CustomMenusNotificationbars({
+    super.key,
     required this.userID,
     required this.displayname,
     required this.avatar,
@@ -48,10 +50,10 @@ class _CustomMenusNotificationbarsState
       visible: natificationisVisible,
       child: InkWell(
         onTap: () {
-          print("tıklanabilir içerik");
+          log("tıklanabilir içerik");
         },
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -76,14 +78,14 @@ class _CustomMenusNotificationbarsState
                       ],
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           widget.displayname,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
@@ -129,9 +131,9 @@ class _CustomMenusNotificationbarsState
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue,
                                 ),
-                                child: Text("Kabul ET"),
+                                child: CustomText().Costum1("Kabul ET"),
                               ),
-                              SizedBox(width: 16),
+                              const SizedBox(width: 16),
                               ElevatedButton(
                                 onPressed: () async {
                                   if (widget.category == "arkadaslik") {
@@ -162,7 +164,7 @@ class _CustomMenusNotificationbarsState
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                 ),
-                                child: Text("Reddet"),
+                                child: CustomText().Costum1("Reddet"),
                               ),
                             ],
                           ),
@@ -170,14 +172,14 @@ class _CustomMenusNotificationbarsState
                       ],
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         widget.date,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -186,7 +188,7 @@ class _CustomMenusNotificationbarsState
                   ),
                 ],
               ),
-              Divider(),
+              const Divider(),
             ],
           ),
         ),

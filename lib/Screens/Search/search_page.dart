@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
@@ -122,7 +123,7 @@ class _SearchPagePage extends State<SearchPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade900,
+      backgroundColor: ARMOYU.bodyColor,
       body: ListView.builder(
         controller: _scrollController,
         itemCount: Widget_search.length,

@@ -89,12 +89,12 @@ class _ChatPageState extends State<ChatPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade900,
+      backgroundColor: ARMOYU.bodyColor,
       appBar: widget.appbar
           ? AppBar(
               title: Text("Sohbetler"),
               automaticallyImplyLeading: false,
-              backgroundColor: Colors.black,
+              backgroundColor: ARMOYU.appbarColor,
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.search),

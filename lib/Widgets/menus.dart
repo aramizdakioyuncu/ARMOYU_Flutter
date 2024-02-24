@@ -1,29 +1,12 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomMenus {
-  Widget bottommenu(int currentIndex, _onItemTapped) {
+  Widget mainbottommenu(int currentIndex, onItemTapped) {
     return BottomNavigationBar(
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Ana Sayfa',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profil',
-        ),
-      ],
-      currentIndex: currentIndex,
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey,
-      onTap: _onItemTapped,
-    );
-  }
-
-  Widget mainbottommenu(int currentIndex, _onItemTapped) {
-    return BottomNavigationBar(
+      backgroundColor: Colors.blue,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -43,9 +26,9 @@ class CustomMenus {
         ),
       ],
       currentIndex: currentIndex,
-      selectedItemColor: Colors.blue,
+      selectedItemColor: ARMOYU.color,
       unselectedItemColor: Colors.grey,
-      onTap: _onItemTapped,
+      onTap: onItemTapped,
     );
   }
 }

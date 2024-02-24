@@ -626,7 +626,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      backgroundColor: ARMOYU.bodyColor,
       // extendBodyBehindAppBar: true,
 
       body: CustomScrollView(
@@ -1273,13 +1273,12 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
     // Başlık içeriğini oluşturun
     return Container(
       alignment: Alignment.center,
-      color: ARMOYU.appbarColor,
+      color: ARMOYU.bodyColor,
       child: TabBar(
-        unselectedLabelColor: Colors.grey,
         labelColor: Colors.white,
         controller: tabController,
         isScrollable: true,
-        indicatorColor: Colors.blue,
+        indicatorColor: ARMOYU.color,
         tabs: [
           Padding(
             padding: const EdgeInsets.all(8.0),

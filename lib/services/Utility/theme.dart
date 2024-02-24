@@ -20,10 +20,9 @@ class ThemeProvider with ChangeNotifier {
     ARMOYU.texthintColor = Color.fromARGB(255, 195, 195, 195);
 
     ARMOYU.color = Colors.white;
-    ARMOYU.bacgroundcolor = Colors.grey.shade900;
     ARMOYU.appbarColor = Colors.black;
-    ARMOYU.bodyColor = Colors.black;
-
+    ARMOYU.bodyColor = Colors.grey.shade900;
+    ARMOYU.bacgroundcolor = Colors.black;
     ARMOYU.buttonColor = Colors.black;
   }
 
@@ -36,9 +35,9 @@ class ThemeProvider with ChangeNotifier {
     ARMOYU.texthintColor = Color.fromARGB(255, 169, 169, 169);
 
     ARMOYU.color = Colors.black;
-    ARMOYU.bacgroundcolor = Colors.white;
     ARMOYU.appbarColor = Colors.white;
-    ARMOYU.bodyColor = Color.fromARGB(134, 242, 238, 238);
+    ARMOYU.bodyColor = Colors.white;
+    ARMOYU.bacgroundcolor = Colors.white;
     ARMOYU.buttonColor = Colors.blue;
   }
 

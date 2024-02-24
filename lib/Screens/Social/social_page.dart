@@ -328,7 +328,7 @@ class _SocialPageState extends State<SocialPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.bacgroundcolor,
+      backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
         color: Colors.blue,
         onRefresh: _handleRefresh,

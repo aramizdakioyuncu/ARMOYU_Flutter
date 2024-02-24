@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification-bars.dart';
@@ -102,17 +103,6 @@ class _NotificationPage extends State<NotificationPage>
             enableButtons: noticiationbuttons,
             text: response["icerik"][i]["bildirimicerik"],
           ),
-          // CustomMenusNotificationbars().costom1(
-          //     context,
-          //     response["icerik"][i]["bildirimgonderenID"],
-          //     response["icerik"][i]["bildirimgonderenadsoyad"],
-          //     response["icerik"][i]["bildirimgonderenavatar"],
-          //     response["icerik"][i]["bildirimicerik"],
-          //     response["icerik"][i]["bildirimzaman"],
-          //     response["icerik"][i]["bildirimamac"],
-          //     response["icerik"][i]["bildirimkategori"],
-          //     response["icerik"][i]["bildirimkategoridetay"],
-          //     noticiationbuttons),
         );
       }
     });
@@ -122,8 +112,8 @@ class _NotificationPage extends State<NotificationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
-        // color: Colors.blue,
         onRefresh: _handleRefresh,
         child: ListView.builder(
           controller: _scrollController,
