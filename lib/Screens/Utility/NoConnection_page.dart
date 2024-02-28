@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
 import 'dart:developer';
 
@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NoConnectionPage extends StatefulWidget {
+  const NoConnectionPage({super.key});
+
   @override
   _InternetCheckPageState createState() => _InternetCheckPageState();
 }
@@ -89,12 +91,12 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
               size: 80,
               color: Colors.red,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               connectionstatus,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             CustomButtons().Costum1(
                 "Tekrar dene", checkInternetConnection2, connectionProcess),
           ],

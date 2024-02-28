@@ -199,7 +199,9 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
 
                               // isProcces = false;
                             });
-                          } catch (e) {}
+                          } catch (e) {
+                            log(e.toString());
+                          }
                         });
                       },
                       children: List<Widget>.generate(cupertinolist.length,

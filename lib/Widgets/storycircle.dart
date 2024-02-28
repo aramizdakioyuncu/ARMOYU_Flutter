@@ -2,8 +2,8 @@
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
-import 'package:ARMOYU/Screens/Utility/GalleryScreen.dart';
-import 'package:ARMOYU/Screens/Story/StoryScreen_page.dart';
+import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
+import 'package:ARMOYU/Screens/Story/storyscreen_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';

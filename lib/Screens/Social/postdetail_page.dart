@@ -2,7 +2,7 @@
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 
-import 'package:ARMOYU/Widgets/post-comments.dart';
+import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

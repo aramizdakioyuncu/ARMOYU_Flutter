@@ -4,9 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class GroupPage extends StatefulWidget {
-  // _GroupPage({
+  const GroupPage({super.key});
 
-  // });
   @override
   _GroupPage createState() => _GroupPage();
 }

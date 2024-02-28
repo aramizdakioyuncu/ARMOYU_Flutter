@@ -108,7 +108,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
             duration: Duration(milliseconds: 20),
             curve: Curves.easeOut,
           );
-        } catch (e) {}
+        } catch (e) {
+          log(e.toString());
+        }
         print(message);
       } catch (e) {
         print("json hatası");
@@ -186,7 +188,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
             curve: Curves.easeInOut,
           );
         });
-      } catch (e) {}
+      } catch (e) {
+        log(e.toString());
+      }
     }
 
     // Biraz bekleme süresi ekleyin,
@@ -343,7 +347,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
                               curve: Curves.easeInOut,
                             );
                           });
-                        } catch (e) {}
+                        } catch (e) {
+                          log(e.toString());
+                        }
                       });
 
                       FunctionService f = FunctionService();

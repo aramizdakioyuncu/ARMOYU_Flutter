@@ -1,3 +1,3 @@
-class post_functions {
+class PostFunctions {
   static int sayi = 1;
 }

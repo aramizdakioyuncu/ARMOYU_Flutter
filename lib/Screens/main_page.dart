@@ -7,9 +7,9 @@ import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
 import 'package:ARMOYU/Screens/School/school_login.dart';
 import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
-import 'package:ARMOYU/Screens/Utility/Settings_page.dart';
+import 'package:ARMOYU/Screens/Settings/settings_page.dart';
 import 'package:ARMOYU/Services/User.dart';
-import 'package:ARMOYU/Screens/Utility/CameraScreen.dart';
+import 'package:ARMOYU/Screens/Utility/cameraScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

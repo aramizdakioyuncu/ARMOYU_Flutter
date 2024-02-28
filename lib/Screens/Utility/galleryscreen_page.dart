@@ -1,13 +1,12 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, library_private_types_in_public_api
+// ignore_for_file: use_key_in_widget_constructors,  library_private_types_in_public_api
 
 import 'dart:developer';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
-import 'package:ARMOYU/Screens/Story/StoryPublish_page.dart';
+import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class GalleryScreen extends StatefulWidget {
   @override
@@ -102,7 +101,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hikaye Gönder'),
+        title: const Text('Hikaye Gönder'),
       ),
       body: Column(
         children: [
@@ -128,7 +127,7 @@ class _GalleryScreenState extends State<GalleryScreen>
               controller: tabController,
               children: [
                 imageufakUrls.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Text('Galeri Boş'),
                       )
                     : GridView.builder(
@@ -151,19 +150,20 @@ class _GalleryScreenState extends State<GalleryScreen>
                               imageUrl: imageUrls[index],
                               fit: BoxFit.cover,
                               placeholder: (context, url) =>
-                                  CircularProgressIndicator(),
+                                  const CircularProgressIndicator(),
                               errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                                  const Icon(Icons.error),
                             ),
                           );
                         },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3, // Her satırda 3 görsel
                           crossAxisSpacing: 5.0, // Yatayda boşluk
                           mainAxisSpacing: 5.0, // Dikeyde boşluk
                         ),
                       ),
-                Text("data"),
+                const Text("data"),
               ],
             ),
           ),

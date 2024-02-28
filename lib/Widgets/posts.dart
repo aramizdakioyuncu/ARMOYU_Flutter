@@ -7,7 +7,7 @@ import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/Utility.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
-import 'package:ARMOYU/Widgets/post-comments.dart';
+import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
-import 'package:ARMOYU/Screens/Utility/FullScreenImagePage.dart';
+import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class TwitterPostWidget extends StatefulWidget {

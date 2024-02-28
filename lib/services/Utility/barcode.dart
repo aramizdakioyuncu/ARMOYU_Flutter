@@ -1,5 +1,7 @@
 // ignore_for_file: unused_field
 
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
@@ -9,7 +11,7 @@ class BarcodeService {
   Future<void> startBarcodeScanStream() async {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             '#ff6666', 'Cancel', true, ScanMode.BARCODE)!
-        .listen((barcode) => print(barcode));
+        .listen((barcode) => log(barcode));
   }
 
   Future<String> scanQR() async {
@@ -18,7 +20,7 @@ class BarcodeService {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.QR);
-      print(barcodeScanRes);
+      log(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
     }
@@ -37,7 +39,7 @@ class BarcodeService {
     try {
       barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
           '#ff6666', 'Cancel', true, ScanMode.BARCODE);
-      print(barcodeScanRes);
+      log(barcodeScanRes);
     } on PlatformException {
       barcodeScanRes = 'Failed to get platform version.';
       return _scanBarcode = barcodeScanRes;

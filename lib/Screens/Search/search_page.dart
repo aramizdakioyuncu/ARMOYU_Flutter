@@ -7,7 +7,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
-import 'package:ARMOYU/Widgets/search-engine.dart';
+import 'package:ARMOYU/Widgets/search_engine.dart';
 
 class SearchPage extends StatefulWidget {
   final bool appbar;
@@ -95,7 +95,9 @@ class _SearchPagePage extends State<SearchPage>
         setState(() {
           Widget_search.clear();
         });
-      } catch (e) {}
+      } catch (e) {
+        log(e.toString());
+      }
 
       int dynamicItemCount = response["icerik"].length;
       //Eğer cevap gelene kadar yeni bir şeyler yazmışsa
@@ -113,7 +115,9 @@ class _SearchPagePage extends State<SearchPage>
               response["icerik"][i]["turu"],
             ));
           });
-        } catch (e) {}
+        } catch (e) {
+          log(e.toString());
+        }
       }
 
       // postsearchprocess = false;

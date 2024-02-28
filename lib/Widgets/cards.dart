@@ -150,7 +150,7 @@ class _CustomCardsState extends State<CustomCards> {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
-                          padding: EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Text(
                             (index + 1).toString(),
                             style: const TextStyle(

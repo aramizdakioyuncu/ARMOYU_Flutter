@@ -61,7 +61,7 @@ Widget specialText(BuildContext context, String text) {
         }
 
         if (i < words.length - 1) {
-          lineSpans.add(TextSpan(text: ' '));
+          lineSpans.add(const TextSpan(text: ' '));
         }
       }
     }

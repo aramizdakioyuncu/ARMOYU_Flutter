@@ -6,7 +6,7 @@ import 'package:ARMOYU/Core/AppCore.dart';
 
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
-import 'package:ARMOYU/Screens/Utility/FullScreenImagePage.dart';
+import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/Utility.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
@@ -298,14 +298,20 @@ class _ProfilePageState extends State<ProfilePage>
 
       try {
         job = User.job;
-      } catch (Ex) {}
+      } catch (Ex) {
+        log(Ex.toString());
+      }
 
       try {
         role = User.role;
-      } catch (Ex) {}
+      } catch (Ex) {
+        log(Ex.toString());
+      }
       try {
         rolecolor = User.rolecolor;
-      } catch (Ex) {}
+      } catch (Ex) {
+        log(Ex.toString());
+      }
     } else {
       Map<String, dynamic> response = {};
       if (widget.userID == null && widget.username != null) {
@@ -589,7 +595,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Future<void> cancelfriendrequest() async {
-    print("istek iptal edilecek ");
+    log("istek iptal edilecek ");
   }
 
   Widget Widget_friendList(bool isclip, double left, String imageUrl) {

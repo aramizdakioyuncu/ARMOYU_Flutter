@@ -1,7 +1,7 @@
 import 'package:ARMOYU/Core/AppCore.dart';
 
 import 'package:ARMOYU/Services/Utility/theme.dart';
-import 'package:ARMOYU/Screens/Utility/StartingScreen_page.dart';
+import 'package:ARMOYU/Screens/Utility/startingscreen_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +12,7 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      child: MyApp(homePage: StartingScreen()),
+      child: const MyApp(homePage: StartingScreen()),
     ),
   );
 }

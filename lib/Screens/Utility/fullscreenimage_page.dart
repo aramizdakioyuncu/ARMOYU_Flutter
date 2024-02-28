@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, unrelated_type_equality_checks, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, must_be_immutable
+// ignore_for_file: must_be_immutable
 
 import 'dart:io';
 
@@ -18,6 +18,7 @@ class FullScreenImagePage extends StatelessWidget {
   bool? isFile = false; // Yerel mi
 
   FullScreenImagePage({
+    super.key,
     required this.images,
     required this.initialIndex,
     this.imagesID,
@@ -34,7 +35,7 @@ class FullScreenImagePage extends StatelessWidget {
           Visibility(
             visible: imagesownerID?[initialIndex] == User.ID ? true : false,
             child: IconButton(
-              icon: Icon(Icons.crop_rotate_outlined),
+              icon: const Icon(Icons.crop_rotate_outlined),
               onPressed: () {},
             ),
           ),

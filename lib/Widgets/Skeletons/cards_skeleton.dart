@@ -8,7 +8,8 @@ class SkeletonCustomCards extends StatefulWidget {
   final int count;
   final Icon icon;
 
-  SkeletonCustomCards({
+  const SkeletonCustomCards({
+    super.key,
     // required this.controller,
     required this.count,
     required this.icon,

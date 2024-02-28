@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field
+// ignore_for_file: unused_field, unused_element, no_leading_underscores_for_local_identifiers
 
 import 'package:image_picker/image_picker.dart';
 

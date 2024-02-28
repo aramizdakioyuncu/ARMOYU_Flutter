@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sort_child_properties_last
 
+import 'dart:developer';
+
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -91,7 +93,9 @@ class CustomSearchEngine {
       onTap: () {
         try {
           function();
-        } catch (e) {}
+        } catch (e) {
+          log(e.toString());
+        }
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

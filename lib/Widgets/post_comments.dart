@@ -105,7 +105,7 @@ class _Widget_PostComments extends State<Widget_PostComments> {
               Map<String, dynamic> response =
                   await funct.commentlikeordislike(widget.commentID);
               if (response["durum"] == 0) {
-                print(response["aciklama"]);
+                log(response["aciklama"]);
                 return;
               }
               if (response['aciklama'] == "Paylaşımı beğendin.") {

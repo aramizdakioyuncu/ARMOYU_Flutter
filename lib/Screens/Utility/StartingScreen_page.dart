@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartingScreen extends StatefulWidget {
+  const StartingScreen({super.key});
+
   @override
   _StartingScreen createState() => _StartingScreen();
 }
@@ -31,9 +33,10 @@ class _StartingScreen extends State<StartingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => NoConnectionPage(),
+          builder: (context) => const NoConnectionPage(),
         ),
       );
+
       return;
     }
 
@@ -72,7 +75,7 @@ class _StartingScreen extends State<StartingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => NoConnectionPage(),
+          builder: (context) => const NoConnectionPage(),
         ),
       );
       return;
@@ -100,7 +103,7 @@ class _StartingScreen extends State<StartingScreen> {
             ),
             Text(
               connectionstatus,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

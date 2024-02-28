@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, non_constant_identifier_names
 
 // import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:convert';

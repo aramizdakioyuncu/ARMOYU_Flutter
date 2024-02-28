@@ -2,7 +2,7 @@
 
 import 'dart:io';
 import 'package:ARMOYU/Core/AppCore.dart';
-import 'package:ARMOYU/Screens/Utility/FullScreenImagePage.dart';
+import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 

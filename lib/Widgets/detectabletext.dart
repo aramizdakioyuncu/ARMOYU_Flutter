@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
+
+import 'dart:developer';
 
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
 import 'package:detectable_text_field/widgets/detectable_text.dart';
@@ -21,7 +23,7 @@ class CustomDedectabletext {
         debugPrint('Read more >>>>>>> $readMore');
       },
       onTap: (tappedText) async {
-        print(tappedText);
+        log(tappedText);
         if (tappedText.startsWith('#')) {
           debugPrint('DetectableText >>>>>>> #');
         } else if (tappedText.startsWith('@')) {

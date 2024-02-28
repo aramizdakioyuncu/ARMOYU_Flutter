@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, deprecated_member_use
 
 import 'dart:developer';
 
@@ -43,7 +43,7 @@ class _PagesState extends State<Pages> {
         _cameras = await availableCameras();
         log(_cameras.toString());
       } on CameraException catch (e) {
-        print(e);
+        log(e.toString());
       }
     }
   }
