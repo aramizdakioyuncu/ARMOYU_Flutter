@@ -39,10 +39,28 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   final StoryList cardData = widget.content[index];
+                  Color storycolor = Colors.transparent;
+                  bool ishasstory = false;
+                  if (cardData.ownerID == User.ID) {
+                    if (cardData.story != null) {
+                      storycolor = Colors.blue;
+                      ishasstory = true;
+                    }
+                  }
 
                   return GestureDetector(
                     onTap: () {
                       if (cardData.ownerID == User.ID) {
+                        if (ishasstory) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  StoryScreenPage(story: cardData.story!),
+                            ),
+                          );
+                          return;
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -68,7 +86,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: cardData.ownerID == User.ID
-                                  ? Colors.transparent
+                                  ? storycolor
                                   : Colors.green, // Kenarlık rengi
                               width: 3.0, // Kenarlık kalınlığı
                             ),
@@ -99,7 +117,11 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                               : null,
                         ),
                         SizedBox(height: 2),
-                        CustomText().Costum1(cardData.ownerusername, size: 11),
+                        CustomText().Costum1(
+                            cardData.ownerID == User.ID
+                                ? "Hikayen"
+                                : cardData.ownerusername,
+                            size: 11),
                       ],
                     ),
                   );

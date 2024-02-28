@@ -87,16 +87,17 @@ class _SocialPageState extends State<SocialPage>
     if (page == 1) {
       Widget_storiescard.clear();
     }
-
-    Widget_storiescard.add(
-      StoryList(User.ID, "Hikayen", User.avatarbetter, null),
-    );
-
     for (int i = 0; i < response["icerik"].length; i++) {
-      if (response["icerik"][i]["oyuncu_ID"].toString() == User.ID.toString()) {
-        continue;
-      }
       List<Story> Widget_Story = [];
+
+      if (i == 0) {
+        if (response["icerik"][i]["oyuncu_ID"].toString() !=
+            User.ID.toString()) {
+          Widget_storiescard.add(
+            StoryList(User.ID, "Hikayen", User.avatarbetter, null),
+          );
+        }
+      }
 
       for (var j = 0; j < response["icerik"][i]["hikaye_icerik"].length; j++) {
         Widget_Story.add(

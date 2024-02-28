@@ -3,12 +3,15 @@
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Models/country.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/Account/accountsettings.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/blockedusersettings.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -18,179 +21,328 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPage extends State<SettingsPage> {
+  List<Country> countryList = [];
+
+  final double _kItemExtent = 32.0;
+  List<Map<String, String>> cupertinolist = [
+    {'ID': '-1', 'value': 'Seç'}
+  ];
+  int _selectedcupertinolist = 0;
+
   @override
   void initState() {
     super.initState();
+
+    countryList.add(
+      Country(
+        name: 'Türkiye',
+        postalCode: 'TR',
+        phoneCode: '90',
+      ),
+    );
+
+    countryList.add(
+      Country(
+        name: 'Afganistan',
+        postalCode: 'AF',
+        phoneCode: '93',
+      ),
+    );
+
+    countryList.add(
+      Country(
+        name: 'Türkiye',
+        postalCode: 'TR',
+        phoneCode: '90',
+      ),
+    );
+  }
+
+  void _showDialog(Widget child) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: child,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
-      appBar: AppBar(
-        title: const Text('Ayarlar'),
-        backgroundColor: ARMOYU.appbarColor,
-      ),
-      body: Column(
-        children: [
-          Column(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: ARMOYU.bodyColor,
+        appBar: AppBar(
+          title: const Text('Ayarlar'),
+          backgroundColor: ARMOYU.appbarColor,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              Container(
-                color: Colors.white,
-                child: ListTile(
-                  leading: CircleAvatar(
-                    foregroundImage: CachedNetworkImageProvider(User.avatar),
-                    radius: 28,
+              Column(
+                children: [
+                  ListTile(
+                    tileColor: ARMOYU.bacgroundcolor,
+                    leading: CircleAvatar(
+                      foregroundImage: CachedNetworkImageProvider(User.avatar),
+                      radius: 28,
+                    ),
+                    title: Text(User.displayName),
+                    subtitle:
+                        CustomText().Costum1("Son Hatalı Giriş: 20.02.2002"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsAccountPage(),
+                        ),
+                      );
+                    },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.qr_code),
+                        ),
+                      ],
+                    ),
                   ),
-                  title: Text(User.displayName),
-                  subtitle:
-                      CustomText().Costum1("Son Hatalı Giriş: 20.02.2002"),
-                  // onTap: () {},
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(height: 10),
+                  Column(
                     children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.qr_code),
+                      ListTile(
+                        tileColor: ARMOYU.bacgroundcolor,
+                        title: const Text("Uygulaman ve medya"),
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.phone_android_rounded,
+                        ),
+                        title: CustomText().Costum1("Cihaz İzinleri"),
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kapalı'),
+                            ),
+                            Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.download_rounded,
+                        ),
+                        title: CustomText().Costum1("İndirme ve Arşivleme"),
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kapalı'),
+                            ),
+                            Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.network_wifi_3_bar_rounded,
+                        ),
+                        title: CustomText().Costum1("Veri Tasarrufu"),
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Kapalı'),
+                            ),
+                            Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.language),
+                        title: CustomText().Costum1("Diller"),
+                        onTap: () {
+                          _showDialog(
+                            CupertinoPicker(
+                              magnification: 1.22,
+                              squeeze: 1.2,
+                              useMagnifier: true,
+                              itemExtent: _kItemExtent,
+                              scrollController: FixedExtentScrollController(
+                                initialItem: _selectedcupertinolist,
+                              ),
+                              onSelectedItemChanged: (int selectedItem) async {
+                                setState(() {
+                                  _selectedcupertinolist = selectedItem;
+                                });
+                              },
+                              children: List<Widget>.generate(
+                                  countryList.length, (int index) {
+                                return Center(
+                                    child: Text(
+                                        countryList[index].name.toString()));
+                              }),
+                            ),
+                          );
+                        },
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text('Türkçe'),
+                            ),
+                            Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              ListTile(
-                leading: const Icon(Icons.account_circle_rounded),
-                title: CustomText().Costum1("Hesap"),
-                tileColor: Colors.white,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsAccountPage(),
-                    ),
-                  );
-                },
-                trailing: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.arrow_forward_ios_outlined, size: 17),
-                  ],
-                ),
-              ),
-              Column(
-                children: [
-                  InkWell(
-                    onTap: () {},
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.network_wifi_3_bar_rounded,
-                      ),
-                      title: CustomText().Costum1("Veri Tasarrufu"),
-                      tileColor: Colors.white,
-                      trailing: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text('Kapalı'),
-                          ),
-                          Icon(Icons.arrow_forward_ios_outlined, size: 17),
-                        ],
-                      ),
-                    ),
-                  ),
                   ListTile(
-                    leading: const Icon(Icons.language),
-                    title: CustomText().Costum1("Diller"),
+                    leading: const Icon(Icons.notifications_active),
+                    title: CustomText().Costum1("Bildirimler"),
                     onTap: () {},
-                    tileColor: Colors.white,
+                    tileColor: ARMOYU.bacgroundcolor,
                     trailing: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Türkçe'),
+                          child: Text('Hepsi Açık'),
                         ),
                         Icon(Icons.arrow_forward_ios_outlined, size: 17),
                       ],
                     ),
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.lock),
+                    title: CustomText().Costum1("Hesap Gizliliği"),
+                    onTap: () {},
+                    tileColor: ARMOYU.bacgroundcolor,
+                    trailing: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Gizli'),
+                        ),
+                        Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                      ],
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.block),
+                    title: CustomText().Costum1("Engellenenler"),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsBlockeduserPage(),
+                        ),
+                      );
+                    },
+                    tileColor: ARMOYU.bacgroundcolor,
+                    trailing: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('10'),
+                        ),
+                        Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Column(
+                    children: [
+                      ListTile(
+                        tileColor: ARMOYU.bacgroundcolor,
+                        title: const Text("Daha fazla bilgi ve destek"),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.help),
+                        title: CustomText().Costum1("Yardım"),
+                        onTap: () {},
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Icon(Icons.arrow_forward_ios_outlined,
+                            size: 17),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.person),
+                        title: CustomText().Costum1("Hesap Durumu"),
+                        onTap: () {},
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Icon(Icons.arrow_forward_ios_outlined,
+                            size: 17),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.info),
+                        title: CustomText().Costum1("Hakkında"),
+                        onTap: () {},
+                        tileColor: ARMOYU.bacgroundcolor,
+                        trailing: const Icon(Icons.arrow_forward_ios_outlined,
+                            size: 17),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Column(
+                    children: [
+                      ListTile(
+                        textColor: Colors.blue,
+                        iconColor: Colors.blue,
+                        tileColor: ARMOYU.bacgroundcolor,
+                        title: const Text("Hesap Ekle"),
+                        onTap: () async {},
+                      ),
+                      ListTile(
+                        textColor: Colors.red,
+                        iconColor: Colors.red,
+                        tileColor: ARMOYU.bacgroundcolor,
+                        title: const Text("Çıkış Yap"),
+                        onTap: () async {
+                          FunctionService f = FunctionService();
+                          Map<String, dynamic> response = await f.logOut();
+
+                          if (response["durum"] == 0) {
+                            log(response["aciklama"]);
+                            return;
+                          }
+                          passwordController.text = "";
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ],
-              ),
-              ListTile(
-                leading: const Icon(Icons.notifications_active),
-                title: CustomText().Costum1("Bildirimler"),
-                onTap: () {},
-                tileColor: Colors.white,
-                trailing: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('Hepsi Açık'),
-                    ),
-                    Icon(Icons.arrow_forward_ios_outlined, size: 17),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.block),
-                title: CustomText().Costum1("Engellenenler"),
-                onTap: () {},
-                tileColor: Colors.white,
-                trailing: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('10'),
-                    ),
-                    Icon(Icons.arrow_forward_ios_outlined, size: 17),
-                  ],
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.help),
-                title: CustomText().Costum1("Yardım"),
-                onTap: () {},
-                tileColor: Colors.white,
-                trailing:
-                    const Icon(Icons.arrow_forward_ios_outlined, size: 17),
-              ),
-              ListTile(
-                leading: const Icon(Icons.info),
-                title: CustomText().Costum1("Hakkında"),
-                onTap: () {},
-                tileColor: Colors.white,
-                trailing:
-                    const Icon(Icons.arrow_forward_ios_outlined, size: 17),
-              ),
-              ListTile(
-                textColor: Colors.red,
-                iconColor: Colors.red,
-                leading: const Icon(Icons.exit_to_app),
-                title: const Text("Çıkış Yap"),
-                onTap: () async {
-                  FunctionService f = FunctionService();
-                  Map<String, dynamic> response = await f.logOut();
-
-                  if (response["durum"] == 0) {
-                    log(response["aciklama"]);
-                    return;
-                  }
-                  passwordController.text = "";
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginPage(),
-                    ),
-                  );
-                },
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

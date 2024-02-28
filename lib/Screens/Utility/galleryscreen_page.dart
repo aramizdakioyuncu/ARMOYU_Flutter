@@ -1,12 +1,16 @@
 // ignore_for_file: use_key_in_widget_constructors,  library_private_types_in_public_api
 
 import 'dart:developer';
+import 'dart:io';
+import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
+import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Services/User.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class GalleryScreen extends StatefulWidget {
   @override
@@ -20,6 +24,7 @@ bool ismediaProcces = false;
 
 bool pageisactive = false;
 late TabController tabController;
+List<XFile> imagePath = [];
 
 class _GalleryScreenState extends State<GalleryScreen>
     with
@@ -33,6 +38,9 @@ class _GalleryScreenState extends State<GalleryScreen>
   @override
   void initState() {
     super.initState();
+
+    imagePath.clear();
+
     if (!pageisactive) {
       startingfunction();
       pageisactive = true;
@@ -126,43 +134,116 @@ class _GalleryScreenState extends State<GalleryScreen>
             child: TabBarView(
               controller: tabController,
               children: [
-                imageufakUrls.isEmpty
-                    ? const Center(
-                        child: Text('Galeri Boş'),
-                      )
-                    : GridView.builder(
-                        controller: galleryscrollcontroller,
-                        itemCount: imageufakUrls.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => StoryPublishPage(
-                                    imageID: 1,
-                                    imageURL: imageUrls[index],
-                                  ),
-                                ),
-                              );
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 200,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              List<XFile> selectedImages =
+                                  await AppCore.pickImages();
+                              if (selectedImages.isNotEmpty) {
+                                setState(() {
+                                  imagePath.addAll(selectedImages);
+                                });
+                              }
                             },
-                            child: CachedNetworkImage(
-                              imageUrl: imageUrls[index],
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                            child: const Center(
+                              child: Icon(Icons.photo_library_rounded),
                             ),
-                          );
-                        },
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3, // Her satırda 3 görsel
-                          crossAxisSpacing: 5.0, // Yatayda boşluk
-                          mainAxisSpacing: 5.0, // Dikeyde boşluk
-                        ),
+                          ),
+                          if (imagePath.isNotEmpty)
+                            SizedBox(
+                              height: 150,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: imagePath.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FullScreenImagePage(
+                                                  images: [
+                                                    imagePath[index].path
+                                                  ],
+                                                  initialIndex: 0,
+                                                  isFile: true,
+                                                ),
+                                              ));
+                                            },
+                                            child: Image.file(
+                                              File(imagePath[index].path),
+                                              width: 100,
+                                              height: 100,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 50,
+                                    child: ElevatedButton(
+                                        onPressed: () {},
+                                        child: const Icon(Icons.send)),
+                                  )
+                                ],
+                              ),
+                            )
+                        ],
                       ),
+                    ),
+                    Expanded(
+                      child: imageufakUrls.isEmpty
+                          ? const Center(
+                              child: Text('Galeri Boş'),
+                            )
+                          : GridView.builder(
+                              controller: galleryscrollcontroller,
+                              itemCount: imageufakUrls.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => StoryPublishPage(
+                                          imageID: 1,
+                                          imageURL: imageUrls[index],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: CachedNetworkImage(
+                                    imageUrl: imageUrls[index],
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(Icons.error),
+                                  ),
+                                );
+                              },
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3, // Her satırda 3 görsel
+                                crossAxisSpacing: 5.0, // Yatayda boşluk
+                                mainAxisSpacing: 5.0, // Dikeyde boşluk
+                              ),
+                            ),
+                    ),
+                  ],
+                ),
                 const Text("data"),
               ],
             ),

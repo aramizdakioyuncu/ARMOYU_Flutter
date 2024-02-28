@@ -70,57 +70,59 @@ class _PostSharePageState extends State<PostSharePage>
           children: [
             Expanded(
               // height: 30,
-              child: Column(children: [
-                TextField(
-                  controller: textController,
-                  decoration: InputDecoration(hintText: "Bir şeyler yaz..."),
-                  maxLines: null,
-                ),
-                ElevatedButton(
-                  // Görsel ekleme alanı
+              child: Column(
+                children: [
+                  TextField(
+                    controller: textController,
+                    decoration: InputDecoration(hintText: "Bir şeyler yaz..."),
+                    maxLines: null,
+                  ),
+                  ElevatedButton(
+                    // Görsel ekleme alanı
 
-                  onPressed: () async {
-                    List<XFile> selectedImages = await AppCore.pickImages();
-                    if (selectedImages.isNotEmpty) {
-                      setState(() {
-                        imagePath.addAll(selectedImages);
-                      });
-                    }
-                  },
-                  child: Text("Görsel Ekle"),
-                ),
+                    onPressed: () async {
+                      List<XFile> selectedImages = await AppCore.pickImages();
+                      if (selectedImages.isNotEmpty) {
+                        setState(() {
+                          imagePath.addAll(selectedImages);
+                        });
+                      }
+                    },
+                    child: Text("Görsel Ekle"),
+                  ),
 
-                // Görsellerin önizlemesi
-                if (imagePath.isNotEmpty)
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: imagePath.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => FullScreenImagePage(
-                                  images: [imagePath[index].path],
-                                  initialIndex: 0,
-                                  isFile: true,
-                                ),
-                              ));
-                            },
-                            child: Image.file(
-                              File(imagePath[index].path),
-                              width: 100,
-                              height: 100,
+                  // Görsellerin önizlemesi
+                  if (imagePath.isNotEmpty)
+                    SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: imagePath.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => FullScreenImagePage(
+                                    images: [imagePath[index].path],
+                                    initialIndex: 0,
+                                    isFile: true,
+                                  ),
+                                ));
+                              },
+                              child: Image.file(
+                                File(imagePath[index].path),
+                                width: 100,
+                                height: 100,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-              ]),
+                          );
+                        },
+                      ),
+                    )
+                ],
+              ),
             ),
             SizedBox(
               height: 100,

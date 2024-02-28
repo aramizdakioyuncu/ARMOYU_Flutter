@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, avoid_print, prefer_typing_uninitialized_variables, prefer_const_constructors_in_immutables, empty_catches
+// ignore_for_file: library_private_types_in_public_api, non_constant_identifier_names, prefer_typing_uninitialized_variables
+
+import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
@@ -23,7 +25,7 @@ import 'Notification/notification_page.dart';
 class MainPage extends StatefulWidget {
   final changePage;
 
-  MainPage({required this.changePage});
+  const MainPage({super.key, required this.changePage});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -49,7 +51,6 @@ class _MainPageState extends State<MainPage>
   int postpage = 1;
   bool postpageproccess = false;
   bool isRefreshing = false;
-  ScrollController _scrollController = ScrollController();
 
   ScrollController homepageScrollController = ScrollController();
   @override
@@ -65,9 +66,9 @@ class _MainPageState extends State<MainPage>
       ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: Icon(Icons.add, size: 30, color: Colors.blue),
+          child: const Icon(Icons.add, size: 30, color: Colors.blue),
         ),
-        title: Text("Okula Katıl"),
+        title: const Text("Okula Katıl"),
         onTap: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => SchoolLoginPage()));
@@ -78,9 +79,9 @@ class _MainPageState extends State<MainPage>
       ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
-          child: Icon(Icons.add, size: 30, color: Colors.blue),
+          child: const Icon(Icons.add, size: 30, color: Colors.blue),
         ),
-        title: Text("Grup Oluştur"),
+        title: const Text("Grup Oluştur"),
         onTap: () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => GroupCreatePage()));
@@ -89,22 +90,24 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  PageController _pageController = PageController(initialPage: 0);
-  PageController _pageController2 = PageController(initialPage: 1);
+  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController2 = PageController(initialPage: 1);
   int _currentPage = 0;
   bool bottombarVisible = true;
   void _changePage(int page) {
     if (_currentPage.toString() == "0" && page.toString() == "0") {
       //Anasayfa butonuna anasayfadaykan basarsan en üstte çıkartan kod
       try {
-        Future.delayed(Duration(milliseconds: 100), () {
+        Future.delayed(const Duration(milliseconds: 100), () {
           homepageScrollController.animateTo(
             0,
-            duration: Duration(milliseconds: 500),
+            duration: const Duration(milliseconds: 500),
             curve: Curves.easeInOut,
           );
         });
-      } catch (e) {}
+      } catch (e) {
+        log(e.toString());
+      }
       return;
     }
 
@@ -118,10 +121,9 @@ class _MainPageState extends State<MainPage>
 
     setState(() {
       _currentPage = page;
-      // _pageController.jumpToPage(page);
       _pageController.animateToPage(
         page,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
     });
@@ -134,7 +136,7 @@ class _MainPageState extends State<MainPage>
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.myGroups();
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"].toString());
       return;
     }
     if (response["icerik"].length == 0) {
@@ -170,7 +172,7 @@ class _MainPageState extends State<MainPage>
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.mySchools();
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"].toString());
       return;
     }
 
@@ -210,6 +212,7 @@ class _MainPageState extends State<MainPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
@@ -230,7 +233,7 @@ class _MainPageState extends State<MainPage>
                 }
               },
               child: Container(
-                padding: EdgeInsets.all(12.0), // İç boşluğu belirleyin
+                padding: const EdgeInsets.all(12.0), // İç boşluğu belirleyin
                 child: ClipRRect(
                   borderRadius:
                       BorderRadius.circular(50.0), // Kenar yarıçapını ayarlayın
@@ -261,7 +264,7 @@ class _MainPageState extends State<MainPage>
                 fontSize: 14,
               ),
               decoration: InputDecoration(
-                prefixIcon: Icon(
+                prefixIcon: const Icon(
                   Icons.search,
                   size: 20,
                 ),
@@ -290,10 +293,10 @@ class _MainPageState extends State<MainPage>
             UserAccountsDrawerHeader(
               accountName: Text(
                 userName,
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
               accountEmail:
-                  Text(userEmail, style: TextStyle(color: Colors.white)),
+                  Text(userEmail, style: const TextStyle(color: Colors.white)),
               currentAccountPicture: GestureDetector(
                 onTap: () {
                   _changePage(3);
@@ -302,7 +305,7 @@ class _MainPageState extends State<MainPage>
                 child: CircleAvatar(
                     foregroundImage: CachedNetworkImageProvider(User.avatar)),
               ),
-              currentAccountPictureSize: Size.square(70),
+              currentAccountPictureSize: const Size.square(70),
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: CachedNetworkImageProvider(User.banneravatar),
@@ -334,26 +337,26 @@ class _MainPageState extends State<MainPage>
                       onTap: () {},
                     ),
                     Visibility(
-                      visible: Widget_myGroups.length == 0 ? false : true,
+                      visible: Widget_myGroups.isEmpty ? false : true,
                       child: ExpansionTile(
                         textColor: ARMOYU.textColor,
                         leading: Icon(Icons.group, color: ARMOYU.textColor),
-                        title: Text('Gruplarım'),
+                        title: const Text('Gruplarım'),
                         children: Widget_myGroups,
                       ),
                     ),
                     Visibility(
-                      visible: Widget_mySchools.length == 0 ? false : true,
+                      visible: Widget_mySchools.isEmpty ? false : true,
                       child: ExpansionTile(
                         textColor: ARMOYU.textColor,
                         leading: Icon(Icons.school, color: ARMOYU.textColor),
-                        title: Text('Okullarım'),
+                        title: const Text('Okullarım'),
                         children: Widget_mySchools,
                       ),
                     ),
                     ExpansionTile(
                       leading: Icon(Icons.local_drink, color: ARMOYU.textColor),
-                      title: Text('Yemek'),
+                      title: const Text('Yemek'),
                       children: [
                         ListTile(
                           leading: ClipRRect(
@@ -385,7 +388,7 @@ class _MainPageState extends State<MainPage>
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SettingsPage(),
+                            builder: (context) => const SettingsPage(),
                           ),
                         );
                       },
@@ -408,7 +411,7 @@ class _MainPageState extends State<MainPage>
                         onPressed: () async {
                           BarcodeService bc = BarcodeService();
                           String responsew = await bc.scanQR();
-                          print(responsew);
+                          log(responsew);
                         },
                       ),
                     ),
@@ -420,7 +423,7 @@ class _MainPageState extends State<MainPage>
         ),
       ),
       body: PageView(
-        physics: NeverScrollableScrollPhysics(), //kaydırma iptali
+        physics: const NeverScrollableScrollPhysics(), //kaydırma iptali
         controller: _pageController,
         onPageChanged: (int page) {
           //  _changePage(page);

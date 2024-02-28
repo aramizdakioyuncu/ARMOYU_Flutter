@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Story/story.dart';
+import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ARMOYU/Services/User.dart';
 
@@ -98,14 +99,64 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
           automaticallyImplyLeading: false,
           title: Row(
             children: [
-              CircleAvatar(
-                  foregroundImage:
-                      CachedNetworkImageProvider(widget.story[0].owneravatar),
-                  radius: 16),
+              InkWell(
+                onTap: () {
+                  if (widget.story[0].ownerusername == User.userName) {
+                    _stopAnimation();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GalleryScreen(),
+                      ),
+                    );
+                  }
+                },
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                      image: CachedNetworkImageProvider(
+                        widget.story[0].owneravatar,
+                      ),
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: widget.story[0].ownerusername == User.userName
+                        ? Container(
+                            height: 12,
+                            width: 12,
+                            decoration: const BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.all(
+                                Radius.elliptical(100, 100),
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.add,
+                              size: 10,
+                              color: Colors.blue,
+                            ),
+                          )
+                        : null,
+                  ),
+                ),
+              ),
               const SizedBox(width: 5),
               Text(
-                widget.story[0].ownerusername,
-                style: const TextStyle(fontSize: 16),
+                widget.story[0].ownerusername == User.userName
+                    ? "Hikayen"
+                    : widget.story[0].ownerusername,
+                style: const TextStyle(fontSize: 13),
+              ),
+              const SizedBox(width: 5),
+              Text(
+                widget.story[0].time,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ],
           ),

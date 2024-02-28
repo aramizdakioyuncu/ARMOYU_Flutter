@@ -19,10 +19,9 @@ class NoConnectionPage extends StatefulWidget {
 }
 
 class _InternetCheckPageState extends State<NoConnectionPage> {
-  bool _isConnected = true;
-  String connectionstatus = 'İnternet Bağlantısı Yok!';
-  IconData networkicon = Icons.signal_wifi_off;
+  bool _isConnected = false;
   bool connectionProcess = false;
+
   @override
   void initState() {
     super.initState();
@@ -34,48 +33,78 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
     if (await AppCore.checkInternetConnection()) {
       setState(() {
         _isConnected = true;
-        log(_isConnected.toString());
-        networkicon = Icons.signal_wifi_4_bar;
-        connectionstatus = "İnternet Bağlantısı Var";
       });
 
       final prefs = await SharedPreferences.getInstance();
       final username = prefs.getString('username');
       final password = prefs.getString('password');
+
+      usernameController.text = username.toString();
+
       FunctionService f = FunctionService();
 
       //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
       if (username == null || password == null) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-        connectionProcess = false;
-
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+        setState(() {
+          _isConnected = false;
+          connectionProcess = false;
+        });
         return;
       }
 
       Map<String, dynamic> response =
           await f.login(username.toString(), password.toString(), true);
-      if (response["durum"] == 1) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Pages()));
-        connectionProcess = false;
-        return;
-      } else if (response["durum"] == 0) {
-        connectionProcess = false;
+      log("Durum ${response["durum"]}");
+      log("aciklama ${response["aciklama"]}");
+
+      if (response["durum"] == 0) {
+        if (response["aciklama"] == "Hatalı giriş!") {
+          log("Oturum kapatılıyor");
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(),
+            ),
+          );
+          setState(() {
+            _isConnected = false;
+            connectionProcess = false;
+          });
+
+          return;
+        }
+        //Hesap hatalı değil ama bağlantı yoksa
+        setState(() {
+          _isConnected = false;
+          connectionProcess = false;
+        });
         return;
       }
 
+      log("Oturum açılıyor");
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
-      connectionProcess = false;
-
+        context,
+        MaterialPageRoute(
+          builder: (context) => Pages(),
+        ),
+      );
+      setState(() {
+        _isConnected = true;
+        connectionProcess = false;
+      });
       return;
     } else {
       setState(() {
         _isConnected = false;
-        log(_isConnected.toString());
+        connectionProcess = false;
       });
-      connectionProcess = false;
     }
   }
 
@@ -86,16 +115,21 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              networkicon,
-              size: 80,
-              color: Colors.red,
-            ),
+            _isConnected
+                ? const Icon(Icons.signal_wifi_4_bar,
+                    size: 80, color: Colors.red)
+                : const Icon(Icons.signal_wifi_off,
+                    size: 80, color: Colors.red),
             const SizedBox(height: 20),
-            Text(
-              connectionstatus,
-              style: const TextStyle(fontSize: 18),
-            ),
+            _isConnected
+                ? const Text(
+                    "İnternet Sınanıyor...",
+                    style: TextStyle(fontSize: 18),
+                  )
+                : const Text(
+                    "İnternet Bağlantısı Yok!",
+                    style: TextStyle(fontSize: 18),
+                  ),
             const SizedBox(height: 20),
             CustomButtons().Costum1(
                 "Tekrar dene", checkInternetConnection2, connectionProcess),

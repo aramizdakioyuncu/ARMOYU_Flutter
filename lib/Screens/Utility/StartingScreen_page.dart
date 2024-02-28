@@ -72,6 +72,16 @@ class _StartingScreen extends State<StartingScreen> {
       );
       return;
     } else if (response["durum"] == 0) {
+      if (response["aciklama"] == "Hatalı giriş!") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
+        return;
+      }
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

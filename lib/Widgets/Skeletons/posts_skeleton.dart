@@ -19,7 +19,7 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
     return Container(
       margin: EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        color: Colors.grey.shade900,
+        color: ARMOYU.bacgroundcolor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
