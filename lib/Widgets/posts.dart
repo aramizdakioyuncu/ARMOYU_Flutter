@@ -551,7 +551,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       child: Container(
         margin: EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
-          color: ARMOYU.bodyColor,
+          color: ARMOYU.bacgroundcolor,
         ),
         child: GestureDetector(
           onDoubleTap: () {

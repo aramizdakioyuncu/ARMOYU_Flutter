@@ -3,7 +3,7 @@
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Models/country.dart';
+import 'package:ARMOYU/Models/language.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/Account/accountsettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/blockedusersettings.dart';
@@ -21,7 +21,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPage extends State<SettingsPage> {
-  List<Country> countryList = [];
+  List<Languange> languageList = [];
 
   final double _kItemExtent = 32.0;
   List<Map<String, String>> cupertinolist = [
@@ -33,29 +33,11 @@ class _SettingsPage extends State<SettingsPage> {
   void initState() {
     super.initState();
 
-    countryList.add(
-      Country(
-        name: 'Türkiye',
-        postalCode: 'TR',
-        phoneCode: '90',
-      ),
-    );
+    languageList.add(Languange(name: "Türkçe", binaryname: "TR"));
 
-    countryList.add(
-      Country(
-        name: 'Afganistan',
-        postalCode: 'AF',
-        phoneCode: '93',
-      ),
-    );
+    languageList.add(Languange(name: "İngilizce", binaryname: "EN"));
 
-    countryList.add(
-      Country(
-        name: 'Türkiye',
-        postalCode: 'TR',
-        phoneCode: '90',
-      ),
-    );
+    languageList.add(Languange(name: "Almanca", binaryname: "DE"));
   }
 
   void _showDialog(Widget child) {
@@ -194,23 +176,25 @@ class _SettingsPage extends State<SettingsPage> {
                                 });
                               },
                               children: List<Widget>.generate(
-                                  countryList.length, (int index) {
+                                  languageList.length, (int index) {
                                 return Center(
                                     child: Text(
-                                        countryList[index].name.toString()));
+                                        languageList[index].name.toString()));
                               }),
                             ),
                           );
                         },
                         tileColor: ARMOYU.bacgroundcolor,
-                        trailing: const Row(
+                        trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Türkçe'),
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                  languageList[_selectedcupertinolist].name),
                             ),
-                            Icon(Icons.arrow_forward_ios_outlined, size: 17),
+                            const Icon(Icons.arrow_forward_ios_outlined,
+                                size: 17),
                           ],
                         ),
                       ),

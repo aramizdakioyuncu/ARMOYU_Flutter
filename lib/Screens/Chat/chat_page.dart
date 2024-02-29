@@ -3,10 +3,11 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Widgets/search_engine.dart';
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 
 class ChatPage extends StatefulWidget {
@@ -62,23 +63,31 @@ class _ChatPageState extends State<ChatPage>
     int dynamicItemCount = response["icerik"].length;
 
     for (int i = 0; i < dynamicItemCount; i++) {
-      void asad() {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (pagecontext) => ChatDetailPage(
-                userID: response["icerik"][i]["kullid"],
-                appbar: true,
-                useravatar: response["icerik"][i]["foto"],
-                userdisplayname: response["icerik"][i]["adisoyadi"])));
-      }
-
       setState(() {
-        Widget_search.add(CustomSearchEngine().chat(
-          asad,
-          response["icerik"][i]["kullid"],
-          response["icerik"][i]["adisoyadi"],
-          response["icerik"][i]["foto"],
-          response["icerik"][i]["sohbetturu"],
-        ));
+        Widget_search.add(
+          ListTile(
+            leading: CircleAvatar(
+              foregroundImage:
+                  CachedNetworkImageProvider(response["icerik"][i]["foto"]),
+            ),
+            title: CustomText().Costum1(response["icerik"][i]["adisoyadi"]),
+            trailing: response["icerik"][i]["sohbetturu"] == "ozel"
+                ? Icon(Icons.person)
+                : Icon(Icons.people_alt),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (pagecontext) => ChatDetailPage(
+                    userID: response["icerik"][i]["kullid"],
+                    appbar: true,
+                    useravatar: response["icerik"][i]["foto"],
+                    userdisplayname: response["icerik"][i]["adisoyadi"],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
       });
     }
 

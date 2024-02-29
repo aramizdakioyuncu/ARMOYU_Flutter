@@ -94,7 +94,12 @@ class _SocialPageState extends State<SocialPage>
         if (response["icerik"][i]["oyuncu_ID"].toString() !=
             User.ID.toString()) {
           Widget_storiescard.add(
-            StoryList(User.ID, "Hikayen", User.avatarbetter, null),
+            StoryList(
+              ownerID: User.ID,
+              ownerusername: "Hikayen",
+              owneravatar: User.avatarbetter,
+              story: null,
+            ),
           );
         }
       }
@@ -102,22 +107,22 @@ class _SocialPageState extends State<SocialPage>
       for (var j = 0; j < response["icerik"][i]["hikaye_icerik"].length; j++) {
         Widget_Story.add(
           Story(
-            response["icerik"][i]["hikaye_icerik"][j]["hikaye_ID"],
-            response["icerik"][i]["oyuncu_ID"],
-            response["icerik"][i]["oyuncu_kadi"],
-            response["icerik"][i]["oyuncu_avatar"],
-            response["icerik"][i]["hikaye_icerik"][j]["hikaye_zaman"],
-            response["icerik"][i]["hikaye_icerik"][j]["hikaye_medya"],
+            storyID: response["icerik"][i]["hikaye_icerik"][j]["hikaye_ID"],
+            ownerID: response["icerik"][i]["oyuncu_ID"],
+            ownerusername: response["icerik"][i]["oyuncu_kadi"],
+            owneravatar: response["icerik"][i]["oyuncu_avatar"],
+            time: response["icerik"][i]["hikaye_icerik"][j]["hikaye_zaman"],
+            media: response["icerik"][i]["hikaye_icerik"][j]["hikaye_medya"],
           ),
         );
       }
 
       Widget_storiescard.add(
         StoryList(
-          response["icerik"][i]["oyuncu_ID"],
-          response["icerik"][i]["oyuncu_kadi"],
-          response["icerik"][i]["oyuncu_avatar"],
-          Widget_Story,
+          ownerID: response["icerik"][i]["oyuncu_ID"],
+          ownerusername: response["icerik"][i]["oyuncu_kadi"],
+          owneravatar: response["icerik"][i]["oyuncu_avatar"],
+          story: Widget_Story,
         ),
       );
     }
@@ -337,6 +342,9 @@ class _SocialPageState extends State<SocialPage>
           controller: _scrollController,
           children: [
             SizedBox(child: Widget_stories),
+            SizedBox(
+              height: 1,
+            ),
             ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,

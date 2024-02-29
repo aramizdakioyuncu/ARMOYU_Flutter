@@ -4,10 +4,12 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
+import 'package:ARMOYU/Widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
-import 'package:ARMOYU/Widgets/search_engine.dart';
 
 class SearchPage extends StatefulWidget {
   final bool appbar;
@@ -107,13 +109,27 @@ class _SearchPagePage extends State<SearchPage>
       for (int i = 0; i < dynamicItemCount; i++) {
         try {
           setState(() {
-            Widget_search.add(CustomSearchEngine().costom1(
-              context,
-              response["icerik"][i]["ID"],
-              response["icerik"][i]["Value"],
-              response["icerik"][i]["avatar"],
-              response["icerik"][i]["turu"],
-            ));
+            Widget_search.add(
+              ListTile(
+                leading: CircleAvatar(
+                  foregroundImage: CachedNetworkImageProvider(
+                    response["icerik"][i]["avatar"],
+                  ),
+                  backgroundColor: Colors.black,
+                ),
+                title: CustomText().Costum1(response["icerik"][i]["Value"],
+                    weight: FontWeight.bold),
+                trailing: response["icerik"][i]["turu"] == "oyuncu"
+                    ? Icon(Icons.person)
+                    : Icon(Icons.groups),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                        userID: response["icerik"][i]["ID"], appbar: true),
+                  ));
+                },
+              ),
+            );
           });
         } catch (e) {
           log(e.toString());

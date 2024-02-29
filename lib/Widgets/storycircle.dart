@@ -24,7 +24,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ARMOYU.bodyColor,
+      color: ARMOYU.bacgroundcolor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
