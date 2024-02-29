@@ -1,8 +1,9 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors, use_build_context_synchronously
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
@@ -694,7 +695,20 @@ class _ProfilePageState extends State<ProfilePage>
                                 Visibility(
                                   visible: userID != User.ID,
                                   child: InkWell(
-                                    onTap: () {},
+                                    onTap: () async {
+                                      FunctionsBlocking f = FunctionsBlocking();
+                                      Map<String, dynamic> response =
+                                          await f.add(userID);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
+                                      try {
+                                        Navigator.pop(context);
+                                      } catch (e) {
+                                        log(e.toString());
+                                      }
+                                    },
                                     child: const ListTile(
                                       textColor: Colors.red,
                                       leading: Icon(
