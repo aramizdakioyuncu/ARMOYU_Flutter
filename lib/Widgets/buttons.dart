@@ -62,7 +62,7 @@ class CustomButtons {
             children: [
               CircularProgressIndicator(
                 color: Colors.red,
-              )
+              ),
             ],
           ),
         ),

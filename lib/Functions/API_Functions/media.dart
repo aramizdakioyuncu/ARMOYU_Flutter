@@ -19,6 +19,16 @@ class FunctionsMedia {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> rotation(int mediaID, double rotate) async {
+    Map<String, String> formData = {
+      "fotografID": "$mediaID",
+      "derece": "$rotate"
+    };
+    Map<String, dynamic> jsonData =
+        await apiService.request("medya/donder/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> share(String text, List<XFile> files) async {
     List<MultipartFile> photosCollection = [];
     for (var file in files) {

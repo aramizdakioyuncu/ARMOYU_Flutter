@@ -226,7 +226,7 @@ class _SettingsPage extends State<SettingsPage> {
                       children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
-                          child: Text('Gizli'),
+                          child: Text('Herkese Açık'),
                         ),
                         Icon(Icons.arrow_forward_ios_outlined, size: 17),
                       ],
@@ -247,10 +247,10 @@ class _SettingsPage extends State<SettingsPage> {
                     trailing: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('10'),
-                        ),
+                        // Padding(
+                        //   padding: EdgeInsets.all(8.0),
+                        //   child: Text('10'),
+                        // ),
                         Icon(Icons.arrow_forward_ios_outlined, size: 17),
                       ],
                     ),

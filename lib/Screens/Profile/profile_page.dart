@@ -160,6 +160,7 @@ class _ProfilePageState extends State<ProfilePage>
   List<Widget> Widget_Posts = [];
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
+  final List<int> imagesownerID = [];
 
   profileloadPosts(int page, int Userid) async {
     if (postsfetchproccess) {
@@ -268,6 +269,7 @@ class _ProfilePageState extends State<ProfilePage>
         setState(() {
           imageUrls.add(response["icerik"][i]["fotominnakurl"]);
           imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
+          imagesownerID.add(response["icerik"][i]["fotosahipID"]);
         });
       }
     }
@@ -1262,6 +1264,7 @@ class _ProfilePageState extends State<ProfilePage>
                             MaterialPageRoute(
                               builder: (context) => FullScreenImagePage(
                                 images: imageufakUrls,
+                                imagesownerID: imagesownerID,
                                 initialIndex: index,
                               ),
                             ),
