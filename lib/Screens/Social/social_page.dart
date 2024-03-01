@@ -87,6 +87,18 @@ class _SocialPageState extends State<SocialPage>
     if (page == 1) {
       Widget_storiescard.clear();
     }
+
+    if (response["icerik"].length == 0) {
+      Widget_storiescard.add(
+        StoryList(
+          ownerID: User.ID,
+          ownerusername: "Hikayen",
+          owneravatar: User.avatarbetter,
+          story: null,
+        ),
+      );
+    }
+
     for (int i = 0; i < response["icerik"].length; i++) {
       List<Story> Widget_Story = [];
 
