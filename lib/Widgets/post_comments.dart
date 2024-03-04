@@ -7,7 +7,7 @@ import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 
 class Widget_PostComments extends StatefulWidget {
   final int userID;
@@ -131,14 +131,14 @@ class _Widget_PostComments extends State<Widget_PostComments> {
           ),
           Text(widget.commentslikecount.toString()),
           Visibility(
-            visible: User.ID != widget.userID,
+            visible: AppUser.ID != widget.userID,
             child: IconButton(
               onPressed: () {},
               icon: Icon(Icons.more_vert),
             ),
           ),
           Visibility(
-            visible: User.ID == widget.userID,
+            visible: AppUser.ID == widget.userID,
             child: IconButton(
               onPressed: () async {
                 FunctionsPosts funct = FunctionsPosts();

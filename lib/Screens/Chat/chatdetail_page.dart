@@ -8,7 +8,7 @@ import 'dart:isolate';
 
 import 'package:ARMOYU/Screens/Chat/chatcall_page.dart';
 import 'package:ARMOYU/Services/Socket/socket.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -76,7 +76,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
     isolate_listen = await Isolate.spawn(SocketListenmessage, [
       receiveport_listen!.sendPort,
-      User.ID.toString(),
+      AppUser.ID.toString(),
       widget.userID.toString()
     ]);
 
@@ -86,11 +86,11 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
         Map<String, dynamic> responseData = jsonData;
 
-        if (responseData["sender_id"].toString() == User.ID.toString()) {
+        if (responseData["sender_id"].toString() == AppUser.ID.toString()) {
           return;
         }
 
-        if (responseData["receiver_id"].toString() == User.ID.toString()) {
+        if (responseData["receiver_id"].toString() == AppUser.ID.toString()) {
           message = responseData["message"].toString();
         }
 
@@ -117,8 +117,8 @@ class _ChatDetailPage extends State<ChatDetailPage>
       }
     });
 
-    ARMOYU_Socket socket2 = ARMOYU_Socket(User.ID.toString(), User.userName,
-        User.password, widget.userID.toString());
+    ARMOYU_Socket socket2 = ARMOYU_Socket(AppUser.ID.toString(),
+        AppUser.userName, AppUser.password, widget.userID.toString());
 
     receiveport_send!.listen(
       (message) {
@@ -137,8 +137,8 @@ class _ChatDetailPage extends State<ChatDetailPage>
     print(SenderID + " >>>> " + ReceiverID);
 
     try {
-      ARMOYU_Socket socket2 =
-          ARMOYU_Socket(SenderID, User.userName, User.password, ReceiverID);
+      ARMOYU_Socket socket2 = ARMOYU_Socket(
+          SenderID, AppUser.userName, AppUser.password, ReceiverID);
       socket2.receiveMessages(sendPort);
     } catch (e) {
       print(e);
@@ -335,7 +335,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
                       _messageController.text = "";
                       setState(() {
                         Widget_search.add(MessageBubble(
-                          avatar: User.avatar,
+                          avatar: AppUser.avatar,
                           message: message,
                           isMe: true,
                         ));

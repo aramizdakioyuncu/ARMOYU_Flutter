@@ -3,14 +3,16 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
+import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
 import 'package:ARMOYU/Screens/School/school_login.dart';
 import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Screens/Utility/cameraScreen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/Services/Utility/barcode.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Services/Utility/theme.dart';
-import 'package:ARMOYU/Widgets/menus.dart';
 import 'Social/social_page.dart';
 import 'Notification/notification_page.dart';
 
@@ -56,11 +57,11 @@ class _MainPageState extends State<MainPage>
   @override
   void initState() {
     super.initState();
-    userID = User.ID;
-    userName = User.displayName;
-    userEmail = User.mail;
-    useravatar = User.avatar;
-    userbanner = User.banneravatar;
+    userID = AppUser.ID;
+    userName = AppUser.displayName;
+    userEmail = AppUser.mail;
+    useravatar = AppUser.avatar;
+    userbanner = AppUser.banneravatar;
 
     Widget_mySchools.add(
       ListTile(
@@ -90,25 +91,36 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  final PageController _pageController = PageController(initialPage: 0);
+  final PageController _mainpagecontroller = PageController(initialPage: 0);
   final PageController _pageController2 = PageController(initialPage: 1);
   int _currentPage = 0;
   bool bottombarVisible = true;
   void _changePage(int page) {
-    if (_currentPage.toString() == "0" && page.toString() == "0") {
+    //Anasayfaya basıldığında
+    if (page.toString() == "0") {
+      setState(() {
+        _pageController2.animateToPage(
+          1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      });
+
       //Anasayfa butonuna anasayfadaykan basarsan en üstte çıkartan kod
-      try {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          homepageScrollController.animateTo(
-            0,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        });
-      } catch (e) {
-        log(e.toString());
+      if (_currentPage.toString() == "0") {
+        try {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            homepageScrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+        } catch (e) {
+          log(e.toString());
+        }
+        return;
       }
-      return;
     }
 
     if (page.toString() == "1") {
@@ -116,12 +128,14 @@ class _MainPageState extends State<MainPage>
         appbar_Search = true;
       });
     } else {
-      appbar_Search = false;
+      setState(() {
+        appbar_Search = false;
+      });
     }
 
     setState(() {
       _currentPage = page;
-      _pageController.animateToPage(
+      _mainpagecontroller.animateToPage(
         page,
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
@@ -238,7 +252,7 @@ class _MainPageState extends State<MainPage>
                   borderRadius:
                       BorderRadius.circular(50.0), // Kenar yarıçapını ayarlayın
                   child: CachedNetworkImage(
-                    imageUrl: User.avatar,
+                    imageUrl: AppUser.avatar,
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,
@@ -303,12 +317,13 @@ class _MainPageState extends State<MainPage>
                   Navigator.of(context).pop();
                 },
                 child: CircleAvatar(
-                    foregroundImage: CachedNetworkImageProvider(User.avatar)),
+                    foregroundImage:
+                        CachedNetworkImageProvider(AppUser.avatar)),
               ),
               currentAccountPictureSize: const Size.square(70),
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(User.banneravatar),
+                  image: CachedNetworkImageProvider(AppUser.banneravatar),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -334,7 +349,12 @@ class _MainPageState extends State<MainPage>
                       iconColor: ARMOYU.textColor,
                       leading: const Icon(Icons.article),
                       title: const Text("Haberler"),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const NewslistPage()));
+                      },
                     ),
                     Visibility(
                       visible: Widget_myGroups.isEmpty ? false : true,
@@ -382,6 +402,20 @@ class _MainPageState extends State<MainPage>
                     ListTile(
                       textColor: ARMOYU.textColor,
                       iconColor: ARMOYU.textColor,
+                      leading: const Icon(Icons.event),
+                      title: const Text("Etkinlikler"),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const EventlistPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      textColor: ARMOYU.textColor,
+                      iconColor: ARMOYU.textColor,
                       leading: const Icon(Icons.settings),
                       title: const Text("Ayarlar"),
                       onTap: () {
@@ -399,9 +433,9 @@ class _MainPageState extends State<MainPage>
                         icon: Icon(Icons.nightlight,
                             color: ARMOYU.textColor), // Sağdaki butonun ikonu
                         onPressed: () {
-                          setState(() {
-                            ThemeProvider().toggleTheme();
-                          });
+                          ThemeProvider().toggleTheme();
+
+                          setState(() {});
                         },
                       ),
                       // Sol tarafta bir buton
@@ -424,7 +458,7 @@ class _MainPageState extends State<MainPage>
       ),
       body: PageView(
         physics: const NeverScrollableScrollPhysics(), //kaydırma iptali
-        controller: _pageController,
+        controller: _mainpagecontroller,
         onPageChanged: (int page) {
           //  _changePage(page);
         },
@@ -442,8 +476,59 @@ class _MainPageState extends State<MainPage>
           ProfilePage(userID: userID, appbar: false),
         ],
       ),
-      bottomNavigationBar:
-          CustomMenus().mainbottommenu(_currentPage, _changePage),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Ana Sayfa',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Arama',
+          ),
+          BottomNavigationBarItem(
+            icon: 1 == 1
+                ? const Icon(Icons.notifications)
+                : Stack(
+                    children: <Widget>[
+                      const Icon(Icons.notifications), // Bildirim ikonu
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints:
+                              const BoxConstraints(minWidth: 16, minHeight: 16),
+                          child: const Text(
+                            '15',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 9,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+            label: 'Bildirimler',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profil',
+          ),
+        ],
+        currentIndex: _currentPage,
+        selectedItemColor: ARMOYU.color,
+        unselectedItemColor: Colors.grey,
+        onTap: _changePage,
+      ),
     );
   }
 }

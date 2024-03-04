@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,8 +46,8 @@ class FunctionService {
       return jsonString;
     }
 
-    User.userName = username;
-    User.password = password;
+    AppUser.userName = username;
+    AppUser.password = password;
 
     Map<String, String> formData = {"param1": "value1"};
     String link = "0/0/0/";
@@ -72,35 +72,35 @@ class FunctionService {
       return jsonString;
     }
 
-    User.ID = int.parse(response["oyuncuID"]);
-    User.userName = response["kullaniciadi"];
-    User.firstName = response["adi"];
-    User.lastName = response["soyadi"];
-    User.displayName = response["adim"];
-    User.avatar = response["presimminnak"];
-    User.avatarbetter = response["presimufak"];
-    User.banneravatar = response["parkaresimminnak"];
-    User.banneravatarbetter = response["parkaresimufak"];
+    AppUser.ID = int.parse(response["oyuncuID"]);
+    AppUser.userName = response["kullaniciadi"];
+    AppUser.firstName = response["adi"];
+    AppUser.lastName = response["soyadi"];
+    AppUser.displayName = response["adim"];
+    AppUser.avatar = response["presimminnak"];
+    AppUser.avatarbetter = response["presimufak"];
+    AppUser.banneravatar = response["parkaresimminnak"];
+    AppUser.banneravatarbetter = response["parkaresimufak"];
 
-    User.level = response["seviye"];
-    User.friendsCount = response["arkadaslar"];
-    User.postsCount = response["gonderiler"];
-    User.awardsCount = response["oduller"];
+    AppUser.level = response["seviye"];
+    AppUser.friendsCount = response["arkadaslar"];
+    AppUser.postsCount = response["gonderiler"];
+    AppUser.awardsCount = response["oduller"];
 
-    User.mail = response["eposta"];
+    AppUser.mail = response["eposta"];
 
-    User.country = response["ulkesi"] == null ? "" : response["ulkesi"];
-    User.province = response["ili"] == null ? "" : response["ili"];
-    User.registerdate = response["kayittarihikisa"];
+    AppUser.country = response["ulkesi"] == null ? "" : response["ulkesi"];
+    AppUser.province = response["ili"] == null ? "" : response["ili"];
+    AppUser.registerdate = response["kayittarihikisa"];
 
     if (response["isyeriadi"] != null) {
-      User.job = response["isyeriadi"];
+      AppUser.job = response["isyeriadi"];
     }
-    User.role = response["yetkisiacikla"];
-    User.rolecolor = response["yetkirenk"];
+    AppUser.role = response["yetkisiacikla"];
+    AppUser.rolecolor = response["yetkirenk"];
 
-    User.aboutme = response["hakkimda"];
-    User.burc = response["burc"] == null ? "" : response["burc"];
+    AppUser.aboutme = response["hakkimda"];
+    AppUser.burc = response["burc"] == null ? "" : response["burc"];
 
     final prefs = await SharedPreferences.getInstance();
 
@@ -113,7 +113,7 @@ class FunctionService {
 
     if (cevap != "Bilinmeyen") {
       OneSignalApi.setupOneSignal(
-          User.ID, User.userName, User.mail, User.role.toString());
+          AppUser.ID, AppUser.userName, AppUser.mail, AppUser.role.toString());
     }
 
     Map<String, dynamic> jsonData = {
@@ -145,8 +145,8 @@ class FunctionService {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('username');
     prefs.remove('password');
-    User.userName = "0";
-    User.password = "0";
+    AppUser.userName = "0";
+    AppUser.password = "0";
 
     Map<String, dynamic> jsonData = {
       'durum': 1,

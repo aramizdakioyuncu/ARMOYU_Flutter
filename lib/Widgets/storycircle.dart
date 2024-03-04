@@ -4,7 +4,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
 import 'package:ARMOYU/Screens/Story/storyscreen_page.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                   final StoryList cardData = widget.content[index];
                   Color storycolor = Colors.transparent;
                   bool ishasstory = false;
-                  if (cardData.ownerID == User.ID) {
+                  if (cardData.ownerID == AppUser.ID) {
                     if (cardData.story != null) {
                       storycolor = Colors.blue;
                       ishasstory = true;
@@ -50,7 +50,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
 
                   return GestureDetector(
                     onTap: () {
-                      if (cardData.ownerID == User.ID) {
+                      if (cardData.ownerID == AppUser.ID) {
                         if (ishasstory) {
                           Navigator.push(
                             context,
@@ -85,7 +85,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: cardData.ownerID == User.ID
+                              color: cardData.ownerID == AppUser.ID
                                   ? storycolor
                                   : Colors.green, // Kenarlık rengi
                               width: 3.0, // Kenarlık kalınlığı
@@ -98,7 +98,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                               ),
                             ),
                           ),
-                          child: cardData.ownerID == User.ID
+                          child: cardData.ownerID == AppUser.ID
                               ? Align(
                                   alignment: Alignment.bottomRight,
                                   child: Container(
@@ -118,7 +118,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                         ),
                         SizedBox(height: 2),
                         CustomText().Costum1(
-                            cardData.ownerID == User.ID
+                            cardData.ownerID == AppUser.ID
                                 ? "Hikayen"
                                 : cardData.ownerusername,
                             size: 11),

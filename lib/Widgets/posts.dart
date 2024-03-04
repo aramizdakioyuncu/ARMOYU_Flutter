@@ -3,7 +3,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/Utility.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
@@ -221,7 +221,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           padding: const EdgeInsets.all(8.0),
                           child: CircleAvatar(
                               foregroundImage:
-                                  CachedNetworkImageProvider(User.avatar),
+                                  CachedNetworkImageProvider(AppUser.avatar),
                               radius: 20),
                         ),
                         Expanded(
@@ -437,7 +437,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID == User.ID,
+                    visible: widget.userID == AppUser.ID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -453,7 +453,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: const Divider(),
                   ),
                   Visibility(
-                    visible: widget.userID != User.ID,
+                    visible: widget.userID != AppUser.ID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -467,7 +467,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID != User.ID,
+                    visible: widget.userID != AppUser.ID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -481,7 +481,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID == User.ID,
+                    visible: widget.userID == AppUser.ID,
                     child: InkWell(
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts();

@@ -7,7 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/Chat/chat_page.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 
 import 'package:ARMOYU/Core/AppCore.dart';
 
@@ -26,11 +26,11 @@ class _PagesState extends State<Pages> {
   @override
   void initState() {
     super.initState();
-    userID = User.ID;
-    userName = User.displayName;
-    userEmail = User.mail;
-    useravatar = User.avatar;
-    userbanner = User.banneravatar;
+    userID = AppUser.ID;
+    userName = AppUser.displayName;
+    userEmail = AppUser.mail;
+    useravatar = AppUser.avatar;
+    userbanner = AppUser.banneravatar;
     cameratest();
   }
 

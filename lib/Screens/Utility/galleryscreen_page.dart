@@ -6,7 +6,7 @@ import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
 import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +84,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     ismediaProcces = true;
     FunctionsMedia f = FunctionsMedia();
     Map<String, dynamic> response =
-        await f.fetch(User.ID, "-1", gallerycounter + 1);
+        await f.fetch(AppUser.ID, "-1", gallerycounter + 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

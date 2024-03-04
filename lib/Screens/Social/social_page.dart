@@ -7,7 +7,7 @@ import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:ARMOYU/Models/Story/story.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/Skeletons/storycircle_skeleton.dart';
@@ -56,11 +56,11 @@ class _SocialPageState extends State<SocialPage>
   @override
   void initState() {
     super.initState();
-    userID = User.ID;
-    userName = User.displayName;
-    userEmail = User.mail;
-    useravatar = User.avatar;
-    userbanner = User.banneravatar;
+    userID = AppUser.ID;
+    userName = AppUser.displayName;
+    userEmail = AppUser.mail;
+    useravatar = AppUser.avatar;
+    userbanner = AppUser.banneravatar;
 
     loadSkeletonpost();
     // ScrollController'ı dinle
@@ -91,9 +91,9 @@ class _SocialPageState extends State<SocialPage>
     if (response["icerik"].length == 0) {
       Widget_storiescard.add(
         StoryList(
-          ownerID: User.ID,
+          ownerID: AppUser.ID,
           ownerusername: "Hikayen",
-          owneravatar: User.avatarbetter,
+          owneravatar: AppUser.avatarbetter,
           story: null,
         ),
       );
@@ -104,12 +104,12 @@ class _SocialPageState extends State<SocialPage>
 
       if (i == 0) {
         if (response["icerik"][i]["oyuncu_ID"].toString() !=
-            User.ID.toString()) {
+            AppUser.ID.toString()) {
           Widget_storiescard.add(
             StoryList(
-              ownerID: User.ID,
+              ownerID: AppUser.ID,
               ownerusername: "Hikayen",
-              owneravatar: User.avatarbetter,
+              owneravatar: AppUser.avatarbetter,
               story: null,
             ),
           );

@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 
 import 'package:flutter/material.dart';
 
@@ -109,10 +109,11 @@ class _FullScreenImageStatePage extends State<FullScreenImagePage> {
             ),
           ),
           Visibility(
-            visible: (widget.imagesownerID?[widget.initialIndex] == User.ID) &&
-                    !isRotationprocces
-                ? true
-                : false,
+            visible:
+                (widget.imagesownerID?[widget.initialIndex] == AppUser.ID) &&
+                        !isRotationprocces
+                    ? true
+                    : false,
             child: IconButton(
               icon: const Icon(Icons.crop_rotate_outlined),
               onPressed: () async {

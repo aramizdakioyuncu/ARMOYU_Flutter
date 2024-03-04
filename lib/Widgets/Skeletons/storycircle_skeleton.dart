@@ -1,7 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, camel_case_types, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
@@ -49,7 +49,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                User.avatar,
+                                AppUser.avatar,
                               ),
                             ),
                           )

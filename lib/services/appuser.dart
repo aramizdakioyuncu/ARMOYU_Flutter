@@ -1,6 +1,6 @@
-// ignore_for_file: file_names, non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names
 
-class User {
+class AppUser {
   static int ID = -1;
   static String userName = "0";
   static String password = "0";
@@ -29,4 +29,6 @@ class User {
   static int friendsCount = 0;
   static int postsCount = 0;
   static int awardsCount = 0;
+
+  AppUser(Map map);
 }

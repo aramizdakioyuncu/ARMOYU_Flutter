@@ -5,7 +5,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:flutter/material.dart';
 
 class StoryPublishPage extends StatefulWidget {
@@ -159,7 +159,7 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
                             children: [
                               CircleAvatar(
                                 foregroundImage:
-                                    CachedNetworkImageProvider(User.avatar),
+                                    CachedNetworkImageProvider(AppUser.avatar),
                                 radius: 16,
                               ),
                               const SizedBox(width: 10),

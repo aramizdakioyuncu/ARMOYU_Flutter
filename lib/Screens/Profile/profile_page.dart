@@ -8,7 +8,7 @@ import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
 import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/Utility.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -278,40 +278,40 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Future<void> TEST() async {
-    if (widget.userID == User.ID) {
-      userID = User.ID;
-      userName = User.userName;
-      displayName = User.displayName;
-      banneravatar = User.banneravatar;
-      banneravatarbetter = User.banneravatarbetter;
-      avatar = User.avatar;
-      avatarbetter = User.avatarbetter;
-      level = User.level;
-      friendsCount = User.friendsCount;
-      postsCount = User.postsCount;
-      awardsCount = User.awardsCount;
+    if (widget.userID == AppUser.ID) {
+      userID = AppUser.ID;
+      userName = AppUser.userName;
+      displayName = AppUser.displayName;
+      banneravatar = AppUser.banneravatar;
+      banneravatarbetter = AppUser.banneravatarbetter;
+      avatar = AppUser.avatar;
+      avatarbetter = AppUser.avatarbetter;
+      level = AppUser.level;
+      friendsCount = AppUser.friendsCount;
+      postsCount = AppUser.postsCount;
+      awardsCount = AppUser.awardsCount;
 
-      country = User.country;
-      province = User.province;
-      registerdate = User.registerdate;
+      country = AppUser.country;
+      province = AppUser.province;
+      registerdate = AppUser.registerdate;
 
-      aboutme = User.aboutme;
+      aboutme = AppUser.aboutme;
 
-      burc = User.burc;
+      burc = AppUser.burc;
 
       try {
-        job = User.job;
+        job = AppUser.job;
       } catch (Ex) {
         log(Ex.toString());
       }
 
       try {
-        role = User.role;
+        role = AppUser.role;
       } catch (Ex) {
         log(Ex.toString());
       }
       try {
-        rolecolor = User.rolecolor;
+        rolecolor = AppUser.rolecolor;
       } catch (Ex) {
         log(Ex.toString());
       }
@@ -508,16 +508,16 @@ class _ProfilePageState extends State<ProfilePage>
         /////
       }
 
-      if (isbeFriend && !isFriend && userID != User.ID) {
+      if (isbeFriend && !isFriend && userID != AppUser.ID) {
         friendStatus = "Arkadaş Ol";
         friendStatuscolor = Colors.blue;
       } else if (!isbeFriend &&
           !isFriend &&
-          userID != User.ID &&
+          userID != AppUser.ID &&
           userID != -1) {
         friendStatus = "İstek Gönderildi";
         friendStatuscolor = Colors.black;
-      } else if (!isbeFriend && isFriend && userID != User.ID) {
+      } else if (!isbeFriend && isFriend && userID != AppUser.ID) {
         friendStatus = "Mesaj Gönder";
         friendStatuscolor = Colors.blue;
       }
@@ -544,8 +544,8 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
     setState(() {
-      User.avatar = response["aciklamadetay"].toString();
-      User.avatarbetter = response["aciklamadetay"].toString();
+      AppUser.avatar = response["aciklamadetay"].toString();
+      AppUser.avatarbetter = response["aciklamadetay"].toString();
 
       _handleRefresh();
     });
@@ -565,8 +565,8 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
     setState(() {
-      User.banneravatar = response["aciklamadetay"].toString();
-      User.banneravatarbetter = response["aciklamadetay"].toString();
+      AppUser.banneravatar = response["aciklamadetay"].toString();
+      AppUser.banneravatarbetter = response["aciklamadetay"].toString();
 
       _handleRefresh();
     });
@@ -642,7 +642,7 @@ class _ProfilePageState extends State<ProfilePage>
         controller: pageMainscroller,
         slivers: [
           SliverAppBar(
-            pinned: User.ID != userID ? true : false,
+            pinned: AppUser.ID != userID ? true : false,
             backgroundColor: Colors.black,
             expandedHeight: ARMOYU.screenHeight * 0.25,
             actions: <Widget>[
@@ -695,7 +695,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: const Divider(),
                                 ),
                                 Visibility(
-                                  visible: userID != User.ID,
+                                  visible: userID != AppUser.ID,
                                   child: InkWell(
                                     onTap: () async {
                                       FunctionsBlocking f = FunctionsBlocking();
@@ -722,7 +722,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                 ),
                                 Visibility(
-                                  visible: userID != User.ID,
+                                  visible: userID != AppUser.ID,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const ListTile(
@@ -794,7 +794,7 @@ class _ProfilePageState extends State<ProfilePage>
             flexibleSpace: FlexibleSpaceBar(
               title: Align(
                 alignment: Alignment.bottomLeft,
-                child: userID == User.ID
+                child: userID == AppUser.ID
                     ? const SizedBox()
                     : CustomText().Costum1(displayName),
               ),
@@ -808,7 +808,7 @@ class _ProfilePageState extends State<ProfilePage>
                   ));
                 },
                 onLongPress: () {
-                  if (User.ID != userID) {
+                  if (AppUser.ID != userID) {
                     return;
                   }
                   showModalBottomSheet<void>(
@@ -839,7 +839,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                 ),
                                 Visibility(
-                                  visible: User.ID == userID,
+                                  visible: AppUser.ID == userID,
                                   child: InkWell(
                                     onTap: () async {
                                       await changebanner();
@@ -855,7 +855,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: const Divider(),
                                 ),
                                 Visibility(
-                                  visible: userID == User.ID,
+                                  visible: userID == AppUser.ID,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const ListTile(
@@ -907,7 +907,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 ));
                               },
                               onLongPress: () {
-                                if (User.ID != userID) {
+                                if (AppUser.ID != userID) {
                                   return;
                                 }
                                 showModalBottomSheet<void>(
@@ -940,7 +940,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                 ),
                                               ),
                                               Visibility(
-                                                visible: User.ID == userID,
+                                                visible: AppUser.ID == userID,
                                                 child: InkWell(
                                                   onTap: () async {
                                                     await changeavatar();
@@ -958,7 +958,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                 child: const Divider(),
                                               ),
                                               Visibility(
-                                                visible: userID == User.ID,
+                                                visible: userID == AppUser.ID,
                                                 child: InkWell(
                                                   onTap: () {},
                                                   child: const ListTile(
@@ -1152,7 +1152,7 @@ class _ProfilePageState extends State<ProfilePage>
                     ),
                   ),
                   Visibility(
-                    visible: User.ID != userID,
+                    visible: AppUser.ID != userID,
                     child: Row(
                       children: [
                         Stack(
@@ -1192,7 +1192,8 @@ class _ProfilePageState extends State<ProfilePage>
                     children: [
                       Visibility(
                         //Arkadaş ol
-                        visible: isbeFriend && !isFriend && userID != User.ID,
+                        visible:
+                            isbeFriend && !isFriend && userID != AppUser.ID,
                         child: Expanded(
                           child: CustomButtons().friendbuttons(
                               friendStatus, friendrequest, friendStatuscolor),
@@ -1202,7 +1203,7 @@ class _ProfilePageState extends State<ProfilePage>
                         //Bekliyor
                         visible: !isbeFriend &&
                             !isFriend &&
-                            userID != User.ID &&
+                            userID != AppUser.ID &&
                             userID != -1,
                         child: Expanded(
                           child: CustomButtons().friendbuttons(friendStatus,
@@ -1211,7 +1212,8 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                       Visibility(
                         //Mesaj Gönder
-                        visible: !isbeFriend && isFriend && userID != User.ID,
+                        visible:
+                            !isbeFriend && isFriend && userID != AppUser.ID,
                         child: Expanded(
                           child: CustomButtons().friendbuttons(
                               friendStatus, sendmessage, friendStatuscolor),

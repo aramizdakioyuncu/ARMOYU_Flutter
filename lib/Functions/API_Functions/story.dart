@@ -34,4 +34,11 @@ class FunctionsStory {
         await apiService.request("hikaye/gizle/0/", formData);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> fetchviewlist(int storyID) async {
+    Map<String, String> formData = {"hikayeID": "$storyID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("hikaye/goruntuleyen/0/", formData);
+    return jsonData;
+  }
 }

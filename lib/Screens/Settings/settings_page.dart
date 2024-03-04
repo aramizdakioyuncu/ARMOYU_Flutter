@@ -7,7 +7,7 @@ import 'package:ARMOYU/Models/language.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/Account/accountsettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/blockedusersettings.dart';
-import 'package:ARMOYU/Services/User.dart';
+import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -75,10 +75,11 @@ class _SettingsPage extends State<SettingsPage> {
                   ListTile(
                     tileColor: ARMOYU.bacgroundcolor,
                     leading: CircleAvatar(
-                      foregroundImage: CachedNetworkImageProvider(User.avatar),
+                      foregroundImage:
+                          CachedNetworkImageProvider(AppUser.avatar),
                       radius: 28,
                     ),
-                    title: Text(User.displayName),
+                    title: Text(AppUser.displayName),
                     subtitle:
                         CustomText().Costum1("Son Hatalı Giriş: 20.02.2002"),
                     onTap: () {
