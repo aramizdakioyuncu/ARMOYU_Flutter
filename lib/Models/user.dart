@@ -1,3 +1,4 @@
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +13,14 @@ class User {
     required this.avatar,
   });
 
-  Widget storyViewUserList(User user) {
+  Widget storyViewUserList() {
     return ListTile(
       leading: CircleAvatar(
-        foregroundImage: CachedNetworkImageProvider(user.avatar),
+        foregroundImage: CachedNetworkImageProvider(avatar),
       ),
-      title: Text(user.displayname),
+      title: CustomText().Costum1(displayname, weight: FontWeight.bold),
+      trailing: const Icon(Icons.message),
+      onTap: () {},
     );
   }
 }

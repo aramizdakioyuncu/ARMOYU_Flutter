@@ -69,23 +69,25 @@ class _PagesState extends State<Pages> {
       onWillPop: () async {
         // Geri tuşuna basıldığında yapılacak işlemler
         // Örneğin, bir dialog göstermek istiyorsanız:
-        return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Emin misiniz?'),
-            content: Text('Uygulamadan çıkmak istiyor musunuz?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text('Hayır'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text('Evet'),
-              ),
-            ],
-          ),
-        );
+
+        return false;
+        // return await showDialog(
+        //   context: context,
+        //   builder: (context) => AlertDialog(
+        //     title: Text('Emin misiniz?'),
+        //     content: Text('Uygulamadan çıkmak istiyor musunuz?'),
+        //     actions: [
+        //       TextButton(
+        //         onPressed: () => Navigator.of(context).pop(false),
+        //         child: Text('Hayır'),
+        //       ),
+        //       TextButton(
+        //         onPressed: () => Navigator.of(context).pop(true),
+        //         child: Text('Evet'),
+        //       ),
+        //     ],
+        //   ),
+        // );
       },
       child: Scaffold(
         backgroundColor: Colors.black,

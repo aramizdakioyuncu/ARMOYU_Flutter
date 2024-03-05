@@ -95,6 +95,7 @@ class _SocialPageState extends State<SocialPage>
           ownerusername: "Hikayen",
           owneravatar: AppUser.avatarbetter,
           story: null,
+          isView: true,
         ),
       );
     }
@@ -111,12 +112,19 @@ class _SocialPageState extends State<SocialPage>
               ownerusername: "Hikayen",
               owneravatar: AppUser.avatarbetter,
               story: null,
+              isView: true,
             ),
           );
         }
       }
 
+      int toplamgoruntulenmesayisi = 0;
       for (var j = 0; j < response["icerik"][i]["hikaye_icerik"].length; j++) {
+        if (response["icerik"][i]["hikaye_icerik"][j]
+                ["hikaye_bengoruntulenme"] ==
+            1) {
+          toplamgoruntulenmesayisi++;
+        }
         Widget_Story.add(
           Story(
             storyID: response["icerik"][i]["hikaye_icerik"][j]["hikaye_ID"],
@@ -125,16 +133,25 @@ class _SocialPageState extends State<SocialPage>
             owneravatar: response["icerik"][i]["oyuncu_avatar"],
             time: response["icerik"][i]["hikaye_icerik"][j]["hikaye_zaman"],
             media: response["icerik"][i]["hikaye_icerik"][j]["hikaye_medya"],
+            isLike: response["icerik"][i]["hikaye_icerik"][j]
+                ["hikaye_benbegeni"],
+            isView: response["icerik"][i]["hikaye_icerik"][j]
+                ["hikaye_bengoruntulenme"],
           ),
         );
       }
-
+      bool viewstory = false;
+      if (toplamgoruntulenmesayisi ==
+          response["icerik"][i]["hikaye_icerik"].length) {
+        viewstory = true;
+      }
       Widget_storiescard.add(
         StoryList(
           ownerID: response["icerik"][i]["oyuncu_ID"],
           ownerusername: response["icerik"][i]["oyuncu_kadi"],
           owneravatar: response["icerik"][i]["oyuncu_avatar"],
           story: Widget_Story,
+          isView: viewstory,
         ),
       );
     }

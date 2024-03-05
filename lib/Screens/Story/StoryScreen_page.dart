@@ -9,7 +9,6 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 
 class StoryScreenPage extends StatefulWidget {
@@ -33,6 +32,8 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
   bool _isPaused = false;
 
   bool viewlistProcess = false;
+  bool storyviewProcess = false;
+  bool FirststoryviewProcess = false;
   List<User> viewerlist = [];
 
   @override
@@ -40,7 +41,6 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
     super.initState();
 
     _startTimer();
-
     _pageController.addListener(() {
       if (_pageController.page == _pageController.page?.roundToDouble()) {
         setState(() {
@@ -57,6 +57,33 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
     super.dispose();
   }
 
+  Future<void> storyview(Story story) async {
+    if (FirststoryviewProcess) {
+      return;
+    }
+    if (storyviewProcess) {
+      return;
+    }
+
+    storyviewProcess = true;
+
+    FunctionsStory funct = FunctionsStory();
+    Map<String, dynamic> response = await funct.view(story.storyID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      storyviewProcess = false;
+      FirststoryviewProcess = true;
+      return;
+    }
+    FirststoryviewProcess = true;
+
+    storyviewProcess = false;
+
+    setState(() {
+      story.isView = 1;
+    });
+  }
+
   void _startTimer() {
     _containerWidth = 0;
 
@@ -70,6 +97,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
               Navigator.of(context).pop();
               return;
             }
+
             setState(() {
               initialIndex = _pageController.page!.toInt() + 1;
               _pageController.animateToPage(
@@ -113,25 +141,65 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
     }
 
     viewerlist.clear();
-    viewerlist.add(
-      User(
-        username: "berkay",
-        displayname: "berkay",
-        avatar:
-            "https://cdn1.img.sputniknews.com.tr/img/101440/54/1014405478_401:0:2001:1600_1920x0_80_0_0_6a581dbf63ff5ffc82f519201bee7f55.jpg",
-      ),
-    );
-    // for (var element in response["icerik"]) {
-    //   viewerlist.add(
-    //     User(
-    //       username: element["goruntuleyen_userlogin"],
-    //       displayname: element["goruntuleyen_adi"],
-    //       avatar: element["goruntuleyen_avatar"],
-    //     ),
-    //   );
-    // }
+
+    for (var element in response["icerik"]) {
+      viewerlist.add(
+        User(
+          username: element["hgoruntuleyen_kullaniciad"],
+          displayname: element["hgoruntuleyen_adsoyad"],
+          avatar: element["hgoruntuleyen_avatar"],
+        ),
+      );
+    }
 
     viewlistProcess = false;
+  }
+
+  void viewmystoryviewlist() {
+    _stopAnimation();
+    fetchstoryViewlist(widget.story[0].storyID);
+    showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+        ),
+      ),
+      backgroundColor: ARMOYU.bodyColor,
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.8,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              // getcommentsfetch(PostID, list_comments);
+            },
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    CustomText().Costum1("Görüntüleyenler"),
+                    const SizedBox(height: 5),
+                    const Divider(),
+                    Expanded(
+                      child: viewerlist.isEmpty
+                          ? const CupertinoActivityIndicator()
+                          : ListView.builder(
+                              itemCount: viewerlist.length,
+                              itemBuilder: (context, index) {
+                                return viewerlist[index].storyViewUserList();
+                              },
+                            ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -236,192 +304,200 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
             ),
             Expanded(
               child: PageView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 controller: _pageController,
                 itemCount: widget.story.length,
                 itemBuilder: (context, index) {
-                  Story storydetail = widget.story[index];
+                  if (widget.story[index].isView == 0) {
+                    storyview(widget.story[index]);
+                  }
 
-                  return GestureDetector(
-                    onLongPressEnd: (details) {
-                      _startAnimation();
-                    },
-                    onTapDown: (_) {
-                      _stopAnimation();
-                    },
-                    onTapUp: (details) {
-                      _startAnimation();
-                    },
-                    child: Stack(
-                      children: [
-                        InteractiveViewer(
-                          child: Center(
-                            child: Hero(
-                              tag: 'imageTag',
-                              child: CachedNetworkImage(
-                                imageUrl: storydetail.media,
-                                height: ARMOYU.screenHeight / 1,
-                                width: ARMOYU.screenHeight / 1,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onDoubleTap: () {
-                                // Çift tıklayınca yakınlaştırmayı sıfırla
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  height: 20,
-                  color: Colors.blue,
-                ),
-              ],
-            ),
-            if (widget.story[0].ownerusername != AppUser.userName)
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircleAvatar(
-                        foregroundImage:
-                            CachedNetworkImageProvider(AppUser.avatar),
-                        radius: 20),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(5),
-                      height: 55,
-                      child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade800,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: const TextField(
-                            // controller: controller_message,
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                            decoration: InputDecoration(
-                              hintText: 'Mesaj yaz',
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5.0),
-                    child: const Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.favorite_outline,
-                            size: 22,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.send,
-                            size: 22,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-            else
-              Row(
-                children: [
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: InkWell(
-                      onTap: () {
-                        fetchstoryViewlist(widget.story[0].storyID);
-
-                        showModalBottomSheet(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(10),
-                            ),
-                          ),
-                          backgroundColor: ARMOYU.bodyColor,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return FractionallySizedBox(
-                              heightFactor: 0.8,
-                              child: RefreshIndicator(
-                                onRefresh: () async {
-                                  // getcommentsfetch(PostID, list_comments);
-                                },
-                                child: Scaffold(
-                                  backgroundColor: Colors.transparent,
-                                  body: SafeArea(
-                                    child: Column(
-                                      children: [
-                                        const SizedBox(height: 10),
-                                        CustomText().Costum1("YORUMLAR"),
-                                        const SizedBox(height: 5),
-                                        const Divider(),
-                                        Expanded(
-                                          child: viewerlist.isEmpty
-                                              ? const CupertinoActivityIndicator()
-                                              : ListView.builder(
-                                                  itemCount: 2,
-                                                  itemBuilder:
-                                                      (context, index) {
-                                                    User aa = viewerlist[index];
-                                                    return ListTile(
-                                                      title:
-                                                          Text(aa.displayname),
-                                                    );
-                                                  },
-                                                ),
-                                        ),
-                                      ],
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onLongPressEnd: (details) {
+                            _startAnimation();
+                          },
+                          onLongPressStart: (_) {
+                            _stopAnimation();
+                          },
+                          onTap: () {
+                            if (widget.story.length - 1 == initialIndex) {
+                              return;
+                            }
+                            setState(() {
+                              initialIndex = _pageController.page!.toInt() + 1;
+                              _pageController.animateToPage(
+                                initialIndex,
+                                duration: const Duration(milliseconds: 10),
+                                curve: Curves.easeInOut,
+                              );
+                            });
+                          },
+                          onTapUp: (details) {
+                            _startAnimation();
+                          },
+                          onVerticalDragUpdate: (details) {
+                            if (widget.story[index].ownerID != AppUser.ID) {
+                              return;
+                            }
+                            if (details.delta.dy > 0) {
+                              //Aşağı kaydırma
+                            } else {
+                              //Yukarı kaydırma
+                              viewmystoryviewlist();
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              InteractiveViewer(
+                                child: Center(
+                                  child: Hero(
+                                    tag: 'imageTag',
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.story[index].media,
+                                      height: ARMOYU.screenHeight / 1,
+                                      width: ARMOYU.screenHeight / 1,
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      child: const Column(
-                        children: [
-                          Icon(
-                            Icons.more_horiz_rounded,
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onDoubleTap: () {
+                                      // Çift tıklayınca yakınlaştırmayı sıfırla
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Daha fazla",
-                            style: TextStyle(fontSize: 10),
-                          )
-                        ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                      if (widget.story[index].ownerusername != AppUser.userName)
+                        Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircleAvatar(
+                                  foregroundImage: CachedNetworkImageProvider(
+                                      AppUser.avatar),
+                                  radius: 20),
+                            ),
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(5),
+                                height: 55,
+                                child: Center(
+                                  child: Container(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade800,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: const TextField(
+                                      // controller: controller_message,
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                      decoration: InputDecoration(
+                                        hintText: 'Mesaj yaz',
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        if (widget.story[index].isLike == 0) {
+                                          FunctionsStory funct =
+                                              FunctionsStory();
+                                          Map<String, dynamic> response =
+                                              await funct.like(
+                                                  widget.story[index].storyID);
+                                          if (response["durum"] == 0) {
+                                            log(response["aciklama"]);
+                                            return;
+                                          }
+
+                                          setState(() {
+                                            widget.story[index].isLike = 1;
+                                          });
+                                        } else {
+                                          FunctionsStory funct =
+                                              FunctionsStory();
+                                          Map<String, dynamic> response =
+                                              await funct.likeremove(
+                                                  widget.story[index].storyID);
+                                          if (response["durum"] == 0) {
+                                            log(response["aciklama"]);
+                                            return;
+                                          }
+
+                                          setState(() {
+                                            widget.story[index].isLike = 0;
+                                          });
+                                        }
+                                      },
+                                      icon: widget.story[index].isLike == 1
+                                          ? const Icon(
+                                              Icons.favorite,
+                                              color: Colors.red,
+                                            )
+                                          : const Icon(
+                                              Icons.favorite_outline,
+                                              color: Colors.grey,
+                                            ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      else
+                        Row(
+                          children: [
+                            const Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: InkWell(
+                                onTap: () {
+                                  viewmystoryviewlist();
+                                },
+                                child: const Column(
+                                  children: [
+                                    Icon(
+                                      Icons.more_horiz_rounded,
+                                    ),
+                                    Text(
+                                      "Daha fazla",
+                                      style: TextStyle(fontSize: 10),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                    ],
+                  );
+                },
               ),
+            ),
           ],
         ),
       ),

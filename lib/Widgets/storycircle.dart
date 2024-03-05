@@ -40,6 +40,12 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                 itemBuilder: (context, index) {
                   final StoryList cardData = widget.content[index];
                   Color storycolor = Colors.transparent;
+                  Color otherstorycolor = Colors.red;
+
+                  if (cardData.isView) {
+                    otherstorycolor = Colors.grey;
+                  }
+
                   bool ishasstory = false;
                   if (cardData.ownerID == AppUser.ID) {
                     if (cardData.story != null) {
@@ -87,7 +93,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                             border: Border.all(
                               color: cardData.ownerID == AppUser.ID
                                   ? storycolor
-                                  : Colors.green, // Kenarlık rengi
+                                  : otherstorycolor, // Kenarlık rengi
                               width: 3.0, // Kenarlık kalınlığı
                             ),
                             image: DecorationImage(

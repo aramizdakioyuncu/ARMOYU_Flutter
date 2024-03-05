@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Events/event_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
