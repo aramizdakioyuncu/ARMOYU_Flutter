@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 
 class Event {
   int eventID;
-  String eventName;
+  String name;
   String eventType;
   String eventDate;
-  String eventimage;
-  String eventbanner;
+  String gameImage;
+  String image;
+  String banner;
   String eventmanager;
   String eventmanageravatar;
   String eventPlace;
@@ -21,11 +22,12 @@ class Event {
 
   Event({
     required this.eventID,
-    required this.eventName,
+    required this.name,
     required this.eventType,
     required this.eventDate,
-    required this.eventimage,
-    required this.eventbanner,
+    required this.gameImage,
+    required this.image,
+    required this.banner,
     required this.eventmanager,
     required this.eventmanageravatar,
     required this.eventPlace,
@@ -73,9 +75,9 @@ class Event {
                     height: ARMOYU.screenWidth / 3,
                     child: Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: eventimage.isNotEmpty
+                      child: image.isNotEmpty
                           ? CachedNetworkImage(
-                              imageUrl: eventbanner,
+                              imageUrl: banner,
                               fit: BoxFit.contain,
                             )
                           : const Icon(
@@ -104,7 +106,7 @@ class Event {
                                 child: SizedBox(
                                   width: ARMOYU.screenWidth / 2,
                                   child: Text(
-                                    eventName,
+                                    name,
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 ),

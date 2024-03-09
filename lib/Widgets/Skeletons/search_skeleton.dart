@@ -1,12 +1,8 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables
-
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
 class SkeletonSearch extends StatefulWidget {
-  // SkeletonSearch({
-
-  // });
+  const SkeletonSearch({super.key});
 
   @override
   State<SkeletonSearch> createState() => _SkeletonSearch();
@@ -16,7 +12,7 @@ class _SkeletonSearch extends State<SkeletonSearch> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -27,7 +23,7 @@ class _SkeletonSearch extends State<SkeletonSearch> {
               //   builder: (context) => ProfilePage(userID: userID, appbar: true),
               // ));
             },
-            child: CircleAvatar(
+            child: const CircleAvatar(
               radius: 20,
               backgroundColor: Colors
                   .transparent, // Set a background color for the avatar if needed
@@ -40,8 +36,8 @@ class _SkeletonSearch extends State<SkeletonSearch> {
               ),
             ),
           ),
-          SizedBox(width: 10),
-          Expanded(
+          const SizedBox(width: 10),
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -53,8 +49,8 @@ class _SkeletonSearch extends State<SkeletonSearch> {
               ],
             ),
           ),
-          SizedBox(width: 10),
-          Column(
+          const SizedBox(width: 10),
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.end, // Sağa yaslamak için
             children: [
               SkeletonLine(

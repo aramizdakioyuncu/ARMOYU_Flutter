@@ -183,10 +183,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   visible: step1,
                   child: Column(
                     children: [
-                      CustomTextfields().Costum1("Kullanıcı Adı",
+                      CustomTextfields().costum1("Kullanıcı Adı",
                           _usernameController, false, Icon(Icons.person)),
                       SizedBox(height: 16),
-                      CustomTextfields().Costum1("E-posta", _emailController,
+                      CustomTextfields().costum1("E-posta", _emailController,
                           false, Icon(Icons.email)),
                       SizedBox(height: 16),
                       // CustomButtons().Costum2(Icon(Icons.date_range),
@@ -225,7 +225,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ],
                       ),
                       SizedBox(height: 16),
-                      CustomButtons().Costum1(
+                      CustomButtons().costum1(
                           "Devam et", forgotmypassword, resetpasswordProcess),
                       SizedBox(height: 16),
                       Row(
@@ -261,16 +261,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       CustomTextfields()
                           .number("Kod", _codeController, 6, Icon(Icons.sms)),
                       SizedBox(height: 16),
-                      CustomTextfields().Costum1("Şifre", _passwordController,
+                      CustomTextfields().costum1("Şifre", _passwordController,
                           true, Icon(Icons.lock_outline)),
                       SizedBox(height: 16),
-                      CustomTextfields().Costum1(
+                      CustomTextfields().costum1(
                           "Şifre Tekrar",
                           _repasswordController,
                           true,
                           Icon(Icons.lock_outline)),
                       SizedBox(height: 16),
-                      CustomButtons().Costum1("Kaydet", forgotmypassworddone,
+                      CustomButtons().costum1("Kaydet", forgotmypassworddone,
                           resetpasswordauthProcess),
                     ],
                   ),

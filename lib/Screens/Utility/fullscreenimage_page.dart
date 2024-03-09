@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable, library_private_types_in_public_api
-
 import 'dart:developer';
 import 'dart:io';
 
@@ -25,7 +23,7 @@ class FullScreenImagePage extends StatefulWidget {
     this.isFile = false,
   });
   @override
-  _FullScreenImageStatePage createState() => _FullScreenImageStatePage();
+  State<FullScreenImagePage> createState() => _FullScreenImageStatePage();
 }
 
 class _FullScreenImageStatePage extends State<FullScreenImagePage> {
@@ -42,7 +40,7 @@ class _FullScreenImageStatePage extends State<FullScreenImagePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: ARMOYU.appbarColor,
         actions: <Widget>[
           Visibility(
             visible: isRotationprocces,
@@ -125,7 +123,7 @@ class _FullScreenImageStatePage extends State<FullScreenImagePage> {
           ),
         ],
       ),
-      backgroundColor: Colors.black,
+      backgroundColor: ARMOYU.bodyColor,
       body: PageView.builder(
         controller: PageController(initialPage: widget.initialIndex),
         itemCount: widget.images.length,

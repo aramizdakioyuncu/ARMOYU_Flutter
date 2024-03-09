@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
 
@@ -25,9 +25,11 @@ List<Map<String, String>> cupertinolist3 = [
 ];
 
 class GroupCreatePage extends StatefulWidget {
+  const GroupCreatePage({super.key});
+
   // GroupCreatePage({});
   @override
-  _GroupCreatePageState createState() => _GroupCreatePageState();
+  State<GroupCreatePage> createState() => _GroupCreatePageState();
 }
 
 class _GroupCreatePageState extends State<GroupCreatePage>
@@ -136,9 +138,10 @@ class _GroupCreatePageState extends State<GroupCreatePage>
   CustomTextfields asa = CustomTextfields();
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Grup Oluştur"),
+        title: const Text("Grup Oluştur"),
         backgroundColor: Colors.black,
       ), // Set the AppBar to null if it should be hidden
 
@@ -147,12 +150,13 @@ class _GroupCreatePageState extends State<GroupCreatePage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 16),
-              asa.Costum1("Grup Adı", groupname, false, Icon(Icons.business)),
-              SizedBox(height: 16),
-              asa.Costum1(
-                  "Grup Kısa Adı", groupshortname, false, Icon(Icons.label)),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              asa.costum1(
+                  "Grup Adı", groupname, false, const Icon(Icons.business)),
+              const SizedBox(height: 16),
+              asa.costum1("Grup Kısa Adı", groupshortname, false,
+                  const Icon(Icons.label)),
+              const SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () async {
@@ -175,7 +179,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                           _selectedcupertinolist = selectedItem;
                         });
 
-                        Timer(Duration(milliseconds: 700), () async {
+                        Timer(const Duration(milliseconds: 700), () async {
                           if (_selectedcupertinolist.toString() !=
                               selectedItem.toString()) {
                             isProcces = false;
@@ -221,7 +225,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 },
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
                     cupertinolist[_selectedcupertinolist]["value"].toString(),
@@ -231,7 +235,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () => _showDialog(
@@ -258,7 +262,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 ),
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
                     cupertinolist2[_selectedcupertinolist2]["value"].toString(),
@@ -268,7 +272,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () => _showDialog(
@@ -295,7 +299,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 ),
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
                     cupertinolist3[_selectedcupertinolist3]["value"].toString(),
@@ -305,8 +309,8 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              buttons.Costum1(
+              const SizedBox(height: 16),
+              buttons.costum1(
                   "Oluştur", creategroupfunction, groupcreateProcess),
             ],
           ),

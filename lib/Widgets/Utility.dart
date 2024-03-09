@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, avoid_print
+import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
@@ -28,7 +28,7 @@ Widget specialText(BuildContext context, String text) {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 // Burada # işaretine tıklandığında yapılacak işlemi ekleyin
-                print('Tapped on hashtag: $trimmedWord');
+                log('Tapped on hashtag: $trimmedWord');
               },
           ));
         } else if (word.startsWith('@')) {
@@ -42,7 +42,7 @@ Widget specialText(BuildContext context, String text) {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
-                print('Tapped on username: $username');
+                log('Tapped on username: $username');
 
                 Navigator.push(
                   context,

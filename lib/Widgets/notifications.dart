@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +10,7 @@ class CustomNotifications {
           text,
           style: TextStyle(color: ARMOYU.textColor),
         ),
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
       ),
     );
   }

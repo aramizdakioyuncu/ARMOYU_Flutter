@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_final_fields, must_be_immutable
+// ignore_for_file: must_be_immutable
 
 import 'dart:developer';
 
@@ -18,6 +18,7 @@ class CustomCards extends StatefulWidget {
   int infopage = 2;
   int ordercount = 1;
   CustomCards({
+    super.key,
     required this.title,
     required this.content,
     required this.icon,

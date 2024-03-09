@@ -33,7 +33,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
 
   bool viewlistProcess = false;
   bool storyviewProcess = false;
-  bool FirststoryviewProcess = false;
+  bool firststoryviewProcess = false;
   List<User> viewerlist = [];
 
   @override
@@ -58,7 +58,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
   }
 
   Future<void> storyview(Story story) async {
-    if (FirststoryviewProcess) {
+    if (firststoryviewProcess) {
       return;
     }
     if (storyviewProcess) {
@@ -72,16 +72,17 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       storyviewProcess = false;
-      FirststoryviewProcess = true;
+      firststoryviewProcess = true;
       return;
     }
-    FirststoryviewProcess = true;
+    firststoryviewProcess = true;
 
     storyviewProcess = false;
-
-    setState(() {
-      story.isView = 1;
-    });
+    if (mounted) {
+      setState(() {
+        story.isView = 1;
+      });
+    }
   }
 
   void _startTimer() {
@@ -179,7 +180,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
-                    CustomText().Costum1("Görüntüleyenler"),
+                    CustomText().costum1("Görüntüleyenler"),
                     const SizedBox(height: 5),
                     const Divider(),
                     Expanded(
@@ -218,7 +219,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => GalleryScreen(),
+                        builder: (context) => const GalleryScreen(),
                       ),
                     );
                   }

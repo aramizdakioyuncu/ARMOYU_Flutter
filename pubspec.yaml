@@ -54,6 +54,9 @@ dependencies:
   audioplayers: ^5.2.1
   mic_stream: ^0.7.1+2
 
+  flutter_html: ^3.0.0-beta.2
+  html: ^0.15.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

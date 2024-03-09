@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -17,7 +17,7 @@ class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
   @override
-  _SettingsPage createState() => _SettingsPage();
+  State<SettingsPage> createState() => _SettingsPage();
 }
 
 class _SettingsPage extends State<SettingsPage> {
@@ -81,7 +81,7 @@ class _SettingsPage extends State<SettingsPage> {
                     ),
                     title: Text(AppUser.displayName),
                     subtitle:
-                        CustomText().Costum1("Son Hatalı Giriş: 20.02.2002"),
+                        CustomText().costum1("Son Hatalı Giriş: 20.02.2002"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -111,7 +111,7 @@ class _SettingsPage extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.phone_android_rounded,
                         ),
-                        title: CustomText().Costum1("Cihaz İzinleri"),
+                        title: CustomText().costum1("Cihaz İzinleri"),
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
@@ -128,7 +128,7 @@ class _SettingsPage extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.download_rounded,
                         ),
-                        title: CustomText().Costum1("İndirme ve Arşivleme"),
+                        title: CustomText().costum1("İndirme ve Arşivleme"),
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
@@ -145,7 +145,7 @@ class _SettingsPage extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.network_wifi_3_bar_rounded,
                         ),
-                        title: CustomText().Costum1("Veri Tasarrufu"),
+                        title: CustomText().costum1("Veri Tasarrufu"),
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
@@ -160,7 +160,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.language),
-                        title: CustomText().Costum1("Diller"),
+                        title: CustomText().costum1("Diller"),
                         onTap: () {
                           _showDialog(
                             CupertinoPicker(
@@ -203,7 +203,7 @@ class _SettingsPage extends State<SettingsPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.notifications_active),
-                    title: CustomText().Costum1("Bildirimler"),
+                    title: CustomText().costum1("Bildirimler"),
                     onTap: () {},
                     tileColor: ARMOYU.bacgroundcolor,
                     trailing: const Row(
@@ -219,7 +219,7 @@ class _SettingsPage extends State<SettingsPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.lock),
-                    title: CustomText().Costum1("Hesap Gizliliği"),
+                    title: CustomText().costum1("Hesap Gizliliği"),
                     onTap: () {},
                     tileColor: ARMOYU.bacgroundcolor,
                     trailing: const Row(
@@ -235,7 +235,7 @@ class _SettingsPage extends State<SettingsPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.block),
-                    title: CustomText().Costum1("Engellenenler"),
+                    title: CustomText().costum1("Engellenenler"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -265,7 +265,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.help),
-                        title: CustomText().Costum1("Yardım"),
+                        title: CustomText().costum1("Yardım"),
                         onTap: () {},
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
@@ -273,7 +273,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.person),
-                        title: CustomText().Costum1("Hesap Durumu"),
+                        title: CustomText().costum1("Hesap Durumu"),
                         onTap: () {},
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
@@ -281,7 +281,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.info),
-                        title: CustomText().Costum1("Hakkında"),
+                        title: CustomText().costum1("Hakkında"),
                         onTap: () {},
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
@@ -316,7 +316,7 @@ class _SettingsPage extends State<SettingsPage> {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LoginPage(),
+                              builder: (context) => const LoginPage(),
                             ),
                           );
                         },

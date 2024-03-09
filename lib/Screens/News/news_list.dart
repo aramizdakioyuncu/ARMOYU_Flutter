@@ -48,6 +48,8 @@ class _NewslistStatePage extends State<NewslistPage>
       log(response["aciklama"]);
       eventlistProecces = false;
 
+      //Tekrar çekmeyi dene
+      getnewslist();
       return;
     }
 
@@ -69,7 +71,7 @@ class _NewslistStatePage extends State<NewslistPage>
         });
       }
     }
-
+    isfirstfetch = false;
     eventlistProecces = false;
   }
 

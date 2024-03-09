@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -12,7 +10,7 @@ class SettingsBlockeduserPage extends StatefulWidget {
   const SettingsBlockeduserPage({super.key});
 
   @override
-  _SettingsBlockeduserStatePage createState() =>
+  State<SettingsBlockeduserPage> createState() =>
       _SettingsBlockeduserStatePage();
 }
 
@@ -62,7 +60,7 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
                   response['icerik'][i]["engel_avatar"].toString()),
             ),
             title: CustomText()
-                .Costum1(response['icerik'][i]["engel_kime"].toString()),
+                .costum1(response['icerik'][i]["engel_kime"].toString()),
             subtitle: Text(response['icerik'][i]["engel_kadi"].toString()),
             onTap: () {},
             trailing: ElevatedButton(

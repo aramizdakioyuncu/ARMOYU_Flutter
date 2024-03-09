@@ -1,11 +1,11 @@
-// ignore_for_file: prefer_const_constructors, prefer_interpolation_to_compose_strings, avoid_print, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, prefer_const_literals_to_create_immutables, non_constant_identifier_names, sort_child_properties_last, must_be_immutable, no_leading_underscores_for_local_identifiers, use_build_context_synchronously, unused_local_variable, empty_catches
+// ignore_for_file: must_be_immutable, use_build_context_synchronously, unused_local_variable
 
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
-import 'package:ARMOYU/Widgets/Utility.dart';
+import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
 import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -40,6 +40,7 @@ class TwitterPostWidget extends StatefulWidget {
   bool? isPostdetail = false;
 
   TwitterPostWidget({
+    super.key,
     required this.userID,
     required this.profileImageUrl,
     required this.username,
@@ -64,40 +65,40 @@ class TwitterPostWidget extends StatefulWidget {
 }
 
 class _TwitterPostWidgetState extends State<TwitterPostWidget> {
-  TextEditingController controller_message = TextEditingController();
+  TextEditingController controllerMessage = TextEditingController();
 
   bool postVisible = true;
   //Like Buton
-  Icon postlikeIcon = Icon(Icons.favorite_outline);
+  Icon postlikeIcon = const Icon(Icons.favorite_outline);
   Color postlikeColor = Colors.grey;
 
 //Comment Buton
-  Icon postcommentIcon = Icon(Icons.comment_outlined);
+  Icon postcommentIcon = const Icon(Icons.comment_outlined);
   Color postcommentColor = Colors.grey;
 
 //Repost Buton
-  Icon postrepostIcon = Icon(Icons.cyclone_outlined);
+  Icon postrepostIcon = const Icon(Icons.cyclone_outlined);
   Color postrepostColor = Colors.grey;
 
-  Future<void> getcommentsfetch(int PostID, List<Widget> list_comments) async {
-    if (list_comments.isEmpty) {
+  Future<void> getcommentsfetch(int postID, List<Widget> listComments) async {
+    if (listComments.isEmpty) {
       setState(() {
-        list_comments.clear();
-        list_comments.add(SkeletonComments());
-        list_comments.add(SkeletonComments());
-        list_comments.add(SkeletonComments());
+        listComments.clear();
+        listComments.add(const SkeletonComments());
+        listComments.add(const SkeletonComments());
+        listComments.add(const SkeletonComments());
       });
     }
 
     FunctionsPosts funct = FunctionsPosts();
-    Map<String, dynamic> response = await funct.commentsfetch(PostID);
+    Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"]);
       return;
     }
     if (mounted) {
       setState(() {
-        list_comments.clear();
+        listComments.clear();
       });
     }
 
@@ -114,8 +115,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           int userID = response["icerik"][i]["yorumcuid"];
           int postID = response["icerik"][i]["paylasimID"];
           int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
-          list_comments.add(
-            Widget_PostComments(
+          listComments.add(
+            WidgetPostComments(
               comment: text,
               commentID: yorumID,
               displayname: displayname,
@@ -133,19 +134,19 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   }
 
   Future<void> getcommentslikes(
-      int PostID, List<Widget> list_comments_likes) async {
+      int postID, List<Widget> listCommentsLikes) async {
     FunctionsPosts funct = FunctionsPosts();
-    Map<String, dynamic> response = await funct.postlikeslist(PostID);
+    Map<String, dynamic> response = await funct.postlikeslist(postID);
     if (response["durum"] == 0) {
-      print(response["aciklama"].toString());
+      log(response["aciklama"].toString());
       return;
     }
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"]);
       return;
     }
     setState(() {
-      list_comments_likes.clear();
+      listCommentsLikes.clear();
     });
 
     for (int i = 0; i < response["icerik"].length; i++) {
@@ -154,7 +155,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         String avatar = response["icerik"][i]["begenenavatar"].toString();
         String text = response["icerik"][i]["begenmezaman"].toString();
         int userID = response["icerik"][i]["begenenID"];
-        list_comments_likes.add(
+        listCommentsLikes.add(
           LikersListWidget(
             comment: text,
             commentID: 1,
@@ -170,9 +171,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
   }
 
-  void postcomments(int PostID, List<Widget> list_comments) {
+  void postcomments(int postID, List<Widget> listComments) {
     //Yorumları Çekmeye başla
-    getcommentsfetch(PostID, list_comments);
+    getcommentsfetch(postID, listComments);
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -180,36 +181,35 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         ),
       ),
       isScrollControlled: true,
-      backgroundColor: Colors.grey.shade900,
+      backgroundColor: ARMOYU.bacgroundcolor,
       context: context,
       builder: (BuildContext context) {
         return FractionallySizedBox(
           heightFactor: 0.8,
           child: RefreshIndicator(
             onRefresh: () async {
-              getcommentsfetch(PostID, list_comments);
+              getcommentsfetch(postID, listComments);
             },
             child: Scaffold(
-              backgroundColor: Colors.transparent,
               body: SafeArea(
                 child: Column(
                   children: [
-                    SizedBox(height: 10),
-                    CustomText().Costum1("YORUMLAR"),
-                    SizedBox(height: 5),
-                    Divider(),
+                    const SizedBox(height: 10),
+                    CustomText().costum1("YORUMLAR"),
+                    const SizedBox(height: 5),
+                    const Divider(),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           alignment: Alignment.center,
-                          child: list_comments.isEmpty
+                          child: listComments.isEmpty
                               ? CustomText()
-                                  .Costum1("Yorum yok ilk yorumu sen yaz.")
+                                  .costum1("Yorum yok ilk yorumu sen yaz.")
                               : ListView.builder(
-                                  itemCount: list_comments.length,
+                                  itemCount: listComments.length,
                                   itemBuilder: (context, index) {
-                                    return list_comments[index];
+                                    return listComments[index];
                                   },
                                 ),
                         ),
@@ -227,20 +227,20 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         Expanded(
                           child: Container(
                             alignment: Alignment.center,
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             height: 55,
                             child: Center(
                               child: Container(
-                                padding: EdgeInsets.only(left: 5),
+                                padding: const EdgeInsets.only(left: 5),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade800,
+                                  color: ARMOYU.bacgroundcolor,
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 child: TextField(
-                                  controller: controller_message,
-                                  style: TextStyle(
+                                  controller: controllerMessage,
+                                  style: const TextStyle(
                                       color: Colors.white, fontSize: 16),
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     hintText: 'Mesaj yaz',
                                     border: InputBorder.none,
                                   ),
@@ -250,22 +250,22 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.all(5.0),
+                          padding: const EdgeInsets.all(5.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              print(controller_message.text);
+                              log(controllerMessage.text);
                               FunctionsPosts funct = FunctionsPosts();
                               Map<String, dynamic> response =
                                   await funct.createcomment(
-                                      widget.postID, controller_message.text);
+                                      widget.postID, controllerMessage.text);
                               if (response["durum"] == 0) {
-                                print(response["aciklama"]);
+                                log(response["aciklama"]);
                                 return;
                               }
-                              getcommentsfetch(widget.postID, list_comments);
-                              controller_message.text = "";
+                              getcommentsfetch(widget.postID, listComments);
+                              controllerMessage.text = "";
                             },
-                            child: Icon(
+                            child: const Icon(
                               Icons.send,
                               size: 16,
                             ),
@@ -284,7 +284,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     return;
   }
 
-  Future<void> post_like({bool onlyLike = false}) async {
+  Future<void> postLike({bool onlyLike = false}) async {
     if (onlyLike) {
       if (postlikeColor == Colors.red) {
         return;
@@ -294,12 +294,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       setState(() {
         if (postlikeColor == Colors.red) {
           postlikeColor = Colors.grey;
-          postlikeIcon = Icon(Icons.favorite_border);
+          postlikeIcon = const Icon(Icons.favorite_border);
           widget.postlikeCount--;
           widget.postMelike = 0;
         } else {
           postlikeColor = Colors.red;
-          postlikeIcon = Icon(Icons.favorite_sharp);
+          postlikeIcon = const Icon(Icons.favorite_sharp);
           widget.postlikeCount++;
           widget.postMelike = 1;
         }
@@ -308,16 +308,16 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.likeordislike(widget.postID);
     if (response["durum"] == 0) {
-      print(response["aciklama"].toString());
+      log(response["aciklama"].toString());
       setState(() {
         if (postlikeColor == Colors.red) {
           postlikeColor = Colors.grey;
-          postlikeIcon = Icon(Icons.favorite_border);
+          postlikeIcon = const Icon(Icons.favorite_border);
           widget.postlikeCount--;
           widget.postMelike = 0;
         } else {
           postlikeColor = Colors.red;
-          postlikeIcon = Icon(Icons.favorite_sharp);
+          postlikeIcon = const Icon(Icons.favorite_sharp);
           widget.postlikeCount++;
           widget.postMelike = 1;
         }
@@ -328,18 +328,18 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       if (response['aciklama'] == "Paylaşımı beğendin.") {
         widget.postMelike = 1;
         postlikeColor = Colors.red;
-        postlikeIcon = Icon(Icons.favorite_sharp);
+        postlikeIcon = const Icon(Icons.favorite_sharp);
       } else {
         widget.postMelike = 0;
         postlikeColor = Colors.grey;
-        postlikeIcon = Icon(Icons.favorite_border);
+        postlikeIcon = const Icon(Icons.favorite_border);
       }
     });
   }
 
-  void postcommentlikeslist(List<Widget> list_comments_likes) {
+  void postcommentlikeslist(List<Widget> listCommentsLikes) {
     //Yorumları Çekmeye başla
-    getcommentslikes(widget.postID, list_comments_likes);
+    getcommentslikes(widget.postID, listCommentsLikes);
 
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -355,25 +355,25 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           heightFactor: 0.8,
           child: RefreshIndicator(
             onRefresh: () async {
-              getcommentslikes(widget.postID, list_comments_likes);
+              getcommentslikes(widget.postID, listCommentsLikes);
             },
             child: Scaffold(
               backgroundColor: Colors.transparent,
               body: SafeArea(
                 child: Column(
                   children: [
-                    SizedBox(height: 10),
-                    Text("BEĞENENLER"),
-                    SizedBox(height: 5),
-                    Divider(),
+                    const SizedBox(height: 10),
+                    const Text("BEĞENENLER"),
+                    const SizedBox(height: 5),
+                    const Divider(),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListView.builder(
                           // controller: _scrollController,
-                          itemCount: list_comments_likes.length,
+                          itemCount: listCommentsLikes.length,
                           itemBuilder: (context, index) {
-                            return list_comments_likes[index];
+                            return listCommentsLikes[index];
                           },
                         ),
                       ),
@@ -448,9 +448,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       ),
                     ),
                   ),
-                  Visibility(
+                  const Visibility(
                     //Çizgi ekler
-                    child: const Divider(),
+                    child: Divider(),
                   ),
                   Visibility(
                     visible: widget.userID != AppUser.ID,
@@ -498,7 +498,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           });
                           try {
                             Navigator.pop(context);
-                          } catch (e) {}
+                          } catch (e) {
+                            log(e.toString());
+                          }
                         }
                       },
                       child: const ListTile(
@@ -521,8 +523,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     );
   }
 
-  List<Widget> list_comments_likes = [];
-  List<Widget> list_comments = [];
+  List<Widget> listCommentsLikes = [];
+  List<Widget> listComments = [];
 
   @override
   void initState() {
@@ -532,40 +534,41 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   @override
   Widget build(BuildContext context) {
     if (widget.postMelike == 1) {
-      postlikeIcon = Icon(Icons.favorite);
+      postlikeIcon = const Icon(Icons.favorite);
       postlikeColor = Colors.red;
     }
 
     if (widget.postMecomment == 1) {
-      postcommentIcon = Icon(Icons.comment);
+      postcommentIcon = const Icon(Icons.comment);
       postcommentColor = Colors.blue;
     }
 
     if (widget.postMecomment == 1) {
-      postrepostIcon = Icon(Icons.cyclone);
+      postrepostIcon = const Icon(Icons.cyclone);
       postrepostColor = Colors.green;
     }
 
     return Visibility(
       visible: postVisible,
       child: Container(
-        margin: EdgeInsets.only(bottom: 1),
+        margin: const EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
           color: ARMOYU.bacgroundcolor,
         ),
         child: GestureDetector(
           onDoubleTap: () {
-            post_like(onlyLike: true);
+            postLike(onlyLike: true);
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InkWell(
                 onTap: () {
-                  post_like(onlyLike: true);
+                  postLike(onlyLike: true);
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -583,14 +586,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           radius: 20,
                         ),
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomText().Costum1(widget.username,
+                            CustomText().costum1(widget.username,
                                 size: 16, weight: FontWeight.bold),
-                            CustomText().Costum1(widget.postDate,
+                            CustomText().costum1(widget.postDate,
                                 size: 16, weight: FontWeight.normal),
                           ],
                         ),
@@ -599,7 +602,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         children: [
                           IconButton(
                             onPressed: postfeedback,
-                            icon: Icon(Icons.more_vert),
+                            icon: const Icon(Icons.more_vert),
                             color: Colors.grey,
                           ),
                         ],
@@ -609,26 +612,27 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: GestureDetector(
                     onDoubleTap: () {
-                      post_like(onlyLike: true);
+                      postLike(onlyLike: true);
                     },
                     child: specialText(context, widget.postText)),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Center(
                 child: _buildMediaContent(context),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
                 child: Row(
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     InkWell(
                       onLongPress: () {
                         if (widget.isPostdetail == false) {
-                          postcommentlikeslist(list_comments_likes);
+                          postcommentlikeslist(listCommentsLikes);
                         }
                       },
                       child: IconButton(
@@ -636,52 +640,52 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         icon: postlikeIcon,
                         color: postlikeColor,
                         onPressed: () async {
-                          await post_like();
+                          await postLike();
                         },
                       ),
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     InkWell(
                       onTap: () {
                         if (widget.isPostdetail == false) {
-                          postcommentlikeslist(list_comments_likes);
+                          postcommentlikeslist(listCommentsLikes);
                         }
                       },
                       onLongPress: () {
                         if (widget.isPostdetail == false) {
-                          postcommentlikeslist(list_comments_likes);
+                          postcommentlikeslist(listCommentsLikes);
                         }
                       },
                       child: Text(
                         widget.postlikeCount.toString(),
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       iconSize: 25,
                       icon: postcommentIcon,
                       color: postcommentColor,
                       onPressed: () {
-                        postcomments(widget.postID, list_comments);
+                        postcomments(widget.postID, listComments);
                       },
                     ),
-                    SizedBox(width: 5),
+                    const SizedBox(width: 5),
                     Text(
                       widget.postcommentCount.toString(),
-                      style: TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey),
                     ), // Yorum simgesi
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       iconSize: 25,
                       icon: postrepostIcon,
                       color: postrepostColor,
                       onPressed: () {},
                     ), // Retweet simgesi (yeşil renkte)
-                    Spacer(),
-                    Icon(Icons.share_outlined,
+                    const Spacer(),
+                    const Icon(Icons.share_outlined,
                         color: Colors.grey), // Paylaşım simgesi
-                    Spacer(),
+                    const Spacer(),
                   ],
                 ),
               ),
@@ -715,12 +719,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         fit: fit,
         width: width,
         height: height,
-        placeholder: (context, url) => CircularProgressIndicator(),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       );
     }
 
-    Widget Mediayerlesim = Row();
+    Widget mediayerlesim = const Row();
 
     if (widget.mediaUrls.isNotEmpty) {
       List<Row> mediaItems = [];
@@ -789,7 +793,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             ));
           },
           onDoubleTap: () {
-            post_like(onlyLike: true);
+            postLike(onlyLike: true);
           },
           child: mediaSablon(widget.mediaUrls[i],
               width: mediawidth, height: mediaheight),
@@ -821,11 +825,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       /////////////////////////////////////////////////
 
       /////////////////////////////////////////////////
-      Mediayerlesim = Column(
+      mediayerlesim = Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: mediaItems,
       );
     }
-    return Mediayerlesim;
+    return mediayerlesim;
   }
 }

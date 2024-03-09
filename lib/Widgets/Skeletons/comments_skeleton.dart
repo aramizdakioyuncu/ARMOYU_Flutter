@@ -1,19 +1,14 @@
-// ignore_for_file: use_key_in_widget_constructors, camel_case_types, must_be_immutable, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
 class SkeletonComments extends StatefulWidget {
-  // SkeletonComments({
-
-  // });
-
+  const SkeletonComments({super.key});
   @override
   State<SkeletonComments> createState() => _SkeletonComments();
 }
 
 class _SkeletonComments extends State<SkeletonComments> {
-  Icon favoritestatus = Icon(Icons.favorite_outline);
+  Icon favoritestatus = const Icon(Icons.favorite_outline);
   Color favoritelikestatus = Colors.grey;
   bool isvisiblecomment = true;
 
@@ -24,7 +19,7 @@ class _SkeletonComments extends State<SkeletonComments> {
 
   @override
   Widget build(BuildContext context) {
-    favoritestatus = Icon(Icons.favorite);
+    favoritestatus = const Icon(Icons.favorite);
     favoritelikestatus = Colors.black;
 
     return Visibility(
@@ -32,27 +27,27 @@ class _SkeletonComments extends State<SkeletonComments> {
       child: Row(
         children: [
           Padding(
-            padding: EdgeInsets.all(3),
+            padding: const EdgeInsets.all(3),
             child: GestureDetector(
               onTap: () {},
-              child: SkeletonAvatar(
+              child: const SkeletonAvatar(
                   style: SkeletonAvatarStyle(
                 shape: BoxShape.circle,
               )),
             ),
           ),
-          SizedBox(width: 10),
-          Expanded(
+          const SizedBox(width: 10),
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, // Sola hizala
-              children: const [
+              children: [
                 SkeletonLine(style: SkeletonLineStyle(width: 80)),
                 SizedBox(height: 10),
                 SkeletonLine(style: SkeletonLineStyle(width: 250)),
               ],
             ),
           ),
-          SkeletonItem(child: Icon(Icons.favorite)),
+          const SkeletonItem(child: Icon(Icons.favorite)),
         ],
       ),
     );

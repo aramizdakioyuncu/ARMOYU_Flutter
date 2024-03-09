@@ -1,5 +1,3 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, camel_case_types, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,7 +7,8 @@ import 'package:skeletons/skeletons.dart';
 class SkeletonStorycircle extends StatefulWidget {
   final int count;
 
-  SkeletonStorycircle({
+  const SkeletonStorycircle({
+    super.key,
     required this.count,
   });
 
@@ -33,7 +32,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount: widget.count,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
                   return Container(
                     width: 80,
@@ -68,17 +67,17 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                             child: Container(
                               height: 24,
                               width: 24,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                   color: Colors.black,
                                   borderRadius: BorderRadius.all(
                                       Radius.elliptical(100, 100))),
-                              child: Icon(
+                              child: const Icon(
                                 Icons.add,
                                 color: Colors.blue,
                               ),
                             ),
                           )
-                        : SkeletonAvatar(
+                        : const SkeletonAvatar(
                             style: SkeletonAvatarStyle(
                               shape: BoxShape.circle,
                               width: 40,

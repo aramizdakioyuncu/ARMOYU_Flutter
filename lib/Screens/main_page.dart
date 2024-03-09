@@ -1,8 +1,7 @@
-// ignore_for_file: library_private_types_in_public_api, non_constant_identifier_names, prefer_typing_uninitialized_variables
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
@@ -13,7 +12,7 @@ import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
 import 'package:ARMOYU/Services/appuser.dart';
-import 'package:ARMOYU/Screens/Utility/cameraScreen.dart';
+import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -24,18 +23,23 @@ import 'Social/social_page.dart';
 import 'Notification/notification_page.dart';
 
 class MainPage extends StatefulWidget {
-  final changePage;
+  final dynamic changePage;
 
-  const MainPage({super.key, required this.changePage});
+  const MainPage({
+    super.key,
+    required this.changePage,
+  });
 
   @override
-  _MainPageState createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage>
     with AutomaticKeepAliveClientMixin<MainPage> {
   @override
   bool get wantKeepAlive => true;
+
+  final List<Team> favoriteteams = [];
 
   int userID = -1;
   String userName = 'User Name';
@@ -45,8 +49,8 @@ class _MainPageState extends State<MainPage>
 
   bool drawermyschool = false;
   bool drawermygroup = false;
-  bool appbar_Search = false;
-  final TextEditingController appbar_SearchTextController =
+  bool appbarSearch = false;
+  final TextEditingController appbarSearchTextController =
       TextEditingController();
 
   int postpage = 1;
@@ -57,13 +61,44 @@ class _MainPageState extends State<MainPage>
   @override
   void initState() {
     super.initState();
+
+    favoriteteams.add(
+      Team(
+        logo:
+            "https://upload.wikimedia.org/wikipedia/tr/7/72/Fenerbah%C3%A7e_%C3%9Cniversitesi_FB%C3%9C.png",
+        name: "Fenerbahçe",
+      ),
+    );
+
+    favoriteteams.add(
+      Team(
+        logo:
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Galatasaray_Sports_Club_Logo.png/822px-Galatasaray_Sports_Club_Logo.png",
+        name: "Galatasaray",
+      ),
+    );
+    favoriteteams.add(
+      Team(
+        logo:
+            "https://upload.wikimedia.org/wikipedia/commons/0/08/Be%C5%9Fikta%C5%9F_Logo_Be%C5%9Fikta%C5%9F_Amblem_Be%C5%9Fikta%C5%9F_Arma.png",
+        name: "Beşiktaş",
+      ),
+    );
+    favoriteteams.add(
+      Team(
+        logo:
+            "https://cdn.staticneo.com/w/pes/thumb/7/70/Trabzonspor.png/200px-Trabzonspor.png",
+        name: "Trabzonspor",
+      ),
+    );
+
     userID = AppUser.ID;
     userName = AppUser.displayName;
     userEmail = AppUser.mail;
     useravatar = AppUser.avatar;
     userbanner = AppUser.banneravatar;
 
-    Widget_mySchools.add(
+    widgetmySchools.add(
       ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
@@ -76,7 +111,7 @@ class _MainPageState extends State<MainPage>
         },
       ),
     );
-    Widget_myGroups.add(
+    widgetmyGroups.add(
       ListTile(
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(10.0),
@@ -85,7 +120,7 @@ class _MainPageState extends State<MainPage>
         title: const Text("Grup Oluştur"),
         onTap: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => GroupCreatePage()));
+              MaterialPageRoute(builder: (context) => const GroupCreatePage()));
         },
       ),
     );
@@ -99,10 +134,10 @@ class _MainPageState extends State<MainPage>
     //Anasayfaya basıldığında
     if (page.toString() == "0") {
       setState(() {
-        _pageController2.animateToPage(
+        _pageController2.jumpToPage(
           1,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.ease,
+          // duration: const Duration(milliseconds: 300),
+          // curve: Curves.ease,
         );
       });
 
@@ -125,26 +160,26 @@ class _MainPageState extends State<MainPage>
 
     if (page.toString() == "1") {
       setState(() {
-        appbar_Search = true;
+        appbarSearch = true;
       });
     } else {
       setState(() {
-        appbar_Search = false;
+        appbarSearch = false;
       });
     }
 
     setState(() {
       _currentPage = page;
-      _mainpagecontroller.animateToPage(
+      _mainpagecontroller.jumpToPage(
         page,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.ease,
+        // duration: const Duration(milliseconds: 300),
+        // curve: Curves.ease,
       );
     });
   }
 
-  List<Widget> Widget_myGroups = [];
-  List<Widget> Widget_mySchools = [];
+  List<Widget> widgetmyGroups = [];
+  List<Widget> widgetmySchools = [];
 
   Future<void> loadMyGroups() async {
     FunctionService f = FunctionService();
@@ -162,7 +197,7 @@ class _MainPageState extends State<MainPage>
       drawermygroup = true;
       setState(() {
         for (int i = 0; i < dynamicItemCount; i++) {
-          Widget_myGroups.add(
+          widgetmyGroups.add(
             ListTile(
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
@@ -199,7 +234,7 @@ class _MainPageState extends State<MainPage>
       drawermyschool = true;
       setState(() {
         for (int i = 0; i < dynamicItemCount; i++) {
-          Widget_mySchools.add(
+          widgetmySchools.add(
             ListTile(
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
@@ -263,7 +298,7 @@ class _MainPageState extends State<MainPage>
           },
         ),
         title: Visibility(
-          visible: appbar_Search,
+          visible: appbarSearch,
           child: Container(
             height: 40,
             decoration: BoxDecoration(
@@ -272,7 +307,7 @@ class _MainPageState extends State<MainPage>
                   BorderRadius.circular(10.0), // Köşe yuvarlama eklemek
             ),
             child: TextField(
-              controller: appbar_SearchTextController,
+              controller: appbarSearchTextController,
               style: TextStyle(
                 color: ARMOYU.textColor,
                 fontSize: 14,
@@ -357,21 +392,21 @@ class _MainPageState extends State<MainPage>
                       },
                     ),
                     Visibility(
-                      visible: Widget_myGroups.isEmpty ? false : true,
+                      visible: widgetmyGroups.isEmpty ? false : true,
                       child: ExpansionTile(
                         textColor: ARMOYU.textColor,
                         leading: Icon(Icons.group, color: ARMOYU.textColor),
                         title: const Text('Gruplarım'),
-                        children: Widget_myGroups,
+                        children: widgetmyGroups,
                       ),
                     ),
                     Visibility(
-                      visible: Widget_mySchools.isEmpty ? false : true,
+                      visible: widgetmySchools.isEmpty ? false : true,
                       child: ExpansionTile(
                         textColor: ARMOYU.textColor,
                         leading: Icon(Icons.school, color: ARMOYU.textColor),
                         title: const Text('Okullarım'),
-                        children: Widget_mySchools,
+                        children: widgetmySchools,
                       ),
                     ),
                     ExpansionTile(
@@ -461,17 +496,84 @@ class _MainPageState extends State<MainPage>
         controller: _mainpagecontroller,
         onPageChanged: (int page) {
           //  _changePage(page);
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return Center(
+                child: SizedBox(
+                  width: ARMOYU.screenWidth * 0.95,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          const Text(
+                            'Favori Takımını Seç',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: List.generate(
+                                favoriteteams.length,
+                                (index) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .pop(favoriteteams[index]);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: favoriteteams[index].logo,
+                                          height: 60,
+                                          width: 60,
+                                        ),
+                                        Text(favoriteteams[index].name),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ).then((selectedTeam) {
+            // Kullanıcının seçtiği takımı işle
+            if (selectedTeam != null) {
+              log('Seçilen Takım: ${selectedTeam.name}');
+            }
+          });
         },
         children: [
           PageView(
             controller: _pageController2,
             children: [
-              CameraScreen(),
+              const CameraScreen(),
               SocialPage(homepageScrollController: homepageScrollController),
             ],
           ),
           SearchPage(
-              appbar: true, searchController: appbar_SearchTextController),
+              appbar: true, searchController: appbarSearchTextController),
           NotificationPage(),
           ProfilePage(userID: userID, appbar: false),
         ],

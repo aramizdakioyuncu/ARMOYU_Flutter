@@ -166,8 +166,8 @@ class RestourantPage extends StatelessWidget {
                                   vertical: 4, horizontal: 5),
                               child: Column(
                                 children: [
-                                  CustomText().Costum1("Latte Macchiato"),
-                                  CustomText().Costum1("100TL"),
+                                  CustomText().costum1("Latte Macchiato"),
+                                  CustomText().costum1("100TL"),
                                 ],
                               ),
                             ),

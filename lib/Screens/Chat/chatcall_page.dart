@@ -1,6 +1,7 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, unused_element, library_private_types_in_public_api, unnecessary_overrides, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, must_call_super, avoid_print, use_build_context_synchronously, deprecated_member_use
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,16 +12,16 @@ class ChatCallPage extends StatefulWidget {
   final String useravatar;
   final String userdisplayname;
 
-  ChatCallPage(
-      {required this.userID,
-      required this.useravatar,
-      required this.userdisplayname});
+  const ChatCallPage({
+    super.key,
+    required this.userID,
+    required this.useravatar,
+    required this.userdisplayname,
+  });
 
   @override
-  _ChaCallPageState createState() => _ChaCallPageState();
+  State<ChatCallPage> createState() => _ChaCallPageState();
 }
-
-final ScrollController _scrollController = ScrollController();
 
 bool chatsearchprocess = false;
 Color iconsColor = Colors.white;
@@ -63,17 +64,18 @@ class _ChaCallPageState extends State<ChatCallPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında burada özel bir kontrol yapabilirsiniz.
         // Eğer false dönerseniz, geri tuşu işlevsiz olur.
-        print("Geri gidemezsin");
+        log("Geri gidemezsin");
         return true; // true döndürmek, normal geri tuşu işlevini sürdürür.
       },
       child: Scaffold(
         backgroundColor: Colors.grey.shade900,
         appBar: AppBar(
-          title: Row(
+          title: const Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.security, size: 10),
@@ -86,7 +88,7 @@ class _ChaCallPageState extends State<ChatCallPage>
           ),
           automaticallyImplyLeading: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios_sharp),
+            icon: const Icon(Icons.arrow_back_ios_sharp),
             onPressed: () async {
               try {
                 await player.setSourceUrl(
@@ -96,14 +98,14 @@ class _ChaCallPageState extends State<ChatCallPage>
 
                 Navigator.pop(context);
               } catch (e) {
-                print(e);
+                log(e.toString());
               }
             },
           ),
           backgroundColor: Colors.transparent,
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.more_horiz),
+              icon: const Icon(Icons.more_horiz),
               onPressed: () {},
             ),
           ],
@@ -112,7 +114,7 @@ class _ChaCallPageState extends State<ChatCallPage>
           onRefresh: _handleRefresh,
           child: Column(
             children: [
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               ClipOval(
                 child: CachedNetworkImage(
                   imageUrl: widget.useravatar,
@@ -126,21 +128,21 @@ class _ChaCallPageState extends State<ChatCallPage>
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Text(
                         widget.userdisplayname,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(callingtext.text),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(formatTime(_stopwatch.elapsedMilliseconds)),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 100),
+              const SizedBox(height: 100),
               SizedBox(
                 height: 220,
                 child: Column(
@@ -160,7 +162,7 @@ class _ChaCallPageState extends State<ChatCallPage>
                                     'https://www.sanalsantral.com.tr/tema/default/music/karsilama.mp3');
                                 await player.resume();
                               } catch (e) {
-                                print(e);
+                                log(e.toString());
                               }
                             },
                             icon: Icon(
@@ -181,10 +183,10 @@ class _ChaCallPageState extends State<ChatCallPage>
                                     'https://aramizdakioyuncu.com/galeri/muzikler/11324orijinal1689174596.m4a');
                                 await player.resume();
                               } catch (e) {
-                                print(e);
+                                log(e.toString());
                               }
                             },
-                            icon: Icon(Icons.video_call),
+                            icon: const Icon(Icons.video_call),
                             color: iconsColor,
                           ),
                         ),
@@ -200,16 +202,16 @@ class _ChaCallPageState extends State<ChatCallPage>
                                     'https://aramizdakioyuncu.com/muzikler/tantasci-yalan.mp3');
                                 await player.resume();
                               } catch (e) {
-                                print(e);
+                                log(e.toString());
                               }
                             },
-                            icon: Icon(Icons.mic_off),
+                            icon: const Icon(Icons.mic_off),
                             color: iconsColor,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -225,17 +227,17 @@ class _ChaCallPageState extends State<ChatCallPage>
                                     'https://aramizdakioyuncu.com/muzikler/kalbenhaydisoyle.mp3');
                                 await player.resume();
                               } catch (e) {
-                                print(e);
+                                log(e.toString());
                               }
                             },
-                            icon: Icon(Icons.numbers_rounded),
+                            icon: const Icon(Icons.numbers_rounded),
                             color: iconsColor,
                           ),
                         ),
                         Container(
                           width: 65.0,
                           height: 65.0,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               shape: BoxShape.circle, color: Colors.red),
                           child: IconButton(
                             onPressed: () async {
@@ -247,10 +249,10 @@ class _ChaCallPageState extends State<ChatCallPage>
 
                                 Navigator.pop(context);
                               } catch (e) {
-                                print(e);
+                                log(e.toString());
                               }
                             },
-                            icon: Icon(Icons.call_end),
+                            icon: const Icon(Icons.call_end),
                             color: iconsColor,
                           ),
                         ),
@@ -266,10 +268,10 @@ class _ChaCallPageState extends State<ChatCallPage>
                                     'https://cdn.muzikmp3indir.club/mp3_files/62ce297a2bc37fe29e72cd5e9bc0161f.mp3');
                                 await player.resume();
                               } catch (e) {
-                                print(e);
+                                log(e.toString());
                               }
                             },
-                            icon: Icon(Icons.person_add),
+                            icon: const Icon(Icons.person_add),
                             color: iconsColor,
                           ),
                         ),

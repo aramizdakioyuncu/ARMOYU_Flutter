@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
@@ -14,10 +14,10 @@ class StartingScreen extends StatefulWidget {
   const StartingScreen({super.key});
 
   @override
-  _StartingScreen createState() => _StartingScreen();
+  State<StartingScreen> createState() => _StartingScreenState();
 }
 
-class _StartingScreen extends State<StartingScreen> {
+class _StartingScreenState extends State<StartingScreen> {
   String connectionstatus = '';
   bool connectionProcess = false;
   @override
@@ -55,7 +55,7 @@ class _StartingScreen extends State<StartingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginPage(),
+          builder: (context) => const LoginPage(),
         ),
       );
       return;
@@ -67,7 +67,7 @@ class _StartingScreen extends State<StartingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Pages(),
+          builder: (context) => const Pages(),
         ),
       );
       return;
@@ -76,7 +76,7 @@ class _StartingScreen extends State<StartingScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginPage(),
+            builder: (context) => const LoginPage(),
           ),
         );
         return;
@@ -94,7 +94,7 @@ class _StartingScreen extends State<StartingScreen> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => LoginPage(),
+        builder: (context) => const LoginPage(),
       ),
     );
     return;
@@ -103,6 +103,7 @@ class _StartingScreen extends State<StartingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.appbarColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

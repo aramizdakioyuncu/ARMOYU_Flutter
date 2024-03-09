@@ -1,5 +1,3 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers, file_names
-
 import 'package:connectivity/connectivity.dart';
 import 'package:device_info/device_info.dart';
 import 'dart:io';
@@ -40,14 +38,14 @@ class AppCore {
   }
 
   static Future<List<XFile>> pickImages() async {
-    final ImagePicker _picker = ImagePicker();
-    List<XFile> images = await _picker.pickMultiImage();
+    final ImagePicker picker = ImagePicker();
+    List<XFile> images = await picker.pickMultiImage();
     return images;
   }
 
   static Future<XFile?> pickImage() async {
-    final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
     return image;
   }
 

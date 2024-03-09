@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, must_call_super, prefer_const_constructors, non_constant_identifier_names, avoid_print
+import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 
@@ -13,10 +13,13 @@ import 'package:ARMOYU/Widgets/posts.dart';
 class PostDetailPage extends StatefulWidget {
   final int postID;
 
-  PostDetailPage({required this.postID});
+  const PostDetailPage({
+    super.key,
+    required this.postID,
+  });
 
   @override
-  _PostDetailPage createState() => _PostDetailPage();
+  State<PostDetailPage> createState() => _PostDetailPage();
 }
 
 class _PostDetailPage extends State<PostDetailPage>
@@ -27,27 +30,27 @@ class _PostDetailPage extends State<PostDetailPage>
   void initState() {
     super.initState();
     postdetailfetch();
-    getcommentsfetch(widget.postID, list_comments);
+    getcommentsfetch(widget.postID, listComments);
   }
 
   double commentheight = 0;
-  TextEditingController controller_message = TextEditingController();
+  TextEditingController controllerMessage = TextEditingController();
 
-  List<Widget> list_comments = [];
-  Future<void> getcommentsfetch(int PostID, List<Widget> list_comments) async {
+  List<Widget> listComments = [];
+  Future<void> getcommentsfetch(int postID, List<Widget> listComments) async {
     setState(() {
-      list_comments.clear();
-      list_comments.add(CircularProgressIndicator());
+      listComments.clear();
+      listComments.add(const CircularProgressIndicator());
     });
     FunctionsPosts funct = FunctionsPosts();
-    Map<String, dynamic> response = await funct.commentsfetch(PostID);
+    Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"]);
       return;
     }
     if (mounted) {
       setState(() {
-        list_comments.clear();
+        listComments.clear();
       });
     }
 
@@ -65,8 +68,8 @@ class _PostDetailPage extends State<PostDetailPage>
           int postID = response["icerik"][i]["paylasimID"];
           int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
 
-          list_comments.add(
-            Widget_PostComments(
+          listComments.add(
+            WidgetPostComments(
               comment: text,
               commentID: yorumID,
               displayname: displayname,
@@ -82,21 +85,21 @@ class _PostDetailPage extends State<PostDetailPage>
       }
     }
 
-    if (list_comments.length >= 6) {
+    if (listComments.length >= 6) {
       commentheight = ARMOYU.screenHeight * 0.6;
-    } else if (list_comments.length >= 4) {
+    } else if (listComments.length >= 4) {
       commentheight = ARMOYU.screenHeight * 0.4;
     } else {
       commentheight = ARMOYU.screenHeight * 0.2;
     }
   }
 
-  Widget asa = Text("");
+  Widget asa = const Text("");
   Future<void> postdetailfetch() async {
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.detailfetch(widget.postID);
     if (response["durum"] == 0) {
-      print(response["aciklama"]);
+      log(response["aciklama"]);
       return;
     }
 
@@ -146,10 +149,11 @@ class _PostDetailPage extends State<PostDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bacgroundcolor,
       appBar: AppBar(
-        title: Text('Paylaşım', style: TextStyle(fontSize: 18)),
+        title: const Text('Paylaşım', style: TextStyle(fontSize: 18)),
         toolbarHeight: 40,
       ),
       body: Column(children: [
@@ -163,9 +167,9 @@ class _PostDetailPage extends State<PostDetailPage>
                   padding: const EdgeInsets.all(8.0),
                   child: ListView.builder(
                     // controller: _scrollController,
-                    itemCount: list_comments.length,
+                    itemCount: listComments.length,
                     itemBuilder: (context, index) {
-                      return list_comments[index];
+                      return listComments[index];
                     },
                   ),
                 ),
@@ -184,19 +188,19 @@ class _PostDetailPage extends State<PostDetailPage>
             Expanded(
               child: Container(
                 alignment: Alignment.center,
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 height: 50,
                 child: Center(
                   child: Container(
-                    padding: EdgeInsets.only(left: 5),
+                    padding: const EdgeInsets.only(left: 5),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade800,
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                     child: TextField(
-                      controller: controller_message,
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                      decoration: InputDecoration(
+                      controller: controllerMessage,
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                      decoration: const InputDecoration(
                         hintText: 'Mesaj yaz',
                         border: InputBorder.none,
                       ),
@@ -206,22 +210,22 @@ class _PostDetailPage extends State<PostDetailPage>
               ),
             ),
             Container(
-              padding: EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(5.0),
               child: ElevatedButton(
                 onPressed: () async {
-                  print(controller_message.text);
+                  log(controllerMessage.text);
                   FunctionsPosts funct = FunctionsPosts();
                   Map<String, dynamic> response = await funct.createcomment(
-                      widget.postID, controller_message.text);
+                      widget.postID, controllerMessage.text);
                   if (response["durum"] == 0) {
-                    print(response["aciklama"]);
+                    log(response["aciklama"]);
                     return;
                   }
-                  getcommentsfetch(widget.postID, list_comments);
+                  getcommentsfetch(widget.postID, listComments);
 
-                  controller_message.text = "";
+                  controllerMessage.text = "";
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.send,
                   size: 16,
                 ),

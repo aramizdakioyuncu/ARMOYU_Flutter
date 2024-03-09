@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, deprecated_member_use
+// ignore_for_file: deprecated_member_use
 
 import 'dart:developer';
 
@@ -12,8 +12,10 @@ import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 
 class Pages extends StatefulWidget {
+  const Pages({super.key});
+
   @override
-  _PagesState createState() => _PagesState();
+  State<Pages> createState() => _PagesState();
 }
 
 class _PagesState extends State<Pages> {
@@ -51,13 +53,13 @@ class _PagesState extends State<Pages> {
   List<CameraDescription> _cameras = <CameraDescription>[];
 // /////////////////////////////
 
-  PageController _pageController = PageController(initialPage: 0);
+  PageController pageController = PageController(initialPage: 0);
   void _changePage(int page) {
     setState(() {
       // _pageController.jumpToPage(page);
-      _pageController.animateToPage(
+      pageController.animateToPage(
         page,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
     });
@@ -94,10 +96,10 @@ class _PagesState extends State<Pages> {
         body: PageView(
           // physics: NeverScrollableScrollPhysics(), //kaydırma iptali
           onPageChanged: (int page) {},
-          controller: _pageController,
+          controller: pageController,
           children: [
             MainPage(changePage: _changePage),
-            ChatPage(appbar: true),
+            const ChatPage(appbar: true),
           ],
         ),
       ),

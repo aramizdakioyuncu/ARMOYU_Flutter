@@ -1,11 +1,8 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, must_be_immutable
+// ignore_for_file: must_be_immutable
 
-import 'dart:developer';
-
+import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 
 class LikersListWidget extends StatefulWidget {
   final int userID;
@@ -18,6 +15,7 @@ class LikersListWidget extends StatefulWidget {
   int islike;
 
   LikersListWidget({
+    super.key,
     required this.userID,
     required this.profileImageUrl,
     required this.username,
@@ -33,61 +31,48 @@ class LikersListWidget extends StatefulWidget {
 }
 
 class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
-  Icon favoritestatus = Icon(Icons.favorite_outline);
+  Icon favoritestatus = const Icon(Icons.favorite_outline);
   Color favoritelikestatus = Colors.grey;
 
   @override
   Widget build(BuildContext context) {
     if (widget.islike == 1) {
-      favoritestatus = Icon(Icons.favorite);
+      favoritestatus = const Icon(Icons.favorite);
       favoritelikestatus = Colors.red;
     } else {
-      favoritestatus = Icon(Icons.favorite_outline);
+      favoritestatus = const Icon(Icons.favorite_outline);
       favoritelikestatus = Colors.grey;
     }
 
-    return Row(
-      children: [
-        Padding(
-          padding: EdgeInsets.all(3),
-          child: CircleAvatar(
-            foregroundImage: CachedNetworkImageProvider(widget.profileImageUrl),
-            radius: 20,
-          ),
+    return ListTile(
+      minLeadingWidth: 1.0,
+      minVerticalPadding: 5.0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+      leading: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfilePage(
+                appbar: false,
+                userID: widget.userID,
+              ),
+            ),
+          );
+        },
+        child: CircleAvatar(
+          foregroundImage: CachedNetworkImageProvider(widget.profileImageUrl),
+          radius: 20,
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start, // Sola hizala
-            children: [
-              Text(widget.displayname),
-              Text(widget.comment),
-            ],
-          ),
-        ),
-        IconButton(
-          onPressed: () async {
-            FunctionsPosts funct = FunctionsPosts();
-            Map<String, dynamic> response =
-                await funct.commentlikeordislike(widget.commentID);
-            if (response["durum"] == 0) {
-              log(response["aciklama"]);
-              return;
-            }
-            if (response['aciklama'] == "Paylaşımı beğendin.") {
-              setState(() {
-                widget.islike = 1;
-              });
-            } else {
-              setState(() {
-                widget.islike = 0;
-              });
-            }
-          },
-          icon: favoritestatus,
-          color: favoritelikestatus,
-        ),
-      ],
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(widget.displayname),
+          Text(widget.comment,
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade400)),
+        ],
+      ),
     );
   }
 }

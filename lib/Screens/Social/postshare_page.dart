@@ -1,4 +1,4 @@
-// ignore_for_file: must_call_super, prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api, use_build_context_synchronously, unnecessary_overrides, prefer_const_literals_to_create_immutables
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
 import 'package:ARMOYU/Core/AppCore.dart';
@@ -12,10 +12,10 @@ import 'package:image_picker/image_picker.dart';
 class PostSharePage extends StatefulWidget {
   final bool appbar;
 
-  PostSharePage({required this.appbar});
+  const PostSharePage({super.key, required this.appbar});
 
   @override
-  _PostSharePageState createState() => _PostSharePageState();
+  State<PostSharePage> createState() => _PostSharePageState();
 }
 
 class _PostSharePageState extends State<PostSharePage>
@@ -27,11 +27,6 @@ class _PostSharePageState extends State<PostSharePage>
   TextEditingController postsharetext = TextEditingController();
   List<XFile> imagePath = [];
   bool postshareProccess = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   Future<void> sharePost() async {
     if (postshareProccess) {
@@ -58,6 +53,7 @@ class _PostSharePageState extends State<PostSharePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: widget.appbar
           ? AppBar(
@@ -74,7 +70,8 @@ class _PostSharePageState extends State<PostSharePage>
                 children: [
                   TextField(
                     controller: textController,
-                    decoration: InputDecoration(hintText: "Bir şeyler yaz..."),
+                    decoration:
+                        const InputDecoration(hintText: "Bir şeyler yaz..."),
                     maxLines: null,
                   ),
                   ElevatedButton(
@@ -88,7 +85,7 @@ class _PostSharePageState extends State<PostSharePage>
                         });
                       }
                     },
-                    child: Text("Görsel Ekle"),
+                    child: const Text("Görsel Ekle"),
                   ),
 
                   // Görsellerin önizlemesi
@@ -100,7 +97,7 @@ class _PostSharePageState extends State<PostSharePage>
                         itemCount: imagePath.length,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: InkWell(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -129,8 +126,8 @@ class _PostSharePageState extends State<PostSharePage>
               child: Column(
                 children: [
                   CustomButtons()
-                      .Costum1("Paylaş", sharePost, postshareProccess),
-                  SizedBox(height: 10),
+                      .costum1("Paylaş", sharePost, postshareProccess),
+                  const SizedBox(height: 10),
                   Text(postsharetext.text),
                 ],
               ),

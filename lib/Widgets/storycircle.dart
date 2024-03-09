@@ -1,5 +1,3 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors_in_immutables, camel_case_types, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
@@ -9,18 +7,19 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class Widget_Storycircle extends StatefulWidget {
+class WidgetStorycircle extends StatefulWidget {
   final List<StoryList> content;
 
-  Widget_Storycircle({
+  const WidgetStorycircle({
+    super.key,
     required this.content,
   });
 
   @override
-  State<Widget_Storycircle> createState() => _Widget_StorycircleState();
+  State<WidgetStorycircle> createState() => _WidgetStorycircleState();
 }
 
-class _Widget_StorycircleState extends State<Widget_Storycircle> {
+class _WidgetStorycircleState extends State<WidgetStorycircle> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -70,7 +69,7 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => GalleryScreen(),
+                            builder: (context) => const GalleryScreen(),
                           ),
                         );
                       } else {
@@ -110,11 +109,11 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                                   child: Container(
                                     height: 24,
                                     width: 24,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                         color: Colors.black,
                                         borderRadius: BorderRadius.all(
                                             Radius.elliptical(100, 100))),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.add,
                                       color: Colors.blue,
                                     ),
@@ -122,8 +121,8 @@ class _Widget_StorycircleState extends State<Widget_Storycircle> {
                                 )
                               : null,
                         ),
-                        SizedBox(height: 2),
-                        CustomText().Costum1(
+                        const SizedBox(height: 2),
+                        CustomText().costum1(
                             cardData.ownerID == AppUser.ID
                                 ? "Hikayen"
                                 : cardData.ownerusername,

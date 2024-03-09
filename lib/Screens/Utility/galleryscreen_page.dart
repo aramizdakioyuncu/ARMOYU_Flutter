@@ -1,7 +1,6 @@
-// ignore_for_file: use_key_in_widget_constructors,  library_private_types_in_public_api
-
 import 'dart:developer';
 import 'dart:io';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
@@ -13,8 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GalleryScreen extends StatefulWidget {
+  const GalleryScreen({super.key});
+
   @override
-  _GalleryScreenState createState() => _GalleryScreenState();
+  State<GalleryScreen> createState() => _GalleryScreenState();
 }
 
 final List<String> imageUrls = [];
@@ -109,6 +110,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: ARMOYU.appbarColor,
         title: const Text('Hikaye Gönder'),
       ),
       body: Column(
@@ -122,11 +124,11 @@ class _GalleryScreenState extends State<GalleryScreen>
             tabs: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomText().Costum1('ARMOYU Cloud', size: 15.0),
+                child: CustomText().costum1('ARMOYU Cloud', size: 15.0),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomText().Costum1('Telefon', size: 15.0),
+                child: CustomText().costum1('Telefon', size: 15.0),
               )
             ],
           ),

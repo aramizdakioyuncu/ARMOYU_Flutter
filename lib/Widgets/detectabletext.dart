@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
-
 import 'dart:developer';
 
 import 'package:detectable_text_field/detector/sample_regular_expressions.dart';
@@ -7,7 +5,7 @@ import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomDedectabletext {
-  Widget Costum1(String text, int trimlines, double textsize) {
+  Widget costum1(String text, int trimlines, double textsize) {
     return DetectableText(
       trimLines: trimlines,
       colorClickableText: Colors.pink,
@@ -42,8 +40,8 @@ class CustomDedectabletext {
         letterSpacing: 0.5,
         color: Colors.blueAccent,
       ),
-      lessStyle: TextStyle(color: Colors.grey),
-      moreStyle: TextStyle(color: Colors.grey),
+      lessStyle: const TextStyle(color: Colors.grey),
+      moreStyle: const TextStyle(color: Colors.grey),
     );
   }
 }

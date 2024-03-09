@@ -1,6 +1,5 @@
-// ignore_for_file: avoid_print, non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names
 
-// import 'package:device_info_plus/device_info_plus.dart';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/AppCore.dart';
@@ -38,7 +37,7 @@ class OneSignalApi {
 
     final response =
         await http.post(url, headers: headers, body: json.encode(notification));
-    print(response.body);
+    log(response.body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -86,6 +85,7 @@ class OneSignalApi {
                 userID: int.parse(responseData["categoryvalue"].toString()),
                 useravatar: avatar,
                 userdisplayname: displayname,
+                chats: const [],
               ),
             ),
           );

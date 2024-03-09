@@ -1,7 +1,8 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
@@ -15,7 +16,7 @@ class NoConnectionPage extends StatefulWidget {
   const NoConnectionPage({super.key});
 
   @override
-  _InternetCheckPageState createState() => _InternetCheckPageState();
+  State<NoConnectionPage> createState() => _InternetCheckPageState();
 }
 
 class _InternetCheckPageState extends State<NoConnectionPage> {
@@ -48,7 +49,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginPage(),
+            builder: (context) => const LoginPage(),
           ),
         );
         setState(() {
@@ -70,7 +71,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => LoginPage(),
+              builder: (context) => const LoginPage(),
             ),
           );
           setState(() {
@@ -92,7 +93,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Pages(),
+          builder: (context) => const Pages(),
         ),
       );
       setState(() {
@@ -111,6 +112,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.appbarColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -131,7 +133,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
                     style: TextStyle(fontSize: 18),
                   ),
             const SizedBox(height: 20),
-            CustomButtons().Costum1(
+            CustomButtons().costum1(
                 "Tekrar dene", checkInternetConnection2, connectionProcess),
           ],
         ),

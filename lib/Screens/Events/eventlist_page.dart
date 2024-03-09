@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -12,7 +10,7 @@ class EventlistPage extends StatefulWidget {
   const EventlistPage({super.key});
 
   @override
-  _EventlistPage createState() => _EventlistPage();
+  State<EventlistPage> createState() => _EventlistPage();
 }
 
 List<Event> eventsList = [];
@@ -58,11 +56,12 @@ class _EventlistPage extends State<EventlistPage>
           eventsList.add(
             Event(
               eventID: element["etkinlik_ID"],
-              eventName: element["etkinlik_adi"].toString(),
+              name: element["etkinlik_adi"].toString(),
               eventType: element["etkinlik_tip"].toString(),
               eventDate: element["etkinlik_zaman"].toString(),
-              eventimage: element["etkinlik_oyunlogo"],
-              eventbanner: element["etkinlik_oyunbanner"],
+              gameImage: element["etkinlik_oyunlogo"],
+              image: element["etkinlik_foto"],
+              banner: element["etkinlik_oyunbanner"],
               eventmanager: element["etkinlik_yetkili"],
               eventmanageravatar: element["etkinlik_yetkiliavatar"],
               eventPlace: element["etkinlik_yer"].toString(),

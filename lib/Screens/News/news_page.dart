@@ -8,6 +8,8 @@ import 'package:ARMOYU/Models/news.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class NewsPage extends StatefulWidget {
   const NewsPage({
@@ -19,32 +21,52 @@ class NewsPage extends StatefulWidget {
   _EventStatePage createState() => _EventStatePage();
 }
 
-class _EventStatePage extends State<NewsPage> {
+bool isfirstfetch = true;
+bool newsfetchProcess = false;
+
+class _EventStatePage extends State<NewsPage>
+    with AutomaticKeepAliveClientMixin<NewsPage> {
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
-
-    fetchnewscontent(widget.news.newsID);
+    if (isfirstfetch) {
+      fetchnewscontent(widget.news.newsID);
+    }
   }
 
   Future<void> fetchnewscontent(newsID) async {
+    if (newsfetchProcess) {
+      return;
+    }
+    newsfetchProcess = true;
     FunctionsNews f = FunctionsNews();
     Map<String, dynamic> response = await f.fetchnews(newsID);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      newsfetchProcess = false;
+      fetchnewscontent(widget.news.newsID);
       return;
     }
+
+    Text(widget.news.newsContent);
+
     widget.news.newsContent = response["icerik"]["yaziicerik"].toString();
+    var document = parse(widget.news.newsContent);
+    widget.news.newsContent = document.outerHtml;
+    newsfetchProcess = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SafeArea(
       child: Scaffold(
         backgroundColor: ARMOYU.bodyColor,
         appBar: AppBar(
-          title: const Text('Etkinlikler'),
+          title: Text(widget.news.newsTitle.toString()),
           backgroundColor: ARMOYU.appbarColor,
         ),
         body: SingleChildScrollView(
@@ -64,10 +86,14 @@ class _EventStatePage extends State<NewsPage> {
                 ),
               ),
               widget.news.newsContent == ""
-                  ? const CupertinoActivityIndicator()
+                  ? const Center(
+                      child: CupertinoActivityIndicator(),
+                    )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(widget.news.newsContent),
+                      child: Html(
+                        data: widget.news.newsContent,
+                      ),
                     ),
             ],
           ),

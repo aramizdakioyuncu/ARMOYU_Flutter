@@ -1,11 +1,10 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/event.dart';
 import 'package:ARMOYU/Models/event.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
+import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -16,10 +15,11 @@ class EventPage extends StatefulWidget {
   });
   final Event event;
   @override
-  _EventStatePage createState() => _EventStatePage();
+  State<EventPage> createState() => _EventStatePage();
 }
 
 class _EventStatePage extends State<EventPage> {
+  bool rulesacception = false;
   List<Event> eventsList = [];
   bool joineventProccess = false;
   @override
@@ -28,6 +28,12 @@ class _EventStatePage extends State<EventPage> {
   }
 
   Future<void> joinevent() async {
+    if (!rulesacception) {
+      String gelenyanit = "Kuralları kabul etmediniz!";
+      CustomNotifications.stackbarNotification(context, gelenyanit);
+      return;
+    }
+
     joineventProccess = true;
     FunctionsEvent f = FunctionsEvent();
     Map<String, dynamic> response = await f.fetch();
@@ -53,26 +59,64 @@ class _EventStatePage extends State<EventPage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    CachedNetworkImage(imageUrl: widget.event.eventbanner),
-                    const Spacer(),
-                    Text(widget.event.eventDate),
-                    const Spacer(),
-                    CachedNetworkImage(imageUrl: widget.event.eventbanner),
-                  ],
+                CachedNetworkImage(
+                  imageUrl: widget.event.image,
+                  placeholder: (context, url) => const SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: CircularProgressIndicator(),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      ErrorWidget("exception"),
+                  fit: BoxFit.cover,
+                  width: ARMOYU.screenWidth,
+                ),
+                const SizedBox(height: 50),
+                const Text("Son Katılım Tarihi"),
+                Text(
+                  widget.event.eventDate,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 23),
+                ),
+                ClipOval(
+                  child: CachedNetworkImage(
+                    imageUrl: widget.event.eventmanageravatar,
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: 100,
+                  ),
                 ),
                 const SizedBox(height: 10),
-                Column(
+                const Text("Yetkili"),
+                const SizedBox(height: 10),
+                const Text(
+                  "Kurallar",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Text(widget.event.rules),
+                const SizedBox(height: 10),
+                const Text(
+                  "Açıklama",
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                Text(widget.event.description),
+                const SizedBox(height: 10),
+                Row(
                   children: [
-                    Text(widget.event.rules),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
-                    Text(widget.event.description),
-                    CustomButtons()
-                        .Costum1("KATIL", joinevent, joineventProccess),
+                    Checkbox(
+                      value: rulesacception,
+                      onChanged: (value) {
+                        setState(() {
+                          rulesacception = !rulesacception;
+                        });
+                      },
+                    ),
+                    const Text("Kuralları okudum ve anladım kabul ediyorum."),
                   ],
-                )
+                ),
+                CustomButtons().costum1("KATIL", joinevent, joineventProccess),
               ],
             ),
           ),

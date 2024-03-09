@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, must_be_immutable
+// ignore_for_file: must_be_immutable
 
 import 'dart:developer';
 
@@ -18,6 +18,7 @@ class UserListWidget extends StatefulWidget {
   bool isFriend;
 
   UserListWidget({
+    super.key,
     required this.userID,
     required this.profileImageUrl,
     required this.username,
@@ -74,7 +75,7 @@ class _UserListWidgetState extends State<UserListWidget> {
     return Row(
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
           child: GestureDetector(
             onTap: () {
               Navigator.push(
@@ -95,8 +96,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, // Sola hizala
             children: [
-              CustomText().Costum1(widget.displayname, weight: FontWeight.bold),
-              CustomText().Costum1(widget.username),
+              CustomText().costum1(widget.displayname, weight: FontWeight.bold),
+              CustomText().costum1(widget.username),
             ],
           ),
         ),
@@ -105,7 +106,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons()
-                .Costum1(buttonremovefriend, removefriend, false),
+                .costum1(buttonremovefriend, removefriend, false),
           ),
         ),
         Visibility(
@@ -113,7 +114,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child:
-                CustomButtons().Costum1(buttonbefriend, friendrequest, false),
+                CustomButtons().costum1(buttonbefriend, friendrequest, false),
           ),
         )
       ],

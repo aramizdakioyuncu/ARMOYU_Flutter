@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, prefer_is_empty, use_key_in_widget_constructors, use_build_context_synchronously, unnecessary_this, prefer_final_fields, library_private_types_in_public_api, unused_field, unused_element, must_call_super, prefer_const_constructors_in_immutables
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -20,10 +18,10 @@ import 'package:ARMOYU/Widgets/posts.dart';
 class SocialPage extends StatefulWidget {
   final ScrollController homepageScrollController;
 
-  SocialPage({required this.homepageScrollController});
+  const SocialPage({super.key, required this.homepageScrollController});
 
   @override
-  _SocialPageState createState() => _SocialPageState();
+  State<SocialPage> createState() => _SocialPageState();
 }
 
 class _SocialPageState extends State<SocialPage>
@@ -31,7 +29,8 @@ class _SocialPageState extends State<SocialPage>
   @override
   bool get wantKeepAlive => true;
 
-  late ScrollController _scrollController = widget.homepageScrollController;
+  late final ScrollController _scrollController =
+      widget.homepageScrollController;
 
   int userID = -1;
   String userName = 'User Name';
@@ -43,16 +42,18 @@ class _SocialPageState extends State<SocialPage>
   bool postpageproccess = false;
   bool isRefreshing = false;
 
-  List<Widget> Widget_Posts = [];
-  List<Map<String, String>> Widgettp_card = [];
-  List<Map<String, String>> Widgetpop_card = [];
+  List<Widget> widgetPosts = [];
+  List<Map<String, String>> widgettpCard = [];
+  List<Map<String, String>> widgetPOPcard = [];
 
-  List<StoryList> Widget_storiescard = [];
+  List<StoryList> widgetStoriescard = [];
 
-  Widget? Widget_stories;
+  Widget? widgetStories;
 
-  Widget Widget_tpusers = SkeletonCustomCards(count: 5, icon: Icon(Icons.abc));
-  Widget Widget_popusers = SkeletonCustomCards(count: 5, icon: Icon(Icons.abc));
+  Widget widgetTPusers =
+      const SkeletonCustomCards(count: 5, icon: Icon(Icons.abc));
+  Widget widgetPOPusers =
+      const SkeletonCustomCards(count: 5, icon: Icon(Icons.abc));
   @override
   void initState() {
     super.initState();
@@ -85,11 +86,11 @@ class _SocialPageState extends State<SocialPage>
     }
 
     if (page == 1) {
-      Widget_storiescard.clear();
+      widgetStoriescard.clear();
     }
 
     if (response["icerik"].length == 0) {
-      Widget_storiescard.add(
+      widgetStoriescard.add(
         StoryList(
           ownerID: AppUser.ID,
           ownerusername: "Hikayen",
@@ -101,12 +102,12 @@ class _SocialPageState extends State<SocialPage>
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      List<Story> Widget_Story = [];
+      List<Story> widgetStory = [];
 
       if (i == 0) {
         if (response["icerik"][i]["oyuncu_ID"].toString() !=
             AppUser.ID.toString()) {
-          Widget_storiescard.add(
+          widgetStoriescard.add(
             StoryList(
               ownerID: AppUser.ID,
               ownerusername: "Hikayen",
@@ -125,7 +126,7 @@ class _SocialPageState extends State<SocialPage>
             1) {
           toplamgoruntulenmesayisi++;
         }
-        Widget_Story.add(
+        widgetStory.add(
           Story(
             storyID: response["icerik"][i]["hikaye_icerik"][j]["hikaye_ID"],
             ownerID: response["icerik"][i]["oyuncu_ID"],
@@ -145,12 +146,12 @@ class _SocialPageState extends State<SocialPage>
           response["icerik"][i]["hikaye_icerik"].length) {
         viewstory = true;
       }
-      Widget_storiescard.add(
+      widgetStoriescard.add(
         StoryList(
           ownerID: response["icerik"][i]["oyuncu_ID"],
           ownerusername: response["icerik"][i]["oyuncu_kadi"],
           owneravatar: response["icerik"][i]["oyuncu_avatar"],
-          story: Widget_Story,
+          story: widgetStory,
           isView: viewstory,
         ),
       );
@@ -158,15 +159,15 @@ class _SocialPageState extends State<SocialPage>
 
     if (mounted) {
       setState(() {
-        Widget_stories = Widget_Storycircle(
-          content: Widget_storiescard,
+        widgetStories = WidgetStorycircle(
+          content: widgetStoriescard,
         );
       });
     }
   }
 
   Future<void> _handleRefresh() async {
-    loadSkeletonpost();
+    // loadSkeletonpost();
 
     isRefreshing = true;
     loadPosts(1);
@@ -196,7 +197,7 @@ class _SocialPageState extends State<SocialPage>
       return;
     }
     if (page == 1) {
-      Widget_Posts.clear();
+      widgetPosts.clear();
     }
 
     int dynamicItemCount = response["icerik"].length;
@@ -226,7 +227,7 @@ class _SocialPageState extends State<SocialPage>
 
       if (mounted) {
         setState(() {
-          Widget_Posts.add(
+          widgetPosts.add(
             TwitterPostWidget(
               userID: response["icerik"][i]["sahipID"],
               profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
@@ -251,35 +252,37 @@ class _SocialPageState extends State<SocialPage>
           if (i / 3 == 1) {
             ScrollController scrollControllerPOP = ScrollController();
 
-            Widget_popusers = CustomCards(
+            widgetPOPusers = CustomCards(
               scrollController: scrollControllerPOP,
               title: "POP",
-              effectcolor: Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
-              content: Widgetpop_card,
-              icon: Icon(
+              effectcolor:
+                  const Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
+              content: widgetPOPcard,
+              icon: const Icon(
                 Icons.remove_red_eye_outlined,
                 size: 15,
                 color: Colors.white,
               ),
             );
 
-            Widget_Posts.add(Widget_popusers);
+            widgetPosts.add(widgetPOPusers);
           }
           if (i / 7 == 1) {
             ScrollController scrollControllerTP = ScrollController();
 
-            Widget_tpusers = CustomCards(
+            widgetTPusers = CustomCards(
               title: "TP",
               scrollController: scrollControllerTP,
-              effectcolor: Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
-              content: Widgettp_card,
-              icon: Icon(
+              effectcolor:
+                  const Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
+              content: widgettpCard,
+              icon: const Icon(
                 Icons.auto_graph_outlined,
                 size: 15,
                 color: Colors.white,
               ),
             );
-            Widget_Posts.add(Widget_tpusers);
+            widgetPosts.add(widgetTPusers);
           }
         });
       }
@@ -288,24 +291,25 @@ class _SocialPageState extends State<SocialPage>
 
   Future<void> loadSkeletonpost() async {
     setState(() {
-      Widget_stories = SkeletonStorycircle(count: 11);
-      Widget_Posts.clear();
+      widgetStories = const SkeletonStorycircle(count: 11);
+      widgetPosts.clear();
 
-      Widget_Posts.add(SkeletonSocailPosts());
-      Widget_Posts.add(SkeletonSocailPosts());
-      Widget_Posts.add(SkeletonSocailPosts());
-      Widget_Posts.add(SkeletonCustomCards(count: 5, icon: Icon(Icons.abc)));
-      Widget_Posts.add(SkeletonSocailPosts());
-      Widget_Posts.add(SkeletonSocailPosts());
-      Widget_Posts.add(SkeletonSocailPosts());
-      Widget_Posts.add(SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts
+          .add(const SkeletonCustomCards(count: 5, icon: Icon(Icons.abc)));
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
     });
   }
 
   Future<void> fetchInternetdatas() async {
     fetchstoryWidget(1);
-    loadXP_Cards(1);
-    loadpop_Cards(1);
+    loadXPCards(1);
+    loadpopCards(1);
   }
 
   Future<void> loadPosts(int page) async {
@@ -320,7 +324,7 @@ class _SocialPageState extends State<SocialPage>
     postpageproccess = false;
   }
 
-  Future<void> loadXP_Cards(int page) async {
+  Future<void> loadXPCards(int page) async {
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getplayerxp(1);
     if (response["durum"] == 0) {
@@ -328,19 +332,21 @@ class _SocialPageState extends State<SocialPage>
       return;
     }
     if (page == 1) {
-      Widgettp_card.clear();
+      widgettpCard.clear();
     }
     for (int i = 0; i < response["icerik"].length; i++) {
-      Widgettp_card.add({
-        "userID": response["icerik"][i]["oyuncuID"].toString(),
-        "image": response["icerik"][i]["oyuncuavatar"],
-        "displayname": response["icerik"][i]["oyuncuadsoyad"],
-        "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
-      });
+      widgettpCard.add(
+        {
+          "userID": response["icerik"][i]["oyuncuID"].toString(),
+          "image": response["icerik"][i]["oyuncuavatar"],
+          "displayname": response["icerik"][i]["oyuncuadsoyad"],
+          "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
+        },
+      );
     }
   }
 
-  Future<void> loadpop_Cards(int page) async {
+  Future<void> loadpopCards(int page) async {
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getplayerpop(1);
     if (response["durum"] == 0) {
@@ -348,10 +354,10 @@ class _SocialPageState extends State<SocialPage>
       return;
     }
     if (page == 1) {
-      Widgetpop_card.clear();
+      widgetPOPcard.clear();
     }
     for (int i = 0; i < response["icerik"].length; i++) {
-      Widgetpop_card.add({
+      widgetPOPcard.add({
         "userID": response["icerik"][i]["oyuncuID"].toString(),
         "image": response["icerik"][i]["oyuncuavatar"],
         "displayname": response["icerik"][i]["oyuncuadsoyad"],
@@ -362,6 +368,7 @@ class _SocialPageState extends State<SocialPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
@@ -370,16 +377,16 @@ class _SocialPageState extends State<SocialPage>
         child: ListView(
           controller: _scrollController,
           children: [
-            SizedBox(child: Widget_stories),
-            SizedBox(
+            SizedBox(child: widgetStories),
+            const SizedBox(
               height: 1,
             ),
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: Widget_Posts.length,
+              itemCount: widgetPosts.length,
               itemBuilder: (context, index) {
-                return Widget_Posts[index];
+                return widgetPosts[index];
               },
             ),
           ],
@@ -388,13 +395,13 @@ class _SocialPageState extends State<SocialPage>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => PostSharePage(
+            builder: (context) => const PostSharePage(
               appbar: true,
             ),
           ));
         },
         backgroundColor: ARMOYU.buttonColor,
-        child: Icon(
+        child: const Icon(
           Icons.post_add,
           color: Colors.white,
         ),

@@ -19,12 +19,15 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final Widget homePage;
-  const MyApp({Key? key, required this.homePage}) : super(key: key);
+  const MyApp({
+    Key? key,
+    required this.homePage,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    themeProvider.StartingTheme();
+    themeProvider.startingTheme();
 
     Intl.defaultLocale = 'tr_TR';
     return MaterialApp(

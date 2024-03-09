@@ -1,4 +1,4 @@
-// ignore_for_file: use_key_in_widget_constructors, camel_case_types, must_be_immutable, prefer_const_constructors
+// ignore_for_file: must_be_immutable
 
 import 'dart:developer';
 
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Services/appuser.dart';
 
-class Widget_PostComments extends StatefulWidget {
+class WidgetPostComments extends StatefulWidget {
   final int userID;
   final String profileImageUrl;
   final String username;
@@ -20,7 +20,8 @@ class Widget_PostComments extends StatefulWidget {
   int islike;
   int commentslikecount;
 
-  Widget_PostComments({
+  WidgetPostComments({
+    super.key,
     required this.userID,
     required this.profileImageUrl,
     required this.username,
@@ -33,11 +34,14 @@ class Widget_PostComments extends StatefulWidget {
   });
 
   @override
-  State<Widget_PostComments> createState() => _Widget_PostComments();
+  State<WidgetPostComments> createState() => _WidgetPostComments();
 }
 
-class _Widget_PostComments extends State<Widget_PostComments> {
-  Icon favoritestatus = Icon(Icons.favorite_outline);
+class _WidgetPostComments extends State<WidgetPostComments> {
+  Icon favoritestatus = const Icon(
+    Icons.favorite_outline,
+    size: 11,
+  );
   Color favoritelikestatus = Colors.grey;
   bool isvisiblecomment = true;
 
@@ -49,116 +53,110 @@ class _Widget_PostComments extends State<Widget_PostComments> {
   @override
   Widget build(BuildContext context) {
     if (widget.islike == 1) {
-      favoritestatus = Icon(Icons.favorite);
+      favoritestatus = const Icon(Icons.favorite);
       favoritelikestatus = Colors.red;
     } else {
-      favoritestatus = Icon(Icons.favorite_outline);
+      favoritestatus = const Icon(Icons.favorite_outline);
       favoritelikestatus = Colors.grey;
     }
 
     return Visibility(
       visible: isvisiblecomment,
-      child: Row(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(3),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ProfilePage(userID: widget.userID, appbar: true),
-                  ),
-                );
-              },
-              child: CircleAvatar(
-                foregroundImage:
-                    CachedNetworkImageProvider(widget.profileImageUrl),
-                radius: 20,
+      child: ListTile(
+        minLeadingWidth: 1.0,
+        minVerticalPadding: 5.0,
+        contentPadding: const EdgeInsets.all(0),
+        leading: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(
+                  appbar: true,
+                  userID: widget.userID,
+                ),
               ),
-            ),
+            );
+          },
+          child: CircleAvatar(
+            foregroundImage: CachedNetworkImageProvider(widget.profileImageUrl),
+            radius: 20,
           ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, // Sola hizala
-              children: [
-                Text(widget.displayname),
-                Text(widget.comment),
-              ],
-            ),
-          ),
-          IconButton(
-            onPressed: () async {
-              int currentstatus = widget.islike;
-              setState(() {
-                if (currentstatus == 1) {
-                  widget.islike = 0;
-                  widget.commentslikecount--;
-                } else {
-                  widget.islike = 1;
-                  widget.commentslikecount++;
-                }
-              });
-              FunctionsPosts funct = FunctionsPosts();
-              Map<String, dynamic> response =
-                  await funct.commentlikeordislike(widget.commentID);
-              if (response["durum"] == 0) {
-                log(response["aciklama"]);
-                return;
-              }
-              if (response['aciklama'] == "Paylaşımı beğendin.") {
-                if (mounted) {
-                  setState(() {
-                    if (currentstatus == 1) {
-                      widget.islike = 1;
-                    }
-                  });
-                }
-              } else {
-                if (mounted) {
-                  setState(() {
-                    if (currentstatus == 0) {
-                      widget.islike = 0;
-                    }
-                  });
-                }
-              }
-            },
-            icon: favoritestatus,
-            color: favoritelikestatus,
-          ),
-          Text(widget.commentslikecount.toString()),
-          Visibility(
-            visible: AppUser.ID != widget.userID,
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.more_vert),
-            ),
-          ),
-          Visibility(
-            visible: AppUser.ID == widget.userID,
-            child: IconButton(
+        ),
+        title: Text(widget.displayname),
+        subtitle: Text(widget.comment),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
               onPressed: () async {
+                int currentstatus = widget.islike;
+                setState(
+                  () {
+                    if (currentstatus == 1) {
+                      widget.islike = 0;
+                      widget.commentslikecount--;
+                    } else {
+                      widget.islike = 1;
+                      widget.commentslikecount++;
+                    }
+                  },
+                );
                 FunctionsPosts funct = FunctionsPosts();
                 Map<String, dynamic> response =
-                    await funct.removecomment(widget.commentID);
+                    await funct.commentlikeordislike(widget.commentID);
                 if (response["durum"] == 0) {
                   log(response["aciklama"]);
                   return;
                 }
-                setState(() {
-                  isvisiblecomment = false;
-                });
+                if (response['aciklama'] == "Paylaşımı beğendin.") {
+                  if (mounted) {
+                    setState(
+                      () {
+                        if (currentstatus == 1) {
+                          widget.islike = 1;
+                        }
+                      },
+                    );
+                  }
+                } else {
+                  if (mounted) {
+                    setState(
+                      () {
+                        if (currentstatus == 0) {
+                          widget.islike = 0;
+                        }
+                      },
+                    );
+                  }
+                }
               },
-              icon: Icon(
-                Icons.delete,
-                color: Colors.grey,
+              icon: favoritestatus,
+              color: favoritelikestatus,
+            ),
+            Visibility(
+              visible: AppUser.ID == widget.userID,
+              child: IconButton(
+                onPressed: () async {
+                  FunctionsPosts funct = FunctionsPosts();
+                  Map<String, dynamic> response =
+                      await funct.removecomment(widget.commentID);
+                  if (response["durum"] == 0) {
+                    log(response["aciklama"]);
+                    return;
+                  }
+                  setState(() {
+                    isvisiblecomment = false;
+                  });
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.grey,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

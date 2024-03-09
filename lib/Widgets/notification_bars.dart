@@ -90,7 +90,7 @@ class _CustomMenusNotificationbarsState
                             fontSize: 16,
                           ),
                         ),
-                        CustomDedectabletext().Costum1(widget.text, 1, 15),
+                        CustomDedectabletext().costum1(widget.text, 1, 15),
                         Visibility(
                           visible: widget.enableButtons,
                           child: Row(
@@ -131,7 +131,7 @@ class _CustomMenusNotificationbarsState
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.blue,
                                 ),
-                                child: CustomText().Costum1("Kabul ET"),
+                                child: CustomText().costum1("Kabul ET"),
                               ),
                               const SizedBox(width: 16),
                               ElevatedButton(
@@ -164,7 +164,7 @@ class _CustomMenusNotificationbarsState
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                 ),
-                                child: CustomText().Costum1("Reddet"),
+                                child: CustomText().costum1("Reddet"),
                               ),
                             ],
                           ),

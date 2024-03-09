@@ -117,7 +117,7 @@ class _SearchPagePage extends State<SearchPage>
                   ),
                   backgroundColor: Colors.black,
                 ),
-                title: CustomText().Costum1(response["icerik"][i]["Value"],
+                title: CustomText().costum1(response["icerik"][i]["Value"],
                     weight: FontWeight.bold),
                 trailing: response["icerik"][i]["turu"] == "oyuncu"
                     ? Icon(Icons.person)

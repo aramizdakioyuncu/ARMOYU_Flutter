@@ -1,28 +1,27 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, prefer_interpolation_to_compose_strings, must_call_super
-
 import 'dart:async';
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Widgets/text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ARMOYU/Models/Chat/chat.dart';
+import 'package:ARMOYU/Models/Chat/chat_message.dart';
+import 'package:ARMOYU/Screens/Chat/chat_new_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 
 class ChatPage extends StatefulWidget {
   final bool appbar;
-
-  ChatPage({required this.appbar});
+  const ChatPage({
+    super.key,
+    required this.appbar,
+  });
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
 final ScrollController _scrollController = ScrollController();
 
-List<Widget> Widget_search = [];
-List<Widget> filtered_Widget_search = [];
+List<Chat> chatlist = [];
 
 bool chatsearchprocess = false;
 
@@ -36,13 +35,11 @@ class _ChatPageState extends State<ChatPage>
 
     if (!chatsearchprocess) {
       getchat();
-      chatsearchprocess = true;
     }
   }
 
   Future<void> _handleRefresh() async {
     setState(() {
-      chatsearchprocess = false;
       getchat();
     });
   }
@@ -51,62 +48,61 @@ class _ChatPageState extends State<ChatPage>
     if (chatsearchprocess) {
       return;
     }
-    Widget_search.clear();
     chatsearchprocess = true;
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getchats(1);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      chatsearchprocess = false;
+      getchat();
       return;
     }
-
-    int dynamicItemCount = response["icerik"].length;
-
-    for (int i = 0; i < dynamicItemCount; i++) {
-      setState(() {
-        Widget_search.add(
-          ListTile(
-            leading: CircleAvatar(
-              foregroundImage:
-                  CachedNetworkImageProvider(response["icerik"][i]["foto"]),
+    chatlist.clear();
+    for (int i = 0; i < response["icerik"].length; i++) {
+      String sonmesaj = response["icerik"][i]["sonmesaj"].toString();
+      if (sonmesaj == "null") {
+        sonmesaj = "";
+      }
+      setState(
+        () {
+          chatlist.add(
+            Chat(
+              chatID: 1,
+              displayName: response["icerik"][i]["adisoyadi"],
+              avatar: response["icerik"][i]["foto"],
+              userID: response["icerik"][i]["kullid"],
+              lastonlinetime: response["icerik"][i]["songiris"],
+              lastmessage: ChatMessage(
+                avatar: "",
+                messageContext: sonmesaj,
+                displayName: "",
+                messageID: 1,
+                userID: 1,
+                isMe: false,
+              ),
+              chatType: response["icerik"][i]["sohbetturu"],
             ),
-            title: CustomText().Costum1(response["icerik"][i]["adisoyadi"]),
-            trailing: response["icerik"][i]["sohbetturu"] == "ozel"
-                ? Icon(Icons.person)
-                : Icon(Icons.people_alt),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (pagecontext) => ChatDetailPage(
-                    userID: response["icerik"][i]["kullid"],
-                    appbar: true,
-                    useravatar: response["icerik"][i]["foto"],
-                    userdisplayname: response["icerik"][i]["adisoyadi"],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      });
+          );
+        },
+      );
     }
-
-    filtered_Widget_search.addAll(Widget_search);
+    chatsearchprocess = false;
     // widget.searchController.addListener(_onSearchChanged);
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
       appBar: widget.appbar
           ? AppBar(
-              title: Text("Sohbetler"),
+              title: const Text("Sohbetler"),
               automaticallyImplyLeading: false,
               backgroundColor: ARMOYU.appbarColor,
               actions: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: () {},
                 ),
               ],
@@ -114,18 +110,30 @@ class _ChatPageState extends State<ChatPage>
           : null,
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: Widget_search.length,
-          itemBuilder: (BuildContext context, index) {
-            return Widget_search[index];
-          },
-        ),
+        child: chatlist.isEmpty
+            ? const Center(
+                child: CupertinoActivityIndicator(),
+              )
+            : ListView.builder(
+                controller: _scrollController,
+                itemCount: chatlist.length,
+                itemBuilder: (BuildContext context, index) {
+                  return chatlist[index].listtilechat(context);
+                },
+              ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        heroTag: "NewChatButton",
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ChatNewPage(),
+            ),
+          );
+        },
         backgroundColor: ARMOYU.buttonColor,
-        child: Icon(
+        child: const Icon(
           Icons.chat,
           color: Colors.white,
         ),

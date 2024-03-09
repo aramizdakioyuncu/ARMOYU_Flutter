@@ -18,7 +18,7 @@ class User {
       leading: CircleAvatar(
         foregroundImage: CachedNetworkImageProvider(avatar),
       ),
-      title: CustomText().Costum1(displayname, weight: FontWeight.bold),
+      title: CustomText().costum1(displayname, weight: FontWeight.bold),
       trailing: const Icon(Icons.message),
       onTap: () {},
     );

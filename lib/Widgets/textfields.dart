@@ -1,10 +1,8 @@
-// ignore_for_file: prefer_const_constructors, non_constant_identifier_names
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfields {
-  Widget Costum1(
+  Widget costum1(
       String text, TextEditingController controller, bool isPassword, Icon icon,
       [TextInputType? type]) {
     return TextField(

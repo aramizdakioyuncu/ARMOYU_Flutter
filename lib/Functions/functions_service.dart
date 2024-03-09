@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, unnecessary_string_interpolations, prefer_if_null_operators
+// ignore_for_file: non_constant_identifier_names, prefer_if_null_operators
 
 import 'dart:convert';
 
@@ -129,12 +129,12 @@ class FunctionService {
       String lastname, String email, String password, String rpassword) async {
     Map<String, String> formData = {
       "islem": "kayit-ol",
-      "kullaniciadi": "$username",
-      "ad": "$name",
-      "soyad": "$lastname",
-      "email": "$email",
-      "parola": "$password",
-      "parolakontrol": "$rpassword"
+      "kullaniciadi": username,
+      "ad": name,
+      "soyad": lastname,
+      "email": email,
+      "parola": password,
+      "parolakontrol": rpassword
     };
     Map<String, dynamic> jsonData =
         await apiService.request("kayit-ol/0/0/", formData);
@@ -161,9 +161,9 @@ class FunctionService {
       String username, String useremail, String userresettype) async {
     Map<String, String> formData = {
       // "dogumtarihi": "$userbirthday",
-      "kullaniciadi": "$username",
-      "email": "$useremail",
-      "sifirlamatercihi": "$userresettype"
+      "kullaniciadi": username,
+      "email": useremail,
+      "sifirlamatercihi": userresettype
     };
     Map<String, dynamic> jsonData =
         await apiService.request("sifremi-unuttum/0/0/", formData);
@@ -178,11 +178,11 @@ class FunctionService {
       String repassword) async {
     Map<String, String> formData = {
       // "dogumtarihi": "$userbirthday",
-      "kullaniciadi": "$username",
-      "email": "$useremail",
-      "dogrulamakodu": "$securitycode",
-      "sifre": "$password",
-      "sifretekrar": "$repassword"
+      "kullaniciadi": username,
+      "email": useremail,
+      "dogrulamakodu": securitycode,
+      "sifre": password,
+      "sifretekrar": repassword
     };
     Map<String, dynamic> jsonData =
         await apiService.request("sifremi-unuttum-dogrula/0/0/", formData);
@@ -197,7 +197,7 @@ class FunctionService {
   }
 
   Future<Map<String, dynamic>> lookProfilewithusername(String username) async {
-    Map<String, String> formData = {"oyuncubakusername": "$username"};
+    Map<String, String> formData = {"oyuncubakusername": username};
     Map<String, dynamic> jsonData =
         await apiService.request("0/0/0/", formData);
     return jsonData;
@@ -259,6 +259,13 @@ class FunctionService {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> getnewchatfriendlist(int page) async {
+    Map<String, String> formData = {"sayfa": "$page"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("sohbet/arkadaslarim/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> getdeailchats(int chatID) async {
     Map<String, String> formData = {
       "sohbetID": "$chatID",
@@ -273,8 +280,8 @@ class FunctionService {
       int userID, String message, String type) async {
     Map<String, String> formData = {
       "oyuncubakid": "$userID",
-      "icerik": "$message",
-      "turu": "$type"
+      "icerik": message,
+      "turu": type
     };
     Map<String, dynamic> jsonData =
         await apiService.request("sohbetgonder/0/0/", formData);

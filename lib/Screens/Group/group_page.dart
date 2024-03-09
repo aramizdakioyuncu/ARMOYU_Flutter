@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +5,7 @@ class GroupPage extends StatefulWidget {
   const GroupPage({super.key});
 
   @override
-  _GroupPage createState() => _GroupPage();
+  State<GroupPage> createState() => _GroupPage();
 }
 
 class _GroupPage extends State<GroupPage> {
@@ -36,11 +34,11 @@ class _GroupPage extends State<GroupPage> {
             }),
             backgroundColor: Colors.black,
             expandedHeight: 160.0,
-            actions: <Widget>[
+            actions: const <Widget>[
               // const SizedBox(width: 10),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.only(left: 30.0),
+              titlePadding: const EdgeInsets.only(left: 30.0),
               centerTitle: false,
               // expandedTitleScale: 1,
               title: Stack(
@@ -71,8 +69,9 @@ class _GroupPage extends State<GroupPage> {
                                 width: 2, // Set the border width
                               ),
                             ),
-                            padding: EdgeInsets.all(2), // Set padding as needed
-                            child: Text(
+                            padding: const EdgeInsets.all(
+                                2), // Set padding as needed
+                            child: const Text(
                               'YMaradana',
                               style: TextStyle(
                                 fontSize: 12,
@@ -97,7 +96,7 @@ class _GroupPage extends State<GroupPage> {
           ),
           SliverList(
             delegate: SliverChildListDelegate([
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
             ]),
           )
         ],

@@ -112,15 +112,15 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             CustomTextfields()
-                .Costum1("Adınız", _nameController, false, Icon(Icons.person)),
+                .costum1("Adınız", _nameController, false, Icon(Icons.person)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1(
+            CustomTextfields().costum1(
                 "Soyadınız", _lastnameController, false, Icon(Icons.person)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1("Kullanıcı Adınız", _usernameController,
+            CustomTextfields().costum1("Kullanıcı Adınız", _usernameController,
                 false, Icon(Icons.person)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1(
+            CustomTextfields().costum1(
               "E-posta",
               _emailController,
               false,
@@ -128,13 +128,13 @@ class _RegisterPageState extends State<RegisterPage> {
               TextInputType.emailAddress,
             ),
             SizedBox(height: 16),
-            CustomTextfields().Costum1("Şifreniz", _passwordController, true,
+            CustomTextfields().costum1("Şifreniz", _passwordController, true,
                 Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomTextfields().Costum1("Şifreniz Tekrar", _rpasswordController,
+            CustomTextfields().costum1("Şifreniz Tekrar", _rpasswordController,
                 true, Icon(Icons.lock_outline)),
             SizedBox(height: 16),
-            CustomButtons().Costum1("Kayıt Ol", _register, registerProccess),
+            CustomButtons().costum1("Kayıt Ol", _register, registerProccess),
             SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

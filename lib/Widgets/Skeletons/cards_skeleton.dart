@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
@@ -56,11 +54,11 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SkeletonAvatar(
+                        const SkeletonAvatar(
                             style:
                                 SkeletonAvatarStyle(width: 600, height: 140)),
-                        SizedBox(height: 10),
-                        SkeletonLine(
+                        const SizedBox(height: 10),
+                        const SkeletonLine(
                           style: SkeletonLineStyle(width: 600),
                         ),
                         Row(
@@ -68,7 +66,7 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
                           children: [
                             widget.icon,
                             const SizedBox(width: 5),
-                            SkeletonLine(
+                            const SkeletonLine(
                               style: SkeletonLineStyle(width: 10),
                             ),
                           ],

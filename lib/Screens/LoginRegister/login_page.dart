@@ -1,4 +1,6 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, avoid_print
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
 
 import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
@@ -19,8 +21,10 @@ final TextEditingController usernameController = TextEditingController();
 final TextEditingController passwordController = TextEditingController();
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -46,12 +50,17 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response["durum"] == 1) {
       Navigator.of(context).pop();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Pages()));
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Pages(),
+        ),
+      );
       setState(() {
         loginProcess = false;
       });
     } else {
-      print(response["aciklama"]);
+      log(response["aciklama"]);
       String gelenyanit = response["aciklama"];
       CustomNotifications.stackbarNotification(context, gelenyanit);
 
@@ -70,11 +79,11 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 110),
+            const SizedBox(height: 110),
             Container(
               width: 150,
               height: 150,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: AssetImage(
@@ -83,20 +92,20 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
-            CustomTextfields().Costum1(
+            const SizedBox(height: 16.0),
+            CustomTextfields().costum1(
               "Kullanıcı Adı/E-posta",
               usernameController,
               false,
-              Icon(Icons.person),
+              const Icon(Icons.person),
               TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
-            CustomTextfields().Costum1(
-                "Şifreniz", passwordController, true, Icon(Icons.lock_outline)),
-            SizedBox(height: 16),
-            CustomButtons().Costum1("Giriş Yap", _login, loginProcess),
-            SizedBox(
+            const SizedBox(height: 16),
+            CustomTextfields().costum1("Şifreniz", passwordController, true,
+                const Icon(Icons.lock_outline)),
+            const SizedBox(height: 16),
+            CustomButtons().costum1("Giriş Yap", _login, loginProcess),
+            const SizedBox(
               height: 20,
             ),
             InkWell(
@@ -108,10 +117,10 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 );
               },
-              child: CustomText().Costum1("Şifremi Unuttum"),
+              child: CustomText().costum1("Şifremi Unuttum"),
             ),
             IconButton(
-              icon: Icon(Icons.nightlight), // Sağdaki butonun ikonu
+              icon: const Icon(Icons.nightlight), // Sağdaki butonun ikonu
               onPressed: () {
                 setState(() {
                   ThemeProvider().toggleTheme();
@@ -121,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomText().Costum1("Hesabınız yok mu?"),
+                CustomText().costum1("Hesabınız yok mu?"),
                 SizedBox(
                   width: ARMOYU.screenWidth / 40,
                 ),
@@ -135,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                   child: CustomText()
-                      .Costum1("Kayıt Ol", size: 16, weight: FontWeight.bold),
+                      .costum1("Kayıt Ol", size: 16, weight: FontWeight.bold),
                 )
               ],
             ),
@@ -146,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomText().Costum1("Devam ederek"),
+                      CustomText().costum1("Devam ederek"),
                       InkWell(
                         onTap: () async {
                           if (ARMOYU.SecurityDetail == "0") {
@@ -171,10 +180,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           );
                         },
-                        child: CustomText().Costum1(" Gizlilik Politikasını",
+                        child: CustomText().costum1(" Gizlilik Politikasını",
                             size: 16, weight: FontWeight.bold),
                       ),
-                      CustomText().Costum1(" ve"),
+                      CustomText().costum1(" ve"),
                     ],
                   )
                 ],
@@ -206,14 +215,14 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   },
-                  child: CustomText().Costum1(
+                  child: CustomText().costum1(
                       "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
                       size: 16,
                       weight: FontWeight.bold),
                 ),
               ],
             ),
-            CustomText().Costum1("kabul etmiş olursunuz."),
+            CustomText().costum1("kabul etmiş olursunuz."),
           ],
         ),
       ),

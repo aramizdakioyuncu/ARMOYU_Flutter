@@ -9,7 +9,7 @@ import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
 import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Services/appuser.dart';
-import 'package:ARMOYU/Widgets/Utility.dart';
+import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 
@@ -587,14 +587,17 @@ class _ProfilePageState extends State<ProfilePage>
 
   Future<void> sendmessage() async {
     log("Sohbet açılacak");
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => ChatDetailPage(
-        appbar: true,
-        userID: userID,
-        useravatar: avatar,
-        userdisplayname: userName,
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ChatDetailPage(
+          appbar: true,
+          userID: userID,
+          useravatar: avatar,
+          userdisplayname: userName,
+          chats: [],
+        ),
       ),
-    ));
+    );
   }
 
   Future<void> cancelfriendrequest() async {
@@ -796,7 +799,7 @@ class _ProfilePageState extends State<ProfilePage>
                 alignment: Alignment.bottomLeft,
                 child: userID == AppUser.ID
                     ? const SizedBox()
-                    : CustomText().Costum1(displayName),
+                    : CustomText().costum1(displayName),
               ),
               background: GestureDetector(
                 onTap: () {
@@ -1011,10 +1014,10 @@ class _ProfilePageState extends State<ProfilePage>
                                   Spacer(),
                                   Column(
                                     children: [
-                                      CustomText().Costum1(
+                                      CustomText().costum1(
                                           postsCount.toString(),
                                           weight: FontWeight.bold),
-                                      CustomText().Costum1("Gönderi"),
+                                      CustomText().costum1("Gönderi"),
                                     ],
                                   ),
                                   Spacer(),
@@ -1035,10 +1038,10 @@ class _ProfilePageState extends State<ProfilePage>
                                         },
                                         child: Column(
                                           children: [
-                                            CustomText().Costum1(
+                                            CustomText().costum1(
                                                 friendsCount.toString(),
                                                 weight: FontWeight.bold),
-                                            CustomText().Costum1("Arkadaş"),
+                                            CustomText().costum1("Arkadaş"),
                                           ],
                                         ),
                                       ),
@@ -1047,10 +1050,10 @@ class _ProfilePageState extends State<ProfilePage>
                                   Spacer(),
                                   Column(
                                     children: [
-                                      CustomText().Costum1(
+                                      CustomText().costum1(
                                           awardsCount.toString(),
                                           weight: FontWeight.bold),
-                                      CustomText().Costum1("Ödül"),
+                                      CustomText().costum1("Ödül"),
                                     ],
                                   ),
                                   Spacer()
@@ -1065,14 +1068,14 @@ class _ProfilePageState extends State<ProfilePage>
                   SizedBox(
                     height: 10,
                   ),
-                  CustomText().Costum1(
+                  CustomText().costum1(
                     displayName,
                     size: 16,
                     weight: FontWeight.bold,
                   ),
                   Row(
                     children: [
-                      CustomText().Costum1(
+                      CustomText().costum1(
                         "@" + userName,
                       ),
                       SizedBox(width: 5),
@@ -1097,7 +1100,7 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText().Costum1(
+                        CustomText().costum1(
                           registerdate,
                         ),
                       ],
@@ -1114,7 +1117,7 @@ class _ProfilePageState extends State<ProfilePage>
                             size: 20,
                           ),
                           const SizedBox(width: 3),
-                          CustomText().Costum1(
+                          CustomText().costum1(
                             burc,
                           ),
                         ],
@@ -1130,7 +1133,7 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText().Costum1(
+                        CustomText().costum1(
                           country + ", " + province,
                         ),
                       ],
@@ -1147,7 +1150,7 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText().Costum1(job),
+                        CustomText().costum1(job),
                       ],
                     ),
                   ),
@@ -1228,7 +1231,7 @@ class _ProfilePageState extends State<ProfilePage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomDedectabletext().Costum1(aboutme, 3, 13),
+                        CustomDedectabletext().costum1(aboutme, 3, 13),
                         SizedBox(height: 10),
                       ],
                     ),
@@ -1307,11 +1310,11 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
         tabs: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText().Costum1('Paylaşımlar', size: 15.0),
+            child: CustomText().costum1('Paylaşımlar', size: 15.0),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText().Costum1('Medya', size: 15.0),
+            child: CustomText().costum1('Medya', size: 15.0),
           )
         ],
       ),
