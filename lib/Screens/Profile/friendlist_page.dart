@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
@@ -7,15 +5,16 @@ import 'package:ARMOYU/Widgets/userlist.dart';
 import 'package:flutter/material.dart';
 
 class FriendlistPage extends StatefulWidget {
-  int userid; // Zorunlu olarak alınacak veri
-  String username; // Zorunlu olarak alınacak veri
+  final int userid; // Zorunlu olarak alınacak veri
+  final String username; // Zorunlu olarak alınacak veri
 
-  FriendlistPage({
+  const FriendlistPage({
+    super.key,
     required this.userid,
     required this.username,
   });
   @override
-  _FriendlistPageState createState() => _FriendlistPageState();
+  State<FriendlistPage> createState() => _FriendlistPageState();
 }
 
 class _FriendlistPageState extends State<FriendlistPage>
@@ -24,7 +23,7 @@ class _FriendlistPageState extends State<FriendlistPage>
         TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
-  List<Widget> Widget_userlist = [];
+  List<Widget> widgetUserlist = [];
 
   final ScrollController scrollController = ScrollController();
   int pagecounter = 1;
@@ -79,7 +78,7 @@ class _FriendlistPageState extends State<FriendlistPage>
 
       if (mounted) {
         setState(() {
-          Widget_userlist.add(UserListWidget(
+          widgetUserlist.add(UserListWidget(
             userID: userID,
             displayname: displayname,
             profileImageUrl: avatar,
@@ -96,15 +95,16 @@ class _FriendlistPageState extends State<FriendlistPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
           title: Title(color: Colors.black, child: Text(widget.username))),
       backgroundColor: Colors.grey.shade900,
       body: ListView.builder(
         controller: scrollController,
-        itemCount: Widget_userlist.length,
+        itemCount: widgetUserlist.length,
         itemBuilder: (context, index) {
-          return Widget_userlist[index];
+          return widgetUserlist[index];
         },
       ),
     );

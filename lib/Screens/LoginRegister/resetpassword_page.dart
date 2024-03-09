@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors, use_build_context_synchronously, non_constant_identifier_names
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
 
@@ -10,8 +10,12 @@ import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 
 class ResetPasswordPage extends StatefulWidget {
+  const ResetPasswordPage({
+    super.key,
+  });
+
   @override
-  _ResetPasswordPageState createState() => _ResetPasswordPageState();
+  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
 }
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
@@ -69,14 +73,14 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     // String yeniformat = "$yil-$ay-$gun";
 
-    String Type = "mail";
+    String type = "mail";
     if (isSelected[0] == true) {
-      Type = "telefon";
+      type = "telefon";
     }
 
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.forgotpassword(
-        _usernameController.text, _emailController.text, Type); //sa
+        _usernameController.text, _emailController.text, type); //sa
 
     if (response["durum"] == 0) {
       String text = response["aciklama"];
@@ -165,11 +169,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           children: [
             Column(
               children: [
-                SizedBox(height: 60),
+                const SizedBox(height: 60),
                 Container(
                   width: 150,
                   height: 150,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: AssetImage(
@@ -178,17 +182,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 Visibility(
                   visible: step1,
                   child: Column(
                     children: [
                       CustomTextfields().costum1("Kullanıcı Adı",
-                          _usernameController, false, Icon(Icons.person)),
-                      SizedBox(height: 16),
+                          _usernameController, false, const Icon(Icons.person)),
+                      const SizedBox(height: 16),
                       CustomTextfields().costum1("E-posta", _emailController,
-                          false, Icon(Icons.email)),
-                      SizedBox(height: 16),
+                          false, const Icon(Icons.email)),
+                      const SizedBox(height: 16),
                       // CustomButtons().Costum2(Icon(Icons.date_range),
                       //     _birthdayController.text, datepicker),
                       // SizedBox(height: 16),
@@ -224,10 +228,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       CustomButtons().costum1(
                           "Devam et", forgotmypassword, resetpasswordProcess),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -257,19 +261,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   child: Column(
                     children: [
                       Text(passwordtimer.toString()),
-                      SizedBox(height: 10),
-                      CustomTextfields()
-                          .number("Kod", _codeController, 6, Icon(Icons.sms)),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 10),
+                      CustomTextfields().number(
+                          "Kod", _codeController, 6, const Icon(Icons.sms)),
+                      const SizedBox(height: 16),
                       CustomTextfields().costum1("Şifre", _passwordController,
-                          true, Icon(Icons.lock_outline)),
-                      SizedBox(height: 16),
+                          true, const Icon(Icons.lock_outline)),
+                      const SizedBox(height: 16),
                       CustomTextfields().costum1(
                           "Şifre Tekrar",
                           _repasswordController,
                           true,
-                          Icon(Icons.lock_outline)),
-                      SizedBox(height: 16),
+                          const Icon(Icons.lock_outline)),
+                      const SizedBox(height: 16),
                       CustomButtons().costum1("Kaydet", forgotmypassworddone,
                           resetpasswordauthProcess),
                     ],

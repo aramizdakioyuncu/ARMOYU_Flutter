@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, library_private_types_in_public_api, prefer_const_constructors, use_key_in_widget_constructors, use_build_context_synchronously, prefer_interpolation_to_compose_strings
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
 
@@ -11,8 +11,10 @@ import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
@@ -98,11 +100,11 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             Container(
               width: 150,
               height: 150,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: AssetImage(
@@ -111,31 +113,31 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            CustomTextfields()
-                .costum1("Adınız", _nameController, false, Icon(Icons.person)),
-            SizedBox(height: 16),
             CustomTextfields().costum1(
-                "Soyadınız", _lastnameController, false, Icon(Icons.person)),
-            SizedBox(height: 16),
+                "Adınız", _nameController, false, const Icon(Icons.person)),
+            const SizedBox(height: 16),
+            CustomTextfields().costum1("Soyadınız", _lastnameController, false,
+                const Icon(Icons.person)),
+            const SizedBox(height: 16),
             CustomTextfields().costum1("Kullanıcı Adınız", _usernameController,
-                false, Icon(Icons.person)),
-            SizedBox(height: 16),
+                false, const Icon(Icons.person)),
+            const SizedBox(height: 16),
             CustomTextfields().costum1(
               "E-posta",
               _emailController,
               false,
-              Icon(Icons.email),
+              const Icon(Icons.email),
               TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             CustomTextfields().costum1("Şifreniz", _passwordController, true,
-                Icon(Icons.lock_outline)),
-            SizedBox(height: 16),
+                const Icon(Icons.lock_outline)),
+            const SizedBox(height: 16),
             CustomTextfields().costum1("Şifreniz Tekrar", _rpasswordController,
-                true, Icon(Icons.lock_outline)),
-            SizedBox(height: 16),
+                true, const Icon(Icons.lock_outline)),
+            const SizedBox(height: 16),
             CustomButtons().costum1("Kayıt Ol", _register, registerProccess),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -157,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ],
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
           ],
         ),
       ),

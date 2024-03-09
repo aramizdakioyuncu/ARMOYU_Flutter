@@ -74,4 +74,11 @@ class FunctionsProfile {
         .request("arkaplan-guncelle/0/0/", formData, files: photosCollection);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> selectfavteam(int teamID) async {
+    Map<String, String> formData = {"favoritakimID": "$teamID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("profil/favoritakimsec/0/", formData);
+    return jsonData;
+  }
 }

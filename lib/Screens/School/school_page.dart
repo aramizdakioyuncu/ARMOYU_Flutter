@@ -1,17 +1,16 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors, unnecessary_overrides
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SchoolPage extends StatefulWidget {
-  int SchoolID; // Zorunlu olarak alınacak veri
+  final int schoolID; // Zorunlu olarak alınacak veri
 
-  SchoolPage({
-    required this.SchoolID,
+  const SchoolPage({
+    super.key,
+    required this.schoolID,
   });
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<SchoolPage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<SchoolPage>
@@ -20,23 +19,16 @@ class _ProfilePageState extends State<SchoolPage>
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
-    // TEST.cancel();
     super.dispose();
   }
 
   void schoolinfofetch() {}
-  Future<void> _handleRefresh() async {
-    // await TEST();
-  }
+  Future<void> _handleRefresh() async {}
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () => _handleRefresh(),
@@ -47,9 +39,9 @@ class _ProfilePageState extends State<SchoolPage>
               floating: false,
               backgroundColor: Colors.black,
               expandedHeight: ARMOYU.screenHeight * 0.25,
-              actions: <Widget>[],
+              actions: const <Widget>[],
               flexibleSpace: FlexibleSpaceBar(
-                titlePadding: EdgeInsets.only(left: 00.0),
+                titlePadding: const EdgeInsets.only(left: 00.0),
                 centerTitle: false,
                 // expandedTitleScale: 1,
                 title: Stack(
@@ -74,23 +66,23 @@ class _ProfilePageState extends State<SchoolPage>
                                     height: 60,
                                     fit: BoxFit.cover,
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   Container(
-                                    padding: EdgeInsets.all(5),
+                                    padding: const EdgeInsets.all(5),
                                     decoration: BoxDecoration(
                                       color: Colors.black54,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Sivas Cumhuriyet Üniversitesi",
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                 ],
                               ),
                             ),
@@ -113,12 +105,12 @@ class _ProfilePageState extends State<SchoolPage>
               delegate: SliverChildListDelegate(
                 [
                   Container(
-                    padding: EdgeInsets.all(10),
-                    child: Column(
+                    padding: const EdgeInsets.all(10),
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: EdgeInsets.symmetric(vertical: 10),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,

@@ -1,9 +1,10 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, must_be_immutable, library_private_types_in_public_api, use_key_in_widget_constructors, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
+import 'package:ARMOYU/Models/team.dart';
 
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
@@ -24,17 +25,18 @@ import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
 
 class ProfilePage extends StatefulWidget {
-  int? userID; // Zorunlu olarak alınacak veri
+  final int? userID; // Zorunlu olarak alınacak veri
   final String? username; // Zorunlu olmayan  veri
   final bool appbar; // Zorunlu olarak alınacak veri
 
-  ProfilePage({
+  const ProfilePage({
+    super.key,
     this.userID,
     required this.appbar,
     this.username,
   });
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 late TabController tabController;
@@ -71,6 +73,8 @@ class _ProfilePageState extends State<ProfilePage>
   String aboutme = "";
   String burc = "...";
 
+  Team? favoritakim;
+
   bool isFriend = false;
 
   bool isbeFriend = false;
@@ -87,7 +91,6 @@ class _ProfilePageState extends State<ProfilePage>
   late ScrollController galleryscrollcontroller;
   late ScrollController postsscrollcontroller;
   bool galleryproccess = false;
-  bool first_galleryproccess = false;
 
   String friendStatus = "Bekleniyor";
   Color friendStatuscolor = Colors.blue;
@@ -104,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   void initState() {
     super.initState();
-    TEST();
+    test();
 
     pageMainscroller = ScrollController();
     pageMainscroller.addListener(() {
@@ -157,18 +160,18 @@ class _ProfilePageState extends State<ProfilePage>
     super.dispose();
   }
 
-  List<Widget> Widget_Posts = [];
+  List<Widget> widgetPosts = [];
   final List<String> imageUrls = [];
   final List<String> imageufakUrls = [];
   final List<int> imagesownerID = [];
 
-  profileloadPosts(int page, int Userid) async {
+  profileloadPosts(int page, int userID) async {
     if (postsfetchproccess) {
       return;
     }
     postsfetchproccess = true;
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getprofilePosts(page, Userid);
+    Map<String, dynamic> response = await f.getprofilePosts(page, userID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       postsfetchproccess = false;
@@ -206,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage>
       }
       if (mounted) {
         setState(() {
-          Widget_Posts.add(
+          widgetPosts.add(
             TwitterPostWidget(
               userID: response["icerik"][i]["sahipID"],
               profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
@@ -277,7 +280,7 @@ class _ProfilePageState extends State<ProfilePage>
     gallerycounter++;
   }
 
-  Future<void> TEST() async {
+  Future<void> test() async {
     if (widget.userID == AppUser.ID) {
       userID = AppUser.ID;
       userName = AppUser.userName;
@@ -299,21 +302,23 @@ class _ProfilePageState extends State<ProfilePage>
 
       burc = AppUser.burc;
 
+      favoritakim = AppUser.favTeam;
+
       try {
         job = AppUser.job;
-      } catch (Ex) {
-        log(Ex.toString());
+      } catch (ex) {
+        log(ex.toString());
       }
 
       try {
         role = AppUser.role;
-      } catch (Ex) {
-        log(Ex.toString());
+      } catch (ex) {
+        log(ex.toString());
       }
       try {
         rolecolor = AppUser.rolecolor;
-      } catch (Ex) {
-        log(Ex.toString());
+      } catch (ex) {
+        log(ex.toString());
       }
     } else {
       Map<String, dynamic> response = {};
@@ -353,6 +358,14 @@ class _ProfilePageState extends State<ProfilePage>
           burc = response["burc"];
         }
 
+        if (response["favoritakim"] != null) {
+          favoritakim = Team(
+            teamID: response["favoritakim"]["takim_ID"],
+            name: response["favoritakim"]["takim_adi"],
+            logo: response["favoritakim"]["takim_logo"],
+          );
+        }
+
         if (response["isyeriadi"] != null) {
           job = response["isyeriadi"];
         }
@@ -383,17 +396,15 @@ class _ProfilePageState extends State<ProfilePage>
             setState(() {
               if (i < 2) {
                 if (i == 0) {
-                  friendTextLine += "@" +
-                      response["ortakarkadasliste"][i]["oyuncukullaniciadi"] +
-                      " ";
+                  friendTextLine +=
+                      "@${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                 } else {
                   if (response["ortakarkadasliste"].length == 2) {
-                    friendTextLine += "ve @" +
-                        response["ortakarkadasliste"][i]["oyuncukullaniciadi"];
+                    friendTextLine +=
+                        "ve @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                   } else {
-                    friendTextLine += ", @" +
-                        response["ortakarkadasliste"][i]["oyuncukullaniciadi"] +
-                        " ";
+                    friendTextLine +=
+                        ", @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                   }
                 }
               }
@@ -406,7 +417,7 @@ class _ProfilePageState extends State<ProfilePage>
         if (response["ortakarkadasliste"].length > 2) {
           int mutualFriend = response["ortakarkadaslar"] - 2;
           friendTextLine +=
-              "ve " + mutualFriend.toString() + " diğer kişi ile arkadaş";
+              "ve ${mutualFriend.toString()} diğer kişi ile arkadaş";
         } else if (response["ortakarkadasliste"].length == 2) {
           friendTextLine += " ile arkadaş";
         } else if (response["ortakarkadasliste"].length == 1) {
@@ -445,6 +456,14 @@ class _ProfilePageState extends State<ProfilePage>
           burc = response["burc"];
         }
 
+        if (response["favoritakim"] != null) {
+          favoritakim = Team(
+            teamID: response["favoritakim"]["takim_ID"],
+            name: response["favoritakim"]["takim_adi"],
+            logo: response["favoritakim"]["takim_logo"],
+          );
+        }
+
         if (response["isyeriadi"] != null) {
           job = response["isyeriadi"];
         }
@@ -476,17 +495,15 @@ class _ProfilePageState extends State<ProfilePage>
             setState(() {
               if (i < 2) {
                 if (i == 0) {
-                  friendTextLine += "@" +
-                      response["ortakarkadasliste"][i]["oyuncukullaniciadi"] +
-                      " ";
+                  friendTextLine +=
+                      "@${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                 } else {
                   if (response["ortakarkadasliste"].length == 2) {
-                    friendTextLine += "ve @" +
-                        response["ortakarkadasliste"][i]["oyuncukullaniciadi"];
+                    friendTextLine +=
+                        "ve @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]}";
                   } else {
-                    friendTextLine += ", @" +
-                        response["ortakarkadasliste"][i]["oyuncukullaniciadi"] +
-                        " ";
+                    friendTextLine +=
+                        ", @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                   }
                 }
               }
@@ -499,7 +516,7 @@ class _ProfilePageState extends State<ProfilePage>
         if (response["ortakarkadasliste"].length > 2) {
           int mutualFriend = response["ortakarkadaslar"] - 2;
           friendTextLine +=
-              "ve " + mutualFriend.toString() + " diğer kişi ile arkadaş";
+              "ve ${mutualFriend.toString()} diğer kişi ile arkadaş";
         } else if (response["ortakarkadasliste"].length == 2) {
           friendTextLine += " ile arkadaş";
         } else if (response["ortakarkadasliste"].length == 1) {
@@ -527,7 +544,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Future<void> _handleRefresh() async {
-    await TEST();
+    await test();
   }
 
   Future<void> changeavatar() async {
@@ -594,7 +611,7 @@ class _ProfilePageState extends State<ProfilePage>
           userID: userID,
           useravatar: avatar,
           userdisplayname: userName,
-          chats: [],
+          chats: const [],
         ),
       ),
     );
@@ -604,7 +621,7 @@ class _ProfilePageState extends State<ProfilePage>
     log("istek iptal edilecek ");
   }
 
-  Widget Widget_friendList(bool isclip, double left, String imageUrl) {
+  Widget widgetFriendList(bool isclip, double left, String imageUrl) {
     if (isclip) {
       return Padding(
         padding: const EdgeInsets.only(right: 5),
@@ -614,8 +631,8 @@ class _ProfilePageState extends State<ProfilePage>
             fit: BoxFit.cover,
             width: 30,
             height: 30,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
         ),
       );
@@ -628,8 +645,8 @@ class _ProfilePageState extends State<ProfilePage>
           fit: BoxFit.cover,
           width: 30,
           height: 30,
-          placeholder: (context, url) => CircularProgressIndicator(),
-          errorWidget: (context, url, error) => Icon(Icons.error),
+          placeholder: (context, url) => const CircularProgressIndicator(),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
       ),
     );
@@ -637,6 +654,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
       // extendBodyBehindAppBar: true,
@@ -650,7 +668,7 @@ class _ProfilePageState extends State<ProfilePage>
             expandedHeight: ARMOYU.screenHeight * 0.25,
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
                 onPressed: () {
                   showModalBottomSheet<void>(
                     shape: const RoundedRectangleBorder(
@@ -693,9 +711,9 @@ class _ProfilePageState extends State<ProfilePage>
                                     title: Text("Profil linkini kopyala."),
                                   ),
                                 ),
-                                Visibility(
+                                const Visibility(
                                   //Çizgi ekler
-                                  child: const Divider(),
+                                  child: Divider(),
                                 ),
                                 Visibility(
                                   visible: userID != AppUser.ID,
@@ -853,9 +871,9 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                 ),
-                                Visibility(
+                                const Visibility(
                                   //Çizgi ekler
-                                  child: const Divider(),
+                                  child: Divider(),
                                 ),
                                 Visibility(
                                   visible: userID == AppUser.ID,
@@ -888,7 +906,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           SliverToBoxAdapter(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -956,9 +974,9 @@ class _ProfilePageState extends State<ProfilePage>
                                                   ),
                                                 ),
                                               ),
-                                              Visibility(
+                                              const Visibility(
                                                 //Çizgi ekler
-                                                child: const Divider(),
+                                                child: Divider(),
                                               ),
                                               Visibility(
                                                 visible: userID == AppUser.ID,
@@ -990,9 +1008,9 @@ class _ProfilePageState extends State<ProfilePage>
                                   width: 60,
                                   height: 60,
                                   placeholder: (context, url) =>
-                                      CircularProgressIndicator(),
+                                      const CircularProgressIndicator(),
                                   errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
+                                      const Icon(Icons.error),
                                 ),
                               ),
                             ),
@@ -1011,7 +1029,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   //      CustomText().Costum1("Seviye"),
                                   //   ],
                                   // ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Column(
                                     children: [
                                       CustomText().costum1(
@@ -1020,7 +1038,7 @@ class _ProfilePageState extends State<ProfilePage>
                                       CustomText().costum1("Gönderi"),
                                     ],
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Column(
                                     children: [
                                       GestureDetector(
@@ -1047,7 +1065,7 @@ class _ProfilePageState extends State<ProfilePage>
                                       ),
                                     ],
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Column(
                                     children: [
                                       CustomText().costum1(
@@ -1056,7 +1074,19 @@ class _ProfilePageState extends State<ProfilePage>
                                       CustomText().costum1("Ödül"),
                                     ],
                                   ),
-                                  Spacer()
+                                  const Spacer(),
+
+                                  favoritakim != null
+                                      ? Column(
+                                          children: [
+                                            CachedNetworkImage(
+                                              imageUrl: favoritakim!.logo,
+                                              height: 40,
+                                              width: 40,
+                                            ),
+                                          ],
+                                        )
+                                      : const Column(),
                                 ],
                               ),
                             ],
@@ -1065,7 +1095,7 @@ class _ProfilePageState extends State<ProfilePage>
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   CustomText().costum1(
@@ -1076,14 +1106,14 @@ class _ProfilePageState extends State<ProfilePage>
                   Row(
                     children: [
                       CustomText().costum1(
-                        "@" + userName,
+                        "@$userName",
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
                         role,
                         style: TextStyle(
                           color: Color(
-                            int.parse("0xFF" + rolecolor),
+                            int.parse("0xFF$rolecolor"),
                           ),
                         ),
                       ),
@@ -1134,12 +1164,12 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                         const SizedBox(width: 3),
                         CustomText().costum1(
-                          country + ", " + province,
+                          "$country, $province",
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Visibility(
                     visible: job == "" ? false : true,
                     child: Row(
@@ -1164,13 +1194,13 @@ class _ProfilePageState extends State<ProfilePage>
                               final reversedIndex =
                                   listFriendTOP3.length - 1 - index;
                               if (reversedIndex == 0) {
-                                return Widget_friendList(
+                                return widgetFriendList(
                                   true,
                                   0,
                                   listFriendTOP3[reversedIndex].toString(),
                                 );
                               }
-                              return Widget_friendList(
+                              return widgetFriendList(
                                 false,
                                 reversedIndex * 15,
                                 listFriendTOP3[reversedIndex].toString(),
@@ -1183,7 +1213,7 @@ class _ProfilePageState extends State<ProfilePage>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               specialText(context, friendTextLine)
                             ],
                           ),
@@ -1224,7 +1254,7 @@ class _ProfilePageState extends State<ProfilePage>
                       )
                     ],
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Visibility(
                     visible: aboutme == "" ? false : true,
                     child: Column(
@@ -1232,7 +1262,7 @@ class _ProfilePageState extends State<ProfilePage>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomDedectabletext().costum1(aboutme, 3, 13),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -1247,13 +1277,13 @@ class _ProfilePageState extends State<ProfilePage>
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                return !ispostsVisible ? null : Widget_Posts[index];
+                return !ispostsVisible ? null : widgetPosts[index];
               },
-              childCount: Widget_Posts.length,
+              childCount: widgetPosts.length,
             ),
           ),
           SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3, // Her satırda 2 görsel
               crossAxisSpacing: 8.0, // Yatayda boşluk
               mainAxisSpacing: 8.0, // Dikeyde boşluk
@@ -1279,9 +1309,9 @@ class _ProfilePageState extends State<ProfilePage>
                           imageUrl: imageUrls[index],
                           fit: BoxFit.cover,
                           placeholder: (context, url) =>
-                              CircularProgressIndicator(),
+                              const CircularProgressIndicator(),
                           errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                              const Icon(Icons.error),
                         ),
                       );
               },

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -101,6 +102,14 @@ class FunctionService {
 
     AppUser.aboutme = response["hakkimda"];
     AppUser.burc = response["burc"] == null ? "" : response["burc"];
+
+    if (response["favoritakim"] != null) {
+      AppUser.favTeam = Team(
+        teamID: response["favoritakim"]["takim_ID"],
+        name: response["favoritakim"]["takim_adi"],
+        logo: response["favoritakim"]["takim_logo"],
+      );
+    }
 
     final prefs = await SharedPreferences.getInstance();
 

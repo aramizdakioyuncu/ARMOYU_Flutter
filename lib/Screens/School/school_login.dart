@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, non_constant_identifier_names, must_call_super, prefer_interpolation_to_compose_strings, use_key_in_widget_constructors, library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
 
@@ -30,9 +30,10 @@ List<Map<String, String>> cupertinolist2 = [
 ];
 
 class SchoolLoginPage extends StatefulWidget {
-  // GroupCreatePage({});
+  const SchoolLoginPage({super.key});
+
   @override
-  _SchoolLoginPagetate createState() => _SchoolLoginPagetate();
+  State<SchoolLoginPage> createState() => _SchoolLoginPagetate();
 }
 
 class _SchoolLoginPagetate extends State<SchoolLoginPage>
@@ -40,13 +41,13 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   @override
   bool get wantKeepAlive => true;
 
-  bool SchoolProcess = false;
+  bool schoolProcess = false;
   int _selectedcupertinolist = 0;
   int _selectedcupertinolist2 = 0;
 
   CustomButtons buttons = CustomButtons();
 
-  String Schoollogo = "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png";
+  String schoollogo = "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png";
   @override
   void initState() {
     super.initState();
@@ -65,7 +66,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     }
 
     listname.clear();
-    listname.add({'ID': "-1", 'value': "Okul Seç", 'logo': Schoollogo});
+    listname.add({'ID': "-1", 'value': "Okul Seç", 'logo': schoollogo});
     for (dynamic element in response['icerik']) {
       listname.add({
         'ID': element["ID"].toString(),
@@ -101,10 +102,10 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   }
 
   Future<void> loginschool() async {
-    if (SchoolProcess) {
+    if (schoolProcess) {
       return;
     }
-    SchoolProcess = true;
+    schoolProcess = true;
     FunctionsSchool f = FunctionsSchool();
     String? schoolID = cupertinolist[_selectedcupertinolist]["ID"];
     String? classID = cupertinolist2[_selectedcupertinolist2]["ID"];
@@ -122,7 +123,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     if (response["durum"] == 1) {
       Navigator.of(context).pop();
     }
-    SchoolProcess = false;
+    schoolProcess = false;
   }
 
   void _showDialog(Widget child) {
@@ -148,9 +149,10 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   CustomTextfields asa = CustomTextfields();
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Okul Seçim"),
+        title: const Text("Okul Seçim"),
         backgroundColor: Colors.black,
       ),
       body: RefreshIndicator(
@@ -158,13 +160,13 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CachedNetworkImage(
-                imageUrl: Schoollogo,
+                imageUrl: schoollogo,
                 height: 250,
                 fit: BoxFit.cover,
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () async {
@@ -182,11 +184,11 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                           _selectedcupertinolist = selectedItem;
 
                           try {
-                            Schoollogo = cupertinolist[_selectedcupertinolist]
+                            schoollogo = cupertinolist[_selectedcupertinolist]
                                     ["logo"]
                                 .toString();
 
-                            Timer(Duration(milliseconds: 700), () async {
+                            Timer(const Duration(milliseconds: 700), () async {
                               if (_selectedcupertinolist.toString() !=
                                   selectedItem.toString()) {
                                 // isProcces = false;
@@ -215,7 +217,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 },
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
                     cupertinolist[_selectedcupertinolist]["value"].toString(),
@@ -225,7 +227,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 onPressed: () async {
@@ -254,7 +256,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 },
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   color: Colors.grey.shade900,
                   child: Text(
                     cupertinolist2[_selectedcupertinolist2]["value"].toString(),
@@ -264,11 +266,11 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              asa.costum1("Parola", schoolpassword, true, Icon(Icons.security),
-                  TextInputType.number),
-              SizedBox(height: 16),
-              buttons.costum1("Katıl", loginschool, SchoolProcess),
+              const SizedBox(height: 16),
+              asa.costum1("Parola", schoolpassword, true,
+                  const Icon(Icons.security), TextInputType.number),
+              const SizedBox(height: 16),
+              buttons.costum1("Katıl", loginschool, schoolProcess),
             ],
           ),
         ),

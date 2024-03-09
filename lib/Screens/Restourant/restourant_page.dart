@@ -1,11 +1,16 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-class RestourantPage extends StatelessWidget {
+class RestourantPage extends StatefulWidget {
+  const RestourantPage({super.key});
+
+  @override
+  State<RestourantPage> createState() => _RestourantPage();
+}
+
+class _RestourantPage extends State<RestourantPage> {
   final List<Product> products = [
     Product(
         name: 'Ürün 1',
@@ -69,7 +74,7 @@ class RestourantPage extends StatelessWidget {
             expandedHeight: ARMOYU.screenHeight * 0.25,
             // actions: <Widget>[],
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.only(left: 00.0),
+              titlePadding: const EdgeInsets.only(left: 00.0),
               centerTitle: false,
               // expandedTitleScale: 1,
               title: Stack(
@@ -99,14 +104,14 @@ class RestourantPage extends StatelessWidget {
                                     fit: BoxFit.cover,
                                   ),
                                   Container(
-                                    padding: EdgeInsets.all(3),
+                                    padding: const EdgeInsets.all(3),
                                     decoration: BoxDecoration(
                                       color: Colors.black54,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Text(
+                                    child: const Text(
                                       "Blackjack F'B Coffee",
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.white,
@@ -133,7 +138,7 @@ class RestourantPage extends StatelessWidget {
             ),
           ),
           SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, // Her satırda 2 görsel
               crossAxisSpacing: 5.0, // Yatayda boşluk
               mainAxisSpacing: 5.0, // Dikeyde boşluk

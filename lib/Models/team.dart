@@ -1,6 +1,11 @@
 class Team {
-  final String name;
-  final String logo;
+  int teamID;
+  String name;
+  String logo;
 
-  Team({required this.name, required this.logo});
+  Team({
+    required this.teamID,
+    required this.name,
+    required this.logo,
+  });
 }

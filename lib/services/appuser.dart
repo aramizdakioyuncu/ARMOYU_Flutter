@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:ARMOYU/Models/team.dart';
+
 class AppUser {
   static int ID = -1;
   static String userName = "0";
@@ -29,6 +31,8 @@ class AppUser {
   static int friendsCount = 0;
   static int postsCount = 0;
   static int awardsCount = 0;
+
+  static Team? favTeam;
 
   AppUser(Map map);
 }

@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, use_key_in_widget_constructors, must_be_immutable, override_on_non_overriding_member, library_private_types_in_public_api, prefer_const_constructors_in_immutables, non_constant_identifier_names, prefer_const_literals_to_create_immutables, must_call_super
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -8,8 +6,10 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
 
 class NotificationPage extends StatefulWidget {
+  const NotificationPage({super.key});
+
   @override
-  _NotificationPage createState() => _NotificationPage();
+  State<NotificationPage> createState() => _NotificationPage();
 }
 
 bool postpageproccess = false;
@@ -52,7 +52,7 @@ class _NotificationPage extends State<NotificationPage>
     });
   }
 
-  List<Widget> Widget_notifications = [];
+  List<Widget> widgetNotifications = [];
 
   Future<void> loadnoifications(int page) async {
     if (postpageproccess && page != 2) {
@@ -73,7 +73,7 @@ class _NotificationPage extends State<NotificationPage>
     int dynamicItemCount = response["icerik"].length;
     setState(() {
       if (page == 1) {
-        Widget_notifications.clear();
+        widgetNotifications.clear();
       }
 
       bool noticiationbuttons = false;
@@ -91,7 +91,7 @@ class _NotificationPage extends State<NotificationPage>
           }
         }
 
-        Widget_notifications.add(
+        widgetNotifications.add(
           CustomMenusNotificationbars(
             avatar: response["icerik"][i]["bildirimgonderenavatar"],
             userID: response["icerik"][i]["bildirimgonderenID"],
@@ -111,15 +111,16 @@ class _NotificationPage extends State<NotificationPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
         child: ListView.builder(
           controller: _scrollController,
-          itemCount: Widget_notifications.length,
+          itemCount: widgetNotifications.length,
           itemBuilder: (context, index) {
-            return Widget_notifications[index];
+            return widgetNotifications[index];
           },
         ),
       ),

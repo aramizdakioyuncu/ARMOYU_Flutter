@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -12,7 +10,7 @@ class NewslistPage extends StatefulWidget {
   const NewslistPage({super.key});
 
   @override
-  _NewslistStatePage createState() => _NewslistStatePage();
+  State<NewslistPage> createState() => _NewslistStatePage();
 }
 
 List<News> eventsList = [];

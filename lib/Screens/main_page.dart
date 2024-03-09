@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Functions/API_Functions/teams.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
@@ -41,12 +43,6 @@ class _MainPageState extends State<MainPage>
 
   final List<Team> favoriteteams = [];
 
-  int userID = -1;
-  String userName = 'User Name';
-  String userEmail = 'user@email.com';
-  String useravatar = 'assets/images/armoyu128.png';
-  String userbanner = 'assets/images/test.jpg';
-
   bool drawermyschool = false;
   bool drawermygroup = false;
   bool appbarSearch = false;
@@ -62,68 +58,115 @@ class _MainPageState extends State<MainPage>
   void initState() {
     super.initState();
 
-    favoriteteams.add(
-      Team(
-        logo:
-            "https://upload.wikimedia.org/wikipedia/tr/7/72/Fenerbah%C3%A7e_%C3%9Cniversitesi_FB%C3%9C.png",
-        name: "Fenerbahçe",
-      ),
-    );
+    //Takımları Çek opsiyonel
+    favteamfetch();
+  }
 
-    favoriteteams.add(
-      Team(
-        logo:
-            "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Galatasaray_Sports_Club_Logo.png/822px-Galatasaray_Sports_Club_Logo.png",
-        name: "Galatasaray",
-      ),
-    );
-    favoriteteams.add(
-      Team(
-        logo:
-            "https://upload.wikimedia.org/wikipedia/commons/0/08/Be%C5%9Fikta%C5%9F_Logo_Be%C5%9Fikta%C5%9F_Amblem_Be%C5%9Fikta%C5%9F_Arma.png",
-        name: "Beşiktaş",
-      ),
-    );
-    favoriteteams.add(
-      Team(
-        logo:
-            "https://cdn.staticneo.com/w/pes/thumb/7/70/Trabzonspor.png/200px-Trabzonspor.png",
-        name: "Trabzonspor",
-      ),
-    );
+  Future<void> favteamfetch() async {
+    if (AppUser.favTeam != null) {
+      return;
+    }
+    FunctionsTeams f = FunctionsTeams();
+    Map<String, dynamic> response = await f.fetch();
+    if (response["durum"] == 0) {
+      log(response["aciklama"].toString());
+      return;
+    }
 
-    userID = AppUser.ID;
-    userName = AppUser.displayName;
-    userEmail = AppUser.mail;
-    useravatar = AppUser.avatar;
-    userbanner = AppUser.banneravatar;
-
-    widgetmySchools.add(
-      ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: const Icon(Icons.add, size: 30, color: Colors.blue),
+    for (int i = 0; response["icerik"].length > i; i++) {
+      favoriteteams.add(
+        Team(
+          teamID: response["icerik"][i]["takim_ID"],
+          name: response["icerik"][i]["takim_adi"],
+          logo: response["icerik"][i]["takim_logo"],
         ),
-        title: const Text("Okula Katıl"),
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SchoolLoginPage()));
-        },
-      ),
-    );
-    widgetmyGroups.add(
-      ListTile(
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
-          child: const Icon(Icons.add, size: 30, color: Colors.blue),
-        ),
-        title: const Text("Grup Oluştur"),
-        onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const GroupCreatePage()));
-        },
-      ),
-    );
+      );
+    }
+  }
+
+  Future<void> favteamselect(Team team) async {
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response = await f.selectfavteam(team.teamID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"].toString());
+      return;
+    }
+
+    AppUser.favTeam =
+        Team(teamID: team.teamID, name: team.name, logo: team.logo);
+  }
+
+  void favteamSelection() {
+    if (AppUser.favTeam != null) {
+      return;
+    }
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: SizedBox(
+            width: ARMOYU.screenWidth * 0.95,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const Text(
+                      'Favori Takımını Seç',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: List.generate(
+                          favoriteteams.length,
+                          (index) => Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop(favoriteteams[index]);
+                              },
+                              child: Column(
+                                children: [
+                                  CachedNetworkImage(
+                                    imageUrl: favoriteteams[index].logo,
+                                    height: 60,
+                                    width: 60,
+                                  ),
+                                  Text(favoriteteams[index].name),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((selectedTeam) {
+      // Kullanıcının seçtiği takımı işle
+      if (selectedTeam != null) {
+        log('Seçilen Takım: ${selectedTeam.name}');
+        favteamselect(selectedTeam);
+      }
+    });
   }
 
   final PageController _mainpagecontroller = PageController(initialPage: 0);
@@ -196,6 +239,21 @@ class _MainPageState extends State<MainPage>
     if (mounted) {
       drawermygroup = true;
       setState(() {
+        widgetmyGroups.add(
+          ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: const Icon(Icons.add, size: 30, color: Colors.blue),
+            ),
+            title: const Text("Grup Oluştur"),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GroupCreatePage()));
+            },
+          ),
+        );
         for (int i = 0; i < dynamicItemCount; i++) {
           widgetmyGroups.add(
             ListTile(
@@ -233,6 +291,21 @@ class _MainPageState extends State<MainPage>
     if (mounted) {
       drawermyschool = true;
       setState(() {
+        widgetmySchools.add(
+          ListTile(
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: const Icon(Icons.add, size: 30, color: Colors.blue),
+            ),
+            title: const Text("Okula Katıl"),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SchoolLoginPage()));
+            },
+          ),
+        );
         for (int i = 0; i < dynamicItemCount; i++) {
           widgetmySchools.add(
             ListTile(
@@ -250,7 +323,7 @@ class _MainPageState extends State<MainPage>
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => SchoolPage(SchoolID: 1)));
+                        builder: (context) => const SchoolPage(schoolID: 1)));
               },
             ),
           );
@@ -341,11 +414,11 @@ class _MainPageState extends State<MainPage>
           children: [
             UserAccountsDrawerHeader(
               accountName: Text(
-                userName,
+                AppUser.displayName,
                 style: const TextStyle(color: Colors.white),
               ),
-              accountEmail:
-                  Text(userEmail, style: const TextStyle(color: Colors.white)),
+              accountEmail: Text(AppUser.mail,
+                  style: const TextStyle(color: Colors.white)),
               currentAccountPicture: GestureDetector(
                 onTap: () {
                   _changePage(3);
@@ -429,7 +502,8 @@ class _MainPageState extends State<MainPage>
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => RestourantPage()));
+                                    builder: (context) =>
+                                        const RestourantPage()));
                           },
                         )
                       ],
@@ -496,73 +570,7 @@ class _MainPageState extends State<MainPage>
         controller: _mainpagecontroller,
         onPageChanged: (int page) {
           //  _changePage(page);
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (BuildContext context) {
-              return Center(
-                child: SizedBox(
-                  width: ARMOYU.screenWidth * 0.95,
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Text(
-                            'Favori Takımını Seç',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: List.generate(
-                                favoriteteams.length,
-                                (index) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .pop(favoriteteams[index]);
-                                    },
-                                    child: Column(
-                                      children: [
-                                        CachedNetworkImage(
-                                          imageUrl: favoriteteams[index].logo,
-                                          height: 60,
-                                          width: 60,
-                                        ),
-                                        Text(favoriteteams[index].name),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ).then((selectedTeam) {
-            // Kullanıcının seçtiği takımı işle
-            if (selectedTeam != null) {
-              log('Seçilen Takım: ${selectedTeam.name}');
-            }
-          });
+          favteamSelection();
         },
         children: [
           PageView(
@@ -574,8 +582,8 @@ class _MainPageState extends State<MainPage>
           ),
           SearchPage(
               appbar: true, searchController: appbarSearchTextController),
-          NotificationPage(),
-          ProfilePage(userID: userID, appbar: false),
+          const NotificationPage(),
+          ProfilePage(userID: AppUser.ID, appbar: false),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
