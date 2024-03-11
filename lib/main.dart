@@ -12,7 +12,9 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      child: const MyApp(homePage: StartingScreen()),
+      child: const MyApp(
+        homePage: StartingScreen(),
+      ),
     ),
   );
 }

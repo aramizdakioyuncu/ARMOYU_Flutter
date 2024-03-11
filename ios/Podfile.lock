@@ -1,5 +1,5 @@
 PODS:
-  - audioplayers_darwin (0.0.1):
+  - audio_session (0.0.1):
     - Flutter
   - camera_avfoundation (0.0.1):
     - Flutter
@@ -13,7 +13,7 @@ PODS:
     - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
-  - mic_stream (0.0.1):
+  - just_audio (0.0.1):
     - Flutter
   - onesignal_flutter (5.1.1):
     - Flutter
@@ -80,14 +80,14 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
   - flutter_barcode_scanner (from `.symlinks/plugins/flutter_barcode_scanner/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - mic_stream (from `.symlinks/plugins/mic_stream/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - onesignal_flutter (from `.symlinks/plugins/onesignal_flutter/ios`)
   - OneSignalXCFramework (< 6.0, >= 5.0.0)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -104,8 +104,8 @@ SPEC REPOS:
     - Reachability
 
 EXTERNAL SOURCES:
-  audioplayers_darwin:
-    :path: ".symlinks/plugins/audioplayers_darwin/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
   connectivity:
@@ -118,8 +118,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_barcode_scanner/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
-  mic_stream:
-    :path: ".symlinks/plugins/mic_stream/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   onesignal_flutter:
     :path: ".symlinks/plugins/onesignal_flutter/ios"
   package_info_plus:
@@ -138,14 +138,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
-  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
+  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_barcode_scanner: 7a1144744c28dc0c57a8de7218ffe5ec59a9e4bf
   image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
-  mic_stream: 28787bfcfcfc68e17fad15050baf5929f1d10901
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   onesignal_flutter: c9a3121c62f96e9b0dcf4a08f5499f38e6e3be61
   OneSignalXCFramework: 47e0265f359c44fc18ee666b3d488b997138b05a
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
@@ -155,8 +155,8 @@ SPEC CHECKSUMS:
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   video_player_avfoundation: 02011213dab73ae3687df27ce441fbbcc82b5579
-  wakelock_plus: 8b09852c8876491e4b6d179e17dfe2a0b5f60d47
+  wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
 
-PODFILE CHECKSUM: 93ed8a9660096f0048a7fd6175fd39eee39922dc
+PODFILE CHECKSUM: f844f8533214bc685be8ec5819b26487a4ecd6f2
 
 COCOAPODS: 1.14.2

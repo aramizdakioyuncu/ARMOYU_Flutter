@@ -1079,10 +1079,15 @@ class _ProfilePageState extends State<ProfilePage>
                                   favoritakim != null
                                       ? Column(
                                           children: [
-                                            CachedNetworkImage(
-                                              imageUrl: favoritakim!.logo,
-                                              height: 40,
-                                              width: 40,
+                                            InkWell(
+                                              onTap: () {
+                                                // favteamfetch();
+                                              },
+                                              child: CachedNetworkImage(
+                                                imageUrl: favoritakim!.logo,
+                                                height: 40,
+                                                width: 40,
+                                              ),
                                             ),
                                           ],
                                         )

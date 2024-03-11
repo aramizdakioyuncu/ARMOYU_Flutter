@@ -1,11 +1,11 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously, await_only_futures
 
-import 'dart:async';
 import 'dart:developer';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatCallPage extends StatefulWidget {
   final int userID;
@@ -32,24 +32,32 @@ class _ChaCallPageState extends State<ChatCallPage>
     with AutomaticKeepAliveClientMixin<ChatCallPage> {
   final Stopwatch _stopwatch = Stopwatch();
   final player = AudioPlayer();
-
+  final player2 = AudioPlayer();
+//Mic
+  // Stream<Uint8List>? stream;
+  Stream<List<int>>? stream;
+  // late StreamSubscription listener;
+//Mic
   @override
   bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
+
     callingtext.text = "Aranıyor...";
     _stopwatch.start();
+    microphoneStart();
   }
 
   @override
   void dispose() {
     super.dispose();
     player.dispose();
+    // listener.cancel();
   }
 
-  Future<void> _handleRefresh() async {
-    setState(() {});
+  Future<void> microphoneStart() async {
+    if (await Permission.microphone.request().isGranted) {}
   }
 
   String formatTime(int milliseconds) {
@@ -67,9 +75,6 @@ class _ChaCallPageState extends State<ChatCallPage>
     super.build(context);
     return WillPopScope(
       onWillPop: () async {
-        // Geri tuşuna basıldığında burada özel bir kontrol yapabilirsiniz.
-        // Eğer false dönerseniz, geri tuşu işlevsiz olur.
-        log("Geri gidemezsin");
         return true; // true döndürmek, normal geri tuşu işlevini sürdürür.
       },
       child: Scaffold(
@@ -91,10 +96,9 @@ class _ChaCallPageState extends State<ChatCallPage>
             icon: const Icon(Icons.arrow_back_ios_sharp),
             onPressed: () async {
               try {
-                await player.setSourceUrl(
+                await player.setUrl(
                     'https://cdn.pixabay.com/audio/2022/09/21/audio_51f53043d7.mp3');
-
-                await player.resume();
+                await player.play();
 
                 Navigator.pop(context);
               } catch (e) {
@@ -110,178 +114,174 @@ class _ChaCallPageState extends State<ChatCallPage>
             ),
           ],
         ),
-        body: RefreshIndicator(
-          onRefresh: _handleRefresh,
-          child: Column(
-            children: [
-              const SizedBox(height: 50),
-              ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: widget.useravatar,
-                  width: 100, // Set the desired width
-                  height: 100, // Set the desired height
-                  fit: BoxFit.cover,
-                ),
+        body: Column(
+          children: [
+            const SizedBox(height: 50),
+            ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: widget.useravatar,
+                width: 100, // Set the desired width
+                height: 100, // Set the desired height
+                fit: BoxFit.cover,
               ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20),
-                      Text(
-                        widget.userdisplayname,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(callingtext.text),
-                      const SizedBox(height: 5),
-                      Text(formatTime(_stopwatch.elapsedMilliseconds)),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 100),
-              SizedBox(
-                height: 220,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          width: 65.0,
-                          height: 65.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: iconsbgColor),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                await player.setSourceUrl(
-                                    'https://www.sanalsantral.com.tr/tema/default/music/karsilama.mp3');
-                                await player.resume();
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            icon: Icon(
-                              Icons.surround_sound_outlined,
-                              color: iconsColor,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 65.0,
-                          height: 65.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: iconsbgColor),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                await player.setSourceUrl(
-                                    'https://aramizdakioyuncu.com/galeri/muzikler/11324orijinal1689174596.m4a');
-                                await player.resume();
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            icon: const Icon(Icons.video_call),
-                            color: iconsColor,
-                          ),
-                        ),
-                        Container(
-                          width: 65.0,
-                          height: 65.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: iconsbgColor),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                await player.setSourceUrl(
-                                    'https://aramizdakioyuncu.com/muzikler/tantasci-yalan.mp3');
-                                await player.resume();
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            icon: const Icon(Icons.mic_off),
-                            color: iconsColor,
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Container(
-                          width: 65.0,
-                          height: 65.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: iconsbgColor),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                await player.setSourceUrl(
-                                    'https://aramizdakioyuncu.com/muzikler/kalbenhaydisoyle.mp3');
-                                await player.resume();
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            icon: const Icon(Icons.numbers_rounded),
-                            color: iconsColor,
-                          ),
-                        ),
-                        Container(
-                          width: 65.0,
-                          height: 65.0,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.red),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                await player.setSourceUrl(
-                                    'https://cdn.pixabay.com/audio/2022/09/21/audio_51f53043d7.mp3');
-
-                                await player.resume();
-
-                                Navigator.pop(context);
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            icon: const Icon(Icons.call_end),
-                            color: iconsColor,
-                          ),
-                        ),
-                        Container(
-                          width: 65.0,
-                          height: 65.0,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: iconsbgColor),
-                          child: IconButton(
-                            onPressed: () async {
-                              try {
-                                await player.setSourceUrl(
-                                    'https://cdn.muzikmp3indir.club/mp3_files/62ce297a2bc37fe29e72cd5e9bc0161f.mp3');
-                                await player.resume();
-                              } catch (e) {
-                                log(e.toString());
-                              }
-                            },
-                            icon: const Icon(Icons.person_add),
-                            color: iconsColor,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      widget.userdisplayname,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(height: 5),
+                    Text(callingtext.text),
+                    const SizedBox(height: 5),
+                    Text(formatTime(_stopwatch.elapsedMilliseconds)),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 100),
+            SizedBox(
+              height: 220,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 65.0,
+                        height: 65.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: iconsbgColor),
+                        child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await player.setUrl(
+                                  'https://www.sanalsantral.com.tr/tema/default/music/karsilama.mp3');
+                              await player.play();
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          },
+                          icon: Icon(
+                            Icons.surround_sound_outlined,
+                            color: iconsColor,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 65.0,
+                        height: 65.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: iconsbgColor),
+                        child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await player.setUrl(
+                                  'https://aramizdakioyuncu.com/galeri/muzikler/11324orijinal1689174596.m4a');
+                              await player.play();
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          },
+                          icon: const Icon(Icons.video_call),
+                          color: iconsColor,
+                        ),
+                      ),
+                      Container(
+                        width: 65.0,
+                        height: 65.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: iconsbgColor),
+                        child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await player.setUrl(
+                                  'https://aramizdakioyuncu.com/muzikler/tantasci-yalan.mp3');
+                              await player.play();
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          },
+                          icon: const Icon(Icons.mic_off),
+                          color: iconsColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 65.0,
+                        height: 65.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: iconsbgColor),
+                        child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await player.setUrl(
+                                  'https://aramizdakioyuncu.com/muzikler/kalbenhaydisoyle.mp3');
+                              await player.play();
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          },
+                          icon: const Icon(Icons.numbers_rounded),
+                          color: iconsColor,
+                        ),
+                      ),
+                      Container(
+                        width: 65.0,
+                        height: 65.0,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle, color: Colors.red),
+                        child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await player.setUrl(
+                                  'https://cdn.pixabay.com/audio/2022/09/21/audio_51f53043d7.mp3');
+                              await player.play();
+
+                              Navigator.pop(context);
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          },
+                          icon: const Icon(Icons.call_end),
+                          color: iconsColor,
+                        ),
+                      ),
+                      Container(
+                        width: 65.0,
+                        height: 65.0,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle, color: iconsbgColor),
+                        child: IconButton(
+                          onPressed: () async {
+                            try {
+                              await player.setUrl(
+                                  'https://cdn.muzikmp3indir.club/mp3_files/62ce297a2bc37fe29e72cd5e9bc0161f.mp3');
+                              await player.play();
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          },
+                          icon: const Icon(Icons.person_add),
+                          color: iconsColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

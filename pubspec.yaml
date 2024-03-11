@@ -51,11 +51,10 @@ dependencies:
   video_player: ^2.8.1
   chewie: ^1.7.1
   skeletons: ^0.0.3
-  audioplayers: ^5.2.1
-  mic_stream: ^0.7.1+2
-
   flutter_html: ^3.0.0-beta.2
   html: ^0.15.4
+  permission_handler: ^11.3.0
+  just_audio: ^0.9.36
 
 dev_dependencies:
   flutter_test:

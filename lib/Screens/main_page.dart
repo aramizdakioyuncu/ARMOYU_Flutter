@@ -15,6 +15,7 @@ import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -52,6 +53,7 @@ class _MainPageState extends State<MainPage>
   int postpage = 1;
   bool postpageproccess = false;
   bool isRefreshing = false;
+  bool favteamRequest = false;
 
   ScrollController homepageScrollController = ScrollController();
   @override
@@ -100,6 +102,10 @@ class _MainPageState extends State<MainPage>
     if (AppUser.favTeam != null) {
       return;
     }
+    if (favteamRequest) {
+      return;
+    }
+
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -153,6 +159,13 @@ class _MainPageState extends State<MainPage>
                       ),
                     ),
                     const SizedBox(height: 20),
+                    Align(
+                        alignment: Alignment.center,
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop(null);
+                            },
+                            child: CustomText().costum1("Bunlardan Hiçbiri")))
                   ],
                 ),
               ),
@@ -166,6 +179,7 @@ class _MainPageState extends State<MainPage>
         log('Seçilen Takım: ${selectedTeam.name}');
         favteamselect(selectedTeam);
       }
+      favteamRequest = true;
     });
   }
 
@@ -179,8 +193,6 @@ class _MainPageState extends State<MainPage>
       setState(() {
         _pageController2.jumpToPage(
           1,
-          // duration: const Duration(milliseconds: 300),
-          // curve: Curves.ease,
         );
       });
 
@@ -520,6 +532,20 @@ class _MainPageState extends State<MainPage>
                             builder: (context) => const EventlistPage(),
                           ),
                         );
+                      },
+                    ),
+                    ListTile(
+                      textColor: ARMOYU.textColor,
+                      iconColor: ARMOYU.textColor,
+                      leading: const Icon(Icons.assignment_sharp),
+                      title: const Text("Davet Et"),
+                      onTap: () {
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => const SettingsPage(),
+                        //   ),
+                        // );
                       },
                     ),
                     ListTile(

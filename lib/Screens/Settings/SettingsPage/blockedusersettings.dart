@@ -95,18 +95,26 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
         title: const Text('Engellenen Hesaplar'),
         backgroundColor: ARMOYU.appbarColor,
       ),
-      body: ListView.builder(
-        itemCount: blockedList.length,
-        itemBuilder: (context, index) {
-          final Map<int, Widget> blockedUserMap = blockedList[index];
-          final Widget userWidget = blockedUserMap.values.first;
+      body: Column(
+        children: [
+          Container(color: ARMOYU.bodyColor, height: 1),
+          Expanded(
+            child: ListView.builder(
+              itemCount: blockedList.length,
+              itemBuilder: (context, index) {
+                final Map<int, Widget> blockedUserMap = blockedList[index];
+                final Widget userWidget = blockedUserMap.values.first;
 
-          return userWidget;
-        },
+                return userWidget;
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

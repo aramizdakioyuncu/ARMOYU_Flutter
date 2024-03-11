@@ -6,7 +6,13 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Models/language.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/Account/accountsettings.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/aboutsettings.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/accountstatussettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/blockedusersettings.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/datasavingsetting.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/devicepermissions.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/helpsettings.dart';
+import 'package:ARMOYU/Screens/Settings/SettingsPage/notificationsetttings.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -62,7 +68,7 @@ class _SettingsPage extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ARMOYU.bodyColor,
+        backgroundColor: ARMOYU.appbarColor,
         appBar: AppBar(
           title: const Text('Ayarlar'),
           backgroundColor: ARMOYU.appbarColor,
@@ -72,6 +78,7 @@ class _SettingsPage extends State<SettingsPage> {
             children: [
               Column(
                 children: [
+                  Container(color: ARMOYU.bodyColor, height: 1),
                   ListTile(
                     tileColor: ARMOYU.bacgroundcolor,
                     leading: CircleAvatar(
@@ -100,7 +107,32 @@ class _SettingsPage extends State<SettingsPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        color: ARMOYU.bodyColor,
+                      ),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            size: 12,
+                          ),
+                          hintText: 'Ara',
+                        ),
+                        style: TextStyle(
+                          color: ARMOYU.color,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  // Container(color: ARMOYU.bodyColor, height: 5),
                   Column(
                     children: [
                       ListTile(
@@ -116,13 +148,18 @@ class _SettingsPage extends State<SettingsPage> {
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Kapalı'),
-                            ),
                             Icon(Icons.arrow_forward_ios_outlined, size: 17),
                           ],
                         ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SettingsDevicePermissionsPage(),
+                            ),
+                          );
+                        },
                       ),
                       ListTile(
                         leading: const Icon(
@@ -146,14 +183,19 @@ class _SettingsPage extends State<SettingsPage> {
                           Icons.network_wifi_3_bar_rounded,
                         ),
                         title: CustomText().costum1("Veri Tasarrufu"),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SettingsDataSavingPage(),
+                            ),
+                          );
+                        },
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text('Kapalı'),
-                            ),
                             Icon(Icons.arrow_forward_ios_outlined, size: 17),
                           ],
                         ),
@@ -204,31 +246,19 @@ class _SettingsPage extends State<SettingsPage> {
                   ListTile(
                     leading: const Icon(Icons.notifications_active),
                     title: CustomText().costum1("Bildirimler"),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const SettingsNotificationPage(),
+                        ),
+                      );
+                    },
                     tileColor: ARMOYU.bacgroundcolor,
                     trailing: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Hepsi Açık'),
-                        ),
-                        Icon(Icons.arrow_forward_ios_outlined, size: 17),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.lock),
-                    title: CustomText().costum1("Hesap Gizliliği"),
-                    onTap: () {},
-                    tileColor: ARMOYU.bacgroundcolor,
-                    trailing: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Herkese Açık'),
-                        ),
                         Icon(Icons.arrow_forward_ios_outlined, size: 17),
                       ],
                     ),
@@ -248,15 +278,11 @@ class _SettingsPage extends State<SettingsPage> {
                     trailing: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Padding(
-                        //   padding: EdgeInsets.all(8.0),
-                        //   child: Text('10'),
-                        // ),
                         Icon(Icons.arrow_forward_ios_outlined, size: 17),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  Container(color: ARMOYU.bodyColor, height: 5),
                   Column(
                     children: [
                       ListTile(
@@ -266,7 +292,14 @@ class _SettingsPage extends State<SettingsPage> {
                       ListTile(
                         leading: const Icon(Icons.help),
                         title: CustomText().costum1("Yardım"),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SettingsHelpPage(),
+                            ),
+                          );
+                        },
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
                             size: 17),
@@ -274,7 +307,15 @@ class _SettingsPage extends State<SettingsPage> {
                       ListTile(
                         leading: const Icon(Icons.person),
                         title: CustomText().costum1("Hesap Durumu"),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const SettingsAccountStatusPage(),
+                            ),
+                          );
+                        },
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
                             size: 17),
@@ -282,14 +323,21 @@ class _SettingsPage extends State<SettingsPage> {
                       ListTile(
                         leading: const Icon(Icons.info),
                         title: CustomText().costum1("Hakkında"),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SettingsAboutPage(),
+                            ),
+                          );
+                        },
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
                             size: 17),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  Container(color: ARMOYU.bodyColor, height: 5),
                   Column(
                     children: [
                       ListTile(
