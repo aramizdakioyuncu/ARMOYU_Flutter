@@ -6,6 +6,26 @@ import 'package:ARMOYU/Services/API/api_service.dart';
 class FunctionsPosts {
   final ApiService _apiService = ApiService();
 
+  Future<Map<String, dynamic>> like(int postID) async {
+    Map<String, String> formData = {
+      "postID": "$postID",
+      "kategori": "post",
+    };
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/begeni-ekle/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> unlike(int postID) async {
+    Map<String, String> formData = {
+      "postID": "$postID",
+      "kategori": "post",
+    };
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/begeni-sil/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> likeordislike(int postID) async {
     Map<String, String> formData = {"postID": "$postID", "kategori": "post"};
     Map<String, dynamic> jsonData =
@@ -16,7 +36,7 @@ class FunctionsPosts {
   Future<Map<String, dynamic>> commentlikeordislike(int commentID) async {
     Map<String, String> formData = {
       "postID": "$commentID",
-      "kategori": "postyorum"
+      "kategori": "postyorum",
     };
     Map<String, dynamic> jsonData =
         await _apiService.request("sosyal/begen/", formData);

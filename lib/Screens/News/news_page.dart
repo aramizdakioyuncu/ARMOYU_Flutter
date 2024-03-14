@@ -29,7 +29,7 @@ class _EventStatePage extends State<NewsPage>
   @override
   void initState() {
     super.initState();
-    if (isfirstfetch) {
+    if (widget.news.newsContent == "") {
       fetchnewscontent(widget.news.newsID);
     }
   }
@@ -66,6 +66,14 @@ class _EventStatePage extends State<NewsPage>
         appBar: AppBar(
           title: Text(widget.news.newsTitle.toString()),
           backgroundColor: ARMOYU.appbarColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                fetchnewscontent(widget.news.newsID);
+              },
+              icon: const Icon(Icons.refresh),
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Column(

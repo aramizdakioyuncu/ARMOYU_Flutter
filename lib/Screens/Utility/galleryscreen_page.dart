@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
 import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
+import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -174,9 +176,20 @@ class _GalleryScreenState extends State<GalleryScreen>
                                               Navigator.of(context)
                                                   .push(MaterialPageRoute(
                                                 builder: (context) =>
-                                                    FullScreenImagePage(
-                                                  images: [
-                                                    imagePath[index].path
+                                                    MediaViewer(
+                                                  media: [
+                                                    Media(
+                                                      mediaURL: MediaURL(
+                                                          bigURL:
+                                                              imagePath[index]
+                                                                  .path,
+                                                          normalURL:
+                                                              imagePath[index]
+                                                                  .path,
+                                                          minURL:
+                                                              imagePath[index]
+                                                                  .path),
+                                                    ),
                                                   ],
                                                   initialIndex: 0,
                                                   isFile: true,

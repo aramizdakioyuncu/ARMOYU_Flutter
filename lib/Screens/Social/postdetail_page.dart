@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/media.dart';
 
 import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -103,6 +104,7 @@ class _PostDetailPage extends State<PostDetailPage>
       return;
     }
 
+    List<Media> media = [];
     List<int> mediaIDs = [];
     List<int> mediaownerIDs = [];
     List<String> medias = [];
@@ -123,6 +125,23 @@ class _PostDetailPage extends State<PostDetailPage>
             .add(response["icerik"][0]["paylasimfoto"][j]["paylasimkategori"]);
         mediadirection
             .add(response["icerik"][0]["paylasimfoto"][j]["medyayonu"]);
+
+        media.add(
+          Media(
+            mediaID: response["icerik"][0]["paylasimfoto"][j]["fotoID"],
+            ownerID: response["icerik"][0]["sahipID"],
+            mediaType: response["icerik"][0]["paylasimfoto"][j]
+                ["paylasimkategori"],
+            mediaDirection: response["icerik"][0]["paylasimfoto"][j]
+                ["medyayonu"],
+            mediaURL: MediaURL(
+                bigURL: response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"],
+                normalURL: response["icerik"][0]["paylasimfoto"][j]
+                    ["fotominnakurl"],
+                minURL: response["icerik"][0]["paylasimfoto"][j]
+                    ["fotominnakurl"]),
+          ),
+        );
       }
     }
 
@@ -130,9 +149,11 @@ class _PostDetailPage extends State<PostDetailPage>
       userID: response["icerik"][0]["sahipID"],
       profileImageUrl: response["icerik"][0]["sahipavatarminnak"],
       username: response["icerik"][0]["sahipad"],
+      sharedDevice: response["icerik"][0]["paylasimnereden"],
       postID: response["icerik"][0]["paylasimID"],
       postText: response["icerik"][0]["paylasimicerik"],
       postDate: response["icerik"][0]["paylasimzamangecen"],
+      media: media,
       mediaIDs: mediaIDs,
       mediaownerIDs: mediaownerIDs,
       mediaUrls: medias,

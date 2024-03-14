@@ -3,7 +3,6 @@ import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SettingsAccountStatusPage extends StatefulWidget {
   const SettingsAccountStatusPage({super.key});

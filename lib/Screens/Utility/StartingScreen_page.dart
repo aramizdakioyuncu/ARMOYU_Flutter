@@ -6,6 +6,7 @@ import 'package:ARMOYU/Screens/Utility/NoConnection_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:camera/camera.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,7 @@ class _StartingScreenState extends State<StartingScreen> {
   }
 
   Future<void> staringfunctions() async {
+    ARMOYU.cameras = await availableCameras();
     // İnternet var mı diye kontrol ediyoruz!
     if (!await AppCore.checkInternetConnection()) {
       Navigator.pushReplacement(

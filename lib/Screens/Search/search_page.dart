@@ -2,10 +2,16 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Screens/News/news_list.dart';
+import 'package:ARMOYU/Screens/News/news_page.dart';
+
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
 
@@ -31,26 +37,28 @@ class _SearchPagePage extends State<SearchPage>
   @override
   bool get wantKeepAlive => true;
 
-  final ScrollController _scrollController = ScrollController();
-  // final TextEditingController _searchController = TextEditingController();
+  Widget widgetTPCard = ARMOYUWidget(
+          scrollController: ScrollController(), content: [], firstFetch: true)
+      .widgetTPlist();
+  Widget widgetPOPCard = ARMOYUWidget(
+          scrollController: ScrollController(), content: [], firstFetch: true)
+      .widgetPOPlist();
   List<Widget> widgetSearch = [];
+
+  bool firstProcces = false;
   @override
   void initState() {
     super.initState();
-    widget.searchController.addListener(_onSearchTextChanged);
 
-    log(widget.searchController.text);
+    widget.searchController.addListener(_onSearchTextChanged);
   }
 
-  // Function to handle changes in the text field
   void _onSearchTextChanged() {
     searchfunction(widget.searchController, widget.searchController.text);
-    // You can perform additional actions here based on the changed text
   }
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed
     widget.searchController.dispose();
     super.dispose();
   }
@@ -137,8 +145,6 @@ class _SearchPagePage extends State<SearchPage>
           log(e.toString());
         }
       }
-
-      // postsearchprocess = false;
     });
   }
 
@@ -147,13 +153,150 @@ class _SearchPagePage extends State<SearchPage>
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: widgetSearch.length,
-        itemBuilder: (context, index) {
-          return widgetSearch[index];
-        },
-      ),
+      body: widget.searchController.text != ""
+          ? ListView.builder(
+              controller: ScrollController(),
+              itemCount: widgetSearch.length,
+              itemBuilder: (context, index) {
+                return widgetSearch[index];
+              },
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CarouselSlider.builder(
+                    options: CarouselOptions(
+                      aspectRatio: 16 / 9,
+                      autoPlay: true,
+                      enableInfiniteScroll: true,
+                      pauseAutoPlayOnTouch: true,
+                      viewportFraction: 0.8,
+                      autoPlayInterval: const Duration(seconds: 5),
+                      scrollDirection: Axis.horizontal,
+                      enlargeFactor: 0.2,
+                      enlargeCenterPage: true,
+                    ),
+                    itemCount: newsList.length,
+                    itemBuilder: (context, index, realIndex) {
+                      return newsList.isNotEmpty
+                          ? InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NewsPage(
+                                      news: newsList[index],
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    filterQuality: FilterQuality.high,
+                                    image: CachedNetworkImageProvider(
+                                      newsList[index].newsImage,
+                                    ),
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.black.withOpacity(0.7),
+                                        Colors.transparent,
+                                      ],
+                                      stops: const [0.0, 0.8],
+                                      begin: Alignment.bottomCenter,
+                                      end: Alignment.topCenter,
+                                    ),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.fromLTRB(7, 0, 7, 7),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage:
+                                                    CachedNetworkImageProvider(
+                                                  newsList[index].authoravatar,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                newsList[index].author,
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  const Icon(Icons.visibility),
+                                                  const SizedBox(width: 3),
+                                                  Text(
+                                                    newsList[index]
+                                                        .newsViews
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            newsList[index].newssummary,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              width: ARMOYU.screenWidth,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: ARMOYU.appbarColor,
+                              ),
+                              child: const Center(
+                                child: CupertinoActivityIndicator(),
+                              ),
+                            );
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  widgetTPCard,
+                  const SizedBox(height: 10),
+                  widgetPOPCard,
+                ],
+              ),
+            ),
     );
   }
 }

@@ -4,11 +4,13 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
 
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
 import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
+import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
@@ -165,6 +167,8 @@ class _ProfilePageState extends State<ProfilePage>
   final List<String> imageufakUrls = [];
   final List<int> imagesownerID = [];
 
+  final List<Media> medialist = [];
+
   profileloadPosts(int page, int userID) async {
     if (postsfetchproccess) {
       return;
@@ -185,6 +189,7 @@ class _ProfilePageState extends State<ProfilePage>
     int dynamicItemCount = response["icerik"].length;
 
     for (int i = 0; i < dynamicItemCount; i++) {
+      List<Media> media = [];
       List<int> mediaIDs = [];
       List<int> mediaownerIDs = [];
       List<String> medias = [];
@@ -205,9 +210,41 @@ class _ProfilePageState extends State<ProfilePage>
               response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
           mediadirection
               .add(response["icerik"][i]["paylasimfoto"][j]["medyayonu"]);
+
+          media.add(
+            Media(
+              mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
+              ownerID: response["icerik"][i]["sahipID"],
+              mediaType: response["icerik"][i]["paylasimfoto"][j]
+                  ["paylasimkategori"],
+              mediaDirection: response["icerik"][i]["paylasimfoto"][j]
+                  ["medyayonu"],
+              mediaURL: MediaURL(
+                  bigURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotoufakurl"],
+                  normalURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotominnakurl"],
+                  minURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotominnakurl"]),
+            ),
+          );
         }
       }
       if (mounted) {
+        bool ismelike = false;
+        if (response["icerik"][i]["benbegendim"] == 1) {
+          ismelike = true;
+        } else {
+          ismelike = false;
+        }
+        bool ismecomment = false;
+
+        if (response["icerik"][i]["benyorumladim"] == 1) {
+          ismecomment = true;
+        } else {
+          ismecomment = false;
+        }
+
         setState(() {
           widgetPosts.add(
             TwitterPostWidget(
@@ -215,8 +252,10 @@ class _ProfilePageState extends State<ProfilePage>
               profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
               username: response["icerik"][i]["sahipad"],
               postID: response["icerik"][i]["paylasimID"],
+              sharedDevice: response["icerik"][i]["paylasimnereden"],
               postText: response["icerik"][i]["paylasimicerik"],
               postDate: response["icerik"][i]["paylasimzamangecen"],
+              media: media,
               mediaIDs: mediaIDs,
               mediaownerIDs: mediaownerIDs,
               mediaUrls: medias,
@@ -225,8 +264,8 @@ class _ProfilePageState extends State<ProfilePage>
               mediadirection: mediadirection,
               postlikeCount: response["icerik"][i]["begenisay"],
               postcommentCount: response["icerik"][i]["yorumsay"],
-              postMecomment: response["icerik"][i]["benyorumladim"],
-              postMelike: response["icerik"][i]["benbegendim"],
+              postMecomment: ismecomment,
+              postMelike: ismelike,
               isPostdetail: false,
             ),
           );
@@ -250,6 +289,7 @@ class _ProfilePageState extends State<ProfilePage>
         setState(() {
           imageUrls.clear();
           imageufakUrls.clear();
+          medialist.clear();
         });
       }
     }
@@ -270,6 +310,21 @@ class _ProfilePageState extends State<ProfilePage>
     for (int i = 0; i < response["icerik"].length; i++) {
       if (mounted) {
         setState(() {
+          medialist.add(
+            Media(
+              mediaID: response["icerik"][i]["media_ID"],
+              ownerID: response["icerik"][i]["media_ownerID"],
+              ownerusername: response["icerik"][i]["media_ownerusername"],
+              owneravatar: response["icerik"][i]["media_owneravatar"],
+              mediaTime: response["icerik"][i]["media_time"],
+              mediaType: response["icerik"][i]["fotodosyatipi"],
+              mediaURL: MediaURL(
+                bigURL: response["icerik"][i]["fotoorijinalurl"],
+                normalURL: response["icerik"][i]["fotoufaklikurl"],
+                minURL: response["icerik"][i]["fotominnakurl"],
+              ),
+            ),
+          );
           imageUrls.add(response["icerik"][i]["fotominnakurl"]);
           imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
           imagesownerID.add(response["icerik"][i]["fotosahipID"]);
@@ -822,8 +877,17 @@ class _ProfilePageState extends State<ProfilePage>
               background: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => FullScreenImagePage(
-                      images: [banneravatarbetter],
+                    builder: (context) => MediaViewer(
+                      media: [
+                        Media(
+                          mediaID: 90909090,
+                          ownerID: AppUser.ID,
+                          mediaURL: MediaURL(
+                              bigURL: banneravatarbetter,
+                              normalURL: banneravatarbetter,
+                              minURL: banneravatarbetter),
+                        )
+                      ],
                       initialIndex: 0,
                     ),
                   ));
@@ -921,8 +985,16 @@ class _ProfilePageState extends State<ProfilePage>
                             GestureDetector(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => FullScreenImagePage(
-                                    images: [avatarbetter],
+                                  builder: (context) => MediaViewer(
+                                    media: [
+                                      Media(
+                                          mediaID: 90909090,
+                                          ownerID: AppUser.ID,
+                                          mediaURL: MediaURL(
+                                              bigURL: avatarbetter,
+                                              normalURL: avatarbetter,
+                                              minURL: avatarbetter))
+                                    ],
                                     initialIndex: 0,
                                   ),
                                 ));
@@ -1302,9 +1374,10 @@ class _ProfilePageState extends State<ProfilePage>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => FullScreenImagePage(
-                                images: imageufakUrls,
-                                imagesownerID: imagesownerID,
+                              builder: (context) => MediaViewer(
+                                media: medialist,
+                                // images: imageufakUrls,
+                                // imagesownerID: imagesownerID,
                                 initialIndex: index,
                               ),
                             ),

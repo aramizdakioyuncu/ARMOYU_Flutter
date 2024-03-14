@@ -2,7 +2,9 @@
 
 import 'dart:io';
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
+import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 
@@ -101,8 +103,16 @@ class _PostSharePageState extends State<PostSharePage>
                             child: InkWell(
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => FullScreenImagePage(
-                                    images: [imagePath[index].path],
+                                  builder: (context) => MediaViewer(
+                                    media: [
+                                      Media(
+                                        mediaID: imagePath[index].hashCode,
+                                        mediaURL: MediaURL(
+                                            bigURL: imagePath[index].path,
+                                            normalURL: imagePath[index].path,
+                                            minURL: imagePath[index].path),
+                                      )
+                                    ],
                                     initialIndex: 0,
                                     isFile: true,
                                   ),

@@ -13,8 +13,7 @@ class NewslistPage extends StatefulWidget {
   State<NewslistPage> createState() => _NewslistStatePage();
 }
 
-List<News> eventsList = [];
-bool isfirstfetch = true;
+List<News> newsList = [];
 bool eventlistProecces = false;
 final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
     GlobalKey<RefreshIndicatorState>();
@@ -28,7 +27,7 @@ class _NewslistStatePage extends State<NewslistPage>
   void initState() {
     super.initState();
 
-    if (isfirstfetch) {
+    if (newsList.isEmpty) {
       getnewslist();
     }
   }
@@ -51,11 +50,11 @@ class _NewslistStatePage extends State<NewslistPage>
       return;
     }
 
-    eventsList.clear();
+    newsList.clear();
     for (dynamic element in response['icerik']) {
       if (mounted) {
         setState(() {
-          eventsList.add(
+          newsList.add(
             News(
               newsID: element["haberID"],
               newsTitle: element["haberbaslik"],
@@ -64,12 +63,12 @@ class _NewslistStatePage extends State<NewslistPage>
               newsImage: element["resimminnak"],
               newssummary: element["ozet"],
               authoravatar: element["yazaravatar"],
+              newsViews: element["goruntulen"],
             ),
           );
         });
       }
     }
-    isfirstfetch = false;
     eventlistProecces = false;
   }
 
@@ -83,15 +82,15 @@ class _NewslistStatePage extends State<NewslistPage>
           title: const Text('Haberler'),
           backgroundColor: ARMOYU.appbarColor,
         ),
-        body: eventsList.isEmpty
+        body: newsList.isEmpty
             ? const Center(child: CupertinoActivityIndicator())
             : RefreshIndicator(
                 key: _refreshIndicatorKey,
                 onRefresh: getnewslist,
                 child: ListView.builder(
-                  itemCount: eventsList.length,
+                  itemCount: newsList.length,
                   itemBuilder: (context, index) {
-                    News aa = eventsList[index];
+                    News aa = newsList[index];
                     return aa.newsListWidget(context);
                   },
                 ),

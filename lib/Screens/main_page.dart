@@ -54,11 +54,17 @@ class _MainPageState extends State<MainPage>
   bool postpageproccess = false;
   bool isRefreshing = false;
   bool favteamRequest = false;
+  Map<String, dynamic> favTeam = {};
 
+  bool firstProcces = false;
   ScrollController homepageScrollController = ScrollController();
   @override
   void initState() {
     super.initState();
+
+    if (!firstProcces) {
+      firstProcces = true;
+    }
 
     //Takımları Çek opsiyonel
     favteamfetch();
@@ -68,19 +74,22 @@ class _MainPageState extends State<MainPage>
     if (AppUser.favTeam != null) {
       return;
     }
-    FunctionsTeams f = FunctionsTeams();
-    Map<String, dynamic> response = await f.fetch();
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
-      return;
+
+    if (favTeam.isEmpty) {
+      FunctionsTeams f = FunctionsTeams();
+      favTeam = await f.fetch();
+      if (favTeam["durum"] == 0) {
+        log(favTeam["aciklama"].toString());
+        return;
+      }
     }
 
-    for (int i = 0; response["icerik"].length > i; i++) {
+    for (int i = 0; favTeam["icerik"].length > i; i++) {
       favoriteteams.add(
         Team(
-          teamID: response["icerik"][i]["takim_ID"],
-          name: response["icerik"][i]["takim_adi"],
-          logo: response["icerik"][i]["takim_logo"],
+          teamID: favTeam["icerik"][i]["takim_ID"],
+          name: favTeam["icerik"][i]["takim_adi"],
+          logo: favTeam["icerik"][i]["takim_logo"],
         ),
       );
     }
@@ -476,23 +485,17 @@ class _MainPageState extends State<MainPage>
                                 builder: (context) => const NewslistPage()));
                       },
                     ),
-                    Visibility(
-                      visible: widgetmyGroups.isEmpty ? false : true,
-                      child: ExpansionTile(
-                        textColor: ARMOYU.textColor,
-                        leading: Icon(Icons.group, color: ARMOYU.textColor),
-                        title: const Text('Gruplarım'),
-                        children: widgetmyGroups,
-                      ),
+                    ExpansionTile(
+                      textColor: ARMOYU.textColor,
+                      leading: Icon(Icons.group, color: ARMOYU.textColor),
+                      title: const Text('Gruplarım'),
+                      children: widgetmyGroups,
                     ),
-                    Visibility(
-                      visible: widgetmySchools.isEmpty ? false : true,
-                      child: ExpansionTile(
-                        textColor: ARMOYU.textColor,
-                        leading: Icon(Icons.school, color: ARMOYU.textColor),
-                        title: const Text('Okullarım'),
-                        children: widgetmySchools,
-                      ),
+                    ExpansionTile(
+                      textColor: ARMOYU.textColor,
+                      leading: Icon(Icons.school, color: ARMOYU.textColor),
+                      title: const Text('Okullarım'),
+                      children: widgetmySchools,
                     ),
                     ExpansionTile(
                       leading: Icon(Icons.local_drink, color: ARMOYU.textColor),
@@ -602,8 +605,8 @@ class _MainPageState extends State<MainPage>
           PageView(
             controller: _pageController2,
             children: [
-              const CameraScreen(),
-              SocialPage(homepageScrollController: homepageScrollController),
+              ARMOYU.cameras!.isNotEmpty ? const CameraScreen() : Container(),
+              SocialPage(homepageScrollController: homepageScrollController)
             ],
           ),
           SearchPage(

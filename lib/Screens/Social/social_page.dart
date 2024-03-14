@@ -1,15 +1,16 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:ARMOYU/Models/Story/story.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/Skeletons/storycircle_skeleton.dart';
-import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:ARMOYU/Widgets/storycircle.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Widgets/Skeletons/posts_skeleton.dart';
@@ -23,6 +24,9 @@ class SocialPage extends StatefulWidget {
   @override
   State<SocialPage> createState() => _SocialPageState();
 }
+
+List<Map<String, String>> listTPCard = [];
+List<Map<String, String>> listPOPCard = [];
 
 class _SocialPageState extends State<SocialPage>
     with AutomaticKeepAliveClientMixin<SocialPage> {
@@ -43,17 +47,11 @@ class _SocialPageState extends State<SocialPage>
   bool isRefreshing = false;
 
   List<Widget> widgetPosts = [];
-  List<Map<String, String>> widgettpCard = [];
-  List<Map<String, String>> widgetPOPcard = [];
 
   List<StoryList> widgetStoriescard = [];
 
   Widget? widgetStories;
 
-  Widget widgetTPusers =
-      const SkeletonCustomCards(count: 5, icon: Icon(Icons.abc));
-  Widget widgetPOPusers =
-      const SkeletonCustomCards(count: 5, icon: Icon(Icons.abc));
   @override
   void initState() {
     super.initState();
@@ -167,8 +165,6 @@ class _SocialPageState extends State<SocialPage>
   }
 
   Future<void> _handleRefresh() async {
-    // loadSkeletonpost();
-
     isRefreshing = true;
     loadPosts(1);
     isRefreshing = false;
@@ -178,7 +174,6 @@ class _SocialPageState extends State<SocialPage>
   Future<void> _loadMoreData() async {
     if (!postpageproccess) {
       postpage++;
-
       postpageproccess = true;
       await loadPosts(postpage);
     }
@@ -202,6 +197,7 @@ class _SocialPageState extends State<SocialPage>
 
     int dynamicItemCount = response["icerik"].length;
     for (int i = 0; i < dynamicItemCount; i++) {
+      List<Media> media = [];
       List<int> mediaIDs = [];
       List<int> mediaownerIDs = [];
       List<String> medias = [];
@@ -222,10 +218,41 @@ class _SocialPageState extends State<SocialPage>
               response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
           mediadirection
               .add(response["icerik"][i]["paylasimfoto"][j]["medyayonu"]);
+
+          media.add(
+            Media(
+              mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
+              ownerID: response["icerik"][i]["sahipID"],
+              mediaType: response["icerik"][i]["paylasimfoto"][j]
+                  ["paylasimkategori"],
+              mediaDirection: response["icerik"][i]["paylasimfoto"][j]
+                  ["medyayonu"],
+              mediaURL: MediaURL(
+                  bigURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotoufakurl"],
+                  normalURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotominnakurl"],
+                  minURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotominnakurl"]),
+            ),
+          );
         }
       }
 
       if (mounted) {
+        bool ismelike = false;
+        if (response["icerik"][i]["benbegendim"] == 1) {
+          ismelike = true;
+        } else {
+          ismelike = false;
+        }
+        bool ismecomment = false;
+
+        if (response["icerik"][i]["benyorumladim"] == 1) {
+          ismecomment = true;
+        } else {
+          ismecomment = false;
+        }
         setState(() {
           widgetPosts.add(
             TwitterPostWidget(
@@ -233,8 +260,10 @@ class _SocialPageState extends State<SocialPage>
               profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
               username: response["icerik"][i]["sahipad"],
               postID: response["icerik"][i]["paylasimID"],
+              sharedDevice: response["icerik"][i]["paylasimnereden"],
               postText: response["icerik"][i]["paylasimicerik"],
               postDate: response["icerik"][i]["paylasimzamangecen"],
+              media: media,
               mediaIDs: mediaIDs,
               mediaownerIDs: mediaownerIDs,
               mediaUrls: medias,
@@ -243,46 +272,27 @@ class _SocialPageState extends State<SocialPage>
               mediadirection: mediadirection,
               postlikeCount: response["icerik"][i]["begenisay"],
               postcommentCount: response["icerik"][i]["yorumsay"],
-              postMecomment: response["icerik"][i]["benyorumladim"],
-              postMelike: response["icerik"][i]["benbegendim"],
+              postMecomment: ismecomment,
+              postMelike: ismelike,
               isPostdetail: false,
             ),
           );
 
           if (i / 3 == 1) {
-            ScrollController scrollControllerPOP = ScrollController();
-
-            widgetPOPusers = CustomCards(
-              scrollController: scrollControllerPOP,
-              title: "POP",
-              effectcolor:
-                  const Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
-              content: widgetPOPcard,
-              icon: const Icon(
-                Icons.remove_red_eye_outlined,
-                size: 15,
-                color: Colors.white,
-              ),
-            );
-
-            widgetPosts.add(widgetPOPusers);
+            widgetPosts.add(ARMOYUWidget(
+                    scrollController: ScrollController(),
+                    content: listTPCard,
+                    firstFetch: listTPCard.isEmpty)
+                .widgetPOPlist());
           }
           if (i / 7 == 1) {
-            ScrollController scrollControllerTP = ScrollController();
-
-            widgetTPusers = CustomCards(
-              title: "TP",
-              scrollController: scrollControllerTP,
-              effectcolor:
-                  const Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
-              content: widgettpCard,
-              icon: const Icon(
-                Icons.auto_graph_outlined,
-                size: 15,
-                color: Colors.white,
-              ),
+            widgetPosts.add(
+              ARMOYUWidget(
+                      scrollController: ScrollController(),
+                      content: listPOPCard,
+                      firstFetch: listPOPCard.isEmpty)
+                  .widgetTPlist(),
             );
-            widgetPosts.add(widgetTPusers);
           }
         });
       }
@@ -306,64 +316,14 @@ class _SocialPageState extends State<SocialPage>
     });
   }
 
-  Future<void> fetchInternetdatas() async {
-    fetchstoryWidget(1);
-    loadXPCards(1);
-    loadpopCards(1);
-  }
-
   Future<void> loadPosts(int page) async {
     if (page == 1) {
       postpage = 1;
-
-      await fetchInternetdatas();
+      fetchstoryWidget(1);
     }
-
     await loadPostsv2(page);
 
     postpageproccess = false;
-  }
-
-  Future<void> loadXPCards(int page) async {
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getplayerxp(1);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      return;
-    }
-    if (page == 1) {
-      widgettpCard.clear();
-    }
-    for (int i = 0; i < response["icerik"].length; i++) {
-      widgettpCard.add(
-        {
-          "userID": response["icerik"][i]["oyuncuID"].toString(),
-          "image": response["icerik"][i]["oyuncuavatar"],
-          "displayname": response["icerik"][i]["oyuncuadsoyad"],
-          "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
-        },
-      );
-    }
-  }
-
-  Future<void> loadpopCards(int page) async {
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getplayerpop(1);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      return;
-    }
-    if (page == 1) {
-      widgetPOPcard.clear();
-    }
-    for (int i = 0; i < response["icerik"].length; i++) {
-      widgetPOPcard.add({
-        "userID": response["icerik"][i]["oyuncuID"].toString(),
-        "image": response["icerik"][i]["oyuncuavatar"],
-        "displayname": response["icerik"][i]["oyuncuadsoyad"],
-        "score": response["icerik"][i]["oyuncupop"].toString()
-      });
-    }
   }
 
   @override

@@ -11,6 +11,7 @@ class News {
   String newsImage;
   String author;
   String authoravatar;
+  int newsViews;
 
   News({
     required this.newsID,
@@ -20,6 +21,7 @@ class News {
     required this.newsImage,
     required this.author,
     required this.authoravatar,
+    required this.newsViews,
   });
 
   Widget newsListWidget(context) {
