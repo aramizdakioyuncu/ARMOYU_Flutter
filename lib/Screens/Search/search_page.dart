@@ -3,6 +3,8 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Functions/API_Functions/news.dart';
+import 'package:ARMOYU/Models/news.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/News/news_page.dart';
 
@@ -43,6 +45,7 @@ class _SearchPagePage extends State<SearchPage>
   Widget widgetPOPCard = ARMOYUWidget(
           scrollController: ScrollController(), content: [], firstFetch: true)
       .widgetPOPlist();
+
   List<Widget> widgetSearch = [];
 
   bool firstProcces = false;
@@ -51,6 +54,48 @@ class _SearchPagePage extends State<SearchPage>
     super.initState();
 
     widget.searchController.addListener(_onSearchTextChanged);
+
+    if (!firstProcces) {
+      getnewslist();
+      firstProcces = !firstProcces;
+    }
+  }
+
+  Future<void> getnewslist() async {
+    if (eventlistProecces) {
+      return;
+    }
+    eventlistProecces = true;
+    FunctionsNews f = FunctionsNews();
+    Map<String, dynamic> response = await f.fetch();
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      eventlistProecces = false;
+      //Tekrar çekmeyi dene
+      getnewslist();
+      return;
+    }
+
+    newsList.clear();
+    for (dynamic element in response['icerik']) {
+      if (mounted) {
+        setState(() {
+          newsList.add(
+            News(
+              newsID: element["haberID"],
+              newsTitle: element["haberbaslik"],
+              newsContent: "",
+              author: element["yazar"],
+              newsImage: element["resimminnak"],
+              newssummary: element["ozet"],
+              authoravatar: element["yazaravatar"],
+              newsViews: element["goruntulen"],
+            ),
+          );
+        });
+      }
+    }
+    eventlistProecces = false;
   }
 
   void _onSearchTextChanged() {
@@ -127,7 +172,7 @@ class _SearchPagePage extends State<SearchPage>
                   ),
                   backgroundColor: Colors.black,
                 ),
-                title: CustomText().costum1(response["icerik"][i]["Value"],
+                title: CustomText.costum1(response["icerik"][i]["Value"],
                     weight: FontWeight.bold),
                 trailing: response["icerik"][i]["turu"] == "oyuncu"
                     ? const Icon(Icons.person)

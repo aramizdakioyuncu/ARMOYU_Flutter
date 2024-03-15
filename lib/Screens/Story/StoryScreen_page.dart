@@ -7,7 +7,6 @@ import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -146,8 +145,8 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
     for (var element in response["icerik"]) {
       viewerlist.add(
         User(
-          username: element["hgoruntuleyen_kullaniciad"],
-          displayname: element["hgoruntuleyen_adsoyad"],
+          userName: element["hgoruntuleyen_kullaniciad"],
+          displayName: element["hgoruntuleyen_adsoyad"],
           avatar: element["hgoruntuleyen_avatar"],
         ),
       );
@@ -180,7 +179,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
-                    CustomText().costum1("Görüntüleyenler"),
+                    CustomText.costum1("Görüntüleyenler"),
                     const SizedBox(height: 5),
                     const Divider(),
                     Expanded(
@@ -214,7 +213,8 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
             children: [
               InkWell(
                 onTap: () {
-                  if (widget.story[0].ownerusername == AppUser.userName) {
+                  if (widget.story[0].ownerusername ==
+                      ARMOYU.Appuser.userName) {
                     _stopAnimation();
                     Navigator.push(
                       context,
@@ -239,29 +239,30 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                   ),
                   child: Align(
                     alignment: Alignment.bottomRight,
-                    child: widget.story[0].ownerusername == AppUser.userName
-                        ? Container(
-                            height: 12,
-                            width: 12,
-                            decoration: const BoxDecoration(
-                              color: Colors.black,
-                              borderRadius: BorderRadius.all(
-                                Radius.elliptical(100, 100),
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.add,
-                              size: 10,
-                              color: Colors.blue,
-                            ),
-                          )
-                        : null,
+                    child:
+                        widget.story[0].ownerusername == ARMOYU.Appuser.userName
+                            ? Container(
+                                height: 12,
+                                width: 12,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.elliptical(100, 100),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.add,
+                                  size: 10,
+                                  color: Colors.blue,
+                                ),
+                              )
+                            : null,
                   ),
                 ),
               ),
               const SizedBox(width: 5),
               Text(
-                widget.story[0].ownerusername == AppUser.userName
+                widget.story[0].ownerusername == ARMOYU.Appuser.userName
                     ? "Hikayen"
                     : widget.story[0].ownerusername,
                 style: const TextStyle(fontSize: 13),
@@ -340,7 +341,8 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                             _startAnimation();
                           },
                           onVerticalDragUpdate: (details) {
-                            if (widget.story[index].ownerID != AppUser.ID) {
+                            if (widget.story[index].ownerID !=
+                                ARMOYU.Appuser.userID) {
                               return;
                             }
                             if (details.delta.dy > 0) {
@@ -353,6 +355,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                           child: Stack(
                             children: [
                               InteractiveViewer(
+                                scaleEnabled: false,
                                 child: Center(
                                   child: Hero(
                                     tag: 'imageTag',
@@ -380,14 +383,15 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                           ),
                         ),
                       ),
-                      if (widget.story[index].ownerusername != AppUser.userName)
+                      if (widget.story[index].ownerusername !=
+                          ARMOYU.Appuser.userName)
                         Row(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
                                   foregroundImage: CachedNetworkImageProvider(
-                                      AppUser.avatar),
+                                      ARMOYU.Appuser.avatar!.mediaURL.minURL),
                                   radius: 20),
                             ),
                             Expanded(

@@ -2,7 +2,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfields {
-  Widget costum1(
+  static Widget costum1(
       String text, TextEditingController controller, bool isPassword, Icon icon,
       [TextInputType? type]) {
     return TextField(
@@ -30,7 +30,7 @@ class CustomTextfields {
     );
   }
 
-  Widget number(
+  static Widget number(
     String text,
     TextEditingController controller,
     int length,

@@ -1,9 +1,9 @@
-// ignore_for_file: non_constant_identifier_names, prefer_if_null_operators
-
 import 'dart:convert';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
-import 'package:ARMOYU/Services/appuser.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,8 +32,8 @@ class FunctionService {
 
 ///////////Fonksiyonlar Başlangıcı
   Future<Map<String, dynamic>> login(
-      String username, String password, bool System) async {
-    if (!System) {
+      String username, String password, bool system) async {
+    if (!system) {
       password = generateMd5(password);
     }
 
@@ -47,8 +47,8 @@ class FunctionService {
       return jsonString;
     }
 
-    AppUser.userName = username;
-    AppUser.password = password;
+    ARMOYU.Appuser.userName = username;
+    ARMOYU.Appuser.password = password;
 
     Map<String, String> formData = {"param1": "value1"};
     String link = "0/0/0/";
@@ -73,43 +73,96 @@ class FunctionService {
       return jsonString;
     }
 
-    AppUser.ID = int.parse(response["oyuncuID"]);
-    AppUser.userName = response["kullaniciadi"];
-    AppUser.firstName = response["adi"];
-    AppUser.lastName = response["soyadi"];
-    AppUser.displayName = response["adim"];
-    AppUser.avatar = response["presimminnak"];
-    AppUser.avatarbetter = response["presimufak"];
-    AppUser.banneravatar = response["parkaresimminnak"];
-    AppUser.banneravatarbetter = response["parkaresimufak"];
+    ARMOYU.Appuser = User(
+        userID: response["oyuncuID"],
+        userName: response["kullaniciadi"],
+        password: password,
+        firstName: response["adi"],
+        lastName: response["soyadi"],
+        displayName: response["adim"],
+        userMail: response["eposta"],
+        aboutme: response["hakkimda"],
+        avatar: Media(
+          mediaURL: MediaURL(
+            bigURL: response["presim"],
+            normalURL: response["presimufak"],
+            minURL: response["presimminnak"],
+          ),
+        ),
+        banner: Media(
+          mediaURL: MediaURL(
+            bigURL: response["parkaresim"],
+            normalURL: response["parkaresimufak"],
+            minURL: response["parkaresimminnak"],
+          ),
+        ),
+        burc: response["burc"],
+        invitecode: response["davetkodu"],
+        job: response["isyeriadi"],
+        level: response["seviye"],
+        awardsCount: response["oduller"],
+        postsCount: response["gonderiler"],
+        friendsCount: response["arkadaslar"],
+        country: response["ulkesi"],
+        province: response["ili"],
+        registerDate: response["kayittarihikisa"],
+        role: response["yetkisiacikla"],
+        rolecolor: response["yetkirenk"],
+        favTeam: Team(
+          teamID: response["favoritakim"]["takim_ID"],
+          name: response["favoritakim"]["takim_adi"],
+          logo: response["favoritakim"]["takim_logo"],
+        ));
 
-    AppUser.level = response["seviye"];
-    AppUser.friendsCount = response["arkadaslar"];
-    AppUser.postsCount = response["gonderiler"];
-    AppUser.awardsCount = response["oduller"];
+    // AppUser.ID = response["oyuncuID"];
+    // AppUser.userName = response["kullaniciadi"];
+    // AppUser.firstName = response["adi"];
+    // AppUser.lastName = response["soyadi"];
+    // AppUser.displayName = response["adim"];
+    // AppUser.avatar = response["presimminnak"];
+    // AppUser.avatarbetter = response["presimufak"];
+    // AppUser.banneravatar = response["parkaresimminnak"];
+    // AppUser.banneravatarbetter = response["parkaresimufak"];
 
-    AppUser.mail = response["eposta"];
+    // AppUser.level = response["seviye"];
+    // AppUser.friendsCount = response["arkadaslar"];
+    // AppUser.postsCount = response["gonderiler"];
+    // AppUser.awardsCount = response["oduller"];
 
-    AppUser.country = response["ulkesi"] == null ? "" : response["ulkesi"];
-    AppUser.province = response["ili"] == null ? "" : response["ili"];
-    AppUser.registerdate = response["kayittarihikisa"];
+    // AppUser.mail = response["eposta"];
+    // if (response["ulkesi"] == null) {
+    //   AppUser.country = "";
+    // } else {
+    //   AppUser.country = response["ulkesi"];
+    // }
+    // if (response["ili"] == null) {
+    //   AppUser.province = "";
+    // } else {
+    //   AppUser.province = response["ili"];
+    // }
+    // AppUser.registerdate = response["kayittarihikisa"];
 
-    if (response["isyeriadi"] != null) {
-      AppUser.job = response["isyeriadi"];
-    }
-    AppUser.role = response["yetkisiacikla"];
-    AppUser.rolecolor = response["yetkirenk"];
+    // if (response["isyeriadi"] != null) {
+    //   AppUser.job = response["isyeriadi"];
+    // }
+    // AppUser.role = response["yetkisiacikla"];
+    // AppUser.rolecolor = response["yetkirenk"];
 
-    AppUser.aboutme = response["hakkimda"];
-    AppUser.burc = response["burc"] == null ? "" : response["burc"];
+    // AppUser.aboutme = response["hakkimda"];
 
-    if (response["favoritakim"] != null) {
-      AppUser.favTeam = Team(
-        teamID: response["favoritakim"]["takim_ID"],
-        name: response["favoritakim"]["takim_adi"],
-        logo: response["favoritakim"]["takim_logo"],
-      );
-    }
+    // if (response["burc"] == null) {
+    //   AppUser.burc = "";
+    // } else {
+    //   AppUser.burc = response["burc"];
+    // }
+
+    // if (response["favoritakim"] != null) {
+    //   AppUser.favTeam = Team(
+    //     teamID: response["favoritakim"]["takim_ID"],
+    //     name: response["favoritakim"]["takim_adi"],
+    //     logo: response["favoritakim"]["takim_logo"],
+    //   );
+    // }
 
     final prefs = await SharedPreferences.getInstance();
 
@@ -122,7 +175,11 @@ class FunctionService {
 
     if (cevap != "Bilinmeyen") {
       OneSignalApi.setupOneSignal(
-          AppUser.ID, AppUser.userName, AppUser.mail, AppUser.role.toString());
+        ARMOYU.Appuser.userID!,
+        ARMOYU.Appuser.userName!,
+        ARMOYU.Appuser.userMail!,
+        ARMOYU.Appuser.role.toString(),
+      );
     }
 
     Map<String, dynamic> jsonData = {
@@ -154,8 +211,8 @@ class FunctionService {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('username');
     prefs.remove('password');
-    AppUser.userName = "0";
-    AppUser.password = "0";
+    ARMOYU.Appuser.userName = "0";
+    ARMOYU.Appuser.password = "0";
 
     Map<String, dynamic> jsonData = {
       'durum': 1,
@@ -233,8 +290,8 @@ class FunctionService {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getprofilePosts(int page, int UserID) async {
-    Map<String, String> formData = {"oyuncubakid": "$UserID", "limit": "20"};
+  Future<Map<String, dynamic>> getprofilePosts(int page, int userID) async {
+    Map<String, String> formData = {"oyuncubakid": "$userID", "limit": "20"};
     Map<String, dynamic> jsonData =
         await apiService.request("sosyal/liste/$page/", formData);
     return jsonData;

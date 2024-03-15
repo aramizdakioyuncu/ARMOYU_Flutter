@@ -2,7 +2,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomText {
-  Widget costum1(String text, {double? size, FontWeight? weight}) {
+  static Widget costum1(String text, {double? size, FontWeight? weight}) {
     return Text(
       text,
       style: TextStyle(

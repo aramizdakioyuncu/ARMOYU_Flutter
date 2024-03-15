@@ -36,15 +36,12 @@ class _NewslistStatePage extends State<NewslistPage>
     if (eventlistProecces) {
       return;
     }
-
     eventlistProecces = true;
-
     FunctionsNews f = FunctionsNews();
     Map<String, dynamic> response = await f.fetch();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       eventlistProecces = false;
-
       //Tekrar çekmeyi dene
       getnewslist();
       return;

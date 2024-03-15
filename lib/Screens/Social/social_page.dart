@@ -7,7 +7,6 @@ import 'package:ARMOYU/Models/Story/story.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/Skeletons/storycircle_skeleton.dart';
@@ -55,11 +54,11 @@ class _SocialPageState extends State<SocialPage>
   @override
   void initState() {
     super.initState();
-    userID = AppUser.ID;
-    userName = AppUser.displayName;
-    userEmail = AppUser.mail;
-    useravatar = AppUser.avatar;
-    userbanner = AppUser.banneravatar;
+    userID = ARMOYU.Appuser.userID!;
+    userName = ARMOYU.Appuser.displayName!;
+    userEmail = ARMOYU.Appuser.userMail!;
+    useravatar = ARMOYU.Appuser.avatar!.mediaURL.minURL;
+    userbanner = ARMOYU.Appuser.banner!.mediaURL.minURL;
 
     loadSkeletonpost();
     // ScrollController'ı dinle
@@ -90,9 +89,9 @@ class _SocialPageState extends State<SocialPage>
     if (response["icerik"].length == 0) {
       widgetStoriescard.add(
         StoryList(
-          ownerID: AppUser.ID,
+          ownerID: ARMOYU.Appuser.userID!,
           ownerusername: "Hikayen",
-          owneravatar: AppUser.avatarbetter,
+          owneravatar: ARMOYU.Appuser.avatar!.mediaURL.minURL,
           story: null,
           isView: true,
         ),
@@ -104,12 +103,12 @@ class _SocialPageState extends State<SocialPage>
 
       if (i == 0) {
         if (response["icerik"][i]["oyuncu_ID"].toString() !=
-            AppUser.ID.toString()) {
+            ARMOYU.Appuser.userID.toString()) {
           widgetStoriescard.add(
             StoryList(
-              ownerID: AppUser.ID,
+              ownerID: ARMOYU.Appuser.userID!,
               ownerusername: "Hikayen",
-              owneravatar: AppUser.avatarbetter,
+              owneravatar: ARMOYU.Appuser.avatar!.mediaURL.minURL,
               story: null,
               isView: true,
             ),
@@ -198,27 +197,11 @@ class _SocialPageState extends State<SocialPage>
     int dynamicItemCount = response["icerik"].length;
     for (int i = 0; i < dynamicItemCount; i++) {
       List<Media> media = [];
-      List<int> mediaIDs = [];
-      List<int> mediaownerIDs = [];
-      List<String> medias = [];
-      List<String> mediasbetter = [];
-      List<String> mediastype = [];
-      List<String> mediadirection = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
         int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
 
         for (int j = 0; j < mediaItemCount; j++) {
-          mediaIDs.add(response["icerik"][i]["paylasimfoto"][j]["fotoID"]);
-          mediaownerIDs.add(response["icerik"][i]["sahipID"]);
-          medias.add(response["icerik"][i]["paylasimfoto"][j]["fotominnakurl"]);
-          mediasbetter
-              .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
-          mediastype.add(
-              response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
-          mediadirection
-              .add(response["icerik"][i]["paylasimfoto"][j]["medyayonu"]);
-
           media.add(
             Media(
               mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
@@ -264,12 +247,6 @@ class _SocialPageState extends State<SocialPage>
               postText: response["icerik"][i]["paylasimicerik"],
               postDate: response["icerik"][i]["paylasimzamangecen"],
               media: media,
-              mediaIDs: mediaIDs,
-              mediaownerIDs: mediaownerIDs,
-              mediaUrls: medias,
-              mediabetterUrls: mediasbetter,
-              mediatype: mediastype,
-              mediadirection: mediadirection,
               postlikeCount: response["icerik"][i]["begenisay"],
               postcommentCount: response["icerik"][i]["yorumsay"],
               postMecomment: ismecomment,
@@ -281,16 +258,16 @@ class _SocialPageState extends State<SocialPage>
           if (i / 3 == 1) {
             widgetPosts.add(ARMOYUWidget(
                     scrollController: ScrollController(),
-                    content: listTPCard,
-                    firstFetch: listTPCard.isEmpty)
+                    content: listPOPCard,
+                    firstFetch: listPOPCard.isEmpty)
                 .widgetPOPlist());
           }
           if (i / 7 == 1) {
             widgetPosts.add(
               ARMOYUWidget(
                       scrollController: ScrollController(),
-                      content: listPOPCard,
-                      firstFetch: listPOPCard.isEmpty)
+                      content: listTPCard,
+                      firstFetch: listTPCard.isEmpty)
                   .widgetTPlist(),
             );
           }

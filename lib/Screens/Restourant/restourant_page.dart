@@ -171,8 +171,8 @@ class _RestourantPage extends State<RestourantPage> {
                                   vertical: 4, horizontal: 5),
                               child: Column(
                                 children: [
-                                  CustomText().costum1("Latte Macchiato"),
-                                  CustomText().costum1("100TL"),
+                                  CustomText.costum1("Latte Macchiato"),
+                                  CustomText.costum1("100TL"),
                                 ],
                               ),
                             ),

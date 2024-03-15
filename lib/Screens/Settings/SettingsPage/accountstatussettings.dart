@@ -1,5 +1,4 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -35,12 +34,13 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
               child: Column(
                 children: [
                   CircleAvatar(
-                    foregroundImage: CachedNetworkImageProvider(AppUser.avatar),
+                    foregroundImage: CachedNetworkImageProvider(
+                        ARMOYU.Appuser.avatar!.mediaURL.minURL),
                     radius: 60,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CustomText().costum1(AppUser.displayName,
+                    child: CustomText.costum1(ARMOYU.Appuser.displayName!,
                         weight: FontWeight.bold, size: 22),
                   ),
                   RichText(
@@ -71,7 +71,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.photo_size_select_actual_rounded),
-                  title: CustomText().costum1("Kaldırılan İçerikler"),
+                  title: CustomText.costum1("Kaldırılan İçerikler"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -89,7 +89,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.report),
-                  title: CustomText().costum1("Kısıtlanmaların"),
+                  title: CustomText.costum1("Kısıtlanmaların"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,

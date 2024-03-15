@@ -1,5 +1,4 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
@@ -48,7 +47,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                AppUser.avatar,
+                                ARMOYU.Appuser.avatar!.mediaURL.minURL,
                               ),
                             ),
                           )

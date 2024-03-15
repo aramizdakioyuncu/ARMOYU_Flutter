@@ -1,10 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
-import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Widgets/buttons.dart';
@@ -49,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
         password == "" ||
         rpassword == "") {
       String text = "Boş alan bırakmayınız!";
-      CustomNotifications.stackbarNotification(context, text);
+      ARMOYUWidget.stackbarNotification(context, text);
       log(text);
 
       setState(() {
@@ -59,7 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
     if (password != rpassword) {
       String text = "Parolalarınız eşleşmedi!";
-      CustomNotifications.stackbarNotification(context, text);
+      ARMOYUWidget.stackbarNotification(context, text);
       log(text);
 
       setState(() {
@@ -74,7 +72,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (response["durum"] == 0) {
       String text = response["aciklama"];
-      CustomNotifications.stackbarNotification(context, text);
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(context, text);
+      }
       log(text);
       setState(() {
         registerProccess = false;
@@ -84,8 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (response["durum"] == 1) {
       usernameController.text = _usernameController.text;
-
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
       setState(() {
         registerProccess = false;
       });
@@ -113,16 +114,16 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            CustomTextfields().costum1(
+            CustomTextfields.costum1(
                 "Adınız", _nameController, false, const Icon(Icons.person)),
             const SizedBox(height: 16),
-            CustomTextfields().costum1("Soyadınız", _lastnameController, false,
+            CustomTextfields.costum1("Soyadınız", _lastnameController, false,
                 const Icon(Icons.person)),
             const SizedBox(height: 16),
-            CustomTextfields().costum1("Kullanıcı Adınız", _usernameController,
+            CustomTextfields.costum1("Kullanıcı Adınız", _usernameController,
                 false, const Icon(Icons.person)),
             const SizedBox(height: 16),
-            CustomTextfields().costum1(
+            CustomTextfields.costum1(
               "E-posta",
               _emailController,
               false,
@@ -130,13 +131,13 @@ class _RegisterPageState extends State<RegisterPage> {
               TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields().costum1("Şifreniz", _passwordController, true,
+            CustomTextfields.costum1("Şifreniz", _passwordController, true,
                 const Icon(Icons.lock_outline)),
             const SizedBox(height: 16),
-            CustomTextfields().costum1("Şifreniz Tekrar", _rpasswordController,
+            CustomTextfields.costum1("Şifreniz Tekrar", _rpasswordController,
                 true, const Icon(Icons.lock_outline)),
             const SizedBox(height: 16),
-            CustomButtons().costum1("Kayıt Ol", _register, registerProccess),
+            CustomButtons.costum1("Kayıt Ol", _register, registerProccess),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

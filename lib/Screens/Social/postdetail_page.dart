@@ -8,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
 
 class PostDetailPage extends StatefulWidget {
@@ -105,27 +104,11 @@ class _PostDetailPage extends State<PostDetailPage>
     }
 
     List<Media> media = [];
-    List<int> mediaIDs = [];
-    List<int> mediaownerIDs = [];
-    List<String> medias = [];
-    List<String> mediasbetter = [];
-    List<String> mediastype = [];
-    List<String> mediadirection = [];
 
     if (response["icerik"][0]["paylasimfoto"].length != 0) {
       int mediaItemCount = response["icerik"][0]["paylasimfoto"].length;
 
       for (int j = 0; j < mediaItemCount; j++) {
-        mediaIDs.add(response["icerik"][0]["paylasimfoto"][j]["fotoID"]);
-        mediaownerIDs.add(response["icerik"][0]["sahipID"]);
-        medias.add(response["icerik"][0]["paylasimfoto"][j]["fotominnakurl"]);
-        mediasbetter
-            .add(response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"]);
-        mediastype
-            .add(response["icerik"][0]["paylasimfoto"][j]["paylasimkategori"]);
-        mediadirection
-            .add(response["icerik"][0]["paylasimfoto"][j]["medyayonu"]);
-
         media.add(
           Media(
             mediaID: response["icerik"][0]["paylasimfoto"][j]["fotoID"],
@@ -154,12 +137,6 @@ class _PostDetailPage extends State<PostDetailPage>
       postText: response["icerik"][0]["paylasimicerik"],
       postDate: response["icerik"][0]["paylasimzamangecen"],
       media: media,
-      mediaIDs: mediaIDs,
-      mediaownerIDs: mediaownerIDs,
-      mediaUrls: medias,
-      mediabetterUrls: mediasbetter,
-      mediatype: mediastype,
-      mediadirection: mediadirection,
       postlikeCount: response["icerik"][0]["begenisay"],
       postcommentCount: response["icerik"][0]["yorumsay"],
       postMecomment: response["icerik"][0]["benyorumladim"],
@@ -203,7 +180,8 @@ class _PostDetailPage extends State<PostDetailPage>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                  foregroundImage: CachedNetworkImageProvider(AppUser.avatar),
+                  foregroundImage: CachedNetworkImageProvider(
+                      ARMOYU.Appuser.avatar!.mediaURL.minURL),
                   radius: 20),
             ),
             Expanded(

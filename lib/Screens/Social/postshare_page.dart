@@ -1,9 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
@@ -28,6 +25,7 @@ class _PostSharePageState extends State<PostSharePage>
   TextEditingController textController = TextEditingController();
   TextEditingController postsharetext = TextEditingController();
   List<XFile> imagePath = [];
+  List<Media> media = [];
   bool postshareProccess = false;
 
   Future<void> sharePost() async {
@@ -35,21 +33,28 @@ class _PostSharePageState extends State<PostSharePage>
       return;
     }
 
-    postshareProccess = true;
+    setState(() {
+      postshareProccess = true;
+    });
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response =
         await funct.share(textController.text, imagePath);
     if (response["durum"] == 0) {
       postsharetext.text = response["aciklama"].toString();
-      postshareProccess = false;
+      setState(() {
+        postshareProccess = false;
+      });
       return;
     }
 
     if (response["durum"] == 1) {
       postsharetext.text = response["aciklama"].toString();
-      postshareProccess = false;
-
-      Navigator.of(context).pop();
+      setState(() {
+        postshareProccess = false;
+      });
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -83,7 +88,21 @@ class _PostSharePageState extends State<PostSharePage>
                       List<XFile> selectedImages = await AppCore.pickImages();
                       if (selectedImages.isNotEmpty) {
                         setState(() {
+                          //Çok Önemli sakın silme
                           imagePath.addAll(selectedImages);
+                          //
+                          for (XFile element in selectedImages) {
+                            media.add(
+                              Media(
+                                mediaID: element.hashCode,
+                                mediaURL: MediaURL(
+                                  bigURL: element.path,
+                                  normalURL: element.path,
+                                  minURL: element.path,
+                                ),
+                              ),
+                            );
+                          }
                         });
                       }
                     },
@@ -91,12 +110,12 @@ class _PostSharePageState extends State<PostSharePage>
                   ),
 
                   // Görsellerin önizlemesi
-                  if (imagePath.isNotEmpty)
+                  if (media.isNotEmpty)
                     SizedBox(
                       height: 100,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: imagePath.length,
+                        itemCount: media.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -104,22 +123,14 @@ class _PostSharePageState extends State<PostSharePage>
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => MediaViewer(
-                                    media: [
-                                      Media(
-                                        mediaID: imagePath[index].hashCode,
-                                        mediaURL: MediaURL(
-                                            bigURL: imagePath[index].path,
-                                            normalURL: imagePath[index].path,
-                                            minURL: imagePath[index].path),
-                                      )
-                                    ],
-                                    initialIndex: 0,
+                                    media: media,
+                                    initialIndex: index,
                                     isFile: true,
                                   ),
                                 ));
                               },
                               child: Image.file(
-                                File(imagePath[index].path),
+                                File(media[index].mediaURL.bigURL),
                                 width: 100,
                                 height: 100,
                               ),
@@ -135,8 +146,7 @@ class _PostSharePageState extends State<PostSharePage>
               height: 100,
               child: Column(
                 children: [
-                  CustomButtons()
-                      .costum1("Paylaş", sharePost, postshareProccess),
+                  CustomButtons.costum1("Paylaş", sharePost, postshareProccess),
                   const SizedBox(height: 10),
                   Text(postsharetext.text),
                 ],

@@ -4,10 +4,10 @@ import 'dart:developer';
 
 import 'dart:isolate';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Chat/chat_message.dart';
 import 'package:ARMOYU/Screens/Chat/chatcall_page.dart';
 import 'package:ARMOYU/Services/Socket/socket.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -83,7 +83,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
     isolateListen = await Isolate.spawn(socketListenMessage, [
       receiveportListen!.sendPort,
-      AppUser.ID.toString(),
+      ARMOYU.Appuser.userID.toString(),
       widget.userID.toString()
     ]);
 
@@ -93,11 +93,13 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
         Map<String, dynamic> responseData = jsonData;
 
-        if (responseData["sender_id"].toString() == AppUser.ID.toString()) {
+        if (responseData["sender_id"].toString() ==
+            ARMOYU.Appuser.userID.toString()) {
           return;
         }
 
-        if (responseData["receiver_id"].toString() == AppUser.ID.toString()) {
+        if (responseData["receiver_id"].toString() ==
+            ARMOYU.Appuser.userID.toString()) {
           message = responseData["message"].toString();
         }
 
@@ -130,8 +132,11 @@ class _ChatDetailPage extends State<ChatDetailPage>
       }
     });
 
-    ARMOYU_Socket socket2 = ARMOYU_Socket(AppUser.ID.toString(),
-        AppUser.userName, AppUser.password, widget.userID.toString());
+    ARMOYU_Socket socket2 = ARMOYU_Socket(
+        ARMOYU.Appuser.userID.toString(),
+        ARMOYU.Appuser.userName!,
+        ARMOYU.Appuser.password!,
+        widget.userID.toString());
 
     receiveportSend!.listen(
       (message) {
@@ -150,8 +155,8 @@ class _ChatDetailPage extends State<ChatDetailPage>
     log("$senderID >>>> $receiverID");
 
     try {
-      ARMOYU_Socket socket2 = ARMOYU_Socket(
-          senderID, AppUser.userName, AppUser.password, receiverID);
+      ARMOYU_Socket socket2 = ARMOYU_Socket(senderID, ARMOYU.Appuser.userName!,
+          ARMOYU.Appuser.password!, receiverID);
       socket2.receiveMessages(sendPort);
     } catch (e) {
       log(e.toString());
@@ -368,12 +373,12 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         setState(() {
                           chatList.add(
                             ChatMessage(
-                              avatar: AppUser.avatar,
-                              displayName: AppUser.displayName,
+                              avatar: ARMOYU.Appuser.avatar!.mediaURL.minURL,
+                              displayName: ARMOYU.Appuser.displayName!,
                               isMe: true,
                               messageContext: message,
                               messageID: 0,
-                              userID: AppUser.ID,
+                              userID: ARMOYU.Appuser.userID!,
                             ),
                           );
                           try {

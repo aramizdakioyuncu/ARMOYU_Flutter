@@ -35,13 +35,13 @@ class _SettingsHelpPage extends State<SettingsHelpPage> {
             Column(
               children: [
                 ListTile(
-                  title: CustomText().costum1("Sorun Bildir"),
+                  title: CustomText.costum1("Sorun Bildir"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Destek Talepleri"),
+                  title: CustomText.costum1("Destek Talepleri"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),

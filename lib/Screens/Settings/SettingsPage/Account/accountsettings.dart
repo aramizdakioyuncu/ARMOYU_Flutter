@@ -31,7 +31,7 @@ class _SettingsAccountPage extends State<SettingsAccountPage> {
             children: [
               ListTile(
                 leading: const Icon(Icons.security),
-                title: CustomText().costum1("Şifre ve Güvenlik"),
+                title: CustomText.costum1("Şifre ve Güvenlik"),
                 onTap: () {},
                 tileColor: ARMOYU.bacgroundcolor,
                 trailing: const Row(
@@ -43,7 +43,7 @@ class _SettingsAccountPage extends State<SettingsAccountPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.manage_accounts_rounded),
-                title: CustomText().costum1("Kişisel Detaylar"),
+                title: CustomText.costum1("Kişisel Detaylar"),
                 onTap: () {},
                 tileColor: ARMOYU.bacgroundcolor,
                 trailing: const Row(
@@ -55,7 +55,7 @@ class _SettingsAccountPage extends State<SettingsAccountPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.task_alt_outlined),
-                title: CustomText().costum1("Hesabını Doğrula"),
+                title: CustomText.costum1("Hesabını Doğrula"),
                 onTap: () {},
                 tileColor: ARMOYU.bacgroundcolor,
                 trailing: const Row(
@@ -67,7 +67,7 @@ class _SettingsAccountPage extends State<SettingsAccountPage> {
               ),
               ListTile(
                 leading: const Icon(Icons.lock),
-                title: CustomText().costum1("Hesap Gizliliği"),
+                title: CustomText.costum1("Hesap Gizliliği"),
                 onTap: () {},
                 tileColor: ARMOYU.bacgroundcolor,
                 trailing: const Row(

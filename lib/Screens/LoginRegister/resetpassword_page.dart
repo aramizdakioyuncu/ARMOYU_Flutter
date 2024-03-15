@@ -1,9 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Widgets/notifications.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Widgets/buttons.dart';
@@ -21,7 +20,6 @@ class ResetPasswordPage extends StatefulWidget {
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
-  // final TextEditingController _birthdayController = TextEditingController();
 
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -57,7 +55,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     if (_emailController.text == "" || _usernameController.text == "") {
       String text = "Boş olan bırakmayın!";
-      CustomNotifications.stackbarNotification(context, text);
+      ARMOYUWidget.stackbarNotification(context, text);
       log(text);
 
       setState(() {
@@ -84,7 +82,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     if (response["durum"] == 0) {
       String text = response["aciklama"];
-      CustomNotifications.stackbarNotification(context, text);
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(context, text);
+      }
       log(text);
 
       setState(() {
@@ -108,7 +108,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         _passwordController.text == "" ||
         _repasswordController.text == "") {
       String text = "Boş alan bırakmayın!";
-      CustomNotifications.stackbarNotification(context, text);
+      ARMOYUWidget.stackbarNotification(context, text);
       log(text);
 
       setState(() {
@@ -119,7 +119,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     if (_passwordController.text != _repasswordController.text) {
       String text = "Parolalar uyuşmadı!";
-      CustomNotifications.stackbarNotification(context, text);
+      ARMOYUWidget.stackbarNotification(context, text);
       log(text);
 
       setState(() {
@@ -145,7 +145,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
 
     if (response["durum"] == 0) {
       String text = response["aciklama"];
-      CustomNotifications.stackbarNotification(context, text);
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(context, text);
+      }
       log(text);
 
       setState(() {
@@ -155,7 +157,10 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
     step1 = true;
     step2 = false;
-    Navigator.of(context).pop();
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   List<bool> isSelected = [false, true];
@@ -187,13 +192,13 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   visible: step1,
                   child: Column(
                     children: [
-                      CustomTextfields().costum1("Kullanıcı Adı",
+                      CustomTextfields.costum1("Kullanıcı Adı",
                           _usernameController, false, const Icon(Icons.person)),
                       const SizedBox(height: 16),
-                      CustomTextfields().costum1("E-posta", _emailController,
+                      CustomTextfields.costum1("E-posta", _emailController,
                           false, const Icon(Icons.email)),
                       const SizedBox(height: 16),
-                      // CustomButtons().Costum2(Icon(Icons.date_range),
+                      // CustomButtons.Costum2(Icon(Icons.date_range),
                       //     _birthdayController.text, datepicker),
                       // SizedBox(height: 16),
                       ToggleButtons(
@@ -229,7 +234,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      CustomButtons().costum1(
+                      CustomButtons.costum1(
                           "Devam et", forgotmypassword, resetpasswordProcess),
                       const SizedBox(height: 16),
                       Row(
@@ -262,19 +267,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                     children: [
                       Text(passwordtimer.toString()),
                       const SizedBox(height: 10),
-                      CustomTextfields().number(
+                      CustomTextfields.number(
                           "Kod", _codeController, 6, const Icon(Icons.sms)),
                       const SizedBox(height: 16),
-                      CustomTextfields().costum1("Şifre", _passwordController,
+                      CustomTextfields.costum1("Şifre", _passwordController,
                           true, const Icon(Icons.lock_outline)),
                       const SizedBox(height: 16),
-                      CustomTextfields().costum1(
+                      CustomTextfields.costum1(
                           "Şifre Tekrar",
                           _repasswordController,
                           true,
                           const Icon(Icons.lock_outline)),
                       const SizedBox(height: 16),
-                      CustomButtons().costum1("Kaydet", forgotmypassworddone,
+                      CustomButtons.costum1("Kaydet", forgotmypassworddone,
                           resetpasswordauthProcess),
                     ],
                   ),

@@ -2,12 +2,11 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ARMOYU/Services/appuser.dart';
 
 class WidgetPostComments extends StatefulWidget {
   final int userID;
@@ -135,7 +134,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
               color: favoritelikestatus,
             ),
             Visibility(
-              visible: AppUser.ID == widget.userID,
+              visible: ARMOYU.Appuser.userID == widget.userID,
               child: IconButton(
                 onPressed: () async {
                   FunctionsPosts funct = FunctionsPosts();

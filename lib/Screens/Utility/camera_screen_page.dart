@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -20,7 +18,7 @@ class _CameraScreenState extends State<CameraScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   List<XFile> imagePath = [];
-
+  List<Media> media = [];
   @override
   void initState() {
     super.initState();
@@ -60,7 +58,9 @@ class _CameraScreenState extends State<CameraScreen> {
     }
 
     // Yeni kamera tanımını al ve başlat
-    _initializeControllerFuture = _initializeCamera();
+    setState(() {
+      _initializeControllerFuture = _initializeCamera();
+    });
   }
 
   @override
@@ -75,6 +75,16 @@ class _CameraScreenState extends State<CameraScreen> {
       // Alınan resmi kullanabilirsiniz
       setState(() {
         imagePath.add(picture);
+
+        media.add(
+          Media(
+            mediaID: picture.hashCode,
+            mediaURL: MediaURL(
+                bigURL: picture.path,
+                normalURL: picture.path,
+                minURL: picture.path),
+          ),
+        );
       });
     } catch (e) {
       debugPrint('Error taking picture: $e');
@@ -92,7 +102,7 @@ class _CameraScreenState extends State<CameraScreen> {
               children: [
                 Expanded(child: CameraPreview(_controller)),
                 SizedBox(
-                  height: 60,
+                  height: 100,
                   child: Align(
                     alignment: Alignment.center,
                     child: Row(
@@ -124,40 +134,36 @@ class _CameraScreenState extends State<CameraScreen> {
                     ),
                   ),
                 ),
-                if (imagePath.isNotEmpty)
-                  SizedBox(
-                    height: 100,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: imagePath.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => MediaViewer(
-                                  media: [
-                                    Media(
-                                      mediaURL: MediaURL(
-                                          bigURL: imagePath[index].path,
-                                          normalURL: imagePath[index].path,
-                                          minURL: imagePath[index].path),
-                                    )
-                                  ],
-                                  initialIndex: 0,
-                                  isFile: true,
-                                ),
-                              ));
-                            },
-                            child: Image.file(
-                              File(imagePath[index].path),
-                              width: 100,
-                              height: 100,
+                if (media.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: media.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MediaViewer(
+                                    media: media,
+                                    initialIndex: index,
+                                    isFile: true,
+                                  ),
+                                ));
+                              },
+                              child: Image.file(
+                                File(media[index].mediaURL.bigURL),
+                                width: 100,
+                                height: 100,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   )
               ],

@@ -5,9 +5,7 @@ import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
-import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -87,7 +85,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     ismediaProcces = true;
     FunctionsMedia f = FunctionsMedia();
     Map<String, dynamic> response =
-        await f.fetch(AppUser.ID, "-1", gallerycounter + 1);
+        await f.fetch(ARMOYU.Appuser.userID!, "-1", gallerycounter + 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -126,11 +124,11 @@ class _GalleryScreenState extends State<GalleryScreen>
             tabs: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomText().costum1('ARMOYU Cloud', size: 15.0),
+                child: CustomText.costum1('ARMOYU Cloud', size: 15.0),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomText().costum1('Telefon', size: 15.0),
+                child: CustomText.costum1('Telefon', size: 15.0),
               )
             ],
           ),
@@ -179,6 +177,8 @@ class _GalleryScreenState extends State<GalleryScreen>
                                                     MediaViewer(
                                                   media: [
                                                     Media(
+                                                      mediaID:
+                                                          imagePath.hashCode,
                                                       mediaURL: MediaURL(
                                                           bigURL:
                                                               imagePath[index]

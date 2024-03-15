@@ -5,7 +5,7 @@ import 'package:detectable_text_field/widgets/detectable_text.dart';
 import 'package:flutter/material.dart';
 
 class CustomDedectabletext {
-  Widget costum1(String text, int trimlines, double textsize) {
+  static Widget costum1(String text, int trimlines, double textsize) {
     return DetectableText(
       trimLines: trimlines,
       colorClickableText: Colors.pink,

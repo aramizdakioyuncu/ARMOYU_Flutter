@@ -96,8 +96,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start, // Sola hizala
             children: [
-              CustomText().costum1(widget.displayname, weight: FontWeight.bold),
-              CustomText().costum1(widget.username),
+              CustomText.costum1(widget.displayname, weight: FontWeight.bold),
+              CustomText.costum1(widget.username),
             ],
           ),
         ),
@@ -105,16 +105,15 @@ class _UserListWidgetState extends State<UserListWidget> {
           visible: widget.isFriend,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomButtons()
-                .costum1(buttonremovefriend, removefriend, false),
+            child:
+                CustomButtons.costum1(buttonremovefriend, removefriend, false),
           ),
         ),
         Visibility(
           visible: !widget.isFriend,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child:
-                CustomButtons().costum1(buttonbefriend, friendrequest, false),
+            child: CustomButtons.costum1(buttonbefriend, friendrequest, false),
           ),
         )
       ],

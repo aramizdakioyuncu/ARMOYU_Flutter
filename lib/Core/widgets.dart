@@ -1,3 +1,4 @@
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:flutter/material.dart';
 
@@ -38,6 +39,19 @@ class ARMOYUWidget {
         Icons.remove_red_eye_outlined,
         size: 15,
         color: Colors.white,
+      ),
+    );
+  }
+
+  static void stackbarNotification(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: ARMOYU.bacgroundcolor,
+        content: Text(
+          text,
+          style: TextStyle(color: ARMOYU.textColor),
+        ),
+        duration: const Duration(milliseconds: 500),
       ),
     );
   }

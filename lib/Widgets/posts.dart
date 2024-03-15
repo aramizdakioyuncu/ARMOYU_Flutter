@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:ARMOYU/Widgets/likers.dart';
@@ -18,7 +17,6 @@ import 'package:like_button/like_button.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
-import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class TwitterPostWidget extends StatefulWidget {
@@ -31,12 +29,7 @@ class TwitterPostWidget extends StatefulWidget {
   final String postText;
   final String postDate;
   final List<Media> media;
-  final List<int> mediaIDs;
-  final List<int> mediaownerIDs;
-  final List<String> mediaUrls;
-  final List<String> mediabetterUrls;
-  final List<String> mediatype;
-  final List<String> mediadirection;
+
   int postlikeCount;
   int postcommentCount;
 
@@ -54,12 +47,6 @@ class TwitterPostWidget extends StatefulWidget {
     required this.postText,
     required this.postDate,
     required this.media,
-    required this.mediaIDs,
-    required this.mediaownerIDs,
-    required this.mediaUrls,
-    required this.mediabetterUrls,
-    required this.mediatype,
-    required this.mediadirection,
     required this.postlikeCount,
     required this.postcommentCount,
     required this.postMelike,
@@ -200,7 +187,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                 child: Column(
                   children: [
                     const SizedBox(height: 10),
-                    CustomText().costum1("YORUMLAR"),
+                    CustomText.costum1("YORUMLAR"),
                     const SizedBox(height: 5),
                     const Divider(),
                     Expanded(
@@ -209,8 +196,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         child: Container(
                           alignment: Alignment.center,
                           child: listComments.isEmpty
-                              ? CustomText()
-                                  .costum1("Yorum yok ilk yorumu sen yaz.")
+                              ? CustomText.costum1(
+                                  "Yorum yok ilk yorumu sen yaz.")
                               : ListView.builder(
                                   itemCount: listComments.length,
                                   itemBuilder: (context, index) {
@@ -225,8 +212,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CircleAvatar(
-                              foregroundImage:
-                                  CachedNetworkImageProvider(AppUser.avatar),
+                              foregroundImage: CachedNetworkImageProvider(
+                                  ARMOYU.Appuser.avatar!.mediaURL.minURL),
                               radius: 20),
                         ),
                         Expanded(
@@ -450,7 +437,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID == AppUser.ID,
+                    visible: widget.userID == ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -466,7 +453,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: Divider(),
                   ),
                   Visibility(
-                    visible: widget.userID != AppUser.ID,
+                    visible: widget.userID != ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -480,7 +467,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID != AppUser.ID,
+                    visible: widget.userID != ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -494,7 +481,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID == AppUser.ID,
+                    visible: widget.userID == ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts();
@@ -574,10 +561,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ProfilePage(
-                                  userID: widget.userID, appbar: true)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(userID: widget.userID, appbar: true),
+                        ),
+                      );
                     },
                     child: CircleAvatar(
                       foregroundImage:
@@ -592,14 +581,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       children: [
                         Row(
                           children: [
-                            CustomText().costum1(widget.username,
+                            CustomText.costum1(widget.username,
                                 size: 16, weight: FontWeight.bold),
                             widget.sharedDevice == "mobil"
                                 ? const Text(" 📱")
                                 : const Text(" 🌐")
                           ],
                         ),
-                        CustomText().costum1(widget.postDate,
+                        CustomText.costum1(widget.postDate,
                             size: 16, weight: FontWeight.normal),
                       ],
                     ),
@@ -714,18 +703,18 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
     Widget mediayerlesim = const Row();
 
-    if (widget.mediaUrls.isNotEmpty) {
+    if (widget.media.isNotEmpty) {
       List<Row> mediaItems = [];
 
       List<Widget> mediarow1 = [];
       List<Widget> mediarow2 = [];
 
-      for (int i = 0; i < widget.mediaUrls.length; i++) {
+      for (int i = 0; i < widget.media.length; i++) {
         if (i > 3) {
           continue;
         }
 
-        List media = widget.mediatype[i].split('/');
+        List media = widget.media[i].mediaType!.split('/');
 
         //video
         if (media[0] == "video") {
@@ -734,7 +723,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
         if (media[0] == "video") {
           mediarow1.add(
-            mediaSablon(widget.mediaUrls[i], isvideo: true),
+            mediaSablon(widget.media[i].mediaURL.normalURL, isvideo: true),
           );
           mediaItems.add(Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -743,20 +732,20 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           break;
         }
         BoxFit mediadirection = BoxFit.contain;
-        if (widget.mediadirection[i].toString() == "dikey") {
+        if (widget.media[i].mediaDirection.toString() == "dikey") {
           mediadirection = BoxFit.cover;
         }
 
         double mediawidth = ARMOYU.screenWidth;
         double mediaheight = ARMOYU.screenHeight;
-        if (widget.mediaUrls.length == 1) {
+        if (widget.media.length == 1) {
           mediawidth = mediawidth / 1;
 
           mediaheight = mediaheight / 2;
-        } else if (widget.mediaUrls.length == 2) {
+        } else if (widget.media.length == 2) {
           mediawidth = mediawidth / 2;
           mediaheight = mediaheight / 4;
-        } else if (widget.mediaUrls.length == 3) {
+        } else if (widget.media.length == 3) {
           if (i == 0) {
             mediawidth = mediawidth / 1;
             mediaheight = mediaheight / 2.5;
@@ -764,30 +753,35 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             mediawidth = mediawidth / 2;
             mediaheight = mediaheight / 4;
           }
-        } else if (widget.mediaUrls.length >= 4) {
+        } else if (widget.media.length >= 4) {
           mediawidth = mediawidth / 2;
           mediaheight = mediaheight / 4;
         }
 
         GestureDetector aa = GestureDetector(
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => MediaViewer(
-                media: widget.media,
-                initialIndex: i,
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MediaViewer(
+                  media: widget.media,
+                  initialIndex: i,
+                ),
               ),
-            ));
+            );
           },
-          child: mediaSablon(widget.mediaUrls[i],
-              width: mediawidth, height: mediaheight),
+          child: mediaSablon(
+            widget.media[i].mediaURL.normalURL,
+            width: mediawidth,
+            height: mediaheight,
+          ),
         );
-        if (widget.mediaUrls.length == 3) {
+        if (widget.media.length == 3) {
           if (i == 0) {
             mediarow1.add(aa);
           } else {
             mediarow2.add(aa);
           }
-        } else if (widget.mediaUrls.length >= 4) {
+        } else if (widget.media.length >= 4) {
           if (i == 0 || i == 1) {
             mediarow1.add(aa);
           } else {

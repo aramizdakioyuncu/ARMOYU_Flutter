@@ -13,7 +13,6 @@ import 'package:ARMOYU/Screens/Settings/SettingsPage/datasavingsetting.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/devicepermissions.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/helpsettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/notificationsetttings.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -82,13 +81,13 @@ class _SettingsPage extends State<SettingsPage> {
                   ListTile(
                     tileColor: ARMOYU.bacgroundcolor,
                     leading: CircleAvatar(
-                      foregroundImage:
-                          CachedNetworkImageProvider(AppUser.avatar),
+                      foregroundImage: CachedNetworkImageProvider(
+                          ARMOYU.Appuser.avatar!.mediaURL.minURL),
                       radius: 28,
                     ),
-                    title: Text(AppUser.displayName),
+                    title: Text(ARMOYU.Appuser.displayName!),
                     subtitle:
-                        CustomText().costum1("Son Hatalı Giriş: 20.02.2002"),
+                        CustomText.costum1("Son Hatalı Giriş: 20.02.2002"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -110,7 +109,7 @@ class _SettingsPage extends State<SettingsPage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      height: 40,
+                      height: 45,
                       decoration: BoxDecoration(
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
@@ -121,7 +120,7 @@ class _SettingsPage extends State<SettingsPage> {
                           border: InputBorder.none,
                           prefixIcon: Icon(
                             Icons.search,
-                            size: 12,
+                            size: 20,
                           ),
                           hintText: 'Ara',
                         ),
@@ -143,7 +142,7 @@ class _SettingsPage extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.phone_android_rounded,
                         ),
-                        title: CustomText().costum1("Cihaz İzinleri"),
+                        title: CustomText.costum1("Cihaz İzinleri"),
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
@@ -165,7 +164,7 @@ class _SettingsPage extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.download_rounded,
                         ),
-                        title: CustomText().costum1("İndirme ve Arşivleme"),
+                        title: CustomText.costum1("İndirme ve Arşivleme"),
                         tileColor: ARMOYU.bacgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
@@ -182,7 +181,7 @@ class _SettingsPage extends State<SettingsPage> {
                         leading: const Icon(
                           Icons.network_wifi_3_bar_rounded,
                         ),
-                        title: CustomText().costum1("Veri Tasarrufu"),
+                        title: CustomText.costum1("Veri Tasarrufu"),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -202,7 +201,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.language),
-                        title: CustomText().costum1("Diller"),
+                        title: CustomText.costum1("Diller"),
                         onTap: () {
                           _showDialog(
                             CupertinoPicker(
@@ -245,7 +244,7 @@ class _SettingsPage extends State<SettingsPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.notifications_active),
-                    title: CustomText().costum1("Bildirimler"),
+                    title: CustomText.costum1("Bildirimler"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -265,7 +264,7 @@ class _SettingsPage extends State<SettingsPage> {
                   ),
                   ListTile(
                     leading: const Icon(Icons.block),
-                    title: CustomText().costum1("Engellenenler"),
+                    title: CustomText.costum1("Engellenenler"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -291,7 +290,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.help),
-                        title: CustomText().costum1("Yardım"),
+                        title: CustomText.costum1("Yardım"),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -306,7 +305,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.person),
-                        title: CustomText().costum1("Hesap Durumu"),
+                        title: CustomText.costum1("Hesap Durumu"),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -322,7 +321,7 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                       ListTile(
                         leading: const Icon(Icons.info),
-                        title: CustomText().costum1("Hakkında"),
+                        title: CustomText.costum1("Hakkında"),
                         onTap: () {
                           Navigator.push(
                             context,
@@ -361,12 +360,15 @@ class _SettingsPage extends State<SettingsPage> {
                             return;
                           }
                           passwordController.text = "";
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
-                          );
+
+                          if (mounted) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const LoginPage(),
+                              ),
+                            );
+                          }
                         },
                       ),
                     ],

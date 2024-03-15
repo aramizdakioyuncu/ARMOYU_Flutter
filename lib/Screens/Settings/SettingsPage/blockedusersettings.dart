@@ -59,8 +59,8 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
               foregroundImage: CachedNetworkImageProvider(
                   response['icerik'][i]["engel_avatar"].toString()),
             ),
-            title: CustomText()
-                .costum1(response['icerik'][i]["engel_kime"].toString()),
+            title: CustomText.costum1(
+                response['icerik'][i]["engel_kime"].toString()),
             subtitle: Text(response['icerik'][i]["engel_kadi"].toString()),
             onTap: () {},
             trailing: ElevatedButton(

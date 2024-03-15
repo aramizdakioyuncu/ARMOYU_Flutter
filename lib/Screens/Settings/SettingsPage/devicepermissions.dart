@@ -115,7 +115,7 @@ class _SettingsDevicePermissionsPage
             Column(
               children: [
                 ListTile(
-                  title: CustomText().costum1("Kamera"),
+                  title: CustomText.costum1("Kamera"),
                   tileColor: ARMOYU.bacgroundcolor,
                   onTap: () async {
                     if (camPermission != "İzin verilmedi") {
@@ -134,14 +134,14 @@ class _SettingsDevicePermissionsPage
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CustomText().costum1(camPermission),
+                        child: CustomText.costum1(camPermission),
                       ),
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                     ],
                   ),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Kişiler"),
+                  title: CustomText.costum1("Kişiler"),
                   tileColor: ARMOYU.bacgroundcolor,
                   onTap: () async {
                     if (contactPermission != "İzin verilmedi") {
@@ -161,14 +161,14 @@ class _SettingsDevicePermissionsPage
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CustomText().costum1(contactPermission),
+                        child: CustomText.costum1(contactPermission),
                       ),
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                     ],
                   ),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Konum"),
+                  title: CustomText.costum1("Konum"),
                   tileColor: ARMOYU.bacgroundcolor,
                   onTap: () async {
                     if (locationPermission != "İzin verilmedi") {
@@ -188,14 +188,14 @@ class _SettingsDevicePermissionsPage
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CustomText().costum1(locationPermission),
+                        child: CustomText.costum1(locationPermission),
                       ),
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                     ],
                   ),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Mikrofon"),
+                  title: CustomText.costum1("Mikrofon"),
                   tileColor: ARMOYU.bacgroundcolor,
                   onTap: () async {
                     if (micPermission != "İzin verilmedi") {
@@ -215,14 +215,14 @@ class _SettingsDevicePermissionsPage
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CustomText().costum1(micPermission),
+                        child: CustomText.costum1(micPermission),
                       ),
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                     ],
                   ),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Bildirimler"),
+                  title: CustomText.costum1("Bildirimler"),
                   tileColor: ARMOYU.bacgroundcolor,
                   onTap: () async {
                     if (micPermission != "İzin verilmedi") {
@@ -242,7 +242,7 @@ class _SettingsDevicePermissionsPage
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: CustomText().costum1(notifiPermission),
+                        child: CustomText.costum1(notifiPermission),
                       ),
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                     ],

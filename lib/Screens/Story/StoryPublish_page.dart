@@ -1,11 +1,8 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:flutter/material.dart';
 
 class StoryPublishPage extends StatefulWidget {
@@ -40,8 +37,11 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
       log(response["aciklama"]);
       return;
     }
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+
+    if (mounted) {
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -158,8 +158,8 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                foregroundImage:
-                                    CachedNetworkImageProvider(AppUser.avatar),
+                                foregroundImage: CachedNetworkImageProvider(
+                                    ARMOYU.Appuser.avatar!.mediaURL.minURL),
                                 radius: 16,
                               ),
                               const SizedBox(width: 10),

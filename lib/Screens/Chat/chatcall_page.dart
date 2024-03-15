@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously, await_only_futures
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
 
 import 'dart:developer';
 
@@ -99,8 +99,9 @@ class _ChaCallPageState extends State<ChatCallPage>
                 await player.setUrl(
                     'https://cdn.pixabay.com/audio/2022/09/21/audio_51f53043d7.mp3');
                 await player.play();
-
-                Navigator.pop(context);
+                if (mounted) {
+                  Navigator.pop(context);
+                }
               } catch (e) {
                 log(e.toString());
               }
@@ -248,7 +249,9 @@ class _ChaCallPageState extends State<ChatCallPage>
                                   'https://cdn.pixabay.com/audio/2022/09/21/audio_51f53043d7.mp3');
                               await player.play();
 
-                              Navigator.pop(context);
+                              if (mounted) {
+                                Navigator.pop(context);
+                              }
                             } catch (e) {
                               log(e.toString());
                             }

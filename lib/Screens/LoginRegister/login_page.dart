@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Screens/LoginRegister/resetpassword_page.dart';
@@ -11,7 +12,6 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Services/Utility/theme.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
-import 'package:ARMOYU/Widgets/notifications.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 
@@ -49,20 +49,29 @@ class _LoginPageState extends State<LoginPage> {
     Map<String, dynamic> response = await f.login(username, password, false);
 
     if (response["durum"] == 1) {
-      Navigator.of(context).pop();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Pages(),
-        ),
-      );
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+
+      if (mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Pages(),
+          ),
+        );
+      }
+
       setState(() {
         loginProcess = false;
       });
     } else {
       log(response["aciklama"]);
       String gelenyanit = response["aciklama"];
-      CustomNotifications.stackbarNotification(context, gelenyanit);
+
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(context, gelenyanit);
+      }
 
       setState(() {
         loginProcess = false;
@@ -93,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 16.0),
-            CustomTextfields().costum1(
+            CustomTextfields.costum1(
               "Kullanıcı Adı/E-posta",
               usernameController,
               false,
@@ -101,10 +110,10 @@ class _LoginPageState extends State<LoginPage> {
               TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields().costum1("Şifreniz", passwordController, true,
+            CustomTextfields.costum1("Şifreniz", passwordController, true,
                 const Icon(Icons.lock_outline)),
             const SizedBox(height: 16),
-            CustomButtons().costum1("Giriş Yap", _login, loginProcess),
+            CustomButtons.costum1("Giriş Yap", _login, loginProcess),
             const SizedBox(
               height: 20,
             ),
@@ -117,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 );
               },
-              child: CustomText().costum1("Şifremi Unuttum"),
+              child: CustomText.costum1("Şifremi Unuttum"),
             ),
             IconButton(
               icon: const Icon(Icons.nightlight), // Sağdaki butonun ikonu
@@ -130,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomText().costum1("Hesabınız yok mu?"),
+                CustomText.costum1("Hesabınız yok mu?"),
                 SizedBox(
                   width: ARMOYU.screenWidth / 40,
                 ),
@@ -143,8 +152,8 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   },
-                  child: CustomText()
-                      .costum1("Kayıt Ol", size: 16, weight: FontWeight.bold),
+                  child: CustomText.costum1("Kayıt Ol",
+                      size: 16, weight: FontWeight.bold),
                 )
               ],
             ),
@@ -155,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomText().costum1("Devam ederek"),
+                      CustomText.costum1("Devam ederek"),
                       InkWell(
                         onTap: () async {
                           if (ARMOYU.SecurityDetail == "0") {
@@ -169,21 +178,22 @@ class _LoginPageState extends State<LoginPage> {
                             ARMOYU.SecurityDetail =
                                 response["projegizliliksozlesmesi"];
                           }
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TextPage(
-                                texttitle: "Güvenlik Politikası",
-                                textcontent: ARMOYU.SecurityDetail,
+                          if (mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TextPage(
+                                  texttitle: "Güvenlik Politikası",
+                                  textcontent: ARMOYU.SecurityDetail,
+                                ),
                               ),
-                            ),
-                          );
+                            );
+                          }
                         },
-                        child: CustomText().costum1(" Gizlilik Politikasını",
+                        child: CustomText.costum1(" Gizlilik Politikasını",
                             size: 16, weight: FontWeight.bold),
                       ),
-                      CustomText().costum1(" ve"),
+                      CustomText.costum1(" ve"),
                     ],
                   )
                 ],
@@ -204,25 +214,26 @@ class _LoginPageState extends State<LoginPage> {
                       ARMOYU.SecurityDetail =
                           response["projegizliliksozlesmesi"];
                     }
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => TextPage(
-                          texttitle: "Güvenlik Politikası",
-                          textcontent: ARMOYU.SecurityDetail,
+                    if (mounted) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TextPage(
+                            texttitle: "Güvenlik Politikası",
+                            textcontent: ARMOYU.SecurityDetail,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
-                  child: CustomText().costum1(
+                  child: CustomText.costum1(
                       "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
                       size: 16,
                       weight: FontWeight.bold),
                 ),
               ],
             ),
-            CustomText().costum1("kabul etmiş olursunuz."),
+            CustomText.costum1("kabul etmiş olursunuz."),
           ],
         ),
       ),

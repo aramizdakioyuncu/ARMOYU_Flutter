@@ -9,9 +9,7 @@ import 'package:ARMOYU/Models/team.dart';
 
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
-import 'package:ARMOYU/Screens/Utility/fullscreenimage_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -190,27 +188,11 @@ class _ProfilePageState extends State<ProfilePage>
 
     for (int i = 0; i < dynamicItemCount; i++) {
       List<Media> media = [];
-      List<int> mediaIDs = [];
-      List<int> mediaownerIDs = [];
-      List<String> medias = [];
-      List<String> mediasbetter = [];
-      List<String> mediastype = [];
-      List<String> mediadirection = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
         int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
 
         for (int j = 0; j < mediaItemCount; j++) {
-          mediaIDs.add(response["icerik"][i]["paylasimfoto"][j]["fotoID"]);
-          mediaownerIDs.add(response["icerik"][i]["sahipID"]);
-          medias.add(response["icerik"][i]["paylasimfoto"][j]["fotominnakurl"]);
-          mediasbetter
-              .add(response["icerik"][i]["paylasimfoto"][j]["fotoufakurl"]);
-          mediastype.add(
-              response["icerik"][i]["paylasimfoto"][j]["paylasimkategori"]);
-          mediadirection
-              .add(response["icerik"][i]["paylasimfoto"][j]["medyayonu"]);
-
           media.add(
             Media(
               mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
@@ -256,12 +238,6 @@ class _ProfilePageState extends State<ProfilePage>
               postText: response["icerik"][i]["paylasimicerik"],
               postDate: response["icerik"][i]["paylasimzamangecen"],
               media: media,
-              mediaIDs: mediaIDs,
-              mediaownerIDs: mediaownerIDs,
-              mediaUrls: medias,
-              mediabetterUrls: mediasbetter,
-              mediatype: mediastype,
-              mediadirection: mediadirection,
               postlikeCount: response["icerik"][i]["begenisay"],
               postcommentCount: response["icerik"][i]["yorumsay"],
               postMecomment: ismecomment,
@@ -336,42 +312,45 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Future<void> test() async {
-    if (widget.userID == AppUser.ID) {
-      userID = AppUser.ID;
-      userName = AppUser.userName;
-      displayName = AppUser.displayName;
-      banneravatar = AppUser.banneravatar;
-      banneravatarbetter = AppUser.banneravatarbetter;
-      avatar = AppUser.avatar;
-      avatarbetter = AppUser.avatarbetter;
-      level = AppUser.level;
-      friendsCount = AppUser.friendsCount;
-      postsCount = AppUser.postsCount;
-      awardsCount = AppUser.awardsCount;
+    if (widget.userID == ARMOYU.Appuser.userID) {
+      userID = ARMOYU.Appuser.userID!;
+      userName = ARMOYU.Appuser.userName!;
+      displayName = ARMOYU.Appuser.displayName!;
 
-      country = AppUser.country;
-      province = AppUser.province;
-      registerdate = AppUser.registerdate;
+      banneravatar = ARMOYU.Appuser.banner!.mediaURL.minURL;
+      banneravatarbetter = ARMOYU.Appuser.banner!.mediaURL.normalURL;
 
-      aboutme = AppUser.aboutme;
+      avatar = ARMOYU.Appuser.avatar!.mediaURL.minURL;
+      avatarbetter = ARMOYU.Appuser.avatar!.mediaURL.normalURL;
 
-      burc = AppUser.burc;
+      level = ARMOYU.Appuser.level!;
+      friendsCount = ARMOYU.Appuser.friendsCount!;
+      postsCount = ARMOYU.Appuser.postsCount!;
+      awardsCount = ARMOYU.Appuser.awardsCount!;
 
-      favoritakim = AppUser.favTeam;
+      country = ARMOYU.Appuser.country!;
+      province = ARMOYU.Appuser.province!;
+      registerdate = ARMOYU.Appuser.registerDate!;
+
+      aboutme = ARMOYU.Appuser.aboutme!;
+
+      burc = ARMOYU.Appuser.burc!;
+
+      favoritakim = ARMOYU.Appuser.favTeam;
 
       try {
-        job = AppUser.job;
+        job = ARMOYU.Appuser.job!;
       } catch (ex) {
         log(ex.toString());
       }
 
       try {
-        role = AppUser.role;
+        role = ARMOYU.Appuser.role!;
       } catch (ex) {
         log(ex.toString());
       }
       try {
-        rolecolor = AppUser.rolecolor;
+        rolecolor = ARMOYU.Appuser.rolecolor!;
       } catch (ex) {
         log(ex.toString());
       }
@@ -580,16 +559,16 @@ class _ProfilePageState extends State<ProfilePage>
         /////
       }
 
-      if (isbeFriend && !isFriend && userID != AppUser.ID) {
+      if (isbeFriend && !isFriend && userID != ARMOYU.Appuser.userID) {
         friendStatus = "Arkadaş Ol";
         friendStatuscolor = Colors.blue;
       } else if (!isbeFriend &&
           !isFriend &&
-          userID != AppUser.ID &&
+          userID != ARMOYU.Appuser.userID &&
           userID != -1) {
         friendStatus = "İstek Gönderildi";
         friendStatuscolor = Colors.black;
-      } else if (!isbeFriend && isFriend && userID != AppUser.ID) {
+      } else if (!isbeFriend && isFriend && userID != ARMOYU.Appuser.userID) {
         friendStatus = "Mesaj Gönder";
         friendStatuscolor = Colors.blue;
       }
@@ -616,8 +595,13 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
     setState(() {
-      AppUser.avatar = response["aciklamadetay"].toString();
-      AppUser.avatarbetter = response["aciklamadetay"].toString();
+      ARMOYU.Appuser.avatar = Media(
+        mediaURL: MediaURL(
+          bigURL: response["aciklamadetay"].toString(),
+          normalURL: response["aciklamadetay"].toString(),
+          minURL: response["aciklamadetay"].toString(),
+        ),
+      );
 
       _handleRefresh();
     });
@@ -637,9 +621,13 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
     setState(() {
-      AppUser.banneravatar = response["aciklamadetay"].toString();
-      AppUser.banneravatarbetter = response["aciklamadetay"].toString();
-
+      ARMOYU.Appuser.banner = Media(
+        mediaURL: MediaURL(
+          bigURL: response["aciklamadetay"].toString(),
+          normalURL: response["aciklamadetay"].toString(),
+          minURL: response["aciklamadetay"].toString(),
+        ),
+      );
       _handleRefresh();
     });
   }
@@ -718,7 +706,7 @@ class _ProfilePageState extends State<ProfilePage>
         controller: pageMainscroller,
         slivers: [
           SliverAppBar(
-            pinned: AppUser.ID != userID ? true : false,
+            pinned: ARMOYU.Appuser.userID != userID ? true : false,
             backgroundColor: Colors.black,
             expandedHeight: ARMOYU.screenHeight * 0.25,
             actions: <Widget>[
@@ -771,7 +759,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Divider(),
                                 ),
                                 Visibility(
-                                  visible: userID != AppUser.ID,
+                                  visible: userID != ARMOYU.Appuser.userID,
                                   child: InkWell(
                                     onTap: () async {
                                       FunctionsBlocking f = FunctionsBlocking();
@@ -782,7 +770,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         return;
                                       }
                                       try {
-                                        Navigator.pop(context);
+                                        if (mounted) {
+                                          Navigator.pop(context);
+                                        }
                                       } catch (e) {
                                         log(e.toString());
                                       }
@@ -798,7 +788,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                 ),
                                 Visibility(
-                                  visible: userID != AppUser.ID,
+                                  visible: userID != ARMOYU.Appuser.userID,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const ListTile(
@@ -870,9 +860,9 @@ class _ProfilePageState extends State<ProfilePage>
             flexibleSpace: FlexibleSpaceBar(
               title: Align(
                 alignment: Alignment.bottomLeft,
-                child: userID == AppUser.ID
+                child: userID == ARMOYU.Appuser.userID
                     ? const SizedBox()
-                    : CustomText().costum1(displayName),
+                    : CustomText.costum1(displayName),
               ),
               background: GestureDetector(
                 onTap: () {
@@ -881,7 +871,7 @@ class _ProfilePageState extends State<ProfilePage>
                       media: [
                         Media(
                           mediaID: 90909090,
-                          ownerID: AppUser.ID,
+                          ownerID: userID,
                           mediaURL: MediaURL(
                               bigURL: banneravatarbetter,
                               normalURL: banneravatarbetter,
@@ -893,7 +883,7 @@ class _ProfilePageState extends State<ProfilePage>
                   ));
                 },
                 onLongPress: () {
-                  if (AppUser.ID != userID) {
+                  if (ARMOYU.Appuser.userID != userID) {
                     return;
                   }
                   showModalBottomSheet<void>(
@@ -924,7 +914,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                 ),
                                 Visibility(
-                                  visible: AppUser.ID == userID,
+                                  visible: ARMOYU.Appuser.userID == userID,
                                   child: InkWell(
                                     onTap: () async {
                                       await changebanner();
@@ -940,7 +930,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Divider(),
                                 ),
                                 Visibility(
-                                  visible: userID == AppUser.ID,
+                                  visible: userID == ARMOYU.Appuser.userID,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const ListTile(
@@ -989,7 +979,7 @@ class _ProfilePageState extends State<ProfilePage>
                                     media: [
                                       Media(
                                           mediaID: 90909090,
-                                          ownerID: AppUser.ID,
+                                          ownerID: userID,
                                           mediaURL: MediaURL(
                                               bigURL: avatarbetter,
                                               normalURL: avatarbetter,
@@ -1000,7 +990,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 ));
                               },
                               onLongPress: () {
-                                if (AppUser.ID != userID) {
+                                if (ARMOYU.Appuser.userID != userID) {
                                   return;
                                 }
                                 showModalBottomSheet<void>(
@@ -1033,7 +1023,9 @@ class _ProfilePageState extends State<ProfilePage>
                                                 ),
                                               ),
                                               Visibility(
-                                                visible: AppUser.ID == userID,
+                                                visible:
+                                                    ARMOYU.Appuser.userID ==
+                                                        userID,
                                                 child: InkWell(
                                                   onTap: () async {
                                                     await changeavatar();
@@ -1051,7 +1043,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                 child: Divider(),
                                               ),
                                               Visibility(
-                                                visible: userID == AppUser.ID,
+                                                visible: userID ==
+                                                    ARMOYU.Appuser.userID,
                                                 child: InkWell(
                                                   onTap: () {},
                                                   child: const ListTile(
@@ -1104,10 +1097,9 @@ class _ProfilePageState extends State<ProfilePage>
                                   const Spacer(),
                                   Column(
                                     children: [
-                                      CustomText().costum1(
-                                          postsCount.toString(),
+                                      CustomText.costum1(postsCount.toString(),
                                           weight: FontWeight.bold),
-                                      CustomText().costum1("Gönderi"),
+                                      CustomText.costum1("Gönderi"),
                                     ],
                                   ),
                                   const Spacer(),
@@ -1128,10 +1120,10 @@ class _ProfilePageState extends State<ProfilePage>
                                         },
                                         child: Column(
                                           children: [
-                                            CustomText().costum1(
+                                            CustomText.costum1(
                                                 friendsCount.toString(),
                                                 weight: FontWeight.bold),
-                                            CustomText().costum1("Arkadaş"),
+                                            CustomText.costum1("Arkadaş"),
                                           ],
                                         ),
                                       ),
@@ -1140,10 +1132,9 @@ class _ProfilePageState extends State<ProfilePage>
                                   const Spacer(),
                                   Column(
                                     children: [
-                                      CustomText().costum1(
-                                          awardsCount.toString(),
+                                      CustomText.costum1(awardsCount.toString(),
                                           weight: FontWeight.bold),
-                                      CustomText().costum1("Ödül"),
+                                      CustomText.costum1("Ödül"),
                                     ],
                                   ),
                                   const Spacer(),
@@ -1175,14 +1166,14 @@ class _ProfilePageState extends State<ProfilePage>
                   const SizedBox(
                     height: 10,
                   ),
-                  CustomText().costum1(
+                  CustomText.costum1(
                     displayName,
                     size: 16,
                     weight: FontWeight.bold,
                   ),
                   Row(
                     children: [
-                      CustomText().costum1(
+                      CustomText.costum1(
                         "@$userName",
                       ),
                       const SizedBox(width: 5),
@@ -1207,7 +1198,7 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText().costum1(
+                        CustomText.costum1(
                           registerdate,
                         ),
                       ],
@@ -1224,7 +1215,7 @@ class _ProfilePageState extends State<ProfilePage>
                             size: 20,
                           ),
                           const SizedBox(width: 3),
-                          CustomText().costum1(
+                          CustomText.costum1(
                             burc,
                           ),
                         ],
@@ -1240,7 +1231,7 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText().costum1(
+                        CustomText.costum1(
                           "$country, $province",
                         ),
                       ],
@@ -1257,12 +1248,12 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText().costum1(job),
+                        CustomText.costum1(job),
                       ],
                     ),
                   ),
                   Visibility(
-                    visible: AppUser.ID != userID,
+                    visible: ARMOYU.Appuser.userID != userID,
                     child: Row(
                       children: [
                         Stack(
@@ -1302,10 +1293,11 @@ class _ProfilePageState extends State<ProfilePage>
                     children: [
                       Visibility(
                         //Arkadaş ol
-                        visible:
-                            isbeFriend && !isFriend && userID != AppUser.ID,
+                        visible: isbeFriend &&
+                            !isFriend &&
+                            userID != ARMOYU.Appuser.userID,
                         child: Expanded(
-                          child: CustomButtons().friendbuttons(
+                          child: CustomButtons.friendbuttons(
                               friendStatus, friendrequest, friendStatuscolor),
                         ),
                       ),
@@ -1313,19 +1305,20 @@ class _ProfilePageState extends State<ProfilePage>
                         //Bekliyor
                         visible: !isbeFriend &&
                             !isFriend &&
-                            userID != AppUser.ID &&
+                            userID != ARMOYU.Appuser.userID &&
                             userID != -1,
                         child: Expanded(
-                          child: CustomButtons().friendbuttons(friendStatus,
+                          child: CustomButtons.friendbuttons(friendStatus,
                               cancelfriendrequest, friendStatuscolor),
                         ),
                       ),
                       Visibility(
                         //Mesaj Gönder
-                        visible:
-                            !isbeFriend && isFriend && userID != AppUser.ID,
+                        visible: !isbeFriend &&
+                            isFriend &&
+                            userID != ARMOYU.Appuser.userID,
                         child: Expanded(
-                          child: CustomButtons().friendbuttons(
+                          child: CustomButtons.friendbuttons(
                               friendStatus, sendmessage, friendStatuscolor),
                         ),
                       )
@@ -1338,7 +1331,7 @@ class _ProfilePageState extends State<ProfilePage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomDedectabletext().costum1(aboutme, 3, 13),
+                        CustomDedectabletext.costum1(aboutme, 3, 13),
                         const SizedBox(height: 10),
                       ],
                     ),
@@ -1418,11 +1411,11 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
         tabs: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText().costum1('Paylaşımlar', size: 15.0),
+            child: CustomText.costum1('Paylaşımlar', size: 15.0),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText().costum1('Medya', size: 15.0),
+            child: CustomText.costum1('Medya', size: 15.0),
           )
         ],
       ),

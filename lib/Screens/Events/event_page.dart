@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/event.dart';
 import 'package:ARMOYU/Models/event.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
-import 'package:ARMOYU/Widgets/notifications.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class _EventStatePage extends State<EventPage> {
   Future<void> joinevent() async {
     if (!rulesacception) {
       String gelenyanit = "Kuralları kabul etmediniz!";
-      CustomNotifications.stackbarNotification(context, gelenyanit);
+      ARMOYUWidget.stackbarNotification(context, gelenyanit);
       return;
     }
 
@@ -116,7 +117,7 @@ class _EventStatePage extends State<EventPage> {
                     const Text("Kuralları okudum ve anladım kabul ediyorum."),
                   ],
                 ),
-                CustomButtons().costum1("KATIL", joinevent, joineventProccess),
+                CustomButtons.costum1("KATIL", joinevent, joineventProccess),
               ],
             ),
           ),

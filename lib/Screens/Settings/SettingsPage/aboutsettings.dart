@@ -35,25 +35,25 @@ class _SettingsAboutPage extends State<SettingsAboutPage> {
             Column(
               children: [
                 ListTile(
-                  title: CustomText().costum1("Hesabın Hakkında"),
+                  title: CustomText.costum1("Hesabın Hakkında"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Gizlilik ilkesi"),
+                  title: CustomText.costum1("Gizlilik ilkesi"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Kullanım Koşulları"),
+                  title: CustomText.costum1("Kullanım Koşulları"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
-                  title: CustomText().costum1("Açık Kaynak Kütüphaneleri"),
+                  title: CustomText.costum1("Açık Kaynak Kütüphaneleri"),
                   tileColor: ARMOYU.bacgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),

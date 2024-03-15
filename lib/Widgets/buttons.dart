@@ -2,7 +2,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class CustomButtons {
-  Widget friendbuttons(String text, onPressed, Color color) {
+  static Widget friendbuttons(String text, onPressed, Color color) {
     Color background = color;
     Color foregroundColor = Colors.white;
     return ElevatedButton(
@@ -24,7 +24,7 @@ class CustomButtons {
     );
   }
 
-  Widget costum1(String text, onPressed, bool loadingStatus) {
+  static Widget costum1(String text, onPressed, bool loadingStatus) {
     Color? background = ARMOYU.buttonColor;
 
     if (loadingStatus) {

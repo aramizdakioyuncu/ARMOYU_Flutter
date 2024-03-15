@@ -30,7 +30,7 @@ class Chat {
       leading: CircleAvatar(
         foregroundImage: CachedNetworkImageProvider(avatar),
       ),
-      title: CustomText().costum1(displayName),
+      title: CustomText.costum1(displayName),
       subtitle: lastmessage == null ? null : Text(lastmessage!.messageContext),
       trailing: chatType == "ozel"
           ? const Icon(Icons.person)
@@ -56,7 +56,7 @@ class Chat {
       leading: CircleAvatar(
         foregroundImage: CachedNetworkImageProvider(avatar),
       ),
-      title: CustomText().costum1(displayName),
+      title: CustomText.costum1(displayName),
       subtitle: lastmessage == null ? null : Text(lastmessage!.messageContext),
       trailing: Text(lastonlinetime.toString()),
       onTap: () {

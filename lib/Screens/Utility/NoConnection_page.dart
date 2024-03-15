@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -46,12 +44,15 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
 
       //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
       if (username == null || password == null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LoginPage(),
-          ),
-        );
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginPage(),
+            ),
+          );
+        }
+
         setState(() {
           _isConnected = false;
           connectionProcess = false;
@@ -67,13 +68,15 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
       if (response["durum"] == 0) {
         if (response["aciklama"] == "Hatalı giriş!") {
           log("Oturum kapatılıyor");
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginPage(),
+              ),
+            );
+          }
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const LoginPage(),
-            ),
-          );
           setState(() {
             _isConnected = false;
             connectionProcess = false;
@@ -90,12 +93,16 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
       }
 
       log("Oturum açılıyor");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Pages(),
-        ),
-      );
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Pages(),
+          ),
+        );
+      }
+
       setState(() {
         _isConnected = true;
         connectionProcess = false;
@@ -133,7 +140,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
                     style: TextStyle(fontSize: 18),
                   ),
             const SizedBox(height: 20),
-            CustomButtons().costum1(
+            CustomButtons.costum1(
                 "Tekrar dene", checkInternetConnection2, connectionProcess),
           ],
         ),

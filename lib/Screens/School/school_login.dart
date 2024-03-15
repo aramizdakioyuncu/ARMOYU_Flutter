@@ -1,11 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/school.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
-import 'package:ARMOYU/Widgets/notifications.dart';
 
 import 'package:ARMOYU/Widgets/textfields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -44,8 +42,6 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   bool schoolProcess = false;
   int _selectedcupertinolist = 0;
   int _selectedcupertinolist2 = 0;
-
-  CustomButtons buttons = CustomButtons();
 
   String schoollogo = "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png";
   @override
@@ -117,11 +113,13 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
 
     String gelenyanit = response["aciklama"];
     if (mounted) {
-      CustomNotifications.stackbarNotification(context, gelenyanit);
+      ARMOYUWidget.stackbarNotification(context, gelenyanit);
     }
 
     if (response["durum"] == 1) {
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
     schoolProcess = false;
   }
@@ -146,7 +144,6 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
 
   TextEditingController schoolpassword = TextEditingController();
 
-  CustomTextfields asa = CustomTextfields();
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -267,10 +264,10 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 ),
               ),
               const SizedBox(height: 16),
-              asa.costum1("Parola", schoolpassword, true,
+              CustomTextfields.costum1("Parola", schoolpassword, true,
                   const Icon(Icons.security), TextInputType.number),
               const SizedBox(height: 16),
-              buttons.costum1("Katıl", loginschool, schoolProcess),
+              CustomButtons.costum1("Katıl", loginschool, schoolProcess),
             ],
           ),
         ),

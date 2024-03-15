@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Utility/NoConnection_page.dart';
@@ -32,12 +30,14 @@ class _StartingScreenState extends State<StartingScreen> {
     ARMOYU.cameras = await availableCameras();
     // İnternet var mı diye kontrol ediyoruz!
     if (!await AppCore.checkInternetConnection()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const NoConnectionPage(),
-        ),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const NoConnectionPage(),
+          ),
+        );
+      }
 
       return;
     }
@@ -54,51 +54,62 @@ class _StartingScreenState extends State<StartingScreen> {
 
     //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
     if (username == null || password == null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const LoginPage(),
-        ),
-      );
-      return;
-    }
-
-    Map<String, dynamic> response =
-        await f.login(username.toString(), password.toString(), true);
-    if (response["durum"] == 1) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Pages(),
-        ),
-      );
-      return;
-    } else if (response["durum"] == 0) {
-      if (response["aciklama"] == "Hatalı giriş!") {
+      if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => const LoginPage(),
           ),
         );
-        return;
       }
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const NoConnectionPage(),
-        ),
-      );
       return;
     }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const LoginPage(),
-      ),
-    );
+    Map<String, dynamic> response =
+        await f.login(username.toString(), password.toString(), true);
+    if (response["durum"] == 1) {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Pages(),
+          ),
+        );
+      }
+
+      return;
+    } else if (response["durum"] == 0) {
+      if (response["aciklama"] == "Hatalı giriş!") {
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginPage(),
+            ),
+          );
+        }
+        return;
+      }
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const NoConnectionPage(),
+          ),
+        );
+      }
+      return;
+    }
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const LoginPage(),
+        ),
+      );
+    }
+
     return;
   }
 

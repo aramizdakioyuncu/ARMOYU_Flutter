@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Core/API.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
@@ -18,7 +18,7 @@ class ApiService {
       String link, Map<String, dynamic> formData,
       {List<MultipartFile>? files}) async {
     String requestUrl =
-        "$ssl://$host:$port/botlar/$apiKey/${AppUser.userName}/${AppUser.password}/$link";
+        "$ssl://$host:$port/botlar/$apiKey/${ARMOYU.Appuser.userName}/${ARMOYU.Appuser.password}/$link";
     log(requestUrl);
 
     formData['versiyon'] = app.getVersion().toString();

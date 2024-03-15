@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use, file_names
 
+import 'package:ARMOYU/Models/user.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,4 +27,6 @@ class ARMOYU {
       MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.height;
 
   static List<CameraDescription>? cameras;
+
+  static User Appuser = User();
 }

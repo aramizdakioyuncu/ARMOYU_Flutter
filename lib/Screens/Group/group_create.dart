@@ -1,12 +1,11 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/group.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/category.dart';
-import 'package:ARMOYU/Widgets/notifications.dart';
+
 import 'package:ARMOYU/Widgets/textfields.dart';
 
 import 'package:flutter/material.dart';
@@ -40,7 +39,6 @@ class _GroupCreatePageState extends State<GroupCreatePage>
   int _selectedcupertinolist = 0;
   int _selectedcupertinolist2 = 0;
   int _selectedcupertinolist3 = 0;
-  CustomButtons buttons = CustomButtons();
 
   bool groupcreateProcess = false;
 
@@ -106,7 +104,9 @@ class _GroupCreatePageState extends State<GroupCreatePage>
         _selectedcupertinolist3);
     if (response["durum"] == 0) {
       String text = response["aciklama"];
-      CustomNotifications.stackbarNotification(context, text);
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(context, text);
+      }
       groupcreateProcess = false;
 
       return;
@@ -135,7 +135,6 @@ class _GroupCreatePageState extends State<GroupCreatePage>
   TextEditingController groupshortname = TextEditingController();
   TextEditingController groupname = TextEditingController();
 
-  CustomTextfields asa = CustomTextfields();
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -151,10 +150,10 @@ class _GroupCreatePageState extends State<GroupCreatePage>
           child: Column(
             children: [
               const SizedBox(height: 16),
-              asa.costum1(
+              CustomTextfields.costum1(
                   "Grup Adı", groupname, false, const Icon(Icons.business)),
               const SizedBox(height: 16),
-              asa.costum1("Grup Kısa Adı", groupshortname, false,
+              CustomTextfields.costum1("Grup Kısa Adı", groupshortname, false,
                   const Icon(Icons.label)),
               const SizedBox(height: 16),
               CupertinoButton(
@@ -310,7 +309,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
                 ),
               ),
               const SizedBox(height: 16),
-              buttons.costum1(
+              CustomButtons.costum1(
                   "Oluştur", creategroupfunction, groupcreateProcess),
             ],
           ),

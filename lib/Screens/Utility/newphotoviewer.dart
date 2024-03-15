@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Services/appuser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -88,9 +87,7 @@ class _MediaViewerPage extends State<MediaViewer> {
                     if (isRotationprocces) {
                       return;
                     }
-
                     isRotationprocces = true;
-                    print(360 - (rotateangle % 360));
                     FunctionsMedia f = FunctionsMedia();
                     Map<String, dynamic> response = await f.rotation(
                         widget.media[widget.initialIndex].mediaID!,
@@ -112,11 +109,11 @@ class _MediaViewerPage extends State<MediaViewer> {
             ),
           ),
           Visibility(
-            visible:
-                (widget.media[widget.initialIndex].ownerID == AppUser.ID) &&
-                        !isRotationprocces
-                    ? true
-                    : false,
+            visible: (widget.media[widget.initialIndex].ownerID ==
+                        ARMOYU.Appuser.userID) &&
+                    !isRotationprocces
+                ? true
+                : false,
             child: IconButton(
               icon: const Icon(Icons.crop_rotate_outlined),
               onPressed: () async {
@@ -150,8 +147,6 @@ class _MediaViewerPage extends State<MediaViewer> {
             }
 
             return PhotoViewGalleryPageOptions(
-              maxScale: 0.4,
-              minScale: 0.0,
               imageProvider: imageProvider,
               initialScale: PhotoViewComputedScale.contained * 1,
               heroAttributes:
