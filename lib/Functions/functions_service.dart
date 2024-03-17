@@ -55,6 +55,15 @@ class FunctionService {
 
     Map<String, dynamic> response = await apiService.request(link, formData);
     if (response["durum"].toString() != "1") {
+      if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+        Map<String, dynamic> jsonData = {
+          'durum': 0,
+          'aciklama': "Hatalı giriş!",
+        };
+        String jsonencode = jsonEncode(jsonData);
+        Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
+        return jsonString;
+      }
       Map<String, dynamic> jsonData = {
         'durum': 0,
         'aciklama': "Sunucuya ulaşamadı!",
@@ -63,55 +72,47 @@ class FunctionService {
       Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
       return jsonString;
     }
-    if (response["kontrol"].toString() != "1") {
-      Map<String, dynamic> jsonData = {
-        'durum': 0,
-        'aciklama': "Hatalı giriş!",
-      };
-      String jsonencode = jsonEncode(jsonData);
-      Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
-      return jsonString;
-    }
 
+    Map<String, dynamic> oyuncubilgi = response["icerik"];
     ARMOYU.Appuser = User(
-        userID: response["oyuncuID"],
-        userName: response["kullaniciadi"],
+        userID: oyuncubilgi["oyuncuID"],
+        userName: oyuncubilgi["kullaniciadi"],
         password: password,
-        firstName: response["adi"],
-        lastName: response["soyadi"],
-        displayName: response["adim"],
-        userMail: response["eposta"],
-        aboutme: response["hakkimda"],
+        firstName: oyuncubilgi["adi"],
+        lastName: oyuncubilgi["soyadi"],
+        displayName: oyuncubilgi["adim"],
+        userMail: oyuncubilgi["eposta"],
+        aboutme: oyuncubilgi["hakkimda"],
         avatar: Media(
           mediaURL: MediaURL(
-            bigURL: response["presim"],
-            normalURL: response["presimufak"],
-            minURL: response["presimminnak"],
+            bigURL: oyuncubilgi["presim"],
+            normalURL: oyuncubilgi["presimufak"],
+            minURL: oyuncubilgi["presimminnak"],
           ),
         ),
         banner: Media(
           mediaURL: MediaURL(
-            bigURL: response["parkaresim"],
-            normalURL: response["parkaresimufak"],
-            minURL: response["parkaresimminnak"],
+            bigURL: oyuncubilgi["parkaresim"],
+            normalURL: oyuncubilgi["parkaresimufak"],
+            minURL: oyuncubilgi["parkaresimminnak"],
           ),
         ),
-        burc: response["burc"],
-        invitecode: response["davetkodu"],
-        job: response["isyeriadi"],
-        level: response["seviye"],
-        awardsCount: response["oduller"],
-        postsCount: response["gonderiler"],
-        friendsCount: response["arkadaslar"],
-        country: response["ulkesi"],
-        province: response["ili"],
-        registerDate: response["kayittarihikisa"],
-        role: response["yetkisiacikla"],
-        rolecolor: response["yetkirenk"],
+        burc: oyuncubilgi["burc"],
+        invitecode: oyuncubilgi["davetkodu"],
+        job: oyuncubilgi["isyeriadi"],
+        level: oyuncubilgi["seviye"],
+        awardsCount: oyuncubilgi["oduller"],
+        postsCount: oyuncubilgi["gonderiler"],
+        friendsCount: oyuncubilgi["arkadaslar"],
+        country: oyuncubilgi["ulkesi"],
+        province: oyuncubilgi["ili"],
+        registerDate: oyuncubilgi["kayittarihikisa"],
+        role: oyuncubilgi["yetkisiacikla"],
+        rolecolor: oyuncubilgi["yetkirenk"],
         favTeam: Team(
-          teamID: response["favoritakim"]["takim_ID"],
-          name: response["favoritakim"]["takim_adi"],
-          logo: response["favoritakim"]["takim_logo"],
+          teamID: oyuncubilgi["favoritakim"]["takim_ID"],
+          name: oyuncubilgi["favoritakim"]["takim_adi"],
+          logo: oyuncubilgi["favoritakim"]["takim_logo"],
         ));
 
     // AppUser.ID = response["oyuncuID"];

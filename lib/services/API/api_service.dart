@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class ApiService {
-  final String apiKey = API.KEY; // KEY
-  final String host = API.HOST; // IP
-  final String port = API.PORT; // Port numarası
-  final String ssl = API.SSL; // https // https
+  final String apiKey = API.apiKEY; // KEY
+  final String host = API.apiHOST; // IP
+  final String port = API.apiPORT; // Port numarası
+  final String ssl = API.apiSSL; // https // https
 
   AppCore app = AppCore();
 

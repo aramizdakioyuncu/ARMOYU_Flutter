@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:ARMOYU/Models/Story/story.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -147,7 +148,13 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
         User(
           userName: element["hgoruntuleyen_kullaniciad"],
           displayName: element["hgoruntuleyen_adsoyad"],
-          avatar: element["hgoruntuleyen_avatar"],
+          avatar: Media(
+            mediaURL: MediaURL(
+              bigURL: element["hgoruntuleyen_avatar"],
+              normalURL: element["hgoruntuleyen_avatar"],
+              minURL: element["hgoruntuleyen_avatar"],
+            ),
+          ),
         ),
       );
     }

@@ -6,6 +6,7 @@ import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
+import 'package:ARMOYU/Models/user.dart';
 
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
@@ -23,6 +24,7 @@ import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
+import 'package:skeletons/skeletons.dart';
 
 class ProfilePage extends StatefulWidget {
   final int? userID; // Zorunlu olarak alınacak veri
@@ -46,43 +48,16 @@ class _ProfilePageState extends State<ProfilePage>
   @override
   bool get wantKeepAlive => true;
 
-  int userID = -1;
-  String userName = "...";
-  String displayName = "...";
-  String banneravatar =
-      "https://upload.wikimedia.org/wikipedia/commons/7/71/Black.png";
-  String banneravatarbetter =
-      "https://upload.wikimedia.org/wikipedia/commons/7/71/Black.png";
-  String avatar =
-      "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif";
-  String avatarbetter =
-      "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif";
-
-  int level = 0;
-
-  int friendsCount = 0;
-  int postsCount = 0;
-  int awardsCount = 0;
-
-  String country = "...";
-  String province = "";
-  String registerdate = "...";
-  String job = "";
-  String role = "...";
-  String rolecolor = "FFFFFF";
-  String aboutme = "";
-  String burc = "...";
-
-  Team? favoritakim;
+  User userProfile = User();
 
   bool isFriend = false;
 
   bool isbeFriend = false;
 
   List<String> listFriendTOP3 = [
-    "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
-    "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
-    "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif"
+    // "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
+    // "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
+    // "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif"
   ];
   String friendTextLine = "";
 
@@ -92,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage>
   late ScrollController postsscrollcontroller;
   bool galleryproccess = false;
 
-  String friendStatus = "Bekleniyor";
+  String friendStatus = "";
   Color friendStatuscolor = Colors.blue;
 
   bool ispostsVisible = true;
@@ -114,10 +89,10 @@ class _ProfilePageState extends State<ProfilePage>
       if (pageMainscroller.position.pixels >=
           pageMainscroller.position.maxScrollExtent * 0.5) {
         if (ispostsVisible) {
-          profileloadPosts(postscounter, userID);
+          profileloadPosts(postscounter, userProfile.userID!);
         }
         if (isgalleryVisible) {
-          gallery(gallerycounter, userID);
+          gallery(gallerycounter, userProfile.userID!);
         }
       }
       setState(() {
@@ -142,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage>
         }
         if (tabController.index == 1) {
           if (!firstgalleryfetcher) {
-            gallery(gallerycounter, userID);
+            gallery(gallerycounter, userProfile.userID!);
           }
 
           setState(() {
@@ -313,47 +288,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Future<void> test() async {
     if (widget.userID == ARMOYU.Appuser.userID) {
-      userID = ARMOYU.Appuser.userID!;
-      userName = ARMOYU.Appuser.userName!;
-      displayName = ARMOYU.Appuser.displayName!;
-
-      banneravatar = ARMOYU.Appuser.banner!.mediaURL.minURL;
-      banneravatarbetter = ARMOYU.Appuser.banner!.mediaURL.normalURL;
-
-      avatar = ARMOYU.Appuser.avatar!.mediaURL.minURL;
-      avatarbetter = ARMOYU.Appuser.avatar!.mediaURL.normalURL;
-
-      level = ARMOYU.Appuser.level!;
-      friendsCount = ARMOYU.Appuser.friendsCount!;
-      postsCount = ARMOYU.Appuser.postsCount!;
-      awardsCount = ARMOYU.Appuser.awardsCount!;
-
-      country = ARMOYU.Appuser.country!;
-      province = ARMOYU.Appuser.province!;
-      registerdate = ARMOYU.Appuser.registerDate!;
-
-      aboutme = ARMOYU.Appuser.aboutme!;
-
-      burc = ARMOYU.Appuser.burc!;
-
-      favoritakim = ARMOYU.Appuser.favTeam;
-
-      try {
-        job = ARMOYU.Appuser.job!;
-      } catch (ex) {
-        log(ex.toString());
-      }
-
-      try {
-        role = ARMOYU.Appuser.role!;
-      } catch (ex) {
-        log(ex.toString());
-      }
-      try {
-        rolecolor = ARMOYU.Appuser.rolecolor!;
-      } catch (ex) {
-        log(ex.toString());
-      }
+      userProfile = ARMOYU.Appuser;
     } else {
       Map<String, dynamic> response = {};
       if (widget.userID == null && widget.username != null) {
@@ -366,58 +301,57 @@ class _ProfilePageState extends State<ProfilePage>
           return;
         }
         //Kullanıcı adında birisi var
+        Map<String, dynamic> oyuncubilgi = response["icerik"];
 
-        userID = int.parse(response["oyuncuID"]);
-        userName = response["kullaniciadi"];
-        displayName = response["adim"];
-        banneravatar = response["parkaresimminnak"];
-        banneravatarbetter = response["parkaresimufak"];
-        avatar = response["presimminnak"];
-        avatarbetter = response["presimufak"];
+        userProfile.userID = oyuncubilgi["oyuncuID"];
+        userProfile.userName = oyuncubilgi["kullaniciadi"];
+        userProfile.displayName = oyuncubilgi["adim"];
+        userProfile.banner = Media(
+          mediaID: 1000000,
+          mediaURL: MediaURL(
+            bigURL: oyuncubilgi["parkaresimminnak"],
+            normalURL: oyuncubilgi["parkaresimminnak"],
+            minURL: oyuncubilgi["parkaresimminnak"],
+          ),
+        );
+        userProfile.avatar = Media(
+          mediaID: 1000000,
+          mediaURL: MediaURL(
+            bigURL: oyuncubilgi["presimminnak"],
+            normalURL: oyuncubilgi["presimminnak"],
+            minURL: oyuncubilgi["presimminnak"],
+          ),
+        );
 
-        level = response["seviye"];
-        friendsCount = response["arkadaslar"];
-        postsCount = response["gonderiler"];
-        awardsCount = response["oduller"];
+        userProfile.level = oyuncubilgi["seviye"];
+        userProfile.friendsCount = oyuncubilgi["arkadaslar"];
+        userProfile.postsCount = oyuncubilgi["gonderiler"];
+        userProfile.awardsCount = oyuncubilgi["oduller"];
 
-        if (response["ulkesi"] != null) {
-          country = response["ulkesi"];
-        }
-        if (response["ili"] != null) {
-          province = response["ili"];
-        }
-        registerdate = response["kayittarihikisa"];
+        userProfile.country = oyuncubilgi["ulkesi"];
+        userProfile.province = oyuncubilgi["ili"];
+        userProfile.registerDate = oyuncubilgi["kayittarihikisa"];
 
-        if (response["burc"] != null) {
-          burc = response["burc"];
-        }
+        userProfile.burc = oyuncubilgi["burc"];
 
-        if (response["favoritakim"] != null) {
-          favoritakim = Team(
-            teamID: response["favoritakim"]["takim_ID"],
-            name: response["favoritakim"]["takim_adi"],
-            logo: response["favoritakim"]["takim_logo"],
+        if (oyuncubilgi["favoritakim"] != null) {
+          userProfile.favTeam = Team(
+            teamID: oyuncubilgi["favoritakim"]["takim_ID"],
+            name: oyuncubilgi["favoritakim"]["takim_adi"],
+            logo: oyuncubilgi["favoritakim"]["takim_logo"],
           );
         }
 
-        if (response["isyeriadi"] != null) {
-          job = response["isyeriadi"];
-        }
+        userProfile.job = oyuncubilgi["isyeriadi"];
 
-        if (response["yetkisiacikla"] != null) {
-          role = response["yetkisiacikla"];
-        }
-        if (response["yetkirenk"] != null) {
-          rolecolor = response["yetkirenk"];
-        }
-        if (response["hakkimda"] != null) {
-          aboutme = response["hakkimda"];
-        }
+        userProfile.role = oyuncubilgi["yetkisiacikla"];
+        userProfile.rolecolor = oyuncubilgi["yetkirenk"];
+        userProfile.aboutme = oyuncubilgi["hakkimda"];
 
-        if (response["arkadasdurum"] == "1") {
+        if (oyuncubilgi["arkadasdurum"] == "1") {
           isFriend = true;
           isbeFriend = false;
-        } else if (response["arkadasdurum"] == "2") {
+        } else if (oyuncubilgi["arkadasdurum"] == "2") {
           isFriend = false;
           isbeFriend = false;
         } else {
@@ -425,36 +359,36 @@ class _ProfilePageState extends State<ProfilePage>
           isbeFriend = true;
         }
         listFriendTOP3.clear();
-        for (int i = 0; i < response["ortakarkadasliste"].length; i++) {
+        for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
           if (mounted) {
             setState(() {
               if (i < 2) {
                 if (i == 0) {
                   friendTextLine +=
-                      "@${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                      "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                 } else {
-                  if (response["ortakarkadasliste"].length == 2) {
+                  if (oyuncubilgi["ortakarkadasliste"].length == 2) {
                     friendTextLine +=
-                        "ve @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                        "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                   } else {
                     friendTextLine +=
-                        ", @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                        ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                   }
                 }
               }
-              listFriendTOP3
-                  .add(response["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
+              listFriendTOP3.add(
+                  oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
             });
           }
         }
 
-        if (response["ortakarkadasliste"].length > 2) {
-          int mutualFriend = response["ortakarkadaslar"] - 2;
+        if (oyuncubilgi["ortakarkadasliste"].length > 2) {
+          int mutualFriend = oyuncubilgi["ortakarkadaslar"] - 2;
           friendTextLine +=
               "ve ${mutualFriend.toString()} diğer kişi ile arkadaş";
-        } else if (response["ortakarkadasliste"].length == 2) {
+        } else if (oyuncubilgi["ortakarkadasliste"].length == 2) {
           friendTextLine += " ile arkadaş";
-        } else if (response["ortakarkadasliste"].length == 1) {
+        } else if (oyuncubilgi["ortakarkadasliste"].length == 1) {
           friendTextLine += " ile arkadaş";
         }
         ///////
@@ -465,57 +399,58 @@ class _ProfilePageState extends State<ProfilePage>
           log("Oyuncu bulunamadı");
           return;
         }
-        userID = int.parse(response["oyuncuID"]);
-        userName = response["kullaniciadi"];
-        displayName = response["adim"];
-        banneravatar = response["parkaresimminnak"];
-        banneravatarbetter = response["parkaresimufak"];
-        avatar = response["presimminnak"];
-        avatarbetter = response["presimufak"];
 
-        level = response["seviye"];
-        friendsCount = response["arkadaslar"];
-        postsCount = response["gonderiler"];
-        awardsCount = response["oduller"];
+        Map<String, dynamic> oyuncubilgi = response["icerik"];
 
-        if (response["ulkesi"] != null) {
-          country = response["ulkesi"];
-        }
-        if (response["ili"] != null) {
-          province = response["ili"];
-        }
-        registerdate = response["kayittarihikisa"];
+        userProfile.userID = oyuncubilgi["oyuncuID"];
+        userProfile.userName = oyuncubilgi["kullaniciadi"];
+        userProfile.displayName = oyuncubilgi["adim"];
+        userProfile.banner = Media(
+          mediaID: 1000000,
+          mediaURL: MediaURL(
+            bigURL: oyuncubilgi["parkaresimminnak"],
+            normalURL: oyuncubilgi["parkaresimminnak"],
+            minURL: oyuncubilgi["parkaresimminnak"],
+          ),
+        );
+        userProfile.avatar = Media(
+          mediaID: 1000000,
+          mediaURL: MediaURL(
+            bigURL: oyuncubilgi["presimminnak"],
+            normalURL: oyuncubilgi["presimminnak"],
+            minURL: oyuncubilgi["presimminnak"],
+          ),
+        );
 
-        if (response["burc"] != null) {
-          burc = response["burc"];
-        }
+        userProfile.level = oyuncubilgi["seviye"];
+        userProfile.friendsCount = oyuncubilgi["arkadaslar"];
+        userProfile.postsCount = oyuncubilgi["gonderiler"];
+        userProfile.awardsCount = oyuncubilgi["oduller"];
 
-        if (response["favoritakim"] != null) {
-          favoritakim = Team(
-            teamID: response["favoritakim"]["takim_ID"],
-            name: response["favoritakim"]["takim_adi"],
-            logo: response["favoritakim"]["takim_logo"],
+        userProfile.country = oyuncubilgi["ulkesi"];
+        userProfile.province = oyuncubilgi["ili"];
+        userProfile.registerDate = oyuncubilgi["kayittarihikisa"];
+
+        userProfile.burc = oyuncubilgi["burc"];
+
+        if (oyuncubilgi["favoritakim"] != null) {
+          userProfile.favTeam = Team(
+            teamID: oyuncubilgi["favoritakim"]["takim_ID"],
+            name: oyuncubilgi["favoritakim"]["takim_adi"],
+            logo: oyuncubilgi["favoritakim"]["takim_logo"],
           );
         }
 
-        if (response["isyeriadi"] != null) {
-          job = response["isyeriadi"];
-        }
+        userProfile.job = oyuncubilgi["isyeriadi"];
 
-        if (response["yetkisiacikla"] != null) {
-          role = response["yetkisiacikla"];
-        }
-        if (response["yetkirenk"] != null) {
-          rolecolor = response["yetkirenk"];
-        }
-        if (response["hakkimda"] != null) {
-          aboutme = response["hakkimda"];
-        }
+        userProfile.role = oyuncubilgi["yetkisiacikla"];
+        userProfile.rolecolor = oyuncubilgi["yetkirenk"];
+        userProfile.aboutme = oyuncubilgi["hakkimda"];
 
-        if (response["arkadasdurum"] == "1") {
+        if (oyuncubilgi["arkadasdurum"] == "1") {
           isFriend = true;
           isbeFriend = false;
-        } else if (response["arkadasdurum"] == "2") {
+        } else if (oyuncubilgi["arkadasdurum"] == "2") {
           isFriend = false;
           isbeFriend = false;
         } else {
@@ -524,57 +459,61 @@ class _ProfilePageState extends State<ProfilePage>
         }
 
         listFriendTOP3.clear();
-        for (int i = 0; i < response["ortakarkadasliste"].length; i++) {
+        for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
           if (mounted) {
             setState(() {
               if (i < 2) {
                 if (i == 0) {
                   friendTextLine +=
-                      "@${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                      "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                 } else {
-                  if (response["ortakarkadasliste"].length == 2) {
+                  if (oyuncubilgi["ortakarkadasliste"].length == 2) {
                     friendTextLine +=
-                        "ve @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]}";
+                        "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]}";
                   } else {
                     friendTextLine +=
-                        ", @${response["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                        ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
                   }
                 }
               }
-              listFriendTOP3
-                  .add(response["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
+              listFriendTOP3.add(
+                  oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
             });
           }
         }
 
-        if (response["ortakarkadasliste"].length > 2) {
-          int mutualFriend = response["ortakarkadaslar"] - 2;
+        if (oyuncubilgi["ortakarkadasliste"].length > 2) {
+          int mutualFriend = oyuncubilgi["ortakarkadaslar"] - 2;
           friendTextLine +=
               "ve ${mutualFriend.toString()} diğer kişi ile arkadaş";
-        } else if (response["ortakarkadasliste"].length == 2) {
+        } else if (oyuncubilgi["ortakarkadasliste"].length == 2) {
           friendTextLine += " ile arkadaş";
-        } else if (response["ortakarkadasliste"].length == 1) {
+        } else if (oyuncubilgi["ortakarkadasliste"].length == 1) {
           friendTextLine += " ile arkadaş";
         }
         /////
       }
 
-      if (isbeFriend && !isFriend && userID != ARMOYU.Appuser.userID) {
+      if (isbeFriend &&
+          !isFriend &&
+          userProfile.userID != ARMOYU.Appuser.userID) {
         friendStatus = "Arkadaş Ol";
         friendStatuscolor = Colors.blue;
       } else if (!isbeFriend &&
           !isFriend &&
-          userID != ARMOYU.Appuser.userID &&
-          userID != -1) {
+          userProfile.userID != ARMOYU.Appuser.userID &&
+          userProfile.userID != -1) {
         friendStatus = "İstek Gönderildi";
         friendStatuscolor = Colors.black;
-      } else if (!isbeFriend && isFriend && userID != ARMOYU.Appuser.userID) {
+      } else if (!isbeFriend &&
+          isFriend &&
+          userProfile.userID != ARMOYU.Appuser.userID) {
         friendStatus = "Mesaj Gönder";
         friendStatuscolor = Colors.blue;
       }
     }
 
-    await profileloadPosts(postscounter, userID);
+    await profileloadPosts(postscounter, userProfile.userID!);
   }
 
   Future<void> _handleRefresh() async {
@@ -596,6 +535,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
     setState(() {
       ARMOYU.Appuser.avatar = Media(
+        mediaID: 1000000,
         mediaURL: MediaURL(
           bigURL: response["aciklamadetay"].toString(),
           normalURL: response["aciklamadetay"].toString(),
@@ -622,6 +562,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
     setState(() {
       ARMOYU.Appuser.banner = Media(
+        mediaID: 1000000,
         mediaURL: MediaURL(
           bigURL: response["aciklamadetay"].toString(),
           normalURL: response["aciklamadetay"].toString(),
@@ -634,7 +575,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Future<void> friendrequest() async {
     FunctionsProfile f = FunctionsProfile();
-    Map<String, dynamic> response = await f.friendrequest(userID);
+    Map<String, dynamic> response = await f.friendrequest(userProfile.userID!);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -651,9 +592,9 @@ class _ProfilePageState extends State<ProfilePage>
       MaterialPageRoute(
         builder: (context) => ChatDetailPage(
           appbar: true,
-          userID: userID,
-          useravatar: avatar,
-          userdisplayname: userName,
+          userID: userProfile.userID!,
+          useravatar: userProfile.avatar!.mediaURL.minURL,
+          userdisplayname: userProfile.userName!,
           chats: const [],
         ),
       ),
@@ -706,184 +647,183 @@ class _ProfilePageState extends State<ProfilePage>
         controller: pageMainscroller,
         slivers: [
           SliverAppBar(
-            pinned: ARMOYU.Appuser.userID != userID ? true : false,
+            pinned: ARMOYU.Appuser.userID != userProfile.userID ? true : false,
             backgroundColor: Colors.black,
             expandedHeight: ARMOYU.screenHeight * 0.25,
             actions: <Widget>[
-              IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {
-                  showModalBottomSheet<void>(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(10),
-                      ),
-                    ),
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                        child: Wrap(
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[900],
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(30),
-                                      ),
-                                    ),
-                                    width: ARMOYU.screenWidth / 4,
-                                    height: 5,
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const ListTile(
-                                    leading: Icon(Icons.share_outlined),
-                                    title: Text("Profili paylaş."),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const ListTile(
-                                    leading: Icon(Icons.content_copy),
-                                    title: Text("Profil linkini kopyala."),
-                                  ),
-                                ),
-                                const Visibility(
-                                  //Çizgi ekler
-                                  child: Divider(),
-                                ),
-                                Visibility(
-                                  visible: userID != ARMOYU.Appuser.userID,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      FunctionsBlocking f = FunctionsBlocking();
-                                      Map<String, dynamic> response =
-                                          await f.add(userID);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                        return;
-                                      }
-                                      try {
-                                        if (mounted) {
-                                          Navigator.pop(context);
-                                        }
-                                      } catch (e) {
-                                        log(e.toString());
-                                      }
-                                    },
-                                    child: const ListTile(
-                                      textColor: Colors.red,
-                                      leading: Icon(
-                                        Icons.person_off_outlined,
-                                        color: Colors.red,
-                                      ),
-                                      title: Text("Kullanıcıyı Engelle."),
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: userID != ARMOYU.Appuser.userID,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: const ListTile(
-                                      textColor: Colors.red,
-                                      leading: Icon(
-                                        Icons.flag_outlined,
-                                        color: Colors.red,
-                                      ),
-                                      title: Text("Profili bildir."),
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: isFriend,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      FunctionsProfile f = FunctionsProfile();
-                                      Map<String, dynamic> response =
-                                          await f.friendremove(widget.userID!);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                        return;
-                                      }
-                                    },
-                                    child: const ListTile(
-                                      textColor: Colors.red,
-                                      leading: Icon(
-                                        Icons.person_remove,
-                                        color: Colors.pink,
-                                      ),
-                                      title: Text("Arkadaşlıktan Çıkar."),
-                                    ),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: isFriend,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      FunctionsProfile f = FunctionsProfile();
-                                      Map<String, dynamic> response =
-                                          await f.userdurting(widget.userID!);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                        return;
-                                      }
-                                    },
-                                    child: const ListTile(
-                                      textColor: Colors.orange,
-                                      leading: Icon(
-                                        Icons.local_fire_department,
-                                        color: Colors.pink,
-                                      ),
-                                      title: Text("Profili Dürt."),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                              ],
+              userProfile.userID == null
+                  ? const SizedBox()
+                  : IconButton(
+                      icon: const Icon(Icons.more_vert),
+                      onPressed: () {
+                        showModalBottomSheet<void>(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(10),
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+                          ),
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SafeArea(
+                              child: Wrap(
+                                children: [
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[900],
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              Radius.circular(30),
+                                            ),
+                                          ),
+                                          width: ARMOYU.screenWidth / 4,
+                                          height: 5,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {},
+                                        child: const ListTile(
+                                          leading: Icon(Icons.share_outlined),
+                                          title: Text("Profili paylaş."),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {},
+                                        child: const ListTile(
+                                          leading: Icon(Icons.content_copy),
+                                          title:
+                                              Text("Profil linkini kopyala."),
+                                        ),
+                                      ),
+                                      const Visibility(
+                                        //Çizgi ekler
+                                        child: Divider(),
+                                      ),
+                                      Visibility(
+                                        visible: userProfile.userID !=
+                                            ARMOYU.Appuser.userID,
+                                        child: InkWell(
+                                          onTap: () async {
+                                            FunctionsBlocking f =
+                                                FunctionsBlocking();
+                                            Map<String, dynamic> response =
+                                                await f
+                                                    .add(userProfile.userID!);
+                                            if (response["durum"] == 0) {
+                                              log(response["aciklama"]);
+                                              return;
+                                            }
+                                            try {
+                                              if (mounted) {
+                                                Navigator.pop(context);
+                                              }
+                                            } catch (e) {
+                                              log(e.toString());
+                                            }
+                                          },
+                                          child: const ListTile(
+                                            textColor: Colors.red,
+                                            leading: Icon(
+                                              Icons.person_off_outlined,
+                                              color: Colors.red,
+                                            ),
+                                            title: Text("Kullanıcıyı Engelle."),
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: userProfile.userID !=
+                                            ARMOYU.Appuser.userID,
+                                        child: InkWell(
+                                          onTap: () {},
+                                          child: const ListTile(
+                                            textColor: Colors.red,
+                                            leading: Icon(
+                                              Icons.flag_outlined,
+                                              color: Colors.red,
+                                            ),
+                                            title: Text("Profili bildir."),
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: isFriend,
+                                        child: InkWell(
+                                          onTap: () async {
+                                            FunctionsProfile f =
+                                                FunctionsProfile();
+                                            Map<String, dynamic> response =
+                                                await f.friendremove(
+                                                    widget.userID!);
+                                            if (response["durum"] == 0) {
+                                              log(response["aciklama"]);
+                                              return;
+                                            }
+                                          },
+                                          child: const ListTile(
+                                            textColor: Colors.red,
+                                            leading: Icon(
+                                              Icons.person_remove,
+                                              color: Colors.pink,
+                                            ),
+                                            title: Text("Arkadaşlıktan Çıkar."),
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: isFriend,
+                                        child: InkWell(
+                                          onTap: () async {
+                                            FunctionsProfile f =
+                                                FunctionsProfile();
+                                            Map<String, dynamic> response =
+                                                await f.userdurting(
+                                                    widget.userID!);
+                                            if (response["durum"] == 0) {
+                                              log(response["aciklama"]);
+                                              return;
+                                            }
+                                          },
+                                          child: const ListTile(
+                                            textColor: Colors.orange,
+                                            leading: Icon(
+                                              Icons.local_fire_department,
+                                              color: Colors.pink,
+                                            ),
+                                            title: Text("Profili Dürt."),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
               const SizedBox(width: 10),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              title: Align(
-                alignment: Alignment.bottomLeft,
-                child: userID == ARMOYU.Appuser.userID
-                    ? const SizedBox()
-                    : CustomText.costum1(displayName),
-              ),
               background: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => MediaViewer(
-                      media: [
-                        Media(
-                          mediaID: 90909090,
-                          ownerID: userID,
-                          mediaURL: MediaURL(
-                              bigURL: banneravatarbetter,
-                              normalURL: banneravatarbetter,
-                              minURL: banneravatarbetter),
-                        )
-                      ],
-                      initialIndex: 0,
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MediaViewer(
+                        media: [userProfile.banner!],
+                        initialIndex: 0,
+                      ),
                     ),
-                  ));
+                  );
                 },
                 onLongPress: () {
-                  if (ARMOYU.Appuser.userID != userID) {
+                  if (ARMOYU.Appuser.userID != userProfile.userID) {
                     return;
                   }
                   showModalBottomSheet<void>(
@@ -914,7 +854,8 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                 ),
                                 Visibility(
-                                  visible: ARMOYU.Appuser.userID == userID,
+                                  visible: ARMOYU.Appuser.userID ==
+                                      userProfile.userID,
                                   child: InkWell(
                                     onTap: () async {
                                       await changebanner();
@@ -930,7 +871,8 @@ class _ProfilePageState extends State<ProfilePage>
                                   child: Divider(),
                                 ),
                                 Visibility(
-                                  visible: userID == ARMOYU.Appuser.userID,
+                                  visible: userProfile.userID ==
+                                      ARMOYU.Appuser.userID,
                                   child: InkWell(
                                     onTap: () {},
                                     child: const ListTile(
@@ -951,10 +893,12 @@ class _ProfilePageState extends State<ProfilePage>
                     },
                   );
                 },
-                child: CachedNetworkImage(
-                  imageUrl: banneravatar,
-                  fit: BoxFit.cover,
-                ),
+                child: userProfile.banner == null
+                    ? null
+                    : CachedNetworkImage(
+                        imageUrl: userProfile.banner!.mediaURL.minURL,
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
           ),
@@ -976,21 +920,14 @@ class _ProfilePageState extends State<ProfilePage>
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => MediaViewer(
-                                    media: [
-                                      Media(
-                                          mediaID: 90909090,
-                                          ownerID: userID,
-                                          mediaURL: MediaURL(
-                                              bigURL: avatarbetter,
-                                              normalURL: avatarbetter,
-                                              minURL: avatarbetter))
-                                    ],
+                                    media: [userProfile.avatar!],
                                     initialIndex: 0,
                                   ),
                                 ));
                               },
                               onLongPress: () {
-                                if (ARMOYU.Appuser.userID != userID) {
+                                if (ARMOYU.Appuser.userID !=
+                                    userProfile.userID) {
                                   return;
                                 }
                                 showModalBottomSheet<void>(
@@ -1025,7 +962,7 @@ class _ProfilePageState extends State<ProfilePage>
                                               Visibility(
                                                 visible:
                                                     ARMOYU.Appuser.userID ==
-                                                        userID,
+                                                        userProfile.userID,
                                                 child: InkWell(
                                                   onTap: () async {
                                                     await changeavatar();
@@ -1043,7 +980,7 @@ class _ProfilePageState extends State<ProfilePage>
                                                 child: Divider(),
                                               ),
                                               Visibility(
-                                                visible: userID ==
+                                                visible: userProfile.userID ==
                                                     ARMOYU.Appuser.userID,
                                                 child: InkWell(
                                                   onTap: () {},
@@ -1066,18 +1003,27 @@ class _ProfilePageState extends State<ProfilePage>
                                   },
                                 );
                               },
-                              child: ClipOval(
-                                child: CachedNetworkImage(
-                                  imageUrl: avatar,
-                                  fit: BoxFit.cover,
-                                  width: 60,
-                                  height: 60,
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.error),
-                                ),
-                              ),
+                              child: userProfile.avatar == null
+                                  ? SkeletonAvatar(
+                                      style: SkeletonAvatarStyle(
+                                        borderRadius: BorderRadius.circular(50),
+                                        width: 60,
+                                        height: 60,
+                                      ),
+                                    )
+                                  : ClipOval(
+                                      child: CachedNetworkImage(
+                                        imageUrl:
+                                            userProfile.avatar!.mediaURL.minURL,
+                                        fit: BoxFit.cover,
+                                        width: 60,
+                                        height: 60,
+                                        placeholder: (context, url) =>
+                                            const CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.error),
+                                      ),
+                                    ),
                             ),
                           ],
                         ),
@@ -1086,22 +1032,24 @@ class _ProfilePageState extends State<ProfilePage>
                             children: [
                               Row(
                                 children: [
-                                  // Spacer(),
-                                  // Column(
-                                  //   children: [
-                                  //     CustomText()
-                                  //         .Costum1(level.toString()),
-                                  //      CustomText().Costum1("Seviye"),
-                                  //   ],
-                                  // ),
                                   const Spacer(),
-                                  Column(
-                                    children: [
-                                      CustomText.costum1(postsCount.toString(),
-                                          weight: FontWeight.bold),
-                                      CustomText.costum1("Gönderi"),
-                                    ],
-                                  ),
+                                  userProfile.postsCount == null
+                                      ? const SkeletonLine(
+                                          style: SkeletonLineStyle(
+                                            width: 35,
+                                            height: 30,
+                                            padding: EdgeInsets.all(2),
+                                          ),
+                                        )
+                                      : Column(
+                                          children: [
+                                            CustomText.costum1(
+                                                userProfile.postsCount
+                                                    .toString(),
+                                                weight: FontWeight.bold),
+                                            CustomText.costum1("Gönderi"),
+                                          ],
+                                        ),
                                   const Spacer(),
                                   Column(
                                     children: [
@@ -1112,34 +1060,52 @@ class _ProfilePageState extends State<ProfilePage>
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   FriendlistPage(
-                                                username: userName,
-                                                userid: userID,
+                                                username: userProfile.userName!,
+                                                userid: userProfile.userID!,
                                               ),
                                             ),
                                           );
                                         },
-                                        child: Column(
-                                          children: [
-                                            CustomText.costum1(
-                                                friendsCount.toString(),
-                                                weight: FontWeight.bold),
-                                            CustomText.costum1("Arkadaş"),
-                                          ],
-                                        ),
+                                        child: userProfile.postsCount == null
+                                            ? const SkeletonLine(
+                                                style: SkeletonLineStyle(
+                                                  width: 35,
+                                                  height: 30,
+                                                  padding: EdgeInsets.all(2),
+                                                ),
+                                              )
+                                            : Column(
+                                                children: [
+                                                  CustomText.costum1(
+                                                      userProfile.friendsCount
+                                                          .toString(),
+                                                      weight: FontWeight.bold),
+                                                  CustomText.costum1("Arkadaş"),
+                                                ],
+                                              ),
                                       ),
                                     ],
                                   ),
                                   const Spacer(),
-                                  Column(
-                                    children: [
-                                      CustomText.costum1(awardsCount.toString(),
-                                          weight: FontWeight.bold),
-                                      CustomText.costum1("Ödül"),
-                                    ],
-                                  ),
+                                  userProfile.postsCount == null
+                                      ? const SkeletonLine(
+                                          style: SkeletonLineStyle(
+                                            width: 35,
+                                            height: 30,
+                                            padding: EdgeInsets.all(2),
+                                          ),
+                                        )
+                                      : Column(
+                                          children: [
+                                            CustomText.costum1(
+                                                userProfile.awardsCount
+                                                    .toString(),
+                                                weight: FontWeight.bold),
+                                            CustomText.costum1("Ödül"),
+                                          ],
+                                        ),
                                   const Spacer(),
-
-                                  favoritakim != null
+                                  userProfile.favTeam != null
                                       ? Column(
                                           children: [
                                             InkWell(
@@ -1147,7 +1113,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                 // favteamfetch();
                                               },
                                               child: CachedNetworkImage(
-                                                imageUrl: favoritakim!.logo,
+                                                imageUrl:
+                                                    userProfile.favTeam!.logo,
                                                 height: 40,
                                                 width: 40,
                                               ),
@@ -1166,30 +1133,48 @@ class _ProfilePageState extends State<ProfilePage>
                   const SizedBox(
                     height: 10,
                   ),
-                  CustomText.costum1(
-                    displayName,
-                    size: 16,
-                    weight: FontWeight.bold,
-                  ),
+                  userProfile.displayName == null
+                      ? const SkeletonLine(
+                          style: SkeletonLineStyle(
+                            width: 50,
+                            padding: EdgeInsets.all(5),
+                          ),
+                        )
+                      : CustomText.costum1(
+                          userProfile.displayName!,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
                   Row(
                     children: [
-                      CustomText.costum1(
-                        "@$userName",
-                      ),
+                      userProfile.userName == null
+                          ? const SkeletonLine(
+                              style: SkeletonLineStyle(
+                                width: 80,
+                                padding: EdgeInsets.all(5),
+                              ),
+                            )
+                          : CustomText.costum1(
+                              "@${userProfile.userName}",
+                            ),
                       const SizedBox(width: 5),
-                      Text(
-                        role,
-                        style: TextStyle(
-                          color: Color(
-                            int.parse("0xFF$rolecolor"),
-                          ),
-                        ),
-                      ),
+                      userProfile.role == null
+                          ? const SkeletonLine(
+                              style: SkeletonLineStyle(width: 20),
+                            )
+                          : Text(
+                              userProfile.role!,
+                              style: TextStyle(
+                                color: Color(
+                                  int.parse("0xFF${userProfile.rolecolor}"),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                   const SizedBox(height: 15),
                   Visibility(
-                    visible: registerdate == "..." ? false : true,
+                    visible: userProfile.registerDate == null ? false : true,
                     child: Row(
                       children: [
                         const Icon(
@@ -1198,31 +1183,40 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText.costum1(
-                          registerdate,
-                        ),
+                        userProfile.registerDate == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 20),
+                              )
+                            : CustomText.costum1(
+                                userProfile.registerDate!,
+                              ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 5),
                   Visibility(
-                      visible: burc == "..." ? false : true,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.window,
-                            color: Colors.grey,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 3),
-                          CustomText.costum1(
-                            burc,
-                          ),
-                        ],
-                      )),
+                    visible: userProfile.burc == null ? false : true,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.window,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 3),
+                        userProfile.burc == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 100),
+                              )
+                            : CustomText.costum1(
+                                userProfile.burc!,
+                              ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 5),
                   Visibility(
-                    visible: country == "..." ? false : true,
+                    visible: userProfile.country == null ? false : true,
                     child: Row(
                       children: [
                         const Icon(
@@ -1231,15 +1225,19 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText.costum1(
-                          "$country, $province",
-                        ),
+                        userProfile.country == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 100),
+                              )
+                            : CustomText.costum1(
+                                "${userProfile.country}, ${userProfile.province}",
+                              ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 5),
                   Visibility(
-                    visible: job == "" ? false : true,
+                    visible: userProfile.job == null ? false : true,
                     child: Row(
                       children: [
                         const Icon(
@@ -1248,12 +1246,17 @@ class _ProfilePageState extends State<ProfilePage>
                           size: 20,
                         ),
                         const SizedBox(width: 3),
-                        CustomText.costum1(job),
+                        userProfile.job == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 100),
+                              )
+                            : CustomText.costum1(userProfile.job!),
                       ],
                     ),
                   ),
                   Visibility(
-                    visible: ARMOYU.Appuser.userID != userID,
+                    visible: ARMOYU.Appuser.userID != userProfile.userID &&
+                        listFriendTOP3.isNotEmpty,
                     child: Row(
                       children: [
                         Stack(
@@ -1295,28 +1298,45 @@ class _ProfilePageState extends State<ProfilePage>
                         //Arkadaş ol
                         visible: isbeFriend &&
                             !isFriend &&
-                            userID != ARMOYU.Appuser.userID,
+                            userProfile.userID != ARMOYU.Appuser.userID,
                         child: Expanded(
                           child: CustomButtons.friendbuttons(
                               friendStatus, friendrequest, friendStatuscolor),
                         ),
                       ),
                       Visibility(
-                        //Bekliyor
+                        //İstek Gönderildi
                         visible: !isbeFriend &&
                             !isFriend &&
-                            userID != ARMOYU.Appuser.userID &&
-                            userID != -1,
-                        child: Expanded(
-                          child: CustomButtons.friendbuttons(friendStatus,
-                              cancelfriendrequest, friendStatuscolor),
-                        ),
+                            userProfile.userID != ARMOYU.Appuser.userID &&
+                            userProfile.userID != -1,
+                        child: friendStatus == ""
+                            ? Expanded(
+                                child: SkeletonItem(
+                                  child: ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 0, horizontal: 1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            8), // Kenar yarıçapını ayarlayın
+                                      ),
+                                    ),
+                                    child: const Text(""),
+                                  ),
+                                ),
+                              )
+                            : Expanded(
+                                child: CustomButtons.friendbuttons(friendStatus,
+                                    cancelfriendrequest, friendStatuscolor),
+                              ),
                       ),
                       Visibility(
                         //Mesaj Gönder
                         visible: !isbeFriend &&
                             isFriend &&
-                            userID != ARMOYU.Appuser.userID,
+                            userProfile.userID != ARMOYU.Appuser.userID,
                         child: Expanded(
                           child: CustomButtons.friendbuttons(
                               friendStatus, sendmessage, friendStatuscolor),
@@ -1326,12 +1346,17 @@ class _ProfilePageState extends State<ProfilePage>
                   ),
                   const SizedBox(height: 5),
                   Visibility(
-                    visible: aboutme == "" ? false : true,
+                    visible: userProfile.aboutme == "" ? false : true,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomDedectabletext.costum1(aboutme, 3, 13),
+                        userProfile.aboutme == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 350),
+                              )
+                            : CustomDedectabletext.costum1(
+                                userProfile.aboutme!, 3, 13),
                         const SizedBox(height: 10),
                       ],
                     ),
@@ -1406,7 +1431,7 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
       child: TabBar(
         labelColor: Colors.white,
         controller: tabController,
-        isScrollable: true,
+        isScrollable: false,
         indicatorColor: ARMOYU.color,
         tabs: [
           Padding(
