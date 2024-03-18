@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,11 +25,167 @@ class _EventStatePage extends State<InvitePage>
   @override
   bool get wantKeepAlive => true;
 
+  List<Widget> invitelist = [
+    ListTile(
+      minVerticalPadding: 5.0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+      tileColor: ARMOYU.appbarColor,
+      leading: SkeletonAvatar(
+        style: SkeletonAvatarStyle(
+          borderRadius: BorderRadius.circular(50),
+        ),
+      ),
+      title: const SkeletonLine(),
+      subtitle: const SkeletonLine(
+        style: SkeletonLineStyle(width: 50),
+      ),
+    ),
+    ListTile(
+      minVerticalPadding: 5.0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+      tileColor: ARMOYU.appbarColor,
+      leading: SkeletonAvatar(
+        style: SkeletonAvatarStyle(
+          borderRadius: BorderRadius.circular(50),
+        ),
+      ),
+      title: const SkeletonLine(),
+      subtitle: const SkeletonLine(
+        style: SkeletonLineStyle(width: 50),
+      ),
+    ),
+    ListTile(
+      minVerticalPadding: 5.0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+      tileColor: ARMOYU.appbarColor,
+      leading: SkeletonAvatar(
+        style: SkeletonAvatarStyle(
+          borderRadius: BorderRadius.circular(50),
+        ),
+      ),
+      title: const SkeletonLine(),
+      subtitle: const SkeletonLine(
+        style: SkeletonLineStyle(width: 50),
+      ),
+    )
+  ];
+
   @override
   void initState() {
     super.initState();
 
     log("Davet Sayfası");
+    invitepeoplelist();
+  }
+
+  Future<void> invitepeoplelist() async {
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response = await f.invitelist(1);
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    log(response.toString());
+    invitelist.clear();
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      if (mounted) {
+        setState(() {
+          invitelist.add(
+            ListTile(
+              minVerticalPadding: 5.0,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+              leading: CircleAvatar(
+                foregroundImage: CachedNetworkImageProvider(
+                  response["icerik"][i]["oyuncu_avatar"],
+                ),
+              ),
+              tileColor: ARMOYU.appbarColor,
+              title: CustomText.costum1(
+                  response["icerik"][i]["oyuncu_displayname"]),
+              subtitle:
+                  CustomText.costum1(response["icerik"][i]["oyuncu_username"]),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      response["icerik"][i]["oyuncu_dogrulama"] == true
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            )
+                          : const Icon(
+                              Icons.warning,
+                              color: Colors.amber,
+                            ),
+                    ],
+                  ),
+                  response["icerik"][i]["oyuncu_dogrulama"] == false
+                      ? IconButton(
+                          onPressed: () {
+                            showModalBottomSheet<void>(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(10),
+                                ),
+                              ),
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SafeArea(
+                                  child: Wrap(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.grey[900],
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                  Radius.circular(30),
+                                                ),
+                                              ),
+                                              width: ARMOYU.screenWidth / 4,
+                                              height: 5,
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () async {},
+                                            child: const ListTile(
+                                              textColor: Colors.amber,
+                                              leading: Icon(
+                                                Icons.mail,
+                                                color: Colors.amber,
+                                              ),
+                                              title: Text("Doğrulama gönder"),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          icon: const Icon(Icons.more_vert_rounded))
+                      : Container(),
+                ],
+              ),
+            ),
+          );
+        });
+      }
+    }
   }
 
   @override
@@ -36,18 +194,6 @@ class _EventStatePage extends State<InvitePage>
     return SafeArea(
       child: Scaffold(
         backgroundColor: ARMOYU.bodyColor,
-        // appBar: AppBar(
-        //   title: const Text("Davet Et"),
-        //   backgroundColor: ARMOYU.appbarColor,
-        //   actions: [
-        //     IconButton(
-        //       onPressed: () {
-        //         // fetchnewscontent(widget.news.newsID);
-        //       },
-        //       icon: const Icon(Icons.refresh),
-        //     ),
-        //   ],
-        // ),
         body: Column(
           children: [
             Container(
@@ -85,7 +231,7 @@ class _EventStatePage extends State<InvitePage>
                           ARMOYU.Appuser.avatar!.mediaURL.normalURL),
                       radius: 40,
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     Row(
                       children: [
                         const Spacer(),
@@ -202,22 +348,14 @@ class _EventStatePage extends State<InvitePage>
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    tileColor: ARMOYU.appbarColor,
-                    leading: SkeletonAvatar(
-                      style: SkeletonAvatarStyle(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    title: const SkeletonLine(),
-                    subtitle: const SkeletonLine(
-                      style: SkeletonLineStyle(width: 50),
-                    ),
-                  );
-                },
+              child: RefreshIndicator(
+                onRefresh: () async {},
+                child: ListView.builder(
+                  itemCount: invitelist.length,
+                  itemBuilder: (context, index) {
+                    return invitelist[index];
+                  },
+                ),
               ),
             )
           ],

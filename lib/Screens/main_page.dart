@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
-import 'package:ARMOYU/Functions/API_Functions/teams.dart';
+import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
@@ -15,7 +15,6 @@ import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
-import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +42,6 @@ class _MainPageState extends State<MainPage>
   @override
   bool get wantKeepAlive => true;
 
-  final List<Team> favoriteteams = [];
-
   bool isBottomNavbarVisible = true;
 
   bool drawermyschool = false;
@@ -56,8 +53,6 @@ class _MainPageState extends State<MainPage>
   int postpage = 1;
   bool postpageproccess = false;
   bool isRefreshing = false;
-  bool favteamRequest = false;
-  Map<String, dynamic> favTeam = {};
 
   bool firstProcces = false;
   ScrollController homepageScrollController = ScrollController();
@@ -70,7 +65,7 @@ class _MainPageState extends State<MainPage>
     }
 
     //Takımları Çek opsiyonel
-    favteamfetch();
+    ARMOYUFunctions.favteamfetch();
     //Grup Oluştur ekle
 
     setState(() {
@@ -107,31 +102,6 @@ class _MainPageState extends State<MainPage>
     });
   }
 
-  Future<void> favteamfetch() async {
-    if (ARMOYU.Appuser.favTeam != null) {
-      return;
-    }
-
-    if (favTeam.isEmpty) {
-      FunctionsTeams f = FunctionsTeams();
-      favTeam = await f.fetch();
-      if (favTeam["durum"] == 0) {
-        log(favTeam["aciklama"].toString());
-        return;
-      }
-    }
-
-    for (int i = 0; favTeam["icerik"].length > i; i++) {
-      favoriteteams.add(
-        Team(
-          teamID: favTeam["icerik"][i]["takim_ID"],
-          name: favTeam["icerik"][i]["takim_adi"],
-          logo: favTeam["icerik"][i]["takim_logo"],
-        ),
-      );
-    }
-  }
-
   Future<void> favteamselect(Team team) async {
     FunctionsProfile f = FunctionsProfile();
     Map<String, dynamic> response = await f.selectfavteam(team.teamID);
@@ -144,93 +114,10 @@ class _MainPageState extends State<MainPage>
         Team(teamID: team.teamID, name: team.name, logo: team.logo);
   }
 
-  void favteamSelection() {
-    if (ARMOYU.Appuser.favTeam != null) {
-      return;
-    }
-    if (favteamRequest) {
-      return;
-    }
-
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return Center(
-          child: SizedBox(
-            width: ARMOYU.screenWidth * 0.95,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Favori Takımını Seç',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: List.generate(
-                          favoriteteams.length,
-                          (index) => Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).pop(favoriteteams[index]);
-                              },
-                              child: Column(
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: favoriteteams[index].logo,
-                                    height: 60,
-                                    width: 60,
-                                  ),
-                                  Text(favoriteteams[index].name),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Align(
-                        alignment: Alignment.center,
-                        child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).pop(null);
-                            },
-                            child: CustomText.costum1("Bunlardan Hiçbiri")))
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    ).then((selectedTeam) {
-      // Kullanıcının seçtiği takımı işle
-      if (selectedTeam != null) {
-        log('Seçilen Takım: ${selectedTeam.name}');
-        favteamselect(selectedTeam);
-      }
-      favteamRequest = true;
-    });
-  }
-
   final PageController _mainpagecontroller = PageController(initialPage: 0);
   final PageController _pageController2 = PageController(initialPage: 1);
+
+  final PageController _notificationController = PageController(initialPage: 0);
   int _currentPage = 0;
   bool bottombarVisible = true;
   void _changePage(int page) {
@@ -259,6 +146,25 @@ class _MainPageState extends State<MainPage>
       }
     }
 
+    //Bildirimler butonuna basıldığında
+    if (page.toString() == "2") {
+      //Bildirimler sayfasında bildirimler basarsan en üstte çıkartan kod
+      if (_currentPage.toString() == "2") {
+        try {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _notificationController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+        } catch (e) {
+          log(e.toString());
+        }
+        return;
+      }
+    }
+
     if (page.toString() == "1") {
       setState(() {
         appbarSearch = true;
@@ -273,8 +179,6 @@ class _MainPageState extends State<MainPage>
       _currentPage = page;
       _mainpagecontroller.jumpToPage(
         page,
-        // duration: const Duration(milliseconds: 300),
-        // curve: Curves.ease,
       );
     });
   }
@@ -425,9 +329,16 @@ class _MainPageState extends State<MainPage>
                 ),
                 actions: <Widget>[
                   IconButton(
-                    icon: Icon(
-                      Icons.chat_bubble_rounded,
-                      color: ARMOYU.color,
+                    icon: Badge(
+                      isLabelVisible:
+                          ARMOYU.chatNotificationCount != 0 ? true : false,
+                      label: Text(ARMOYU.chatNotificationCount.toString()),
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      child: Icon(
+                        Icons.chat_bubble_rounded,
+                        color: ARMOYU.color,
+                      ),
                     ),
                     onPressed: () {
                       widget.changePage(1);
@@ -638,7 +549,7 @@ class _MainPageState extends State<MainPage>
           controller: _mainpagecontroller,
           onPageChanged: (int page) {
             //  _changePage(page);
-            favteamSelection();
+            ARMOYUFunctions.selectFavTeam(context);
           },
           children: [
             PageView(
@@ -662,7 +573,9 @@ class _MainPageState extends State<MainPage>
             ),
             SearchPage(
                 appbar: true, searchController: appbarSearchTextController),
-            const NotificationPage(),
+            NotificationPage(
+              scrollController: _notificationController,
+            ),
             ProfilePage(userID: ARMOYU.Appuser.userID, appbar: false),
           ],
         ),
@@ -681,38 +594,24 @@ class _MainPageState extends State<MainPage>
                 icon: Icon(Icons.search),
                 label: 'Arama',
               ),
-              BottomNavigationBarItem(
-                icon: 1 == 1
-                    ? const Icon(Icons.notifications)
-                    : Stack(
-                        children: <Widget>[
-                          const Icon(Icons.notifications), // Bildirim ikonu
-                          Positioned(
-                            right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(1),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              constraints: const BoxConstraints(
-                                  minWidth: 16, minHeight: 16),
-                              child: const Text(
-                                '15',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+              const BottomNavigationBarItem(
+                icon: Badge(
+                  isLabelVisible: false,
+                  label: Text("1"),
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  child: Icon(Icons.notifications),
+                ),
                 label: 'Bildirimler',
               ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.person),
+              BottomNavigationBarItem(
+                icon: Badge(
+                  isLabelVisible: false,
+                  label: const Text("1"),
+                  backgroundColor: ARMOYU.color,
+                  textColor: ARMOYU.appbarColor,
+                  child: const Icon(Icons.person),
+                ),
                 label: 'Profil',
               ),
             ],

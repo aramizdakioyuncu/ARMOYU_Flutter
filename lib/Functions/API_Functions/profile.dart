@@ -6,12 +6,17 @@ import 'package:ARMOYU/Services/API/api_service.dart';
 class FunctionsProfile {
   final ApiService apiService = ApiService();
 
+  Future<Map<String, dynamic>> invitelist(
+    int page,
+  ) async {
+    Map<String, String> formData = {"sayfa": "$page", "limit": "30"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("davetliste/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> friendlist(int userID, int page) async {
-    Map<String, String> formData = {
-      "oyuncubakid": "$userID",
-      "sayfa": "$page",
-      "limit": "30"
-    };
+    Map<String, String> formData = {"sayfa": "$page", "limit": "30"};
     Map<String, dynamic> jsonData =
         await apiService.request("arkadaslarim/0/", formData);
     return jsonData;
@@ -75,7 +80,7 @@ class FunctionsProfile {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> selectfavteam(int teamID) async {
+  Future<Map<String, dynamic>> selectfavteam(int? teamID) async {
     Map<String, String> formData = {"favoritakimID": "$teamID"};
     Map<String, dynamic> jsonData =
         await apiService.request("profil/favoritakimsec/0/", formData);

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
+import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
@@ -315,7 +316,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         );
         userProfile.avatar = Media(
-          mediaID: 1000000,
+          mediaID: 1000001,
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["presimminnak"],
             normalURL: oyuncubilgi["presimminnak"],
@@ -1055,6 +1056,10 @@ class _ProfilePageState extends State<ProfilePage>
                                     children: [
                                       GestureDetector(
                                         onTap: () {
+                                          if (userProfile.postsCount == null) {
+                                            return;
+                                          }
+
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -1110,7 +1115,11 @@ class _ProfilePageState extends State<ProfilePage>
                                           children: [
                                             InkWell(
                                               onTap: () {
-                                                // favteamfetch();
+                                                setState(() {
+                                                  ARMOYUFunctions.selectFavTeam(
+                                                      context,
+                                                      force: true);
+                                                });
                                               },
                                               child: CachedNetworkImage(
                                                 imageUrl:
@@ -1379,9 +1388,9 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3, // Her satırda 2 görsel
-              crossAxisSpacing: 8.0, // Yatayda boşluk
-              mainAxisSpacing: 8.0, // Dikeyde boşluk
+              crossAxisCount: 3,
+              crossAxisSpacing: 4.0, // Yatayda boşluk
+              mainAxisSpacing: 4.0, // Dikeyde boşluk
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
@@ -1394,8 +1403,6 @@ class _ProfilePageState extends State<ProfilePage>
                             MaterialPageRoute(
                               builder: (context) => MediaViewer(
                                 media: medialist,
-                                // images: imageufakUrls,
-                                // imagesownerID: imagesownerID,
                                 initialIndex: index,
                               ),
                             ),

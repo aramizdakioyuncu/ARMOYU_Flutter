@@ -685,12 +685,23 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           videoPlayerController:
               VideoPlayerController.networkUrl(Uri.parse(mediaUrl)),
           autoPlay: false,
+          aspectRatio: 9 / 16,
           looping: false,
         );
-        return Chewie(
-          controller: chewieController,
+
+        return FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            height: 500,
+            width: ARMOYU.screenWidth - 20,
+            child: Chewie(
+              controller: chewieController,
+            ),
+          ),
         );
       }
+
+      //Görselse devam ediyor
       return CachedNetworkImage(
         imageUrl: mediaUrl,
         fit: fit,
@@ -717,20 +728,18 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         List media = widget.media[i].mediaType!.split('/');
 
         //video
+        // if (media[0] == "video") {
+        //   continue;
+        // }
         if (media[0] == "video") {
-          continue;
-        }
-
-        if (media[0] == "video") {
+          log(widget.media[i].mediaURL.normalURL);
+          mediarow1.clear();
           mediarow1.add(
             mediaSablon(widget.media[i].mediaURL.normalURL, isvideo: true),
           );
-          mediaItems.add(Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: mediarow1,
-          ));
           break;
         }
+
         BoxFit mediadirection = BoxFit.contain;
         if (widget.media[i].mediaDirection.toString() == "dikey") {
           mediadirection = BoxFit.cover;
@@ -775,6 +784,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             height: mediaheight,
           ),
         );
+
         if (widget.media.length == 3) {
           if (i == 0) {
             mediarow1.add(aa);
@@ -791,6 +801,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           mediarow1.add(aa);
         }
       }
+
       mediaItems.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: mediarow1,

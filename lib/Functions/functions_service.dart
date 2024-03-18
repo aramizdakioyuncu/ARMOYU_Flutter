@@ -84,6 +84,8 @@ class FunctionService {
         userMail: oyuncubilgi["eposta"],
         aboutme: oyuncubilgi["hakkimda"],
         avatar: Media(
+          mediaID: 100000,
+          ownerID: oyuncubilgi["oyuncuID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["presim"],
             normalURL: oyuncubilgi["presimufak"],
@@ -91,6 +93,8 @@ class FunctionService {
           ),
         ),
         banner: Media(
+          mediaID: 100001,
+          ownerID: oyuncubilgi["oyuncuID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["parkaresim"],
             normalURL: oyuncubilgi["parkaresimufak"],
@@ -109,61 +113,13 @@ class FunctionService {
         registerDate: oyuncubilgi["kayittarihikisa"],
         role: oyuncubilgi["yetkisiacikla"],
         rolecolor: oyuncubilgi["yetkirenk"],
-        favTeam: Team(
-          teamID: oyuncubilgi["favoritakim"]["takim_ID"],
-          name: oyuncubilgi["favoritakim"]["takim_adi"],
-          logo: oyuncubilgi["favoritakim"]["takim_logo"],
-        ));
-
-    // AppUser.ID = response["oyuncuID"];
-    // AppUser.userName = response["kullaniciadi"];
-    // AppUser.firstName = response["adi"];
-    // AppUser.lastName = response["soyadi"];
-    // AppUser.displayName = response["adim"];
-    // AppUser.avatar = response["presimminnak"];
-    // AppUser.avatarbetter = response["presimufak"];
-    // AppUser.banneravatar = response["parkaresimminnak"];
-    // AppUser.banneravatarbetter = response["parkaresimufak"];
-
-    // AppUser.level = response["seviye"];
-    // AppUser.friendsCount = response["arkadaslar"];
-    // AppUser.postsCount = response["gonderiler"];
-    // AppUser.awardsCount = response["oduller"];
-
-    // AppUser.mail = response["eposta"];
-    // if (response["ulkesi"] == null) {
-    //   AppUser.country = "";
-    // } else {
-    //   AppUser.country = response["ulkesi"];
-    // }
-    // if (response["ili"] == null) {
-    //   AppUser.province = "";
-    // } else {
-    //   AppUser.province = response["ili"];
-    // }
-    // AppUser.registerdate = response["kayittarihikisa"];
-
-    // if (response["isyeriadi"] != null) {
-    //   AppUser.job = response["isyeriadi"];
-    // }
-    // AppUser.role = response["yetkisiacikla"];
-    // AppUser.rolecolor = response["yetkirenk"];
-
-    // AppUser.aboutme = response["hakkimda"];
-
-    // if (response["burc"] == null) {
-    //   AppUser.burc = "";
-    // } else {
-    //   AppUser.burc = response["burc"];
-    // }
-
-    // if (response["favoritakim"] != null) {
-    //   AppUser.favTeam = Team(
-    //     teamID: response["favoritakim"]["takim_ID"],
-    //     name: response["favoritakim"]["takim_adi"],
-    //     logo: response["favoritakim"]["takim_logo"],
-    //   );
-    // }
+        favTeam: oyuncubilgi["favoritakim"] != null
+            ? Team(
+                teamID: oyuncubilgi["favoritakim"]["takim_ID"],
+                name: oyuncubilgi["favoritakim"]["takim_adi"],
+                logo: oyuncubilgi["favoritakim"]["takim_logo"],
+              )
+            : null);
 
     final prefs = await SharedPreferences.getInstance();
 

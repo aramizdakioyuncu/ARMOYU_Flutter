@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
@@ -53,7 +54,8 @@ class _CustomMenusNotificationbarsState
           log("tıklanabilir içerik");
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          color: ARMOYU.appbarColor,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -188,7 +190,7 @@ class _CustomMenusNotificationbarsState
                   ),
                 ],
               ),
-              const Divider(),
+              const SizedBox(height: 1),
             ],
           ),
         ),

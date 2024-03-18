@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/app.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
@@ -17,10 +20,52 @@ class Pages extends StatefulWidget {
 }
 
 class _PagesState extends State<Pages> {
+  bool someCondition = false;
+  bool siteMessagesProcces = false;
   @override
   void initState() {
     super.initState();
     cameratest();
+    siteMessage();
+    _timerFunction();
+  }
+
+  void _timerFunction() {
+    Timer.periodic(const Duration(seconds: 10), (timer) async {
+      siteMessage();
+      // İstenilen koşula bağlı olarak timer'ı iptal etmek için bir örnek
+      if (someCondition) {
+        timer.cancel();
+      }
+    });
+  }
+
+  Future<void> siteMessage() async {
+    if (siteMessagesProcces) {
+      return;
+    }
+    siteMessagesProcces = true;
+    FunctionsApp f = FunctionsApp();
+    Map<String, dynamic> response = await f.sitemesaji();
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    setState(() {
+      ARMOYU.onlineMembersCount = response["icerik"]["cevrimicikac"];
+      ARMOYU.totalPlayerCount = response["icerik"]["mevcutoyuncu"];
+      ARMOYU.chatNotificationCount = response["icerik"]["sohbetbildirim"];
+      ARMOYU.surveyNotificationCount = response["icerik"]["mevcutanket"];
+      ARMOYU.eventsNotificationCount = response["icerik"]["mevcutetkinlik"];
+      ARMOYU.downloadableCount = response["icerik"]["indirmeler"];
+
+      ARMOYU.friendRequestCount = response["icerik"]["arkadaslikistekleri"];
+      ARMOYU.GroupInviteCount = response["icerik"]["grupistekleri"];
+    });
+
+    siteMessagesProcces = false;
   }
 
   Future<void> cameratest() async {

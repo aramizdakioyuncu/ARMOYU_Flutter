@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, deprecated_member_use, file_names
 
+import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -29,4 +30,19 @@ class ARMOYU {
   static List<CameraDescription>? cameras;
 
   static User Appuser = User();
+
+  //Takım Seçme işlemleri
+  static List<Team> favoriteteams = [];
+  static Map<String, dynamic> favTeam = {};
+  static bool favteamRequest = false;
+
+  static int onlineMembersCount = 0;
+  static int totalPlayerCount = 0;
+  static int chatNotificationCount = 0;
+  static int surveyNotificationCount = 0;
+  static int eventsNotificationCount = 0;
+  static int downloadableCount = 0;
+
+  static int friendRequestCount = 0;
+  static int GroupInviteCount = 0;
 }

@@ -63,28 +63,31 @@ class _ChatPageState extends State<ChatPage>
       if (sonmesaj == "null") {
         sonmesaj = "";
       }
-      setState(
-        () {
-          chatlist.add(
-            Chat(
-              chatID: 1,
-              displayName: response["icerik"][i]["adisoyadi"],
-              avatar: response["icerik"][i]["foto"],
-              userID: response["icerik"][i]["kullid"],
-              lastonlinetime: response["icerik"][i]["songiris"],
-              lastmessage: ChatMessage(
-                avatar: "",
-                messageContext: sonmesaj,
-                displayName: "",
-                messageID: 1,
-                userID: 1,
-                isMe: false,
-              ),
-              chatType: response["icerik"][i]["sohbetturu"],
+      setState(() {
+        bool notification = false;
+        if (response["icerik"][i]["bildirim"] == 1) {
+          notification = true;
+        }
+        chatlist.add(
+          Chat(
+            chatID: 1,
+            displayName: response["icerik"][i]["adisoyadi"],
+            avatar: response["icerik"][i]["foto"],
+            userID: response["icerik"][i]["kullid"],
+            lastonlinetime: response["icerik"][i]["songiris"],
+            lastmessage: ChatMessage(
+              avatar: "",
+              messageContext: sonmesaj,
+              displayName: "",
+              messageID: 1,
+              userID: 1,
+              isMe: false,
             ),
-          );
-        },
-      );
+            chatType: response["icerik"][i]["sohbetturu"],
+            chatNotification: notification,
+          ),
+        );
+      });
     }
     chatsearchprocess = false;
     // widget.searchController.addListener(_onSearchChanged);
@@ -114,12 +117,17 @@ class _ChatPageState extends State<ChatPage>
             ? const Center(
                 child: CupertinoActivityIndicator(),
               )
-            : ListView.builder(
-                controller: _scrollController,
-                itemCount: chatlist.length,
-                itemBuilder: (BuildContext context, index) {
-                  return chatlist[index].listtilechat(context);
+            : RefreshIndicator(
+                onRefresh: () async {
+                  log("s");
                 },
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: chatlist.length,
+                  itemBuilder: (BuildContext context, index) {
+                    return chatlist[index].listtilechat(context);
+                  },
+                ),
               ),
       ),
       floatingActionButton: FloatingActionButton(

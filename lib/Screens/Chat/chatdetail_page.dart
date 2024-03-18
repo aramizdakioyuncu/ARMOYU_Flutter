@@ -15,9 +15,10 @@ import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final bool appbar;
-  final int userID; // Zorunlu olarak alınacak veri
-  final String useravatar; // Zorunlu olarak alınacak veri
-  final String userdisplayname; // Zorunlu olarak alınacak veri
+  final int userID;
+  final String useravatar;
+  final String userdisplayname;
+  final String? lastonlinetime;
   final List<ChatMessage> chats;
 
   const ChatDetailPage({
@@ -26,6 +27,7 @@ class ChatDetailPage extends StatefulWidget {
     required this.userID,
     required this.useravatar,
     required this.userdisplayname,
+    this.lastonlinetime,
     required this.chats,
   });
 
@@ -70,7 +72,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
       isolateListen!.kill();
 
       receiveportSend!.close();
-      // isolateSend!.kill();
+      isolateSend!.kill();
     } catch (e) {
       log(e.toString());
     }
@@ -236,19 +238,19 @@ class _ChatDetailPage extends State<ChatDetailPage>
                       style: const TextStyle(
                           fontSize: 17, fontWeight: FontWeight.bold),
                     ),
-                    Visibility(
-                      visible: isUserOnline,
-                      child: const Text(
-                        "Çevrimiçi",
-                        style: TextStyle(fontSize: 10, color: Colors.green),
-                      ),
-                    ),
-                    Visibility(
-                      visible: !isUserOnline,
-                      child: const Text(
-                        "Çevrimdışı",
-                        style: TextStyle(fontSize: 10, color: Colors.red),
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          widget.lastonlinetime!.toString(),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color:
+                                widget.lastonlinetime!.toString() == "Çevrimiçi"
+                                    ? Colors.green
+                                    : Colors.red,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

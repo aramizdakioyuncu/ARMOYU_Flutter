@@ -54,6 +54,7 @@ class _ChatNewPageState extends State<ChatNewPage>
               userID: response["icerik"][i]["kullid"],
               chatType: "ozel",
               lastonlinetime: response["icerik"][i]["songiris"],
+              chatNotification: false,
             ),
           );
         },

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Widgets/userlist.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FriendlistPage extends StatefulWidget {
@@ -100,13 +101,15 @@ class _FriendlistPageState extends State<FriendlistPage>
       appBar: AppBar(
           title: Title(color: Colors.black, child: Text(widget.username))),
       backgroundColor: Colors.grey.shade900,
-      body: ListView.builder(
-        controller: scrollController,
-        itemCount: widgetUserlist.length,
-        itemBuilder: (context, index) {
-          return widgetUserlist[index];
-        },
-      ),
+      body: widgetUserlist.isEmpty
+          ? const Center(child: CupertinoActivityIndicator())
+          : ListView.builder(
+              controller: scrollController,
+              itemCount: widgetUserlist.length,
+              itemBuilder: (context, index) {
+                return widgetUserlist[index];
+              },
+            ),
     );
   }
 }
