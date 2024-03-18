@@ -15,6 +15,13 @@ class FunctionsProfile {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> invitecoderefresh() async {
+    Map<String, String> formData = {"": ""};
+    Map<String, dynamic> jsonData =
+        await apiService.request("davetkodyenile/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> friendlist(int userID, int page) async {
     Map<String, String> formData = {"sayfa": "$page", "limit": "30"};
     Map<String, dynamic> jsonData =

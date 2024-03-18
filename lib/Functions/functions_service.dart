@@ -63,7 +63,16 @@ class FunctionService {
         String jsonencode = jsonEncode(jsonData);
         Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
         return jsonString;
+      } else if (response["aciklama"] == "Lütfen Geçerli API_KEY giriniz!") {
+        Map<String, dynamic> jsonData = {
+          'durum': response["durum"],
+          'aciklama': response["aciklama"],
+        };
+        String jsonencode = jsonEncode(jsonData);
+        Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
+        return jsonString;
       }
+
       Map<String, dynamic> jsonData = {
         'durum': 0,
         'aciklama': "Sunucuya ulaşamadı!",
@@ -127,8 +136,7 @@ class FunctionService {
     prefs.setString('password', password);
 
     // App.getDeviceModel
-    AppCore app = AppCore();
-    String cevap = app.getDevice();
+    String cevap = AppCore.getDevice();
 
     if (cevap != "Bilinmeyen") {
       OneSignalApi.setupOneSignal(
@@ -268,8 +276,14 @@ class FunctionService {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getnotifications(int page) async {
-    Map<String, String> formData = {"sayfa": "$page", "limit": "20"};
+  Future<Map<String, dynamic>> getnotifications(
+      String kategori, String kategoridetay, int page) async {
+    Map<String, String> formData = {
+      "kategori": kategori,
+      "kategoridetay": kategoridetay,
+      "sayfa": "$page",
+      "limit": "20"
+    };
     Map<String, dynamic> jsonData =
         await apiService.request("bildirimler/0/0/", formData);
     return jsonData;

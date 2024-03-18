@@ -15,7 +15,7 @@ class AppCore {
     return "1.0.0";
   }
 
-  String getDevice() {
+  static String getDevice() {
     if (Platform.isAndroid) {
       return "Android";
     } else if (Platform.isIOS) {

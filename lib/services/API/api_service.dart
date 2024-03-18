@@ -22,7 +22,7 @@ class ApiService {
     log(requestUrl);
 
     formData['versiyon'] = app.getVersion().toString();
-    formData['device'] = app.getDevice().toString();
+    formData['device'] = AppCore.getDevice().toString();
     formData['devicemodel'] = app.getDeviceModel().toString();
 
     try {

@@ -40,7 +40,6 @@ class News {
             );
           },
           child: SizedBox(
-            // height: 450,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Column(
@@ -66,7 +65,7 @@ class News {
                       const SizedBox(height: 10),
                       Text(
                         newssummary,
-                        style: const TextStyle(color: Colors.yellow),
+                        style: TextStyle(color: ARMOYU.textColor),
                       ),
                       const SizedBox(height: 10),
                       Row(

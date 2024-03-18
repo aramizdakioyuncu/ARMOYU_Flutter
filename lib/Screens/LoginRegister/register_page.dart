@@ -101,17 +101,13 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 60),
-            Container(
-              width: 150,
-              height: 150,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/armoyu512.png'), // Analog görselinizin yolunu ekleyin
-                  fit: BoxFit.cover,
-                ),
+            const SizedBox(height: 40),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(
+                'assets/images/armoyu512.png',
+                height: 150,
+                width: 150,
               ),
             ),
             CustomTextfields.costum1(
@@ -136,6 +132,16 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 16),
             CustomTextfields.costum1("Şifreniz Tekrar", _rpasswordController,
                 true, const Icon(Icons.lock_outline)),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomTextfields.costum1("Davet Kodu",
+                      TextEditingController(), false, const Icon(Icons.people)),
+                ),
+                IconButton(onPressed: () {}, icon: const Icon(Icons.refresh))
+              ],
+            ),
             const SizedBox(height: 16),
             CustomButtons.costum1("Kayıt Ol", _register, registerProccess),
             const SizedBox(height: 16),

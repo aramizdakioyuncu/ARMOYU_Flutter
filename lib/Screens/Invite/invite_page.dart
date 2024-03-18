@@ -237,8 +237,19 @@ class _EventStatePage extends State<InvitePage>
                         const Spacer(),
                         ARMOYU.Appuser.invitecode == null
                             ? InkWell(
-                                onTap: () {
-                                  log("asda");
+                                onTap: () async {
+                                  FunctionsProfile f = FunctionsProfile();
+                                  Map<String, dynamic> response =
+                                      await f.invitecoderefresh();
+
+                                  if (response["durum"] == 0) {
+                                    log(response["aciklama"]);
+                                    return;
+                                  }
+                                  setState(() {
+                                    ARMOYU.Appuser.invitecode =
+                                        response["aciklamadetay"];
+                                  });
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(

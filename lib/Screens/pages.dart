@@ -5,6 +5,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/app.dart';
+import 'package:ARMOYU/Functions/functions.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
@@ -25,7 +26,6 @@ class _PagesState extends State<Pages> {
   @override
   void initState() {
     super.initState();
-    cameratest();
     siteMessage();
     _timerFunction();
   }
@@ -44,45 +44,48 @@ class _PagesState extends State<Pages> {
     if (siteMessagesProcces) {
       return;
     }
+
+    if (ARMOYU.Appuser.userID == -1) {
+      someCondition = true;
+      return;
+    }
     siteMessagesProcces = true;
     FunctionsApp f = FunctionsApp();
     Map<String, dynamic> response = await f.sitemesaji();
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+
+      if (response["aciklama"] == "Lütfen Geçerli API_KEY giriniz!") {
+        if (mounted) {
+          someCondition = true;
+          ARMOYUFunctions.updateForce(context);
+        }
+        return;
+      }
+      siteMessagesProcces = false;
       return;
     }
 
-    setState(() {
-      ARMOYU.onlineMembersCount = response["icerik"]["cevrimicikac"];
-      ARMOYU.totalPlayerCount = response["icerik"]["mevcutoyuncu"];
-      ARMOYU.chatNotificationCount = response["icerik"]["sohbetbildirim"];
-      ARMOYU.surveyNotificationCount = response["icerik"]["mevcutanket"];
-      ARMOYU.eventsNotificationCount = response["icerik"]["mevcutetkinlik"];
-      ARMOYU.downloadableCount = response["icerik"]["indirmeler"];
+    try {
+      setState(() {
+        ARMOYU.onlineMembersCount = response["icerik"]["cevrimicikac"];
+        ARMOYU.totalPlayerCount = response["icerik"]["mevcutoyuncu"];
+        ARMOYU.chatNotificationCount = response["icerik"]["sohbetbildirim"];
+        ARMOYU.surveyNotificationCount = response["icerik"]["mevcutanket"];
+        ARMOYU.eventsNotificationCount = response["icerik"]["mevcutetkinlik"];
+        ARMOYU.downloadableCount = response["icerik"]["indirmeler"];
 
-      ARMOYU.friendRequestCount = response["icerik"]["arkadaslikistekleri"];
-      ARMOYU.GroupInviteCount = response["icerik"]["grupistekleri"];
-    });
+        ARMOYU.friendRequestCount = response["icerik"]["arkadaslikistekleri"];
+        ARMOYU.GroupInviteCount = response["icerik"]["grupistekleri"];
+      });
+    } catch (e) {
+      log(e.toString());
+    }
 
     siteMessagesProcces = false;
   }
 
-  Future<void> cameratest() async {
-    AppCore a = AppCore();
-
-    if (a.getDevice() == "Android") {
-      try {
-        WidgetsFlutterBinding.ensureInitialized();
-        _cameras = await availableCameras();
-        log(_cameras.toString());
-      } on CameraException catch (e) {
-        log(e.toString());
-      }
-    }
-  }
-
-  List<CameraDescription> _cameras = <CameraDescription>[];
 // /////////////////////////////
 
   PageController pageController = PageController(initialPage: 0);

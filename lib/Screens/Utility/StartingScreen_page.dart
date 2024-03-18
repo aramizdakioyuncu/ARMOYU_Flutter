@@ -1,4 +1,5 @@
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Utility/NoConnection_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
@@ -88,6 +89,13 @@ class _StartingScreenState extends State<StartingScreen> {
               builder: (context) => const LoginPage(),
             ),
           );
+        }
+        return;
+      }
+
+      if (response["aciklama"] == "Lütfen Geçerli API_KEY giriniz!") {
+        if (mounted) {
+          ARMOYUFunctions.updateForce(context);
         }
         return;
       }

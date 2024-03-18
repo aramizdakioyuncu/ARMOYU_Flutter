@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Screens/Notification/friendrequest_page.dart';
+import 'package:ARMOYU/Screens/Notification/grouprequest_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
@@ -59,20 +62,13 @@ class _NotificationPage extends State<NotificationPage>
     postpageproccess = true;
 
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getnotifications(page);
-
-    log(page.toString());
+    Map<String, dynamic> response = await f.getnotifications("", "", page);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      return;
-    }
-
-    if (response["icerik"].length == 0) {
       postpageproccess = false;
       return;
     }
-    int dynamicItemCount = response["icerik"].length;
 
     if (page == 1) {
       widgetNotifications.clear();
@@ -89,12 +85,23 @@ class _NotificationPage extends State<NotificationPage>
           title: CustomText.costum1("Arkadaşlık İstekleri"),
           subtitle: CustomText.costum1("Arkadaşlık isteklerini gözden geçir"),
           trailing: Badge(
+            isLabelVisible: ARMOYU.friendRequestCount == 0 ? false : true,
             label: Text(ARMOYU.friendRequestCount.toString()),
             backgroundColor: Colors.red,
             textColor: Colors.white,
-            child: const Icon(Icons.notifications_active),
+            child: const Icon(
+              Icons.notifications_active,
+              color: Colors.white,
+            ),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationFriendRequestPage(),
+              ),
+            );
+          },
         ));
       });
       setState(() {
@@ -106,18 +113,33 @@ class _NotificationPage extends State<NotificationPage>
           title: CustomText.costum1("Grup İstekleri"),
           subtitle: CustomText.costum1("Grup isteklerini gözden geçir"),
           trailing: Badge(
+            isLabelVisible: ARMOYU.GroupInviteCount == 0 ? false : true,
             label: Text(ARMOYU.GroupInviteCount.toString()),
             backgroundColor: Colors.red,
             textColor: Colors.white,
-            child: const Icon(Icons.notifications_active),
+            child: const Icon(
+              Icons.notifications_active,
+              color: Colors.white,
+            ),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NotificationGroupRequestPage(),
+              ),
+            );
+          },
         ));
       });
     }
+    if (response["icerik"].length == 0) {
+      postpageproccess = false;
+      return;
+    }
 
     bool noticiationbuttons = false;
-    for (int i = 0; i < dynamicItemCount; i++) {
+    for (int i = 0; i < response["icerik"].length; i++) {
       noticiationbuttons = false;
 
       if (response["icerik"][i]["bildirimamac"].toString() == "arkadaslik") {
@@ -155,18 +177,23 @@ class _NotificationPage extends State<NotificationPage>
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
-      body: RefreshIndicator(
-        onRefresh: _handleRefresh,
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: widgetNotifications.length,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [widgetNotifications[index], const SizedBox(height: 1)],
-            );
-          },
-        ),
-      ),
+      body: widgetNotifications.isEmpty
+          ? const Center(child: CupertinoActivityIndicator())
+          : RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: widgetNotifications.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      widgetNotifications[index],
+                      const SizedBox(height: 1)
+                    ],
+                  );
+                },
+              ),
+            ),
     );
   }
 }

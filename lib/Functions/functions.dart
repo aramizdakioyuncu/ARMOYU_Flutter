@@ -1,14 +1,69 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Functions/API_Functions/teams.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
+  // Play Store'u açan metod
+
+  static void openPlayStore() async {
+    if (await canLaunchUrl(Uri.parse(
+        "https://play.google.com/store/apps/details?id=com.ARMOYU"))) {
+      await launchUrl(Uri.parse(
+          "https://play.google.com/store/apps/details?id=com.ARMOYU"));
+    } else {
+      throw 'App Store açılamadı!';
+    }
+  }
+
+  // App Store'u açan metod
+  static void openAppStore() async {
+    if (await canLaunchUrl(
+        Uri.parse("https://apps.apple.com/tr/app/armoyu/id6448871009?l=tr"))) {
+      await launchUrl(
+          Uri.parse("https://apps.apple.com/tr/app/armoyu/id6448871009?l=tr"));
+    } else {
+      throw 'App Store açılamadı!';
+    }
+  }
+
+  static void updateForce(context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Uygulama Güncelleme'),
+          content: const Text(
+              'Uygulama desteği kesildi. Lütfen güncelleme yapınız.'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+
+                String cevap = AppCore.getDevice();
+
+                if (cevap == "Android") {
+                  ARMOYUFunctions.openPlayStore();
+                } else {
+                  ARMOYUFunctions.openAppStore();
+                }
+              },
+              child: const Text('Güncelle'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static void selectFavTeam(context, {bool? force}) {
     if (force == null || force == false) {
       if (ARMOYU.Appuser.favTeam != null) {

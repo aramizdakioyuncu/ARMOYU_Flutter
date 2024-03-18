@@ -22,6 +22,7 @@ class CustomMenusNotificationbars extends StatefulWidget {
   String categorydetail;
   int categorydetailID;
   bool enableButtons;
+  bool natificationisVisible = true;
 
   CustomMenusNotificationbars({
     super.key,
@@ -41,14 +42,12 @@ class CustomMenusNotificationbars extends StatefulWidget {
       _CustomMenusNotificationbarsState();
 }
 
-bool natificationisVisible = true;
-
 class _CustomMenusNotificationbarsState
     extends State<CustomMenusNotificationbars> {
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: natificationisVisible,
+      visible: widget.natificationisVisible,
       child: InkWell(
         onTap: () {
           log("tıklanabilir içerik");
@@ -110,8 +109,10 @@ class _CustomMenusNotificationbarsState
                                         log(response["aciklama"]);
                                         return;
                                       }
+
+                                      ARMOYU.friendRequestCount--;
                                       setState(() {
-                                        natificationisVisible = false;
+                                        widget.natificationisVisible = false;
                                       });
                                     }
                                   } else if (widget.category == "gruplar") {
@@ -124,8 +125,10 @@ class _CustomMenusNotificationbarsState
                                         log(response["aciklama"]);
                                         return;
                                       }
+                                      ARMOYU.GroupInviteCount--;
+
                                       setState(() {
-                                        natificationisVisible = false;
+                                        widget.natificationisVisible = false;
                                       });
                                     }
                                   }
@@ -160,7 +163,7 @@ class _CustomMenusNotificationbarsState
                                     }
                                   }
                                   setState(() {
-                                    natificationisVisible = false;
+                                    widget.natificationisVisible = false;
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(

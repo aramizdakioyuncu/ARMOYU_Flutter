@@ -594,13 +594,16 @@ class _MainPageState extends State<MainPage>
                 icon: Icon(Icons.search),
                 label: 'Arama',
               ),
-              const BottomNavigationBarItem(
+              BottomNavigationBarItem(
                 icon: Badge(
-                  isLabelVisible: false,
-                  label: Text("1"),
+                  isLabelVisible:
+                      (ARMOYU.GroupInviteCount + ARMOYU.friendRequestCount) > 0,
+                  label: Text(
+                      (ARMOYU.GroupInviteCount + ARMOYU.friendRequestCount)
+                          .toString()),
                   backgroundColor: Colors.red,
                   textColor: Colors.white,
-                  child: Icon(Icons.notifications),
+                  child: const Icon(Icons.notifications),
                 ),
                 label: 'Bildirimler',
               ),
