@@ -6,12 +6,9 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/app.dart';
 import 'package:ARMOYU/Functions/functions.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/Chat/chat_page.dart';
-
-import 'package:ARMOYU/Core/AppCore.dart';
 
 class Pages extends StatefulWidget {
   const Pages({super.key});
