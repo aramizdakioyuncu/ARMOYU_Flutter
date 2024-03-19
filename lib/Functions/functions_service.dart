@@ -290,14 +290,14 @@ class FunctionService {
   }
 
   Future<Map<String, dynamic>> getchats(int page) async {
-    Map<String, String> formData = {"sayfa": "$page"};
+    Map<String, String> formData = {"sayfa": "$page", "limit": "30"};
     Map<String, dynamic> jsonData =
         await apiService.request("sohbet/0/0/", formData);
     return jsonData;
   }
 
   Future<Map<String, dynamic>> getnewchatfriendlist(int page) async {
-    Map<String, String> formData = {"sayfa": "$page"};
+    Map<String, String> formData = {"sayfa": "$page", "limit": "30"};
     Map<String, dynamic> jsonData =
         await apiService.request("sohbet/arkadaslarim/0/", formData);
     return jsonData;

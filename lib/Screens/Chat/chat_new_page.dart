@@ -6,46 +6,72 @@ import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:flutter/material.dart';
 
 class ChatNewPage extends StatefulWidget {
-  const ChatNewPage({
-    super.key,
-  });
+  const ChatNewPage({super.key});
 
   @override
   State<ChatNewPage> createState() => _ChatNewPageState();
 }
 
+int page = 1;
+bool chatFriendsprocess = false;
+bool isFirstFetch = true;
 List<Chat> aaa = [];
+
+final ScrollController _scrollController = ScrollController();
 
 class _ChatNewPageState extends State<ChatNewPage>
     with AutomaticKeepAliveClientMixin<ChatNewPage> {
-  bool chatfriendprocess = false;
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
+    if (isFirstFetch) {
+      getchatfriendlist();
+    }
 
-    getchatfriendlist();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.5) {
+        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
+        getchatfriendlist();
+      }
+    });
   }
 
   Future<void> getchatfriendlist() async {
-    if (chatfriendprocess) {
+    if (chatFriendsprocess) {
       return;
     }
-    chatfriendprocess = true;
+    setState(() {
+      chatFriendsprocess = true;
+      isFirstFetch = false;
+    });
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getnewchatfriendlist(1);
+    Map<String, dynamic> response = await f.getnewchatfriendlist(page);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      chatfriendprocess = false;
+      setState(() {
+        chatFriendsprocess = false;
+      });
       getchatfriendlist();
       return;
     }
-    aaa.clear();
+
+    if (page == 1) {
+      aaa.clear();
+    }
+    if (response["icerik"].length == 0) {
+      setState(() {
+        chatFriendsprocess = true;
+      });
+      log("Sayfasonu");
+      //Sayfa sonudur
+    }
     for (int i = 0; i < response["icerik"].length; i++) {
-      setState(
-        () {
+      if (mounted) {
+        setState(() {
           aaa.add(
             Chat(
               chatID: 1,
@@ -57,10 +83,13 @@ class _ChatNewPageState extends State<ChatNewPage>
               chatNotification: false,
             ),
           );
-        },
-      );
+        });
+      }
     }
-    chatfriendprocess = false;
+    setState(() {
+      page++;
+      chatFriendsprocess = false;
+    });
   }
 
   @override
@@ -74,6 +103,7 @@ class _ChatNewPageState extends State<ChatNewPage>
       ),
       body: ListView.builder(
         itemCount: aaa.length,
+        controller: _scrollController,
         itemBuilder: (context, index) {
           return aaa[index].listtilenewchat(context);
         },

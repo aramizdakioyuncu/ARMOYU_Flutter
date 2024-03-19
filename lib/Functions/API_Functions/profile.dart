@@ -23,7 +23,11 @@ class FunctionsProfile {
   }
 
   Future<Map<String, dynamic>> friendlist(int userID, int page) async {
-    Map<String, String> formData = {"sayfa": "$page", "limit": "30"};
+    Map<String, String> formData = {
+      "oyuncubakid": "$userID",
+      "sayfa": "$page",
+      "limit": "30"
+    };
     Map<String, dynamic> jsonData =
         await apiService.request("arkadaslarim/0/", formData);
     return jsonData;

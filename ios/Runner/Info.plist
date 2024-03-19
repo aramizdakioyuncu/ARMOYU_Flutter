@@ -30,14 +30,8 @@
 	<string>public.app-category.social-networking</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Barkodları okutmak ve paylaşımlara hızlıca fotoğraf çekebilmek için kamera erişimine izin ver</string>
 	<key>NSHumanReadableCopyright</key>
 	<string></string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Paylaşımlarınızda konum etiketini koyabilmek için erişimine izin ver</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Paylaşım yaparken doğrudan galeriden seçim yapma erişimine izin ver</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -62,8 +56,28 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>The microphone is required for shooting videos, sending audio recordings and live conversations.</string>
+	<string>Uygulama, sesli mesaj ve video kaydı alabilmek için mikrofona erişim istemektedir. Bu izin, sesli iletişim ve video kayıtlarını almanızı ve paylaşmanızı sağlar.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Uygulama, paylaşımlarınız için fotoğraf seçebilmeniz için fotoğraf kitaplığınıza erişim istemektedir. Bu izin, uygulama içinde fotoğraf seçmenizi ve paylaşmanızı sağlar.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Uygulama, paylaşımlarınıza konum bilgisi ekleyebilmeniz için kullanım sırasında konum erişimi istemektedir. Bu izin, konum tabanlı içerik oluşturmanıza ve paylaşmanıza yardımcı olur.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Uygulama, barkod okutma, QR kodu tarama ve ek olarak video ve fotoğraf çekme işlevleri için kameranıza erişim istemektedir. Bu izinler, uygulamanın çeşitli işlevlerini gerçekleştirmesi ve kullanıcı deneyimini geliştirmesi için gereklidir.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Rehbere erişim ver</string>
+	<string>Uygulama, rehberinizdeki kişilerin kullanımını öne çıkarmak için erişim istemektedir. Bu izin, rehberinizdeki kişilerin uygulama içinde daha kolay bulunmasını ve etkileşime girmenizi sağlayacaktır.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Uygulama, etkinlikleri takviminizle senkronize etmek ve planlamak için erişim istemektedir. Bu izin, etkinlikleri görüntülemenize, oluşturmanıza ve düzenlemenize yardımcı olacaktır.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Uygulama, doğrulama ve cihazlar arası eşleştirme gibi özellikler için Bluetooth özelliklerini kullanmak istemektedir. Bu izin, uygulamanın cihazlar arasında güvenli iletişim kurmasını ve doğrulama işlemlerini gerçekleştirmesini sağlar.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Uygulama, kendi galerisini görüntüleyebilmesi için cihazınızdaki medya kütüphanesine erişim istemektedir. Bu izin, uygulamanın kullanıcıların kendi medya içeriğine erişmesini ve içeriği yönetmesini sağlar.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Uygulama, örneğin bir kutunun açılabilmesi için cihazın sallanması gibi işlevler için hareket sensörlerine erişim istemektedir. Bu izin, uygulamanın kullanıcı hareketlerine tepki vermesini ve belirli eylemleri gerçekleştirmesini sağlar.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Uygulama, konuşma tanıma özelliğini kullanarak sesli komutları algılamak ve işlemek için erişim istemektedir. Bu izin, uygulamanın kullanıcıların sesli komutlarını tanıyabilmesini ve bu komutlara yanıt verebilmesini sağlar.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Uygulama, konumunuzu her zaman ve kullanım sırasında kullanarak, örneğin harita üzerinde nerede olduğunuzu görmeleri gibi oyunsal faaliyetler için erişim istemektedir. Bu izin, uygulamanın konumunuzu belirlemesini ve oyunsal deneyimlerde kullanılmasını sağlar.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Uygulamanın Bluetooth&apos;u her zaman kullanarak sürekli cihazlarla etkileşim kurması gerekiyor. Bu izin, uygulamanın Bluetooth bağlantılarını sürdürmesini ve arka planda cihazlarla iletişim kurmasını sağlar.</string>
 </dict>
 </plist>
