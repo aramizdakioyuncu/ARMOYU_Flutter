@@ -19,16 +19,17 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
-final ScrollController _scrollController = ScrollController();
-
-List<Chat> chatlist = [];
-
+int chatPage = 1;
 bool chatsearchprocess = false;
+List<Chat> chatlist = [];
 
 class _ChatPageState extends State<ChatPage>
     with AutomaticKeepAliveClientMixin<ChatPage> {
+  final ScrollController chatScrollController = ScrollController();
+
   @override
   bool get wantKeepAlive => true;
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +37,14 @@ class _ChatPageState extends State<ChatPage>
     if (!chatsearchprocess) {
       getchat();
     }
+
+    chatScrollController.addListener(() {
+      if (chatScrollController.position.pixels >=
+          chatScrollController.position.maxScrollExtent * 0.5) {
+        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
+        getchat();
+      }
+    });
   }
 
   Future<void> _handleRefresh() async {
@@ -50,14 +59,23 @@ class _ChatPageState extends State<ChatPage>
     }
     chatsearchprocess = true;
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getchats(1);
+    Map<String, dynamic> response = await f.getchats(chatPage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       chatsearchprocess = false;
       getchat();
       return;
     }
-    chatlist.clear();
+
+    if (chatPage == 1) {
+      chatlist.clear();
+    }
+
+    if (response["icerik"].length == 0) {
+      log("Sohbet Liste Sonu!");
+      chatsearchprocess = true;
+      return;
+    }
     for (int i = 0; i < response["icerik"].length; i++) {
       String sonmesaj = response["icerik"][i]["sonmesaj"].toString();
       if (sonmesaj == "null") {
@@ -90,7 +108,7 @@ class _ChatPageState extends State<ChatPage>
       });
     }
     chatsearchprocess = false;
-    // widget.searchController.addListener(_onSearchChanged);
+    chatPage++;
   }
 
   @override
@@ -122,7 +140,7 @@ class _ChatPageState extends State<ChatPage>
                   log("s");
                 },
                 child: ListView.builder(
-                  controller: _scrollController,
+                  controller: chatScrollController,
                   itemCount: chatlist.length,
                   itemBuilder: (BuildContext context, index) {
                     return chatlist[index].listtilechat(context);

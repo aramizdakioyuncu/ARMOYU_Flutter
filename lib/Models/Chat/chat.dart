@@ -66,26 +66,34 @@ class Chat {
   }
 
   Widget listtilenewchat(context) {
-    return ListTile(
-      leading: CircleAvatar(
-        foregroundImage: CachedNetworkImageProvider(avatar),
-      ),
-      title: CustomText.costum1(displayName),
-      subtitle: lastmessage == null ? null : Text(lastmessage!.messageContext),
-      trailing: Text(lastonlinetime.toString()),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (pagecontext) => ChatDetailPage(
-              userID: userID,
-              appbar: true,
-              useravatar: avatar,
-              userdisplayname: displayName,
-              chats: const [],
-            ),
+    return Column(
+      children: [
+        ListTile(
+          leading: CircleAvatar(
+            foregroundImage: CachedNetworkImageProvider(avatar),
           ),
-        );
-      },
+          title: CustomText.costum1(displayName),
+          tileColor: ARMOYU.appbarColor,
+          subtitle:
+              lastmessage == null ? null : Text(lastmessage!.messageContext),
+          trailing: Text(lastonlinetime.toString()),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (pagecontext) => ChatDetailPage(
+                  userID: userID,
+                  appbar: true,
+                  useravatar: avatar,
+                  userdisplayname: displayName,
+                  lastonlinetime: lastonlinetime,
+                  chats: const [],
+                ),
+              ),
+            );
+          },
+        ),
+        const SizedBox(height: 1)
+      ],
     );
   }
 }

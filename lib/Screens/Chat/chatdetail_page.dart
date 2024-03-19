@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:skeletons/skeletons.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final bool appbar;
@@ -240,16 +241,22 @@ class _ChatDetailPage extends State<ChatDetailPage>
                     ),
                     Row(
                       children: [
-                        Text(
-                          widget.lastonlinetime!.toString(),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color:
-                                widget.lastonlinetime!.toString() == "Çevrimiçi"
-                                    ? Colors.green
-                                    : Colors.red,
-                          ),
-                        ),
+                        widget.lastonlinetime == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 20),
+                              )
+                            : Text(
+                                widget.lastonlinetime == null
+                                    ? ""
+                                    : widget.lastonlinetime.toString(),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: widget.lastonlinetime!.toString() ==
+                                          "Çevrimiçi"
+                                      ? Colors.green
+                                      : Colors.red,
+                                ),
+                              ),
                       ],
                     ),
                   ],

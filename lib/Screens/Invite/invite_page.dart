@@ -4,10 +4,10 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:skeletons/skeletons.dart';
 
 class InvitePage extends StatefulWidget {
   const InvitePage({
@@ -19,76 +19,53 @@ class InvitePage extends StatefulWidget {
 
 bool isfirstfetch = true;
 bool newsfetchProcess = false;
+int authroizedUserCount = 0;
+int unauthroizedUserCount = 0;
+List<Widget> invitelist = [];
+int invitePage = 1;
+bool inviteListProcces = false;
 
 class _EventStatePage extends State<InvitePage>
     with AutomaticKeepAliveClientMixin<InvitePage> {
   @override
   bool get wantKeepAlive => true;
 
-  List<Widget> invitelist = [
-    ListTile(
-      minVerticalPadding: 5.0,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-      tileColor: ARMOYU.appbarColor,
-      leading: SkeletonAvatar(
-        style: SkeletonAvatarStyle(
-          borderRadius: BorderRadius.circular(50),
-        ),
-      ),
-      title: const SkeletonLine(),
-      subtitle: const SkeletonLine(
-        style: SkeletonLineStyle(width: 50),
-      ),
-    ),
-    ListTile(
-      minVerticalPadding: 5.0,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-      tileColor: ARMOYU.appbarColor,
-      leading: SkeletonAvatar(
-        style: SkeletonAvatarStyle(
-          borderRadius: BorderRadius.circular(50),
-        ),
-      ),
-      title: const SkeletonLine(),
-      subtitle: const SkeletonLine(
-        style: SkeletonLineStyle(width: 50),
-      ),
-    ),
-    ListTile(
-      minVerticalPadding: 5.0,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-      tileColor: ARMOYU.appbarColor,
-      leading: SkeletonAvatar(
-        style: SkeletonAvatarStyle(
-          borderRadius: BorderRadius.circular(50),
-        ),
-      ),
-      title: const SkeletonLine(),
-      subtitle: const SkeletonLine(
-        style: SkeletonLineStyle(width: 50),
-      ),
-    )
-  ];
-
   @override
   void initState() {
     super.initState();
 
     log("Davet Sayfası");
-    invitepeoplelist();
+
+    if (isfirstfetch) {
+      invitepeoplelist();
+    }
   }
 
   Future<void> invitepeoplelist() async {
+    if (inviteListProcces == true) {
+      return;
+    }
+    setState(() {
+      inviteListProcces = true;
+    });
+
+    if (invitePage == 1) {
+      invitelist.clear();
+    }
     FunctionsProfile f = FunctionsProfile();
-    Map<String, dynamic> response = await f.invitelist(1);
+    Map<String, dynamic> response = await f.invitelist(invitePage);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      setState(() {
+        inviteListProcces = false;
+        isfirstfetch = false;
+      });
       return;
     }
 
-    log(response.toString());
-    invitelist.clear();
+    authroizedUserCount = response["aciklamadetay"]["dogrulanmishesap"];
+    unauthroizedUserCount = response["aciklamadetay"]["normalhesap"];
 
     for (int i = 0; i < response["icerik"].length; i++) {
       if (mounted) {
@@ -186,11 +163,31 @@ class _EventStatePage extends State<InvitePage>
         });
       }
     }
+
+    invitePage++;
+    setState(() {
+      inviteListProcces = false;
+      isfirstfetch = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    Future<void> refreshInviteCode() async {
+      FunctionsProfile f = FunctionsProfile();
+      Map<String, dynamic> response = await f.invitecoderefresh();
+
+      if (response["durum"] == 0) {
+        log(response["aciklama"]);
+        return;
+      }
+      setState(() {
+        ARMOYU.Appuser.invitecode = response["aciklamadetay"];
+      });
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: ARMOYU.bodyColor,
@@ -220,9 +217,16 @@ class _EventStatePage extends State<InvitePage>
                           },
                         ),
                         const Spacer(),
-                        const Icon(
-                          Icons.refresh,
-                          color: Colors.white,
+                        IconButton(
+                          icon: const Icon(
+                            Icons.refresh,
+                            color: Colors.white,
+                          ),
+                          onPressed: () async {
+                            // await refreshInviteCode();
+                            invitePage = 1;
+                            await invitepeoplelist();
+                          },
                         ),
                       ],
                     ),
@@ -238,18 +242,7 @@ class _EventStatePage extends State<InvitePage>
                         ARMOYU.Appuser.invitecode == null
                             ? InkWell(
                                 onTap: () async {
-                                  FunctionsProfile f = FunctionsProfile();
-                                  Map<String, dynamic> response =
-                                      await f.invitecoderefresh();
-
-                                  if (response["durum"] == 0) {
-                                    log(response["aciklama"]);
-                                    return;
-                                  }
-                                  setState(() {
-                                    ARMOYU.Appuser.invitecode =
-                                        response["aciklamadetay"];
-                                  });
+                                  refreshInviteCode();
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(
@@ -316,40 +309,40 @@ class _EventStatePage extends State<InvitePage>
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.check_circle_rounded,
                           color: Colors.amber,
                           size: 14,
                         ),
-                        SizedBox(width: 4),
-                        Text(
+                        const SizedBox(width: 4),
+                        const Text(
                           "Normal Hesap : ",
                           style: TextStyle(color: Colors.white),
                         ),
                         Text(
-                          "0",
-                          style: TextStyle(
+                          unauthroizedUserCount.toString(),
+                          style: const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.check_circle_rounded,
                           color: Colors.green,
                           size: 14,
                         ),
-                        SizedBox(width: 4),
-                        Text(
+                        const SizedBox(width: 4),
+                        const Text(
                           "Doğrulanmış Hesap : ",
                           style: TextStyle(color: Colors.white),
                         ),
                         Text(
-                          "0",
-                          style: TextStyle(
+                          authroizedUserCount.toString(),
+                          style: const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -360,13 +353,22 @@ class _EventStatePage extends State<InvitePage>
             ),
             Expanded(
               child: RefreshIndicator(
-                onRefresh: () async {},
-                child: ListView.builder(
-                  itemCount: invitelist.length,
-                  itemBuilder: (context, index) {
-                    return invitelist[index];
-                  },
-                ),
+                onRefresh: () async {
+                  invitePage = 1;
+                  await invitepeoplelist();
+                },
+                child: invitelist.isEmpty
+                    ? Center(
+                        child: !isfirstfetch && !inviteListProcces
+                            ? const Text("Henüz kimse davet edilmemiş")
+                            : const CupertinoActivityIndicator(),
+                      )
+                    : ListView.builder(
+                        itemCount: invitelist.length,
+                        itemBuilder: (context, index) {
+                          return invitelist[index];
+                        },
+                      ),
               ),
             )
           ],

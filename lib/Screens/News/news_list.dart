@@ -13,13 +13,16 @@ class NewslistPage extends StatefulWidget {
   State<NewslistPage> createState() => _NewslistStatePage();
 }
 
+int newspage = 1;
+bool eventlistProcces = false;
 List<News> newsList = [];
-bool eventlistProecces = false;
+
 final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
     GlobalKey<RefreshIndicatorState>();
 
 class _NewslistStatePage extends State<NewslistPage>
     with AutomaticKeepAliveClientMixin<NewslistPage> {
+  final ScrollController scrollController = ScrollController();
   @override
   bool get wantKeepAlive => true;
 
@@ -30,24 +33,41 @@ class _NewslistStatePage extends State<NewslistPage>
     if (newsList.isEmpty) {
       getnewslist();
     }
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent * 0.5) {
+        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
+        getnewslist();
+      }
+    });
   }
 
   Future<void> getnewslist() async {
-    if (eventlistProecces) {
+    if (eventlistProcces) {
       return;
     }
-    eventlistProecces = true;
-    FunctionsNews f = FunctionsNews();
-    Map<String, dynamic> response = await f.fetch();
+
+    eventlistProcces = true;
+    FunctionsNews function = FunctionsNews();
+    Map<String, dynamic> response = await function.fetch(newspage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      eventlistProecces = false;
+      eventlistProcces = false;
       //Tekrar çekmeyi dene
       getnewslist();
       return;
     }
 
-    newsList.clear();
+    if (newspage == 1) {
+      newsList.clear();
+    }
+
+    if (response['icerik'].length == 0) {
+      eventlistProcces = true;
+      log("Haner Sonu!");
+      return;
+    }
     for (dynamic element in response['icerik']) {
       if (mounted) {
         setState(() {
@@ -66,7 +86,8 @@ class _NewslistStatePage extends State<NewslistPage>
         });
       }
     }
-    eventlistProecces = false;
+    newspage++;
+    eventlistProcces = false;
   }
 
   @override
@@ -85,6 +106,7 @@ class _NewslistStatePage extends State<NewslistPage>
                 key: _refreshIndicatorKey,
                 onRefresh: getnewslist,
                 child: ListView.builder(
+                  controller: scrollController,
                   itemCount: newsList.length,
                   itemBuilder: (context, index) {
                     News aa = newsList[index];

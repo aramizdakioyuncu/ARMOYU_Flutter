@@ -3,8 +3,8 @@ import 'package:ARMOYU/Services/API/api_service.dart';
 class FunctionsNews {
   final ApiService apiService = ApiService();
 
-  Future<Map<String, dynamic>> fetch() async {
-    Map<String, String> formData = {"": ""};
+  Future<Map<String, dynamic>> fetch(int page) async {
+    Map<String, String> formData = {"sayfa": "$page", "limit": "10"};
     Map<String, dynamic> jsonData =
         await apiService.request("haberler/liste/0/", formData);
     return jsonData;

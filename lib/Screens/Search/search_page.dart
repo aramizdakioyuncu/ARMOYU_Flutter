@@ -62,15 +62,15 @@ class _SearchPagePage extends State<SearchPage>
   }
 
   Future<void> getnewslist() async {
-    if (eventlistProecces) {
+    if (eventlistProcces) {
       return;
     }
-    eventlistProecces = true;
+    eventlistProcces = true;
     FunctionsNews f = FunctionsNews();
-    Map<String, dynamic> response = await f.fetch();
+    Map<String, dynamic> response = await f.fetch(newspage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      eventlistProecces = false;
+      eventlistProcces = false;
       //Tekrar çekmeyi dene
       getnewslist();
       return;
@@ -95,7 +95,7 @@ class _SearchPagePage extends State<SearchPage>
         });
       }
     }
-    eventlistProecces = false;
+    eventlistProcces = false;
   }
 
   void _onSearchTextChanged() {

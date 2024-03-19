@@ -32,7 +32,6 @@ class _FriendlistPageState extends State<FriendlistPage>
   @override
   void initState() {
     super.initState();
-    log("ID " + widget.userid.toString());
 
     fetchfriend(pagecounter);
 

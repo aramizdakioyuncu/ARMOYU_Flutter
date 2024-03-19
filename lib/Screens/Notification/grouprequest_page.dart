@@ -59,24 +59,30 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
     if (postpageproccess) {
       return;
     }
-    postpageproccess = true;
 
+    setState(() {
+      postpageproccess = true;
+    });
+    if (page == 1) {
+      widgetNotifications.clear();
+    }
     FunctionService f = FunctionService();
     Map<String, dynamic> response =
         await f.getnotifications("gruplar", "davet", page);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      postpageproccess = false;
-      firstFetchProcces = false;
+      setState(() {
+        firstFetchProcces = false;
+        postpageproccess = false;
+      });
       return;
     }
 
-    if (page == 1) {
-      widgetNotifications.clear();
-    }
     if (response["icerik"].length == 0) {
-      postpageproccess = false;
+      setState(() {
+        postpageproccess = false;
+      });
       return;
     }
 
@@ -113,8 +119,11 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
         });
       }
     }
-    postpageproccess = false;
-    firstFetchProcces = false;
+
+    setState(() {
+      firstFetchProcces = false;
+      postpageproccess = false;
+    });
 
     postpage++;
   }
@@ -126,10 +135,23 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
       appBar: AppBar(
         title: const Text("Grup İstekleri"),
         backgroundColor: ARMOYU.appbarColor,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              postpage = 1;
+              await loadnoifications(postpage);
+            },
+            icon: const Icon(Icons.refresh),
+          )
+        ],
       ),
       backgroundColor: ARMOYU.bodyColor,
       body: widgetNotifications.isEmpty
-          ? const Center(child: CupertinoActivityIndicator())
+          ? Center(
+              child: !firstFetchProcces && !postpageproccess
+                  ? const Text("İstek Kutusu Boş")
+                  : const CupertinoActivityIndicator(),
+            )
           : RefreshIndicator(
               onRefresh: _handleRefresh,
               child: ListView.builder(

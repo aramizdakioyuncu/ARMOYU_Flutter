@@ -12,15 +12,15 @@ class ChatNewPage extends StatefulWidget {
   State<ChatNewPage> createState() => _ChatNewPageState();
 }
 
-int page = 1;
+int chatnewpage = 1;
 bool chatFriendsprocess = false;
 bool isFirstFetch = true;
-List<Chat> aaa = [];
-
-final ScrollController _scrollController = ScrollController();
+List<Chat> newchatList = [];
 
 class _ChatNewPageState extends State<ChatNewPage>
     with AutomaticKeepAliveClientMixin<ChatNewPage> {
+  final ScrollController chatScrollController = ScrollController();
+
   @override
   bool get wantKeepAlive => true;
 
@@ -31,9 +31,9 @@ class _ChatNewPageState extends State<ChatNewPage>
       getchatfriendlist();
     }
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent * 0.5) {
+    chatScrollController.addListener(() {
+      if (chatScrollController.position.pixels >=
+          chatScrollController.position.maxScrollExtent * 0.5) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
         getchatfriendlist();
       }
@@ -44,35 +44,29 @@ class _ChatNewPageState extends State<ChatNewPage>
     if (chatFriendsprocess) {
       return;
     }
-    setState(() {
-      chatFriendsprocess = true;
-      isFirstFetch = false;
-    });
+    chatFriendsprocess = true;
+    isFirstFetch = false;
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getnewchatfriendlist(page);
+    Map<String, dynamic> response = await f.getnewchatfriendlist(chatnewpage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      setState(() {
-        chatFriendsprocess = false;
-      });
+      chatFriendsprocess = false;
       getchatfriendlist();
       return;
     }
 
-    if (page == 1) {
-      aaa.clear();
+    if (chatnewpage == 1) {
+      newchatList.clear();
     }
     if (response["icerik"].length == 0) {
-      setState(() {
-        chatFriendsprocess = true;
-      });
-      log("Sayfasonu");
-      //Sayfa sonudur
+      chatFriendsprocess = true;
+      log("Sohbet Arkadaşlarım Sayfa Sonu");
+      return;
     }
     for (int i = 0; i < response["icerik"].length; i++) {
       if (mounted) {
         setState(() {
-          aaa.add(
+          newchatList.add(
             Chat(
               chatID: 1,
               displayName: response["icerik"][i]["adisoyadi"],
@@ -86,10 +80,8 @@ class _ChatNewPageState extends State<ChatNewPage>
         });
       }
     }
-    setState(() {
-      page++;
-      chatFriendsprocess = false;
-    });
+    chatnewpage++;
+    chatFriendsprocess = false;
   }
 
   @override
@@ -102,10 +94,10 @@ class _ChatNewPageState extends State<ChatNewPage>
         title: const Text("Yeni Sohbet"),
       ),
       body: ListView.builder(
-        itemCount: aaa.length,
-        controller: _scrollController,
+        itemCount: newchatList.length,
+        controller: chatScrollController,
         itemBuilder: (context, index) {
-          return aaa[index].listtilenewchat(context);
+          return newchatList[index].listtilenewchat(context);
         },
       ),
     );
