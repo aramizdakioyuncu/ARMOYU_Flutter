@@ -6,6 +6,8 @@ import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:ARMOYU/Models/Story/story.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/post.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
@@ -237,21 +239,31 @@ class _SocialPageState extends State<SocialPage>
           ismecomment = false;
         }
         setState(() {
+          Post post = Post(
+            postID: response["icerik"][i]["paylasimID"],
+            content: response["icerik"][i]["paylasimicerik"],
+            postDate: response["icerik"][i]["paylasimzamangecen"],
+            sharedDevice: response["icerik"][i]["paylasimnereden"],
+            likesCount: response["icerik"][i]["begenisay"],
+            isLikeme: ismelike,
+            commentsCount: response["icerik"][i]["yorumsay"],
+            iscommentMe: ismecomment,
+            media: media,
+            owner: User(
+              userID: response["icerik"][i]["sahipID"],
+              userName: response["icerik"][i]["sahipad"],
+              avatar: Media(
+                mediaURL: MediaURL(
+                  bigURL: response["icerik"][i]["sahipavatarminnak"],
+                  normalURL: response["icerik"][i]["sahipavatarminnak"],
+                  minURL: response["icerik"][i]["sahipavatarminnak"],
+                ),
+              ),
+            ),
+          );
           widgetPosts.add(
             TwitterPostWidget(
-              userID: response["icerik"][i]["sahipID"],
-              profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
-              username: response["icerik"][i]["sahipad"],
-              postID: response["icerik"][i]["paylasimID"],
-              sharedDevice: response["icerik"][i]["paylasimnereden"],
-              postText: response["icerik"][i]["paylasimicerik"],
-              postDate: response["icerik"][i]["paylasimzamangecen"],
-              media: media,
-              postlikeCount: response["icerik"][i]["begenisay"],
-              postcommentCount: response["icerik"][i]["yorumsay"],
-              postMecomment: ismecomment,
-              postMelike: ismelike,
-              isPostdetail: false,
+              post: post,
             ),
           );
 

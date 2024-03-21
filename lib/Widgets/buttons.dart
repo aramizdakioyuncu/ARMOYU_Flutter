@@ -24,21 +24,17 @@ class CustomButtons {
     );
   }
 
-  static Widget costum1(String text, onPressed, bool loadingStatus) {
+  static Widget costum1(String text,
+      {required Function onPressed, required bool loadingStatus}) {
     Color? background = ARMOYU.buttonColor;
-
-    if (loadingStatus) {
-      background = Colors.transparent;
-    }
     Color foregroundColor = Colors.white;
-    return Column(
-      children: [
-        Visibility(
-          visible: !loadingStatus,
-          child: ElevatedButton(
-            onPressed: () {
+
+    return loadingStatus
+        ? CircularProgressIndicator(color: ARMOYU.color)
+        : ElevatedButton(
+            onPressed: () async {
               if (!loadingStatus) {
-                onPressed();
+                await onPressed();
               }
             },
             style: ElevatedButton.styleFrom(
@@ -50,23 +46,14 @@ class CustomButtons {
                     BorderRadius.circular(10), // Kenar yarıçapını ayarlayın
               ),
             ),
-            child: Text(text,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          ),
-        ),
-        Visibility(
-          visible: loadingStatus,
-          child: const Column(
-            children: [
-              CircularProgressIndicator(
-                color: Colors.red,
+            child: Text(
+              text,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
-            ],
-          ),
-        ),
-      ],
-    );
+            ),
+          );
   }
 
   Widget costum2(Icon icon, String text, onPressed) {

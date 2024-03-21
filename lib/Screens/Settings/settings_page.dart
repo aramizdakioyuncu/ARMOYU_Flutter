@@ -79,7 +79,7 @@ class _SettingsPage extends State<SettingsPage> {
                 children: [
                   Container(color: ARMOYU.bodyColor, height: 1),
                   ListTile(
-                    tileColor: ARMOYU.bacgroundcolor,
+                    tileColor: ARMOYU.backgroundcolor,
                     leading: CircleAvatar(
                       foregroundImage: CachedNetworkImageProvider(
                           ARMOYU.Appuser.avatar!.mediaURL.minURL),
@@ -135,7 +135,7 @@ class _SettingsPage extends State<SettingsPage> {
                   Column(
                     children: [
                       ListTile(
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         title: const Text("Uygulaman ve medya"),
                       ),
                       ListTile(
@@ -143,7 +143,7 @@ class _SettingsPage extends State<SettingsPage> {
                           Icons.phone_android_rounded,
                         ),
                         title: CustomText.costum1("Cihaz İzinleri"),
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -165,7 +165,7 @@ class _SettingsPage extends State<SettingsPage> {
                           Icons.download_rounded,
                         ),
                         title: CustomText.costum1("İndirme ve Arşivleme"),
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -191,7 +191,7 @@ class _SettingsPage extends State<SettingsPage> {
                             ),
                           );
                         },
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -226,7 +226,7 @@ class _SettingsPage extends State<SettingsPage> {
                             ),
                           );
                         },
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -254,7 +254,7 @@ class _SettingsPage extends State<SettingsPage> {
                         ),
                       );
                     },
-                    tileColor: ARMOYU.bacgroundcolor,
+                    tileColor: ARMOYU.backgroundcolor,
                     trailing: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -273,7 +273,7 @@ class _SettingsPage extends State<SettingsPage> {
                         ),
                       );
                     },
-                    tileColor: ARMOYU.bacgroundcolor,
+                    tileColor: ARMOYU.backgroundcolor,
                     trailing: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -285,7 +285,7 @@ class _SettingsPage extends State<SettingsPage> {
                   Column(
                     children: [
                       ListTile(
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         title: const Text("Daha fazla bilgi ve destek"),
                       ),
                       ListTile(
@@ -299,7 +299,7 @@ class _SettingsPage extends State<SettingsPage> {
                             ),
                           );
                         },
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
                             size: 17),
                       ),
@@ -315,7 +315,7 @@ class _SettingsPage extends State<SettingsPage> {
                             ),
                           );
                         },
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
                             size: 17),
                       ),
@@ -330,7 +330,7 @@ class _SettingsPage extends State<SettingsPage> {
                             ),
                           );
                         },
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         trailing: const Icon(Icons.arrow_forward_ios_outlined,
                             size: 17),
                       ),
@@ -342,14 +342,14 @@ class _SettingsPage extends State<SettingsPage> {
                       ListTile(
                         textColor: Colors.blue,
                         iconColor: Colors.blue,
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         title: const Text("Hesap Ekle"),
                         onTap: () async {},
                       ),
                       ListTile(
                         textColor: Colors.red,
                         iconColor: Colors.red,
-                        tileColor: ARMOYU.bacgroundcolor,
+                        tileColor: ARMOYU.backgroundcolor,
                         title: const Text("Çıkış Yap"),
                         onTap: () async {
                           FunctionService f = FunctionService();

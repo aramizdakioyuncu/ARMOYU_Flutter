@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/post.dart';
+import 'package:ARMOYU/Models/user.dart';
 
 import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -127,21 +129,43 @@ class _PostDetailPage extends State<PostDetailPage>
         );
       }
     }
-
-    asa = TwitterPostWidget(
-      userID: response["icerik"][0]["sahipID"],
-      profileImageUrl: response["icerik"][0]["sahipavatarminnak"],
-      username: response["icerik"][0]["sahipad"],
-      sharedDevice: response["icerik"][0]["paylasimnereden"],
+    Post post = Post(
       postID: response["icerik"][0]["paylasimID"],
-      postText: response["icerik"][0]["paylasimicerik"],
+      content: response["icerik"][0]["paylasimicerik"],
       postDate: response["icerik"][0]["paylasimzamangecen"],
+      sharedDevice: response["icerik"][0]["paylasimnereden"],
+      likesCount: response["icerik"][0]["begenisay"],
+      isLikeme: response["icerik"][0]["benbegendim"],
+      commentsCount: response["icerik"][0]["yorumsay"],
+      iscommentMe: response["icerik"][0]["benyorumladim"],
       media: media,
-      postlikeCount: response["icerik"][0]["begenisay"],
-      postcommentCount: response["icerik"][0]["yorumsay"],
-      postMecomment: response["icerik"][0]["benyorumladim"],
-      postMelike: response["icerik"][0]["benbegendim"],
-      isPostdetail: true,
+      owner: User(
+        userID: response["icerik"][0]["sahipID"],
+        userName: response["icerik"][0]["sahipad"],
+        avatar: Media(
+          mediaURL: MediaURL(
+            bigURL: response["icerik"][0]["sahipavatarminnak"],
+            normalURL: response["icerik"][0]["sahipavatarminnak"],
+            minURL: response["icerik"][0]["sahipavatarminnak"],
+          ),
+        ),
+      ),
+    );
+    asa = TwitterPostWidget(
+      // userID: response["icerik"][0]["sahipID"],
+      // profileImageUrl: response["icerik"][0]["sahipavatarminnak"],
+      // username: response["icerik"][0]["sahipad"],
+      // sharedDevice: response["icerik"][0]["paylasimnereden"],
+      // postID: response["icerik"][0]["paylasimID"],
+      // postText: response["icerik"][0]["paylasimicerik"],
+      // postDate: response["icerik"][0]["paylasimzamangecen"],
+      // media: media,
+      // postlikeCount: response["icerik"][0]["begenisay"],
+      // postcommentCount: response["icerik"][0]["yorumsay"],
+      // postMecomment: response["icerik"][0]["benyorumladim"],
+      // postMelike: response["icerik"][0]["benbegendim"],
+      // isPostdetail: true,
+      post: post,
     );
   }
 
@@ -149,7 +173,7 @@ class _PostDetailPage extends State<PostDetailPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bacgroundcolor,
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text('Paylaşım', style: TextStyle(fontSize: 18)),
         toolbarHeight: 40,

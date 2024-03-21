@@ -117,7 +117,11 @@ class _EventStatePage extends State<EventPage> {
                     const Text("Kuralları okudum ve anladım kabul ediyorum."),
                   ],
                 ),
-                CustomButtons.costum1("KATIL", joinevent, joineventProccess),
+                CustomButtons.costum1(
+                  "KATIL",
+                  onPressed: joinevent,
+                  loadingStatus: joineventProccess,
+                ),
               ],
             ),
           ),

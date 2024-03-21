@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  void _login() async {
+  Future<void> _login() async {
     if (loginProcess) {
       return;
     }
@@ -82,38 +82,43 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 110),
-            Container(
-              width: 150,
-              height: 150,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage(
-                      'assets/images/armoyu512.png'), // Analog görselinizin yolunu ekleyin
-                  fit: BoxFit.cover,
-                ),
+            const SizedBox(height: 100),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Image.asset(
+                'assets/images/armoyu512.png',
+                height: 150,
+                width: 150,
               ),
             ),
             const SizedBox(height: 16.0),
-            CustomTextfields.costum1(
+            CustomTextfields.costum3(
               "Kullanıcı Adı/E-posta",
-              usernameController,
-              false,
-              const Icon(Icons.person),
-              TextInputType.emailAddress,
+              controller: usernameController,
+              isPassword: false,
+              preicon: const Icon(Icons.person),
+              type: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum1("Şifreniz", passwordController, true,
-                const Icon(Icons.lock_outline)),
+            CustomTextfields.costum3(
+              "Şifreniz",
+              controller: passwordController,
+              isPassword: true,
+              preicon: const Icon(Icons.lock_outline),
+            ),
             const SizedBox(height: 16),
-            CustomButtons.costum1("Giriş Yap", _login, loginProcess),
+            CustomButtons.costum1(
+              "Giriş Yap",
+              onPressed: _login,
+              loadingStatus: loginProcess,
+            ),
             const SizedBox(
               height: 20,
             ),
@@ -167,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                       CustomText.costum1("Devam ederek"),
                       InkWell(
                         onTap: () async {
-                          if (ARMOYU.SecurityDetail == "0") {
+                          if (ARMOYU.securityDetail == "0") {
                             FunctionService f = FunctionService();
                             Map<String, dynamic> response =
                                 await f.getappdetail();
@@ -175,8 +180,8 @@ class _LoginPageState extends State<LoginPage> {
                             if (response["durum"] == 0) {
                               return;
                             }
-                            ARMOYU.SecurityDetail =
-                                response["projegizliliksozlesmesi"];
+                            ARMOYU.securityDetail = response["aciklamadetay"]
+                                ["projegizliliksozlesmesi"];
                           }
                           if (mounted) {
                             Navigator.push(
@@ -184,7 +189,7 @@ class _LoginPageState extends State<LoginPage> {
                               MaterialPageRoute(
                                 builder: (context) => TextPage(
                                   texttitle: "Güvenlik Politikası",
-                                  textcontent: ARMOYU.SecurityDetail,
+                                  textcontent: ARMOYU.securityDetail,
                                 ),
                               ),
                             );
@@ -204,14 +209,14 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 InkWell(
                   onTap: () async {
-                    if (ARMOYU.SecurityDetail == "0") {
+                    if (ARMOYU.securityDetail == "0") {
                       FunctionService f = FunctionService();
                       Map<String, dynamic> response = await f.getappdetail();
 
                       if (response["durum"] == 0) {
                         return;
                       }
-                      ARMOYU.SecurityDetail =
+                      ARMOYU.securityDetail =
                           response["projegizliliksozlesmesi"];
                     }
                     if (mounted) {
@@ -220,7 +225,7 @@ class _LoginPageState extends State<LoginPage> {
                         MaterialPageRoute(
                           builder: (context) => TextPage(
                             texttitle: "Güvenlik Politikası",
-                            textcontent: ARMOYU.SecurityDetail,
+                            textcontent: ARMOYU.securityDetail,
                           ),
                         ),
                       );

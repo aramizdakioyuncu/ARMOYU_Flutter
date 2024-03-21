@@ -101,7 +101,9 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     if (schoolProcess) {
       return;
     }
-    schoolProcess = true;
+    setState(() {
+      schoolProcess = true;
+    });
     FunctionsSchool f = FunctionsSchool();
     String? schoolID = cupertinolist[_selectedcupertinolist]["ID"];
     String? classID = cupertinolist2[_selectedcupertinolist2]["ID"];
@@ -121,7 +123,9 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
         Navigator.of(context).pop();
       }
     }
-    schoolProcess = false;
+    setState(() {
+      schoolProcess = false;
+    });
   }
 
   void _showDialog(Widget child) {
@@ -162,6 +166,9 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 imageUrl: schoollogo,
                 height: 250,
                 fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    const CupertinoActivityIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
               const SizedBox(height: 16),
               CupertinoButton(
@@ -215,7 +222,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
                   padding: const EdgeInsets.all(16.0),
-                  color: Colors.grey.shade900,
+                  color: ARMOYU.textbackColor,
                   child: Text(
                     cupertinolist[_selectedcupertinolist]["value"].toString(),
                     style: const TextStyle(
@@ -254,7 +261,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 child: Container(
                   width: ARMOYU.screenWidth - 10,
                   padding: const EdgeInsets.all(16.0),
-                  color: Colors.grey.shade900,
+                  color: ARMOYU.textbackColor,
                   child: Text(
                     cupertinolist2[_selectedcupertinolist2]["value"].toString(),
                     style: const TextStyle(
@@ -264,10 +271,19 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 ),
               ),
               const SizedBox(height: 16),
-              CustomTextfields.costum1("Parola", schoolpassword, true,
-                  const Icon(Icons.security), TextInputType.number),
+              CustomTextfields.costum3(
+                "Parola",
+                controller: schoolpassword,
+                isPassword: true,
+                preicon: const Icon(Icons.security),
+                type: TextInputType.number,
+              ),
               const SizedBox(height: 16),
-              CustomButtons.costum1("Katıl", loginschool, schoolProcess),
+              CustomButtons.costum1(
+                "Katıl",
+                onPressed: loginschool,
+                loadingStatus: schoolProcess,
+              ),
             ],
           ),
         ),

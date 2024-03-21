@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
@@ -6,8 +9,10 @@ import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:camera/camera.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StartingScreen extends StatefulWidget {
@@ -27,8 +32,65 @@ class _StartingScreenState extends State<StartingScreen> {
     staringfunctions();
   }
 
+  getFlutterInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    ARMOYU.appName = packageInfo.appName;
+    ARMOYU.appPackage = packageInfo.packageName;
+
+    ARMOYU.appVersion = packageInfo.version;
+    ARMOYU.appBuild = packageInfo.buildNumber;
+  }
+
+  Future<String> getdeviceModel() async {
+    //Cihaz Kontrolü yaoıyoruz
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      // print(androidInfo.model);
+      return androidInfo.model.toString();
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      // print(iosInfo.utsname.machine);
+      return iosInfo.utsname.machine;
+    }
+    return "Bilinmeyen Cihaz";
+  }
+
+  getPlatform() {
+    if (Platform.isAndroid) {
+      ARMOYU.devicePlatform = "Android";
+    } else if (Platform.isIOS) {
+      ARMOYU.devicePlatform = "IOS";
+    } else {
+      ARMOYU.devicePlatform = "Bilinmeyen";
+    }
+  }
+
   Future<void> staringfunctions() async {
+    //Platform kontrolü yapıyoruz
+    getPlatform();
+
+    //Kameralar var mı diye kontrol
     ARMOYU.cameras = await availableCameras();
+
+    //Cihaz Model yapıyoruz
+    ARMOYU.deviceModel = await getdeviceModel();
+
+    //Flutter Proje bilgisini çekiyoruz
+    await getFlutterInfo();
+    setState(() {
+      log("Cihaz Modeli: ${ARMOYU.deviceModel}");
+      log("Platform: ${ARMOYU.devicePlatform}");
+
+      log("Kameralar: ${ARMOYU.cameras!.length}");
+
+      log("Proje Adı: ${ARMOYU.appName}");
+      log("Proje Versiyon: ${ARMOYU.appVersion}");
+      log("Proje Build: ${ARMOYU.appBuild}");
+    });
+
     // İnternet var mı diye kontrol ediyoruz!
     if (!await AppCore.checkInternetConnection()) {
       if (mounted) {
@@ -39,10 +101,9 @@ class _StartingScreenState extends State<StartingScreen> {
           ),
         );
       }
-
       return;
     }
-
+    //Bellekteki kullanıcı adı ve şifreyi alıyoruz
     final prefs = await SharedPreferences.getInstance();
     final username = prefs.getString('username');
     final password = prefs.getString('password');
@@ -69,6 +130,7 @@ class _StartingScreenState extends State<StartingScreen> {
 
     Map<String, dynamic> response =
         await f.login(username.toString(), password.toString(), true);
+
     if (response["durum"] == 1) {
       if (mounted) {
         Navigator.pushReplacement(

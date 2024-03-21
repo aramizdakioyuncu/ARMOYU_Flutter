@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Functions/API_Functions/teams.dart';
 import 'package:ARMOYU/Models/team.dart';
@@ -48,9 +47,7 @@ class ARMOYUFunctions {
               onPressed: () {
                 Navigator.of(context).pop();
 
-                String cevap = AppCore.getDevice();
-
-                if (cevap == "Android") {
+                if (ARMOYU.devicePlatform == "Android") {
                   ARMOYUFunctions.openPlayStore();
                 } else {
                   ARMOYUFunctions.openAppStore();

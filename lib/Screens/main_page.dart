@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/Services/Utility/barcode.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Services/Utility/theme.dart';
+import 'package:skeletons/skeletons.dart';
 import 'Social/social_page.dart';
 import 'Notification/notification_page.dart';
 
@@ -289,12 +290,15 @@ class _MainPageState extends State<MainPage>
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(
                               50.0), // Kenar yarıçapını ayarlayın
-                          child: CachedNetworkImage(
-                            imageUrl: ARMOYU.Appuser.avatar!.mediaURL.minURL,
-                            width: 30,
-                            height: 30,
-                            fit: BoxFit.cover,
-                          ),
+                          child: ARMOYU.Appuser.avatar == null
+                              ? const SkeletonAvatar()
+                              : CachedNetworkImage(
+                                  imageUrl:
+                                      ARMOYU.Appuser.avatar!.mediaURL.minURL,
+                                  width: 30,
+                                  height: 30,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
                     );
@@ -350,30 +354,42 @@ class _MainPageState extends State<MainPage>
           child: Column(
             children: [
               UserAccountsDrawerHeader(
-                accountName: Text(
-                  ARMOYU.Appuser.displayName!,
-                  style: const TextStyle(color: Colors.white),
-                ),
-                accountEmail: Text(ARMOYU.Appuser.userMail!,
-                    style: const TextStyle(color: Colors.white)),
+                accountName: ARMOYU.Appuser.displayName == null
+                    ? const SkeletonLine(
+                        style: SkeletonLineStyle(width: 20),
+                      )
+                    : Text(
+                        ARMOYU.Appuser.displayName!,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                accountEmail: ARMOYU.Appuser.userMail == null
+                    ? const SkeletonLine(
+                        style: SkeletonLineStyle(width: 20),
+                      )
+                    : Text(ARMOYU.Appuser.userMail!,
+                        style: const TextStyle(color: Colors.white)),
                 currentAccountPicture: GestureDetector(
                   onTap: () {
                     _changePage(3);
                     Navigator.of(context).pop();
                   },
-                  child: CircleAvatar(
-                    foregroundImage: CachedNetworkImageProvider(
-                        ARMOYU.Appuser.avatar!.mediaURL.minURL),
-                  ),
+                  child: ARMOYU.Appuser.avatar == null
+                      ? const SkeletonAvatar()
+                      : CircleAvatar(
+                          foregroundImage: CachedNetworkImageProvider(
+                              ARMOYU.Appuser.avatar!.mediaURL.minURL),
+                        ),
                 ),
                 currentAccountPictureSize: const Size.square(70),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                        ARMOYU.Appuser.banner!.mediaURL.minURL),
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                decoration: ARMOYU.Appuser.banner == null
+                    ? null
+                    : BoxDecoration(
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                              ARMOYU.Appuser.banner!.mediaURL.minURL),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
               ),
               Expanded(
                 child: Container(
@@ -582,6 +598,7 @@ class _MainPageState extends State<MainPage>
         bottomNavigationBar: Visibility(
           visible: isBottomNavbarVisible,
           child: BottomNavigationBar(
+            backgroundColor: ARMOYU.appbarColor,
             type: BottomNavigationBarType.fixed,
             showSelectedLabels: false,
             showUnselectedLabels: false,

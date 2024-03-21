@@ -36,13 +36,13 @@ class _SettingsHelpPage extends State<SettingsHelpPage> {
               children: [
                 ListTile(
                   title: CustomText.costum1("Sorun Bildir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Destek Talepleri"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),

@@ -47,7 +47,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Yorum Beğenileri"),
                   subtitle: CustomText.costum1(
                       "Yorumlarınız beğenildiğinde bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -66,7 +66,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Paylaşım Beğenileri"),
                   subtitle: CustomText.costum1(
                       "Paylaşımlarınız beğeni aldığında bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -85,7 +85,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Yorum"),
                   subtitle: CustomText.costum1(
                       "Paylaşımlarınız yorum aldığında bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -104,7 +104,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Yorum Yanıtları"),
                   subtitle: CustomText.costum1(
                       "Yorumunuza yanıt geldiğinde bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -123,7 +123,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Etkinlik"),
                   subtitle: CustomText.costum1(
                       "Etkinlik ile ilgili tüm duyuruları bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -142,7 +142,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Doğum Günleri"),
                   subtitle: CustomText.costum1(
                       "Arkadaşlarınızın doğum günlerini bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -161,7 +161,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Mesajlar"),
                   subtitle:
                       CustomText.costum1("Yeni mesaj geldiğinde bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -180,7 +180,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Aramalar"),
                   subtitle:
                       CustomText.costum1("Birisi sizi aradığında bildirir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

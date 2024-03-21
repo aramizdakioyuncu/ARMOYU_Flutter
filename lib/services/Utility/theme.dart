@@ -14,14 +14,15 @@ class ThemeProvider with ChangeNotifier {
     _themeData = ThemeData.dark();
 
     ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
-    ARMOYU.textbackColor = Colors.grey.shade900;
+    ARMOYU.textbackColor = Colors.grey.shade800;
     ARMOYU.texthintColor = const Color.fromARGB(255, 195, 195, 195);
 
     ARMOYU.color = Colors.white;
     ARMOYU.appbarColor = Colors.black;
+    ARMOYU.appbottomColor = Colors.black;
     ARMOYU.bodyColor = Colors.grey.shade900;
-    ARMOYU.bacgroundcolor = Colors.black;
-    ARMOYU.buttonColor = Colors.black;
+    ARMOYU.backgroundcolor = Colors.black;
+    ARMOYU.buttonColor = Colors.grey.shade900;
   }
 
   void lightMode(SharedPreferences prefs) {
@@ -34,8 +35,10 @@ class ThemeProvider with ChangeNotifier {
 
     ARMOYU.color = Colors.black;
     ARMOYU.appbarColor = Colors.white;
+    ARMOYU.appbottomColor = Colors.white;
+
     ARMOYU.bodyColor = Colors.grey.shade100;
-    ARMOYU.bacgroundcolor = Colors.white;
+    ARMOYU.backgroundcolor = Colors.white;
     ARMOYU.buttonColor = Colors.blue;
   }
 

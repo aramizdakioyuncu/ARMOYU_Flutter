@@ -46,7 +46,7 @@ class ARMOYUWidget {
   static void stackbarNotification(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: ARMOYU.bacgroundcolor,
+        backgroundColor: ARMOYU.backgroundcolor,
         content: Text(
           text,
           style: TextStyle(color: ARMOYU.textColor),

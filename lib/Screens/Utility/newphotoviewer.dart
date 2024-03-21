@@ -134,7 +134,9 @@ class _MediaViewerPage extends State<MediaViewer> {
               : const BouncingScrollPhysics(),
           pageController: PageController(initialPage: widget.initialIndex),
           itemCount: widget.media.length,
-          backgroundDecoration: BoxDecoration(color: ARMOYU.bacgroundcolor),
+          backgroundDecoration: BoxDecoration(
+            color: ARMOYU.backgroundcolor,
+          ),
           builder: (BuildContext context, int index) {
             ImageProvider imageProvider;
 

@@ -72,7 +72,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 ListTile(
                   leading: const Icon(Icons.photo_size_select_actual_rounded),
                   title: CustomText.costum1("Kaldırılan İçerikler"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -90,7 +90,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 ListTile(
                   leading: const Icon(Icons.report),
                   title: CustomText.costum1("Kısıtlanmaların"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

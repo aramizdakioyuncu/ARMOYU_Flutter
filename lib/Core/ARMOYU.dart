@@ -7,14 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ARMOYU {
-  static String Name = "0";
-  static String SecurityDetail = "0";
+  static String appName = "";
+  static String appPackage = "";
+  static String appVersion = "";
+  static String appBuild = "";
+
+  static String securityDetail = "0";
+  static String version = "";
+
+  static String devicePlatform = "";
+  static String deviceModel = "";
 
   static Color? appbarColor;
+  static Color? appbottomColor;
   static Color? bodyColor;
 
   static Color? color;
-  static Color? bacgroundcolor;
+  static Color? backgroundcolor;
 
   static Color? textColor;
   static Color? textbackColor;

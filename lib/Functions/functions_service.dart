@@ -6,17 +6,10 @@ import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:ARMOYU/Services/Utility/onesignal.dart';
 
 class FunctionService {
-  /*
-  
-  
-  
- */
   ApiService apiService = ApiService();
 
   String generateMd5(String input) {
@@ -54,33 +47,30 @@ class FunctionService {
     String link = "0/0/0/";
 
     Map<String, dynamic> response = await apiService.request(link, formData);
-    if (response["durum"].toString() != "1") {
-      if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
-        Map<String, dynamic> jsonData = {
-          'durum': 0,
-          'aciklama': "Hatalı giriş!",
-        };
-        String jsonencode = jsonEncode(jsonData);
-        Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
-        return jsonString;
-      } else if (response["aciklama"] == "Lütfen Geçerli API_KEY giriniz!") {
-        Map<String, dynamic> jsonData = {
-          'durum': response["durum"],
-          'aciklama': response["aciklama"],
-        };
-        String jsonencode = jsonEncode(jsonData);
-        Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
-        return jsonString;
-      }
 
+    if (response["durum"] == 0) {
       Map<String, dynamic> jsonData = {
-        'durum': 0,
-        'aciklama': "Sunucuya ulaşamadı!",
+        'durum': response["durum"],
+        'aciklama': response["aciklama"],
+        'aciklamadetay': response["aciklamadetay"],
+      };
+      String jsonencode = jsonEncode(jsonData);
+      Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
+      return jsonString;
+    } else if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+      Map<String, dynamic> jsonData = {
+        'durum': 1,
+        'aciklama': "Hatalı giriş!",
+        'aciklamadetay': "",
       };
       String jsonencode = jsonEncode(jsonData);
       Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
       return jsonString;
     }
+
+    ARMOYU.version = response["aciklamadetay"]["versiyon"].toString();
+    ARMOYU.securityDetail =
+        response["aciklamadetay"]["projegizliliksozlesmesi"];
 
     Map<String, dynamic> oyuncubilgi = response["icerik"];
     ARMOYU.Appuser = User(
@@ -135,10 +125,7 @@ class FunctionService {
     prefs.setString('username', username);
     prefs.setString('password', password);
 
-    // App.getDeviceModel
-    String cevap = AppCore.getDevice();
-
-    if (cevap != "Bilinmeyen") {
+    if (ARMOYU.deviceModel != "Bilinmeyen") {
       OneSignalApi.setupOneSignal(
         ARMOYU.Appuser.userID!,
         ARMOYU.Appuser.userName!,
@@ -150,14 +137,22 @@ class FunctionService {
     Map<String, dynamic> jsonData = {
       'durum': 1,
       'aciklama': "Başarılı.",
+      'aciklamadetay': response["aciklamadetay"],
     };
     String jsonencode = jsonEncode(jsonData);
     Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
     return jsonString;
   }
 
-  Future<Map<String, dynamic>> register(String username, String name,
-      String lastname, String email, String password, String rpassword) async {
+  Future<Map<String, dynamic>> register(
+    String username,
+    String name,
+    String lastname,
+    String email,
+    String password,
+    String rpassword,
+    String inviteCode,
+  ) async {
     Map<String, String> formData = {
       "islem": "kayit-ol",
       "kullaniciadi": username,
@@ -165,7 +160,8 @@ class FunctionService {
       "soyad": lastname,
       "email": email,
       "parola": password,
-      "parolakontrol": rpassword
+      "parolakontrol": rpassword,
+      "davetkodu": inviteCode,
     };
     Map<String, dynamic> jsonData =
         await apiService.request("kayit-ol/0/0/", formData);

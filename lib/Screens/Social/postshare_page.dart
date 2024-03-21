@@ -41,9 +41,11 @@ class _PostSharePageState extends State<PostSharePage>
         await funct.share(textController.text, imagePath);
     if (response["durum"] == 0) {
       postsharetext.text = response["aciklama"].toString();
-      setState(() {
-        postshareProccess = false;
-      });
+      if (mounted) {
+        setState(() {
+          postshareProccess = false;
+        });
+      }
       return;
     }
 
@@ -146,7 +148,11 @@ class _PostSharePageState extends State<PostSharePage>
               height: 100,
               child: Column(
                 children: [
-                  CustomButtons.costum1("Paylaş", sharePost, postshareProccess),
+                  CustomButtons.costum1(
+                    "Paylaş",
+                    onPressed: sharePost,
+                    loadingStatus: postshareProccess,
+                  ),
                   const SizedBox(height: 10),
                   Text(postsharetext.text),
                 ],

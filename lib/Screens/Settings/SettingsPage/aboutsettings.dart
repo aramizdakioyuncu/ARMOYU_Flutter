@@ -36,25 +36,25 @@ class _SettingsAboutPage extends State<SettingsAboutPage> {
               children: [
                 ListTile(
                   title: CustomText.costum1("Hesabın Hakkında"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Gizlilik ilkesi"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Kullanım Koşulları"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Açık Kaynak Kütüphaneleri"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),

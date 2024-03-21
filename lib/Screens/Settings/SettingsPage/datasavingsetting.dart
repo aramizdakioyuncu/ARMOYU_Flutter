@@ -38,7 +38,7 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
                   title: CustomText.costum1("Daha az hücresel veri kullan"),
                   subtitle: CustomText.costum1(
                       "Sayfa sonuna gelmeden yeni sayfa yüklenmez"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -57,7 +57,7 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
                   title: CustomText.costum1("En düşük kalitede medya yükle"),
                   subtitle: CustomText.costum1(
                       "Medyalar en düşük kalitede gösterilir bu can sıkıcı olabilir"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -76,7 +76,7 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
                   title: CustomText.costum1("Videoları otomatik olarak oynat"),
                   subtitle:
                       CustomText.costum1("Videolar otomatik olarak oynatılır"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

@@ -1,19 +1,28 @@
+import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
+
 class Post {
-  int postId;
-  String username;
-  int userId;
-  String avatar;
+  int postID;
   String content;
-  String mediaUrl;
-  DateTime postDate;
+  String postDate;
+  String sharedDevice;
+  int likesCount;
+  int commentsCount;
+  bool isLikeme;
+  bool iscommentMe;
+  User owner;
+  List<Media> media;
 
   Post({
-    required this.postId,
-    required this.username,
-    required this.userId,
-    required this.avatar,
+    required this.postID,
     required this.content,
-    required this.mediaUrl,
     required this.postDate,
+    required this.sharedDevice,
+    required this.likesCount,
+    required this.isLikeme,
+    required this.commentsCount,
+    required this.iscommentMe,
+    required this.owner,
+    required this.media,
   });
 }

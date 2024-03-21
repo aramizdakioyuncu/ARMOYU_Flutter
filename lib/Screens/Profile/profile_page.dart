@@ -6,6 +6,7 @@ import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 
@@ -17,6 +18,7 @@ import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -28,9 +30,9 @@ import 'package:ARMOYU/Widgets/posts.dart';
 import 'package:skeletons/skeletons.dart';
 
 class ProfilePage extends StatefulWidget {
-  final int? userID; // Zorunlu olarak alınacak veri
-  final String? username; // Zorunlu olmayan  veri
-  final bool appbar; // Zorunlu olarak alınacak veri
+  final int? userID;
+  final String? username;
+  final bool appbar;
 
   const ProfilePage({
     super.key,
@@ -55,17 +57,12 @@ class _ProfilePageState extends State<ProfilePage>
 
   bool isbeFriend = false;
 
-  List<String> listFriendTOP3 = [
-    // "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
-    // "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif",
-    // "https://aramizdakioyuncu.com/galeri/ana-yapi/gifler/spinner.gif"
-  ];
+  List<String> listFriendTOP3 = [];
   String friendTextLine = "";
 
   bool isAppBarExpanded = true;
   late ScrollController pageMainscroller;
   late ScrollController galleryscrollcontroller;
-  late ScrollController postsscrollcontroller;
   bool galleryproccess = false;
 
   String friendStatus = "";
@@ -80,51 +77,55 @@ class _ProfilePageState extends State<ProfilePage>
   int gallerycounter = 1;
 
   bool firstgalleryfetcher = false;
+
+//
+//
+
   @override
   void initState() {
     super.initState();
     test();
 
-    pageMainscroller = ScrollController();
-    pageMainscroller.addListener(() {
-      if (pageMainscroller.position.pixels >=
-          pageMainscroller.position.maxScrollExtent * 0.5) {
-        if (ispostsVisible) {
-          profileloadPosts(postscounter, userProfile.userID!);
-        }
-        if (isgalleryVisible) {
-          gallery(gallerycounter, userProfile.userID!);
-        }
-      }
-      setState(() {
-        isAppBarExpanded = pageMainscroller.offset <
-            ARMOYU.screenHeight * 0.20; // veya başka bir eşik değeri
-      });
-    });
+    tabController = TabController(initialIndex: 0, length: 3, vsync: this);
 
-    tabController = TabController(
-      initialIndex: 0,
-      length: 2,
-      vsync: this,
-    );
+    // pageMainscroller = ScrollController();
+    // pageMainscroller.addListener(() {
+    //   if (pageMainscroller.position.pixels >=
+    //       pageMainscroller.position.maxScrollExtent * 0.5) {
+    //     // if (ispostsVisible) {
+    //     //   profileloadPosts(postscounter, userProfile.userID!);
+    //     // }
+    //     if (isgalleryVisible) {
+    //       gallery(gallerycounter, userProfile.userID!);
+    //     }
+    //   }
+    //   setState(() {
+    //     isAppBarExpanded = pageMainscroller.offset <
+    //         ARMOYU.screenHeight * 0.20; // veya başka bir eşik değeri
+    //   });
+    // });
+
     tabController.addListener(() {
       if (tabController.indexIsChanging ||
           tabController.index != tabController.previousIndex) {
         if (tabController.index == 0) {
-          setState(() {
-            isgalleryVisible = false;
-            ispostsVisible = true;
-          });
+          if (mounted) {
+            setState(() {
+              isgalleryVisible = false;
+              ispostsVisible = true;
+            });
+          }
         }
         if (tabController.index == 1) {
           if (!firstgalleryfetcher) {
             gallery(gallerycounter, userProfile.userID!);
           }
-
-          setState(() {
-            isgalleryVisible = true;
-            ispostsVisible = false;
-          });
+          if (mounted) {
+            setState(() {
+              isgalleryVisible = true;
+              ispostsVisible = false;
+            });
+          }
         }
       }
     });
@@ -137,11 +138,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   List<Widget> widgetPosts = [];
-  final List<String> imageUrls = [];
-  final List<String> imageufakUrls = [];
-  final List<int> imagesownerID = [];
-
-  final List<Media> medialist = [];
+  List<Media> medialist = [];
 
   profileloadPosts(int page, int userID) async {
     if (postsfetchproccess) {
@@ -204,21 +201,32 @@ class _ProfilePageState extends State<ProfilePage>
         }
 
         setState(() {
+          Post post = Post(
+            postID: response["icerik"][i]["paylasimID"],
+            content: response["icerik"][i]["paylasimicerik"],
+            postDate: response["icerik"][i]["paylasimzamangecen"],
+            sharedDevice: response["icerik"][i]["paylasimnereden"],
+            likesCount: response["icerik"][i]["begenisay"],
+            isLikeme: ismelike,
+            commentsCount: response["icerik"][i]["yorumsay"],
+            iscommentMe: ismecomment,
+            media: media,
+            owner: User(
+              userID: response["icerik"][i]["sahipID"],
+              userName: response["icerik"][i]["sahipad"],
+              avatar: Media(
+                mediaURL: MediaURL(
+                  bigURL: response["icerik"][i]["sahipavatarminnak"],
+                  normalURL: response["icerik"][i]["sahipavatarminnak"],
+                  minURL: response["icerik"][i]["sahipavatarminnak"],
+                ),
+              ),
+            ),
+          );
+
           widgetPosts.add(
             TwitterPostWidget(
-              userID: response["icerik"][i]["sahipID"],
-              profileImageUrl: response["icerik"][i]["sahipavatarminnak"],
-              username: response["icerik"][i]["sahipad"],
-              postID: response["icerik"][i]["paylasimID"],
-              sharedDevice: response["icerik"][i]["paylasimnereden"],
-              postText: response["icerik"][i]["paylasimicerik"],
-              postDate: response["icerik"][i]["paylasimzamangecen"],
-              media: media,
-              postlikeCount: response["icerik"][i]["begenisay"],
-              postcommentCount: response["icerik"][i]["yorumsay"],
-              postMecomment: ismecomment,
-              postMelike: ismelike,
-              isPostdetail: false,
+              post: post,
             ),
           );
         });
@@ -239,8 +247,6 @@ class _ProfilePageState extends State<ProfilePage>
     if (page == 1) {
       if (mounted) {
         setState(() {
-          imageUrls.clear();
-          imageufakUrls.clear();
           medialist.clear();
         });
       }
@@ -277,9 +283,9 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
           );
-          imageUrls.add(response["icerik"][i]["fotominnakurl"]);
-          imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
-          imagesownerID.add(response["icerik"][i]["fotosahipID"]);
+          // imageUrls.add(response["icerik"][i]["fotominnakurl"]);
+          // imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
+          // imagesownerID.add(response["icerik"][i]["fotosahipID"]);
         });
       }
     }
@@ -515,6 +521,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
 
     await profileloadPosts(postscounter, userProfile.userID!);
+    await gallery(gallerycounter, userProfile.userID!);
   }
 
   Future<void> _handleRefresh() async {
@@ -642,786 +649,841 @@ class _ProfilePageState extends State<ProfilePage>
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
-      // extendBodyBehindAppBar: true,
-
-      body: CustomScrollView(
-        controller: pageMainscroller,
-        slivers: [
-          SliverAppBar(
-            pinned: ARMOYU.Appuser.userID != userProfile.userID ? true : false,
-            backgroundColor: Colors.black,
-            expandedHeight: ARMOYU.screenHeight * 0.25,
-            actions: <Widget>[
-              userProfile.userID == null
-                  ? const SizedBox()
-                  : IconButton(
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () {
-                        showModalBottomSheet<void>(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(10),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              pinned:
+                  ARMOYU.Appuser.userID != userProfile.userID ? true : false,
+              backgroundColor: Colors.black,
+              expandedHeight: ARMOYU.screenHeight * 0.25,
+              actions: <Widget>[
+                userProfile.userID == null
+                    ? const SizedBox()
+                    : IconButton(
+                        icon: const Icon(Icons.more_vert),
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(10),
+                              ),
                             ),
-                          ),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SafeArea(
-                              child: Wrap(
-                                children: [
-                                  Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey[900],
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(30),
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SafeArea(
+                                child: Wrap(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[900],
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                Radius.circular(30),
+                                              ),
                                             ),
-                                          ),
-                                          width: ARMOYU.screenWidth / 4,
-                                          height: 5,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {},
-                                        child: const ListTile(
-                                          leading: Icon(Icons.share_outlined),
-                                          title: Text("Profili paylaş."),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {},
-                                        child: const ListTile(
-                                          leading: Icon(Icons.content_copy),
-                                          title:
-                                              Text("Profil linkini kopyala."),
-                                        ),
-                                      ),
-                                      const Visibility(
-                                        //Çizgi ekler
-                                        child: Divider(),
-                                      ),
-                                      Visibility(
-                                        visible: userProfile.userID !=
-                                            ARMOYU.Appuser.userID,
-                                        child: InkWell(
-                                          onTap: () async {
-                                            FunctionsBlocking f =
-                                                FunctionsBlocking();
-                                            Map<String, dynamic> response =
-                                                await f
-                                                    .add(userProfile.userID!);
-                                            if (response["durum"] == 0) {
-                                              log(response["aciklama"]);
-                                              return;
-                                            }
-                                            try {
-                                              if (mounted) {
-                                                Navigator.pop(context);
-                                              }
-                                            } catch (e) {
-                                              log(e.toString());
-                                            }
-                                          },
-                                          child: const ListTile(
-                                            textColor: Colors.red,
-                                            leading: Icon(
-                                              Icons.person_off_outlined,
-                                              color: Colors.red,
-                                            ),
-                                            title: Text("Kullanıcıyı Engelle."),
+                                            width: ARMOYU.screenWidth / 4,
+                                            height: 5,
                                           ),
                                         ),
-                                      ),
-                                      Visibility(
-                                        visible: userProfile.userID !=
-                                            ARMOYU.Appuser.userID,
-                                        child: InkWell(
+                                        InkWell(
                                           onTap: () {},
                                           child: const ListTile(
-                                            textColor: Colors.red,
-                                            leading: Icon(
-                                              Icons.flag_outlined,
-                                              color: Colors.red,
-                                            ),
-                                            title: Text("Profili bildir."),
+                                            leading: Icon(Icons.share_outlined),
+                                            title: Text("Profili paylaş."),
                                           ),
                                         ),
-                                      ),
-                                      Visibility(
-                                        visible: isFriend,
-                                        child: InkWell(
-                                          onTap: () async {
-                                            FunctionsProfile f =
-                                                FunctionsProfile();
-                                            Map<String, dynamic> response =
-                                                await f.friendremove(
-                                                    widget.userID!);
-                                            if (response["durum"] == 0) {
-                                              log(response["aciklama"]);
-                                              return;
-                                            }
-                                          },
+                                        InkWell(
+                                          onTap: () {},
                                           child: const ListTile(
-                                            textColor: Colors.red,
-                                            leading: Icon(
-                                              Icons.person_remove,
-                                              color: Colors.pink,
-                                            ),
-                                            title: Text("Arkadaşlıktan Çıkar."),
+                                            leading: Icon(Icons.content_copy),
+                                            title:
+                                                Text("Profil linkini kopyala."),
                                           ),
                                         ),
-                                      ),
-                                      Visibility(
-                                        visible: isFriend,
-                                        child: InkWell(
-                                          onTap: () async {
-                                            FunctionsProfile f =
-                                                FunctionsProfile();
-                                            Map<String, dynamic> response =
-                                                await f.userdurting(
-                                                    widget.userID!);
-                                            if (response["durum"] == 0) {
-                                              log(response["aciklama"]);
-                                              return;
-                                            }
-                                          },
-                                          child: const ListTile(
-                                            textColor: Colors.orange,
-                                            leading: Icon(
-                                              Icons.local_fire_department,
-                                              color: Colors.pink,
+                                        const Visibility(
+                                          //Çizgi ekler
+                                          child: Divider(),
+                                        ),
+                                        Visibility(
+                                          visible: userProfile.userID !=
+                                              ARMOYU.Appuser.userID,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              FunctionsBlocking f =
+                                                  FunctionsBlocking();
+                                              Map<String, dynamic> response =
+                                                  await f
+                                                      .add(userProfile.userID!);
+                                              if (response["durum"] == 0) {
+                                                log(response["aciklama"]);
+                                                return;
+                                              }
+                                              try {
+                                                if (mounted) {
+                                                  Navigator.pop(context);
+                                                }
+                                              } catch (e) {
+                                                log(e.toString());
+                                              }
+                                            },
+                                            child: const ListTile(
+                                              textColor: Colors.red,
+                                              leading: Icon(
+                                                Icons.person_off_outlined,
+                                                color: Colors.red,
+                                              ),
+                                              title:
+                                                  Text("Kullanıcıyı Engelle."),
                                             ),
-                                            title: Text("Profili Dürt."),
                                           ),
                                         ),
+                                        Visibility(
+                                          visible: userProfile.userID !=
+                                              ARMOYU.Appuser.userID,
+                                          child: InkWell(
+                                            onTap: () {},
+                                            child: const ListTile(
+                                              textColor: Colors.red,
+                                              leading: Icon(
+                                                Icons.flag_outlined,
+                                                color: Colors.red,
+                                              ),
+                                              title: Text("Profili bildir."),
+                                            ),
+                                          ),
+                                        ),
+                                        Visibility(
+                                          visible: isFriend,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              FunctionsProfile f =
+                                                  FunctionsProfile();
+                                              Map<String, dynamic> response =
+                                                  await f.friendremove(
+                                                      widget.userID!);
+                                              if (response["durum"] == 0) {
+                                                log(response["aciklama"]);
+                                                return;
+                                              }
+                                            },
+                                            child: const ListTile(
+                                              textColor: Colors.red,
+                                              leading: Icon(
+                                                Icons.person_remove,
+                                                color: Colors.pink,
+                                              ),
+                                              title:
+                                                  Text("Arkadaşlıktan Çıkar."),
+                                            ),
+                                          ),
+                                        ),
+                                        Visibility(
+                                          visible: isFriend,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              FunctionsProfile f =
+                                                  FunctionsProfile();
+                                              Map<String, dynamic> response =
+                                                  await f.userdurting(
+                                                      widget.userID!);
+                                              if (response["durum"] == 0) {
+                                                log(response["aciklama"]);
+                                                return;
+                                              }
+                                            },
+                                            child: const ListTile(
+                                              textColor: Colors.orange,
+                                              leading: Icon(
+                                                Icons.local_fire_department,
+                                                color: Colors.pink,
+                                              ),
+                                              title: Text("Profili Dürt."),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                const SizedBox(width: 10),
+              ],
+              flexibleSpace: FlexibleSpaceBar(
+                background: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MediaViewer(
+                          media: [userProfile.banner!],
+                          initialIndex: 0,
+                        ),
+                      ),
+                    );
+                  },
+                  onLongPress: () {
+                    if (ARMOYU.Appuser.userID != userProfile.userID) {
+                      return;
+                    }
+                    showModalBottomSheet<void>(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(10),
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SafeArea(
+                          child: Wrap(
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[900],
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(30),
+                                        ),
                                       ),
-                                      const SizedBox(height: 10),
-                                    ],
+                                      width: ARMOYU.screenWidth / 4,
+                                      height: 5,
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: ARMOYU.Appuser.userID ==
+                                        userProfile.userID,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        await changebanner();
+                                      },
+                                      child: const ListTile(
+                                        leading: Icon(Icons.camera_alt),
+                                        title: Text("Arkaplan değiştir."),
+                                      ),
+                                    ),
+                                  ),
+                                  const Visibility(
+                                    //Çizgi ekler
+                                    child: Divider(),
+                                  ),
+                                  Visibility(
+                                    visible: userProfile.userID ==
+                                        ARMOYU.Appuser.userID,
+                                    child: InkWell(
+                                      onTap: () {},
+                                      child: const ListTile(
+                                        textColor: Colors.red,
+                                        leading: Icon(
+                                          Icons.person_off_outlined,
+                                          color: Colors.red,
+                                        ),
+                                        title: Text("Varsayılana dönder."),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         );
                       },
-                    ),
-              const SizedBox(width: 10),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MediaViewer(
-                        media: [userProfile.banner!],
-                        initialIndex: 0,
-                      ),
-                    ),
-                  );
-                },
-                onLongPress: () {
-                  if (ARMOYU.Appuser.userID != userProfile.userID) {
-                    return;
-                  }
-                  showModalBottomSheet<void>(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(10),
-                      ),
-                    ),
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SafeArea(
-                        child: Wrap(
-                          children: [
-                            Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[900],
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(30),
-                                      ),
-                                    ),
-                                    width: ARMOYU.screenWidth / 4,
-                                    height: 5,
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: ARMOYU.Appuser.userID ==
-                                      userProfile.userID,
-                                  child: InkWell(
-                                    onTap: () async {
-                                      await changebanner();
-                                    },
-                                    child: const ListTile(
-                                      leading: Icon(Icons.camera_alt),
-                                      title: Text("Arkaplan değiştir."),
-                                    ),
-                                  ),
-                                ),
-                                const Visibility(
-                                  //Çizgi ekler
-                                  child: Divider(),
-                                ),
-                                Visibility(
-                                  visible: userProfile.userID ==
-                                      ARMOYU.Appuser.userID,
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: const ListTile(
-                                      textColor: Colors.red,
-                                      leading: Icon(
-                                        Icons.person_off_outlined,
-                                        color: Colors.red,
-                                      ),
-                                      title: Text("Varsayılana dönder."),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                    );
+                  },
+                  child: userProfile.banner == null
+                      ? null
+                      : CachedNetworkImage(
+                          imageUrl: userProfile.banner!.mediaURL.minURL,
+                          fit: BoxFit.cover,
                         ),
-                      );
-                    },
-                  );
-                },
-                child: userProfile.banner == null
-                    ? null
-                    : CachedNetworkImage(
-                        imageUrl: userProfile.banner!.mediaURL.minURL,
-                        fit: BoxFit.cover,
-                      ),
+                ),
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => MediaViewer(
-                                    media: [userProfile.avatar!],
-                                    initialIndex: 0,
-                                  ),
-                                ));
-                              },
-                              onLongPress: () {
-                                if (ARMOYU.Appuser.userID !=
-                                    userProfile.userID) {
-                                  return;
-                                }
-                                showModalBottomSheet<void>(
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(10),
+            SliverToBoxAdapter(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => MediaViewer(
+                                      media: [userProfile.avatar!],
+                                      initialIndex: 0,
                                     ),
-                                  ),
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return SafeArea(
-                                      child: Wrap(
-                                        children: [
-                                          Column(
+                                  ));
+                                },
+                                onLongPress: () {
+                                  if (ARMOYU.Appuser.userID !=
+                                      userProfile.userID) {
+                                    return;
+                                  }
+                                  showModalBottomSheet<void>(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(10),
+                                      ),
+                                    ),
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SafeArea(
+                                        child: Wrap(
+                                          children: [
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 10),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[900],
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                        Radius.circular(30),
+                                                      ),
+                                                    ),
+                                                    width:
+                                                        ARMOYU.screenWidth / 4,
+                                                    height: 5,
+                                                  ),
+                                                ),
+                                                Visibility(
+                                                  visible:
+                                                      ARMOYU.Appuser.userID ==
+                                                          userProfile.userID,
+                                                  child: InkWell(
+                                                    onTap: () async {
+                                                      await changeavatar();
+                                                    },
+                                                    child: const ListTile(
+                                                      leading: Icon(
+                                                          Icons.camera_alt),
+                                                      title: Text(
+                                                          "Avatar değiştir."),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const Visibility(
+                                                  //Çizgi ekler
+                                                  child: Divider(),
+                                                ),
+                                                Visibility(
+                                                  visible: userProfile.userID ==
+                                                      ARMOYU.Appuser.userID,
+                                                  child: InkWell(
+                                                    onTap: () {},
+                                                    child: const ListTile(
+                                                      textColor: Colors.red,
+                                                      leading: Icon(
+                                                        Icons
+                                                            .person_off_outlined,
+                                                        color: Colors.red,
+                                                      ),
+                                                      title: Text(
+                                                          "Varsayılana dönder."),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                                child: userProfile.avatar == null
+                                    ? SkeletonAvatar(
+                                        style: SkeletonAvatarStyle(
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                          width: 60,
+                                          height: 60,
+                                        ),
+                                      )
+                                    : ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl: userProfile
+                                              .avatar!.mediaURL.minURL,
+                                          fit: BoxFit.cover,
+                                          width: 60,
+                                          height: 60,
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    const Spacer(),
+                                    userProfile.postsCount == null
+                                        ? const SkeletonLine(
+                                            style: SkeletonLineStyle(
+                                              width: 35,
+                                              height: 30,
+                                              padding: EdgeInsets.all(2),
+                                            ),
+                                          )
+                                        : Column(
                                             children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[900],
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.circular(30),
-                                                    ),
-                                                  ),
-                                                  width: ARMOYU.screenWidth / 4,
-                                                  height: 5,
+                                              CustomText.costum1(
+                                                  userProfile.postsCount
+                                                      .toString(),
+                                                  weight: FontWeight.bold),
+                                              CustomText.costum1("Gönderi"),
+                                            ],
+                                          ),
+                                    const Spacer(),
+                                    Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (userProfile.postsCount ==
+                                                null) {
+                                              return;
+                                            }
+
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    FriendlistPage(
+                                                  username:
+                                                      userProfile.userName!,
+                                                  userid: userProfile.userID!,
                                                 ),
                                               ),
-                                              Visibility(
-                                                visible:
-                                                    ARMOYU.Appuser.userID ==
-                                                        userProfile.userID,
-                                                child: InkWell(
-                                                  onTap: () async {
-                                                    await changeavatar();
-                                                  },
-                                                  child: const ListTile(
-                                                    leading:
-                                                        Icon(Icons.camera_alt),
-                                                    title: Text(
-                                                        "Avatar değiştir."),
+                                            );
+                                          },
+                                          child: userProfile.postsCount == null
+                                              ? const SkeletonLine(
+                                                  style: SkeletonLineStyle(
+                                                    width: 35,
+                                                    height: 30,
+                                                    padding: EdgeInsets.all(2),
                                                   ),
+                                                )
+                                              : Column(
+                                                  children: [
+                                                    CustomText.costum1(
+                                                        userProfile.friendsCount
+                                                            .toString(),
+                                                        weight:
+                                                            FontWeight.bold),
+                                                    CustomText.costum1(
+                                                        "Arkadaş"),
+                                                  ],
                                                 ),
-                                              ),
-                                              const Visibility(
-                                                //Çizgi ekler
-                                                child: Divider(),
-                                              ),
-                                              Visibility(
-                                                visible: userProfile.userID ==
-                                                    ARMOYU.Appuser.userID,
-                                                child: InkWell(
-                                                  onTap: () {},
-                                                  child: const ListTile(
-                                                    textColor: Colors.red,
-                                                    leading: Icon(
-                                                      Icons.person_off_outlined,
-                                                      color: Colors.red,
-                                                    ),
-                                                    title: Text(
-                                                        "Varsayılana dönder."),
-                                                  ),
+                                        ),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    userProfile.postsCount == null
+                                        ? const SkeletonLine(
+                                            style: SkeletonLineStyle(
+                                              width: 35,
+                                              height: 30,
+                                              padding: EdgeInsets.all(2),
+                                            ),
+                                          )
+                                        : Column(
+                                            children: [
+                                              CustomText.costum1(
+                                                  userProfile.awardsCount
+                                                      .toString(),
+                                                  weight: FontWeight.bold),
+                                              CustomText.costum1("Ödül"),
+                                            ],
+                                          ),
+                                    const Spacer(),
+                                    userProfile.favTeam != null
+                                        ? Column(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  setState(() {
+                                                    ARMOYUFunctions
+                                                        .selectFavTeam(context,
+                                                            force: true);
+                                                  });
+                                                },
+                                                child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      userProfile.favTeam!.logo,
+                                                  height: 40,
+                                                  width: 40,
                                                 ),
                                               ),
                                             ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: userProfile.avatar == null
-                                  ? SkeletonAvatar(
-                                      style: SkeletonAvatarStyle(
-                                        borderRadius: BorderRadius.circular(50),
-                                        width: 60,
-                                        height: 60,
-                                      ),
-                                    )
-                                  : ClipOval(
-                                      child: CachedNetworkImage(
-                                        imageUrl:
-                                            userProfile.avatar!.mediaURL.minURL,
-                                        fit: BoxFit.cover,
-                                        width: 60,
-                                        height: 60,
-                                        placeholder: (context, url) =>
-                                            const CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
-                                      ),
-                                    ),
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  const Spacer(),
-                                  userProfile.postsCount == null
-                                      ? const SkeletonLine(
-                                          style: SkeletonLineStyle(
-                                            width: 35,
-                                            height: 30,
-                                            padding: EdgeInsets.all(2),
-                                          ),
-                                        )
-                                      : Column(
-                                          children: [
-                                            CustomText.costum1(
-                                                userProfile.postsCount
-                                                    .toString(),
-                                                weight: FontWeight.bold),
-                                            CustomText.costum1("Gönderi"),
-                                          ],
-                                        ),
-                                  const Spacer(),
-                                  Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (userProfile.postsCount == null) {
-                                            return;
-                                          }
-
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FriendlistPage(
-                                                username: userProfile.userName!,
-                                                userid: userProfile.userID!,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: userProfile.postsCount == null
-                                            ? const SkeletonLine(
-                                                style: SkeletonLineStyle(
-                                                  width: 35,
-                                                  height: 30,
-                                                  padding: EdgeInsets.all(2),
-                                                ),
-                                              )
-                                            : Column(
-                                                children: [
-                                                  CustomText.costum1(
-                                                      userProfile.friendsCount
-                                                          .toString(),
-                                                      weight: FontWeight.bold),
-                                                  CustomText.costum1("Arkadaş"),
-                                                ],
-                                              ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  userProfile.postsCount == null
-                                      ? const SkeletonLine(
-                                          style: SkeletonLineStyle(
-                                            width: 35,
-                                            height: 30,
-                                            padding: EdgeInsets.all(2),
-                                          ),
-                                        )
-                                      : Column(
-                                          children: [
-                                            CustomText.costum1(
-                                                userProfile.awardsCount
-                                                    .toString(),
-                                                weight: FontWeight.bold),
-                                            CustomText.costum1("Ödül"),
-                                          ],
-                                        ),
-                                  const Spacer(),
-                                  userProfile.favTeam != null
-                                      ? Column(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                setState(() {
-                                                  ARMOYUFunctions.selectFavTeam(
-                                                      context,
-                                                      force: true);
-                                                });
-                                              },
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    userProfile.favTeam!.logo,
-                                                height: 40,
-                                                width: 40,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : const Column(),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  userProfile.displayName == null
-                      ? const SkeletonLine(
-                          style: SkeletonLineStyle(
-                            width: 50,
-                            padding: EdgeInsets.all(5),
-                          ),
-                        )
-                      : CustomText.costum1(
-                          userProfile.displayName!,
-                          size: 16,
-                          weight: FontWeight.bold,
-                        ),
-                  Row(
-                    children: [
-                      userProfile.userName == null
-                          ? const SkeletonLine(
-                              style: SkeletonLineStyle(
-                                width: 80,
-                                padding: EdgeInsets.all(5),
-                              ),
-                            )
-                          : CustomText.costum1(
-                              "@${userProfile.userName}",
-                            ),
-                      const SizedBox(width: 5),
-                      userProfile.role == null
-                          ? const SkeletonLine(
-                              style: SkeletonLineStyle(width: 20),
-                            )
-                          : Text(
-                              userProfile.role!,
-                              style: TextStyle(
-                                color: Color(
-                                  int.parse("0xFF${userProfile.rolecolor}"),
+                                          )
+                                        : const Column(),
+                                  ],
                                 ),
-                              ),
+                              ],
                             ),
-                    ],
-                  ),
-                  const SizedBox(height: 15),
-                  Visibility(
-                    visible: userProfile.registerDate == null ? false : true,
-                    child: Row(
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    userProfile.displayName == null
+                        ? const SkeletonLine(
+                            style: SkeletonLineStyle(
+                              width: 50,
+                              padding: EdgeInsets.all(5),
+                            ),
+                          )
+                        : CustomText.costum1(
+                            userProfile.displayName!,
+                            size: 16,
+                            weight: FontWeight.bold,
+                          ),
+                    Row(
                       children: [
-                        const Icon(
-                          Icons.calendar_month,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 3),
-                        userProfile.registerDate == null
+                        userProfile.userName == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(
+                                  width: 80,
+                                  padding: EdgeInsets.all(5),
+                                ),
+                              )
+                            : CustomText.costum1(
+                                "@${userProfile.userName}",
+                              ),
+                        const SizedBox(width: 5),
+                        userProfile.role == null
                             ? const SkeletonLine(
                                 style: SkeletonLineStyle(width: 20),
                               )
-                            : CustomText.costum1(
-                                userProfile.registerDate!,
+                            : Text(
+                                userProfile.role!,
+                                style: TextStyle(
+                                  color: Color(
+                                    int.parse("0xFF${userProfile.rolecolor}"),
+                                  ),
+                                ),
                               ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Visibility(
-                    visible: userProfile.burc == null ? false : true,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.window,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 3),
-                        userProfile.burc == null
-                            ? const SkeletonLine(
-                                style: SkeletonLineStyle(width: 100),
-                              )
-                            : CustomText.costum1(
-                                userProfile.burc!,
-                              ),
-                      ],
+                    const SizedBox(height: 15),
+                    Visibility(
+                      visible: userProfile.registerDate == null ? false : true,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.calendar_month,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 3),
+                          userProfile.registerDate == null
+                              ? const SkeletonLine(
+                                  style: SkeletonLineStyle(width: 20),
+                                )
+                              : CustomText.costum1(
+                                  userProfile.registerDate!,
+                                ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Visibility(
-                    visible: userProfile.country == null ? false : true,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 3),
-                        userProfile.country == null
-                            ? const SkeletonLine(
-                                style: SkeletonLineStyle(width: 100),
-                              )
-                            : CustomText.costum1(
-                                "${userProfile.country}, ${userProfile.province}",
-                              ),
-                      ],
+                    const SizedBox(height: 5),
+                    Visibility(
+                      visible: userProfile.burc == null ? false : true,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.window,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 3),
+                          userProfile.burc == null
+                              ? const SkeletonLine(
+                                  style: SkeletonLineStyle(width: 100),
+                                )
+                              : CustomText.costum1(
+                                  userProfile.burc!,
+                                ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Visibility(
-                    visible: userProfile.job == null ? false : true,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.school,
-                          color: Colors.grey,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 3),
-                        userProfile.job == null
-                            ? const SkeletonLine(
-                                style: SkeletonLineStyle(width: 100),
-                              )
-                            : CustomText.costum1(userProfile.job!),
-                      ],
+                    const SizedBox(height: 5),
+                    Visibility(
+                      visible: userProfile.country == null ? false : true,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 3),
+                          userProfile.country == null
+                              ? const SkeletonLine(
+                                  style: SkeletonLineStyle(width: 100),
+                                )
+                              : CustomText.costum1(
+                                  "${userProfile.country}, ${userProfile.province}",
+                                ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Visibility(
-                    visible: ARMOYU.Appuser.userID != userProfile.userID &&
-                        listFriendTOP3.isNotEmpty,
-                    child: Row(
-                      children: [
-                        Stack(
-                          children: [
-                            ...List.generate(listFriendTOP3.length, (index) {
-                              final reversedIndex =
-                                  listFriendTOP3.length - 1 - index;
-                              if (reversedIndex == 0) {
+                    const SizedBox(height: 5),
+                    Visibility(
+                      visible: userProfile.job == null ? false : true,
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.school,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 3),
+                          userProfile.job == null
+                              ? const SkeletonLine(
+                                  style: SkeletonLineStyle(width: 100),
+                                )
+                              : CustomText.costum1(userProfile.job!),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                      visible: ARMOYU.Appuser.userID != userProfile.userID &&
+                          listFriendTOP3.isNotEmpty,
+                      child: Row(
+                        children: [
+                          Stack(
+                            children: [
+                              ...List.generate(listFriendTOP3.length, (index) {
+                                final reversedIndex =
+                                    listFriendTOP3.length - 1 - index;
+                                if (reversedIndex == 0) {
+                                  return widgetFriendList(
+                                    true,
+                                    0,
+                                    listFriendTOP3[reversedIndex].toString(),
+                                  );
+                                }
                                 return widgetFriendList(
-                                  true,
-                                  0,
+                                  false,
+                                  reversedIndex * 15,
                                   listFriendTOP3[reversedIndex].toString(),
                                 );
-                              }
-                              return widgetFriendList(
-                                false,
-                                reversedIndex * 15,
-                                listFriendTOP3[reversedIndex].toString(),
-                              );
-                            }),
-                            SizedBox(width: listFriendTOP3.length * 65 / 3),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 20),
-                              specialText(context, friendTextLine)
+                              }),
+                              SizedBox(width: listFriendTOP3.length * 65 / 3),
                             ],
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+                                specialText(context, friendTextLine)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Visibility(
+                          //Arkadaş ol
+                          visible: isbeFriend &&
+                              !isFriend &&
+                              userProfile.userID != ARMOYU.Appuser.userID,
+                          child: Expanded(
+                            child: CustomButtons.friendbuttons(
+                                friendStatus, friendrequest, friendStatuscolor),
+                          ),
+                        ),
+                        Visibility(
+                          //İstek Gönderildi
+                          visible: !isbeFriend &&
+                              !isFriend &&
+                              userProfile.userID != ARMOYU.Appuser.userID &&
+                              userProfile.userID != -1,
+                          child: friendStatus == ""
+                              ? Expanded(
+                                  child: SkeletonItem(
+                                    child: ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 0, horizontal: 1),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              8), // Kenar yarıçapını ayarlayın
+                                        ),
+                                      ),
+                                      child: const Text(""),
+                                    ),
+                                  ),
+                                )
+                              : Expanded(
+                                  child: CustomButtons.friendbuttons(
+                                      friendStatus,
+                                      cancelfriendrequest,
+                                      friendStatuscolor),
+                                ),
+                        ),
+                        Visibility(
+                          //Mesaj Gönder
+                          visible: !isbeFriend &&
+                              isFriend &&
+                              userProfile.userID != ARMOYU.Appuser.userID,
+                          child: Expanded(
+                            child: CustomButtons.friendbuttons(
+                                friendStatus, sendmessage, friendStatuscolor),
                           ),
                         )
                       ],
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Visibility(
-                        //Arkadaş ol
-                        visible: isbeFriend &&
-                            !isFriend &&
-                            userProfile.userID != ARMOYU.Appuser.userID,
-                        child: Expanded(
-                          child: CustomButtons.friendbuttons(
-                              friendStatus, friendrequest, friendStatuscolor),
-                        ),
+                    const SizedBox(height: 5),
+                    Visibility(
+                      visible: userProfile.aboutme == "" ? false : true,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          userProfile.aboutme == null
+                              ? const SkeletonLine(
+                                  style: SkeletonLineStyle(width: 350),
+                                )
+                              : CustomDedectabletext.costum1(
+                                  userProfile.aboutme!, 3, 13),
+                          const SizedBox(height: 10),
+                        ],
                       ),
-                      Visibility(
-                        //İstek Gönderildi
-                        visible: !isbeFriend &&
-                            !isFriend &&
-                            userProfile.userID != ARMOYU.Appuser.userID &&
-                            userProfile.userID != -1,
-                        child: friendStatus == ""
-                            ? Expanded(
-                                child: SkeletonItem(
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 0, horizontal: 1),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            8), // Kenar yarıçapını ayarlayın
-                                      ),
-                                    ),
-                                    child: const Text(""),
-                                  ),
-                                ),
-                              )
-                            : Expanded(
-                                child: CustomButtons.friendbuttons(friendStatus,
-                                    cancelfriendrequest, friendStatuscolor),
-                              ),
-                      ),
-                      Visibility(
-                        //Mesaj Gönder
-                        visible: !isbeFriend &&
-                            isFriend &&
-                            userProfile.userID != ARMOYU.Appuser.userID,
-                        child: Expanded(
-                          child: CustomButtons.friendbuttons(
-                              friendStatus, sendmessage, friendStatuscolor),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 5),
-                  Visibility(
-                    visible: userProfile.aboutme == "" ? false : true,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        userProfile.aboutme == null
-                            ? const SkeletonLine(
-                                style: SkeletonLineStyle(width: 350),
-                              )
-                            : CustomDedectabletext.costum1(
-                                userProfile.aboutme!, 3, 13),
-                        const SizedBox(height: 10),
-                      ],
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: Profileusersharedmedias(),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return !ispostsVisible ? null : widgetPosts[index];
-              },
-              childCount: widgetPosts.length,
-            ),
-          ),
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: 4.0, // Yatayda boşluk
-              mainAxisSpacing: 4.0, // Dikeyde boşluk
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return !isgalleryVisible
-                    ? null
-                    : GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MediaViewer(
-                                media: medialist,
-                                initialIndex: index,
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: Profileusersharedmedias(),
+            )
+          ];
+        },
+        body: TabBarView(
+          controller: tabController,
+          children: [
+            widgetPosts.isEmpty
+                ? const Center(child: CupertinoActivityIndicator())
+                : NotificationListener<ScrollNotification>(
+                    onNotification: (scrollNotification) {
+                      if (scrollNotification is ScrollUpdateNotification) {
+                        final metrics = scrollNotification.metrics;
+
+                        if (metrics.atEdge &&
+                            metrics.pixels >= metrics.maxScrollExtent * 0.5) {
+                          // Listenin sonuna ulaşıldı
+                          print("------Paylaşım------");
+
+                          profileloadPosts(postscounter, userProfile.userID!);
+
+                          return true;
+                        }
+                      }
+                      return false;
+                    },
+                    child: ListView.builder(
+                      // controller: pageMainscroller,
+                      padding: EdgeInsets.zero,
+                      key: const PageStorageKey('Tab1'),
+                      itemCount: widgetPosts.length,
+                      itemBuilder: (context, index) {
+                        return widgetPosts[index];
+                      },
+                    ),
+                  ),
+            medialist.isEmpty
+                ? const Center(child: CupertinoActivityIndicator())
+                : NotificationListener<ScrollNotification>(
+                    onNotification: (scrollNotification) {
+                      if (scrollNotification is ScrollUpdateNotification) {
+                        final metrics = scrollNotification.metrics;
+                        if (metrics.atEdge &&
+                            metrics.pixels >= metrics.maxScrollExtent * 0.5) {
+                          print("------Galeri------");
+                          gallery(gallerycounter, userProfile.userID!);
+                          return true;
+                        }
+                      }
+                      return false;
+                    },
+                    child: GridView.builder(
+                      padding: EdgeInsets.zero,
+                      key: const PageStorageKey('Tab2'),
+                      itemCount: medialist.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 4.0, // Yatayda boşluk
+                        mainAxisSpacing: 4.0, // Dikeyde boşluk
+                      ),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MediaViewer(
+                                  media: medialist,
+                                  initialIndex: index,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: CachedNetworkImage(
-                          imageUrl: imageUrls[index],
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      );
-              },
-              childCount: !isgalleryVisible ? null : imageUrls.length,
-            ),
-          ),
-        ],
+                            );
+                          },
+                          child: CachedNetworkImage(
+                            imageUrl: medialist[index].mediaURL.minURL,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) =>
+                                const CupertinoActivityIndicator(),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+            const Center(
+              child: CupertinoActivityIndicator(),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -1431,14 +1493,12 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // Başlık içeriğini oluşturun
     return Container(
       alignment: Alignment.center,
       color: ARMOYU.bodyColor,
       child: TabBar(
-        labelColor: Colors.white,
         controller: tabController,
-        isScrollable: false,
+        isScrollable: true,
         indicatorColor: ARMOYU.color,
         tabs: [
           Padding(
@@ -1448,6 +1508,10 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomText.costum1('Medya', size: 15.0),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomText.costum1('Etiketlenmeler', size: 15.0),
           )
         ],
       ),

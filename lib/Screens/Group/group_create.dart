@@ -94,7 +94,10 @@ class _GroupCreatePageState extends State<GroupCreatePage>
     if (groupcreateProcess) {
       return;
     }
-    groupcreateProcess = true;
+    setState(() {
+      groupcreateProcess = true;
+    });
+
     FunctionsGroup f = FunctionsGroup();
     Map<String, dynamic> response = await f.groupcreate(
         groupname.text,
@@ -106,12 +109,16 @@ class _GroupCreatePageState extends State<GroupCreatePage>
       String text = response["aciklama"];
       if (mounted) {
         ARMOYUWidget.stackbarNotification(context, text);
+        setState(() {
+          groupcreateProcess = false;
+        });
       }
-      groupcreateProcess = false;
 
       return;
     }
-    groupcreateProcess = false;
+    setState(() {
+      groupcreateProcess = false;
+    });
   }
 
   void _showDialog(Widget child) {
@@ -150,11 +157,19 @@ class _GroupCreatePageState extends State<GroupCreatePage>
           child: Column(
             children: [
               const SizedBox(height: 16),
-              CustomTextfields.costum1(
-                  "Grup Adı", groupname, false, const Icon(Icons.business)),
+              CustomTextfields.costum3(
+                "Grup Adı",
+                controller: groupname,
+                isPassword: false,
+                preicon: const Icon(Icons.business),
+              ),
               const SizedBox(height: 16),
-              CustomTextfields.costum1("Grup Kısa Adı", groupshortname, false,
-                  const Icon(Icons.label)),
+              CustomTextfields.costum3(
+                "Grup Kısa Adı",
+                controller: groupshortname,
+                isPassword: false,
+                preicon: const Icon(Icons.label),
+              ),
               const SizedBox(height: 16),
               CupertinoButton(
                 padding: EdgeInsets.zero,
@@ -310,7 +325,10 @@ class _GroupCreatePageState extends State<GroupCreatePage>
               ),
               const SizedBox(height: 16),
               CustomButtons.costum1(
-                  "Oluştur", creategroupfunction, groupcreateProcess),
+                "Oluştur",
+                onPressed: creategroupfunction,
+                loadingStatus: groupcreateProcess,
+              ),
             ],
           ),
         ),

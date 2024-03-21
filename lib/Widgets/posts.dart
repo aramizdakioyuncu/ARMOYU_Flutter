@@ -1,9 +1,9 @@
-// ignore_for_file: must_be_immutable, use_build_context_synchronously, unused_local_variable
+// ignore_for_file: must_be_immutable, use_build_context_synchronously
 
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
@@ -12,6 +12,7 @@ import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:video_player/video_player.dart';
@@ -20,38 +21,12 @@ import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class TwitterPostWidget extends StatefulWidget {
-  final int userID;
-  final String profileImageUrl;
-  final String username;
-  final int postID;
-  final String sharedDevice;
-
-  final String postText;
-  final String postDate;
-  final List<Media> media;
-
-  int postlikeCount;
-  int postcommentCount;
-
-  bool postMelike;
-  bool postMecomment;
+  Post post;
   bool? isPostdetail = false;
 
   TwitterPostWidget({
     super.key,
-    required this.userID,
-    required this.profileImageUrl,
-    required this.username,
-    required this.postID,
-    required this.sharedDevice,
-    required this.postText,
-    required this.postDate,
-    required this.media,
-    required this.postlikeCount,
-    required this.postcommentCount,
-    required this.postMelike,
-    required this.postMecomment,
-    this.isPostdetail,
+    required this.post,
   });
 
   @override
@@ -173,7 +148,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         ),
       ),
       isScrollControlled: true,
-      backgroundColor: ARMOYU.bacgroundcolor,
+      backgroundColor: ARMOYU.backgroundcolor,
       context: context,
       builder: (BuildContext context) {
         return FractionallySizedBox(
@@ -225,7 +200,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                               child: Container(
                                 padding: const EdgeInsets.only(left: 5),
                                 decoration: BoxDecoration(
-                                  color: ARMOYU.bacgroundcolor,
+                                  color: ARMOYU.backgroundcolor,
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
                                 child: TextField(
@@ -248,13 +223,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                               log(controllerMessage.text);
                               FunctionsPosts funct = FunctionsPosts();
                               Map<String, dynamic> response =
-                                  await funct.createcomment(
-                                      widget.postID, controllerMessage.text);
+                                  await funct.createcomment(widget.post.postID,
+                                      controllerMessage.text);
                               if (response["durum"] == 0) {
                                 log(response["aciklama"]);
                                 return;
                               }
-                              getcommentsfetch(widget.postID, listComments);
+                              getcommentsfetch(
+                                  widget.post.postID, listComments);
                               controllerMessage.text = "";
                             },
                             child: const Icon(
@@ -289,13 +265,13 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       log(response["aciklama"].toString());
       setState(() {
         widgetlike = widgetlike;
-        widget.postlikeCount = widget.postlikeCount;
+        widget.post.likesCount = widget.post.likesCount;
       });
       return;
     }
     setState(() {
-      widget.postMelike = true;
-      widget.postlikeCount++;
+      widget.post.isLikeme = true;
+      widget.post.likesCount++;
     });
     likeunlikeProcces = false;
   }
@@ -312,13 +288,13 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       log(response["aciklama"].toString());
       setState(() {
         widgetlike = widgetlike;
-        widget.postlikeCount = widget.postlikeCount;
+        widget.post.likesCount = widget.post.likesCount;
       });
       return;
     }
     setState(() {
-      widget.postMelike = false;
-      widget.postlikeCount--;
+      widget.post.isLikeme = false;
+      widget.post.likesCount--;
     });
 
     likeunlikeProcces = false;
@@ -330,16 +306,16 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         return isLiked;
       }
       //Beğenmeme fonksiyonu
-      aa2postLike(widget.postMelike, widget.postID);
+      aa2postLike(widget.post.isLikeme, widget.post.postID);
     } else {
-      aapostLike(widget.postMelike, widget.postID);
+      aapostLike(widget.post.isLikeme, widget.post.postID);
     }
     return !isLiked;
   }
 
   void postcommentlikeslist(List<Widget> listCommentsLikes) {
     //Yorumları Çekmeye başla
-    getcommentslikes(widget.postID, listCommentsLikes);
+    getcommentslikes(widget.post.postID, listCommentsLikes);
 
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -355,7 +331,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           heightFactor: 0.8,
           child: RefreshIndicator(
             onRefresh: () async {
-              getcommentslikes(widget.postID, listCommentsLikes);
+              getcommentslikes(widget.post.postID, listCommentsLikes);
             },
             child: Scaffold(
               backgroundColor: Colors.transparent,
@@ -421,7 +397,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts();
                         Map<String, dynamic> response =
-                            await funct.remove(widget.postID);
+                            await funct.remove(widget.post.postID);
                         if (response["durum"] == 0) {
                           log(response["aciklama"]);
                           return;
@@ -437,7 +413,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID == ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID == ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -453,7 +429,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: Divider(),
                   ),
                   Visibility(
-                    visible: widget.userID != ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID != ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -467,7 +443,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID != ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID != ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -481,12 +457,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.userID == ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID == ARMOYU.Appuser.userID,
                     child: InkWell(
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts();
                         Map<String, dynamic> response =
-                            await funct.remove(widget.postID);
+                            await funct.remove(widget.post.postID);
                         if (response["durum"] == 0) {
                           log(response["aciklama"]);
                           return;
@@ -525,20 +501,24 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
   List<Widget> listCommentsLikes = [];
   List<Widget> listComments = [];
-
   @override
   void initState() {
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (widget.postMecomment == true) {
+    if (widget.post.iscommentMe == true) {
       postcommentIcon = const Icon(Icons.comment);
       postcommentColor = Colors.blue;
     }
 
-    if (widget.postMecomment == true) {
+    if (widget.post.iscommentMe == true) {
       postrepostIcon = const Icon(Icons.cyclone);
       postrepostColor = Colors.green;
     }
@@ -548,7 +528,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       child: Container(
         margin: const EdgeInsets.only(bottom: 1),
         decoration: BoxDecoration(
-          color: ARMOYU.bacgroundcolor,
+          color: ARMOYU.backgroundcolor,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -563,14 +543,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              ProfilePage(userID: widget.userID, appbar: true),
+                          builder: (context) => ProfilePage(
+                              userID: widget.post.owner.userID, appbar: true),
                         ),
                       );
                     },
                     child: CircleAvatar(
-                      foregroundImage:
-                          CachedNetworkImageProvider(widget.profileImageUrl),
+                      foregroundImage: CachedNetworkImageProvider(
+                          widget.post.owner.avatar!.mediaURL.minURL),
                       radius: 20,
                     ),
                   ),
@@ -581,14 +561,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       children: [
                         Row(
                           children: [
-                            CustomText.costum1(widget.username,
+                            CustomText.costum1(widget.post.owner.userName!,
                                 size: 16, weight: FontWeight.bold),
-                            widget.sharedDevice == "mobil"
+                            widget.post.sharedDevice == "mobil"
                                 ? const Text(" 📱")
                                 : const Text(" 🌐")
                           ],
                         ),
-                        CustomText.costum1(widget.postDate,
+                        CustomText.costum1(widget.post.postDate,
                             size: 16, weight: FontWeight.normal),
                       ],
                     ),
@@ -607,7 +587,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: specialText(context, widget.postText),
+              child: specialText(context, widget.post.content),
             ),
             const SizedBox(height: 5),
             Center(
@@ -625,8 +605,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       }
                     },
                     child: LikeButton(
-                      isLiked: widget.postMelike,
-                      likeCount: widget.postlikeCount,
+                      isLiked: widget.post.isLikeme,
+                      likeCount: widget.post.likesCount,
                       onTap: (isLiked) async {
                         return await postLike(isLiked);
                       },
@@ -645,12 +625,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     icon: postcommentIcon,
                     color: postcommentColor,
                     onPressed: () {
-                      postcomments(widget.postID, listComments);
+                      postcomments(widget.post.postID, listComments);
                     },
                   ),
                   const SizedBox(width: 5),
                   Text(
-                    widget.postcommentCount.toString(),
+                    widget.post.commentsCount.toString(),
                     style: const TextStyle(color: Colors.grey),
                   ), // Yorum simgesi
                   const Spacer(),
@@ -674,87 +654,94 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   }
 
   Widget _buildMediaContent(BuildContext context) {
-    Widget mediaSablon(String mediaUrl,
-        {BoxFit? fit = BoxFit.cover,
-        double? width = 100,
-        double? height = 100,
-        bool? isvideo = false}) {
+    Widget mediaSablon(
+      String mediaUrl, {
+      BoxFit? fit = BoxFit.cover,
+      double? width = 100,
+      double? height = 100,
+      bool? isvideo = false,
+    }) {
       if (isvideo == true) {
+        log(mediaUrl);
         // mediaUrl
         final chewieController = ChewieController(
           videoPlayerController:
               VideoPlayerController.networkUrl(Uri.parse(mediaUrl)),
+          autoInitialize: true,
           autoPlay: false,
           aspectRatio: 9 / 16,
           looping: false,
         );
 
+        // log(_controller.value.toString());
+        // chewieController.dispose();
+        log(chewieController.videoPlayerController.value.toString());
         return FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(
             height: 500,
             width: ARMOYU.screenWidth - 20,
-            child: Chewie(
-              controller: chewieController,
-            ),
+            child: chewieController.videoPlayerController.value.isInitialized
+                ? const CupertinoActivityIndicator()
+                : Chewie(
+                    controller: chewieController,
+                  ),
           ),
         );
       }
 
-      //Görselse devam ediyor
+      //Görsel ise devam eder
       return CachedNetworkImage(
         imageUrl: mediaUrl,
         fit: fit,
         width: width,
         height: height,
-        placeholder: (context, url) => const CircularProgressIndicator(),
+        placeholder: (context, url) => const CupertinoActivityIndicator(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
       );
     }
 
     Widget mediayerlesim = const Row();
 
-    if (widget.media.isNotEmpty) {
+    if (widget.post.media.isNotEmpty) {
       List<Row> mediaItems = [];
 
       List<Widget> mediarow1 = [];
       List<Widget> mediarow2 = [];
-
-      for (int i = 0; i < widget.media.length; i++) {
+      for (int i = 0; i < widget.post.media.length; i++) {
         if (i > 3) {
           continue;
         }
 
-        List media = widget.media[i].mediaType!.split('/');
+        List media = widget.post.media[i].mediaType!.split('/');
 
         //video
         // if (media[0] == "video") {
         //   continue;
         // }
         if (media[0] == "video") {
-          log(widget.media[i].mediaURL.normalURL);
           mediarow1.clear();
           mediarow1.add(
-            mediaSablon(widget.media[i].mediaURL.normalURL, isvideo: true),
+            mediaSablon(widget.post.media[i].mediaURL.normalURL, isvideo: true),
           );
           break;
         }
 
-        BoxFit mediadirection = BoxFit.contain;
-        if (widget.media[i].mediaDirection.toString() == "dikey") {
-          mediadirection = BoxFit.cover;
+        // BoxFit mediadirection = BoxFit.contain;
+        if (widget.post.media[i].mediaDirection.toString() == "dikey") {
+          // mediadirection = BoxFit.cover;
         }
 
         double mediawidth = ARMOYU.screenWidth;
         double mediaheight = ARMOYU.screenHeight;
-        if (widget.media.length == 1) {
+        if (widget.post.media.length == 1) {
           mediawidth = mediawidth / 1;
 
           mediaheight = mediaheight / 2;
-        } else if (widget.media.length == 2) {
+        } else if (widget.post.media.length == 2) {
           mediawidth = mediawidth / 2;
           mediaheight = mediaheight / 4;
-        } else if (widget.media.length == 3) {
+        } else if (widget.post.media.length == 3) {
           if (i == 0) {
             mediawidth = mediawidth / 1;
             mediaheight = mediaheight / 2.5;
@@ -762,7 +749,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             mediawidth = mediawidth / 2;
             mediaheight = mediaheight / 4;
           }
-        } else if (widget.media.length >= 4) {
+        } else if (widget.post.media.length >= 4) {
           mediawidth = mediawidth / 2;
           mediaheight = mediaheight / 4;
         }
@@ -772,26 +759,26 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => MediaViewer(
-                  media: widget.media,
+                  media: widget.post.media,
                   initialIndex: i,
                 ),
               ),
             );
           },
           child: mediaSablon(
-            widget.media[i].mediaURL.normalURL,
+            widget.post.media[i].mediaURL.normalURL,
             width: mediawidth,
             height: mediaheight,
           ),
         );
 
-        if (widget.media.length == 3) {
+        if (widget.post.media.length == 3) {
           if (i == 0) {
             mediarow1.add(aa);
           } else {
             mediarow2.add(aa);
           }
-        } else if (widget.media.length >= 4) {
+        } else if (widget.post.media.length >= 4) {
           if (i == 0 || i == 1) {
             mediarow1.add(aa);
           } else {

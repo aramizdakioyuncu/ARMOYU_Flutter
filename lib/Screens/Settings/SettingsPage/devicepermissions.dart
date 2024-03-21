@@ -116,7 +116,7 @@ class _SettingsDevicePermissionsPage
               children: [
                 ListTile(
                   title: CustomText.costum1("Kamera"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   onTap: () async {
                     if (camPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -142,7 +142,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Kişiler"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   onTap: () async {
                     if (contactPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -169,7 +169,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Konum"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   onTap: () async {
                     if (locationPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -196,7 +196,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Mikrofon"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   onTap: () async {
                     if (micPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -223,7 +223,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Bildirimler"),
-                  tileColor: ARMOYU.bacgroundcolor,
+                  tileColor: ARMOYU.backgroundcolor,
                   onTap: () async {
                     if (micPermission != "İzin verilmedi") {
                       openAppSettings();
