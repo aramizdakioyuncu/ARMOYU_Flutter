@@ -132,6 +132,13 @@ class _StartingScreenState extends State<StartingScreen> {
         await f.login(username.toString(), password.toString(), true);
 
     if (response["durum"] == 1) {
+      log("Web Versiyon ${response["aciklamadetay"]["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
+      if (response["aciklamadetay"]["build"] > int.parse(ARMOYU.appBuild)) {
+        if (mounted) {
+          ARMOYUFunctions.updateForce(context);
+        }
+        return;
+      }
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -144,6 +151,13 @@ class _StartingScreenState extends State<StartingScreen> {
       return;
     } else if (response["durum"] == 0) {
       if (response["aciklama"] == "Hatalı giriş!") {
+        log("Web Versiyon ${response["aciklamadetay"]["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
+        if (response["aciklamadetay"]["build"] > int.parse(ARMOYU.appBuild)) {
+          if (mounted) {
+            ARMOYUFunctions.updateForce(context);
+          }
+          return;
+        }
         if (mounted) {
           Navigator.pushReplacement(
             context,
@@ -161,6 +175,7 @@ class _StartingScreenState extends State<StartingScreen> {
         }
         return;
       }
+
       if (mounted) {
         Navigator.pushReplacement(
           context,

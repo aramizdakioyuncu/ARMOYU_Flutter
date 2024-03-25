@@ -9,18 +9,6 @@ class GroupPage extends StatefulWidget {
 }
 
 class _GroupPage extends State<GroupPage> {
-  final List<Product> products = [
-    Product(
-        name: 'Ürün 1',
-        imageUrl:
-            'https://image.milimaj.com/i/milliyet/75/0x410/5c8dcd3845d2a09e009fb6c3.jpg',
-        price: 19.99),
-    Product(
-        name: 'Ürün 2',
-        imageUrl:
-            'https://image.milimaj.com/i/milliyet/75/0x410/5c8dcd3845d2a09e009fb6c3.jpg',
-        price: 29.99),
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(

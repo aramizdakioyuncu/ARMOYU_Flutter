@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Screens/Chat/chat_page.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
@@ -30,15 +32,7 @@ class FunctionService {
       password = generateMd5(password);
     }
 
-    if (username == "" || password == "") {
-      Map<String, dynamic> jsonData = {
-        'durum': 0,
-        'aciklama': "Kullanıcı adı veya Parola boş olamaz!",
-      };
-      String jsonencode = jsonEncode(jsonData);
-      Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
-      return jsonString;
-    }
+    log(password);
 
     ARMOYU.Appuser.userName = username;
     ARMOYU.Appuser.password = password;
@@ -48,24 +42,9 @@ class FunctionService {
 
     Map<String, dynamic> response = await apiService.request(link, formData);
 
-    if (response["durum"] == 0) {
-      Map<String, dynamic> jsonData = {
-        'durum': response["durum"],
-        'aciklama': response["aciklama"],
-        'aciklamadetay': response["aciklamadetay"],
-      };
-      String jsonencode = jsonEncode(jsonData);
-      Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
-      return jsonString;
-    } else if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
-      Map<String, dynamic> jsonData = {
-        'durum': 1,
-        'aciklama': "Hatalı giriş!",
-        'aciklamadetay': "",
-      };
-      String jsonencode = jsonEncode(jsonData);
-      Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
-      return jsonString;
+    if (response["durum"] == 0 ||
+        response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+      return response;
     }
 
     ARMOYU.version = response["aciklamadetay"]["versiyon"].toString();
@@ -104,6 +83,8 @@ class FunctionService {
         invitecode: oyuncubilgi["davetkodu"],
         job: oyuncubilgi["isyeriadi"],
         level: oyuncubilgi["seviye"],
+        levelColor: oyuncubilgi["seviyerenk"],
+        xp: oyuncubilgi["seviyexp"],
         awardsCount: oyuncubilgi["oduller"],
         postsCount: oyuncubilgi["gonderiler"],
         friendsCount: oyuncubilgi["arkadaslar"],
@@ -172,9 +153,10 @@ class FunctionService {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('username');
     prefs.remove('password');
+    ARMOYU.Appuser.userID = null;
     ARMOYU.Appuser.userName = "0";
     ARMOYU.Appuser.password = "0";
-
+    chatlist.clear();
     Map<String, dynamic> jsonData = {
       'durum': 1,
       'aciklama': "Başarılı bir şekilde çıkış yapıldı.",
@@ -251,8 +233,13 @@ class FunctionService {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getprofilePosts(int page, int userID) async {
-    Map<String, String> formData = {"oyuncubakid": "$userID", "limit": "20"};
+  Future<Map<String, dynamic>> getprofilePosts(
+      int page, int userID, String category) async {
+    Map<String, String> formData = {
+      "oyuncubakid": "$userID",
+      "limit": "20",
+      "paylasimozellik": category,
+    };
     Map<String, dynamic> jsonData =
         await apiService.request("sosyal/liste/$page/", formData);
     return jsonData;

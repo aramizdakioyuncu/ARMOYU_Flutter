@@ -225,7 +225,7 @@ class _SettingsDevicePermissionsPage
                   title: CustomText.costum1("Bildirimler"),
                   tileColor: ARMOYU.backgroundcolor,
                   onTap: () async {
-                    if (micPermission != "İzin verilmedi") {
+                    if (notifiPermission != "İzin verilmedi") {
                       openAppSettings();
                       return;
                     }

@@ -1,4 +1,5 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Events/event_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -6,53 +7,52 @@ import 'package:flutter/material.dart';
 class Event {
   int eventID;
   String name;
+  int status;
   String eventType;
   String eventDate;
   String gameImage;
   String image;
   String banner;
-  String eventmanager;
-  String eventmanageravatar;
+  User eventorganizer;
   String eventPlace;
   String description;
   String rules;
-  int maxParticipants;
-  int currentParticipants;
+  int participantsLimit;
+  int participantsCurrent;
   String location;
 
   Event({
     required this.eventID,
+    required this.status,
     required this.name,
     required this.eventType,
     required this.eventDate,
     required this.gameImage,
     required this.image,
     required this.banner,
-    required this.eventmanager,
-    required this.eventmanageravatar,
+    required this.eventorganizer,
     required this.eventPlace,
     required this.description,
     required this.rules,
-    required this.maxParticipants,
-    required this.currentParticipants,
+    required this.participantsLimit,
+    required this.participantsCurrent,
     required this.location,
   });
 
   Widget eventListWidget(context) {
     Color participantsColor = Colors.red;
-    if (currentParticipants / maxParticipants < 0.75) {
+    if (participantsCurrent / participantsLimit < 0.75) {
       participantsColor = Colors.orange;
     }
-    if (currentParticipants / maxParticipants < 0.50) {
+    if (participantsCurrent / participantsLimit < 0.50) {
       participantsColor = Colors.yellow;
     }
-    if (currentParticipants / maxParticipants < 0.25) {
+    if (participantsCurrent / participantsLimit < 0.25) {
       participantsColor = Colors.green;
     }
 
-    return Container(
+    return SizedBox(
       width: ARMOYU.screenWidth,
-      padding: const EdgeInsets.all(2),
       child: Material(
         color: ARMOYU.appbarColor,
         child: InkWell(
@@ -67,7 +67,7 @@ class Event {
           child: SizedBox(
             height: 100,
             child: Padding(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(5.0),
               child: Row(
                 children: [
                   SizedBox(
@@ -81,7 +81,7 @@ class Event {
                               fit: BoxFit.contain,
                             )
                           : const Icon(
-                              Icons.car_crash,
+                              Icons.error,
                               size: 50,
                             ),
                     ),
@@ -120,17 +120,23 @@ class Event {
                                           Radius.circular(20)),
                                       minHeight: 10,
                                       color: participantsColor,
-                                      value:
-                                          currentParticipants / maxParticipants,
+                                      value: participantsLimit == 0
+                                          ? 0
+                                          : participantsCurrent /
+                                              participantsLimit,
                                     ),
                                   ),
                                   const SizedBox(width: 10),
-                                  Text("$currentParticipants/$maxParticipants"),
+                                  participantsLimit == 0
+                                      ? Text("∞")
+                                      : Text(
+                                          "$participantsCurrent/$participantsLimit"),
                                 ],
                               ),
                               Row(
                                 children: [
                                   const Icon(Icons.date_range, size: 12),
+                                  const SizedBox(width: 5),
                                   Text(
                                     eventDate,
                                     style: const TextStyle(
@@ -144,7 +150,6 @@ class Event {
                       ),
                     ),
                   ),
-                  // const Icon(Icons.arrow_forward_ios),
                 ],
               ),
             ),

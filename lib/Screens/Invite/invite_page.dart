@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -38,6 +39,20 @@ class _EventStatePage extends State<InvitePage>
 
     if (isfirstfetch) {
       invitepeoplelist();
+    }
+  }
+
+  Future<void> sendmailURL(int userID) async {
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response = await f.sendauthmailURL(userID);
+    log(response["durum"].toString());
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+
+    if (mounted) {
+      ARMOYUWidget.stackbarNotification(context, response["aciklama"]);
     }
   }
 
@@ -106,53 +121,60 @@ class _EventStatePage extends State<InvitePage>
                   response["icerik"][i]["oyuncu_dogrulama"] == false
                       ? IconButton(
                           onPressed: () {
-                            showModalBottomSheet<void>(
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(10),
-                                ),
-                              ),
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SafeArea(
-                                  child: Wrap(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.grey[900],
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                  Radius.circular(30),
-                                                ),
-                                              ),
-                                              width: ARMOYU.screenWidth / 4,
-                                              height: 5,
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () async {},
-                                            child: const ListTile(
-                                              textColor: Colors.amber,
-                                              leading: Icon(
-                                                Icons.mail,
-                                                color: Colors.amber,
-                                              ),
-                                              title: Text("Doğrulama gönder"),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                        ],
-                                      ),
-                                    ],
+                            if (mounted) {
+                              showModalBottomSheet<void>(
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(10),
                                   ),
-                                );
-                              },
-                            );
+                                ),
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SafeArea(
+                                    child: Wrap(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[900],
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(30),
+                                                  ),
+                                                ),
+                                                width: ARMOYU.screenWidth / 4,
+                                                height: 5,
+                                              ),
+                                            ),
+                                            InkWell(
+                                              onTap: () async {
+                                                await sendmailURL(
+                                                    response["icerik"][i]
+                                                        ["oyuncu_ID"]);
+                                              },
+                                              child: const ListTile(
+                                                textColor: Colors.amber,
+                                                leading: Icon(
+                                                  Icons.mail,
+                                                  color: Colors.amber,
+                                                ),
+                                                title: Text("Doğrulama gönder"),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            }
                           },
                           icon: const Icon(Icons.more_vert_rounded))
                       : Container(),

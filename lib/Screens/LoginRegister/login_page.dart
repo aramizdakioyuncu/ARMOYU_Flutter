@@ -39,44 +39,52 @@ class _LoginPageState extends State<LoginPage> {
     if (loginProcess) {
       return;
     }
+
+    String username = usernameController.text;
+    String password = passwordController.text;
+    if (username == "" || password == "") {
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(
+            context, "Kullanıcı adı veya Parola boş olamaz!");
+      }
+      return;
+    }
+
     setState(() {
       loginProcess = true;
     });
 
-    String username = usernameController.text;
-    String password = passwordController.text;
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.login(username, password, false);
 
-    if (response["durum"] == 1) {
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-
-      if (mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Pages(),
-          ),
-        );
-      }
-
-      setState(() {
-        loginProcess = false;
-      });
-    } else {
-      log(response["aciklama"]);
+    if (response["durum"] == 0 ||
+        response["aciklama"] == "Oyuncu bilgileri yanlış!") {
       String gelenyanit = response["aciklama"];
-
       if (mounted) {
         ARMOYUWidget.stackbarNotification(context, gelenyanit);
       }
-
       setState(() {
         loginProcess = false;
       });
+      return;
     }
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+
+    if (mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Pages(),
+        ),
+      );
+    }
+
+    setState(() {
+      loginProcess = false;
+    });
   }
 
   @override

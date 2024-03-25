@@ -13,6 +13,7 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/Skeletons/storycircle_skeleton.dart';
 import 'package:ARMOYU/Widgets/storycircle.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
@@ -174,8 +175,9 @@ class _SocialPageState extends State<SocialPage>
   // Yeni veri yükleme işlemi
   Future<void> _loadMoreData() async {
     if (!postpageproccess) {
-      postpage++;
-      postpageproccess = true;
+      setState(() {
+        postpageproccess = true;
+      });
       await loadPosts(postpage);
     }
   }
@@ -286,6 +288,7 @@ class _SocialPageState extends State<SocialPage>
         });
       }
     }
+    postpage++;
   }
 
   Future<void> loadSkeletonpost() async {
@@ -311,8 +314,9 @@ class _SocialPageState extends State<SocialPage>
       fetchstoryWidget(1);
     }
     await loadPostsv2(page);
-
-    postpageproccess = false;
+    setState(() {
+      postpageproccess = false;
+    });
   }
 
   @override
@@ -331,12 +335,20 @@ class _SocialPageState extends State<SocialPage>
               height: 1,
             ),
             ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               shrinkWrap: true,
               itemCount: widgetPosts.length,
               itemBuilder: (context, index) {
                 return widgetPosts[index];
               },
+            ),
+            Visibility(
+              visible: postpageproccess,
+              child: Container(
+                height: 100,
+                color: ARMOYU.appbarColor,
+                child: const CupertinoActivityIndicator(),
+              ),
             ),
           ],
         ),

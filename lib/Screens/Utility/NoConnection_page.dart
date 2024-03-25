@@ -29,6 +29,8 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
   Future<void> checkInternetConnection2() async {
     connectionProcess = true;
 
+    log("message");
+
     if (await AppCore.checkInternetConnection()) {
       setState(() {
         _isConnected = true;

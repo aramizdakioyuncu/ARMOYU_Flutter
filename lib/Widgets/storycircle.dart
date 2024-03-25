@@ -51,6 +51,12 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                       ishasstory = true;
                     }
                   }
+                  Color circleColor = Colors.transparent;
+                  if (cardData.ownerID == ARMOYU.Appuser.userID) {
+                    circleColor = storycolor;
+                  } else {
+                    circleColor = otherstorycolor;
+                  }
 
                   return GestureDetector(
                     onTap: () {
@@ -89,9 +95,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: cardData.ownerID == ARMOYU.Appuser.userID
-                                  ? storycolor
-                                  : otherstorycolor, // Kenarlık rengi
+                              color: circleColor, // Kenarlık rengi
                               width: 3.0, // Kenarlık kalınlığı
                             ),
                             image: DecorationImage(

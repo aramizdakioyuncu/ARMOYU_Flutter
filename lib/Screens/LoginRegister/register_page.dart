@@ -48,6 +48,9 @@ class _RegisterPageState extends State<RegisterPage> {
     Map<String, dynamic> response = await f.inviteCodeTest(code);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
+      if (mounted) {
+        ARMOYUWidget.stackbarNotification(context, response["aciklama"]);
+      }
       setState(() {
         inviteCodeProcces = false;
       });

@@ -187,9 +187,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CircleAvatar(
-                              foregroundImage: CachedNetworkImageProvider(
-                                  ARMOYU.Appuser.avatar!.mediaURL.minURL),
-                              radius: 20),
+                            backgroundColor: ARMOYU.backgroundcolor,
+                            foregroundImage: CachedNetworkImageProvider(
+                              ARMOYU.Appuser.avatar!.mediaURL.minURL,
+                            ),
+                            radius: 20,
+                          ),
                         ),
                         Expanded(
                           child: Container(
@@ -549,8 +552,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       );
                     },
                     child: CircleAvatar(
+                      backgroundColor: ARMOYU.backgroundcolor,
                       foregroundImage: CachedNetworkImageProvider(
-                          widget.post.owner.avatar!.mediaURL.minURL),
+                        widget.post.owner.avatar!.mediaURL.minURL,
+                      ),
                       radius: 20,
                     ),
                   ),

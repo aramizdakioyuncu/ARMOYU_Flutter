@@ -17,9 +17,10 @@ class Pages extends StatefulWidget {
   State<Pages> createState() => _PagesState();
 }
 
+bool someCondition = false;
+bool siteMessagesProcces = false;
+
 class _PagesState extends State<Pages> {
-  bool someCondition = false;
-  bool siteMessagesProcces = false;
   @override
   void initState() {
     super.initState();
@@ -42,7 +43,7 @@ class _PagesState extends State<Pages> {
       return;
     }
 
-    if (ARMOYU.Appuser.userID == -1) {
+    if (ARMOYU.Appuser.userID == null) {
       someCondition = true;
       return;
     }

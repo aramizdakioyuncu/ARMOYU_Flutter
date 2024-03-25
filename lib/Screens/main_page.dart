@@ -309,7 +309,7 @@ class _MainPageState extends State<MainPage>
                   child: Container(
                     height: 40,
                     decoration: BoxDecoration(
-                      color: ARMOYU.textbackColor,
+                      color: ARMOYU.bodyColor,
                       borderRadius:
                           BorderRadius.circular(10.0), // Köşe yuvarlama eklemek
                     ),
@@ -351,6 +351,7 @@ class _MainPageState extends State<MainPage>
                 ],
               ),
         drawer: Drawer(
+          backgroundColor: ARMOYU.appbarColor,
           child: Column(
             children: [
               UserAccountsDrawerHeader(
@@ -537,9 +538,9 @@ class _MainPageState extends State<MainPage>
                           icon: Icon(Icons.nightlight,
                               color: ARMOYU.textColor), // Sağdaki butonun ikonu
                           onPressed: () {
-                            ThemeProvider().toggleTheme();
-
-                            setState(() {});
+                            setState(() {
+                              ThemeProvider().toggleTheme();
+                            });
                           },
                         ),
                         // Sol tarafta bir buton

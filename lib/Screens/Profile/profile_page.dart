@@ -61,25 +61,23 @@ class _ProfilePageState extends State<ProfilePage>
   String friendTextLine = "";
 
   bool isAppBarExpanded = true;
-  late ScrollController pageMainscroller;
-  late ScrollController galleryscrollcontroller;
   bool galleryproccess = false;
 
   String friendStatus = "";
   Color friendStatuscolor = Colors.blue;
 
-  bool ispostsVisible = true;
-  bool isgalleryVisible = false;
-
+  int postscounter = 1;
   bool postsfetchproccess = false;
 
-  int postscounter = 1;
-  int gallerycounter = 1;
+  int postscounterv2 = 1;
+  bool postsfetchProccessv2 = false;
 
+  int gallerycounter = 1;
   bool firstgalleryfetcher = false;
 
-//
-//
+  bool firstFetchPosts = true;
+  bool firstFetchGallery = true;
+  bool firstFetchTaggedPost = true;
 
   @override
   void initState() {
@@ -87,48 +85,6 @@ class _ProfilePageState extends State<ProfilePage>
     test();
 
     tabController = TabController(initialIndex: 0, length: 3, vsync: this);
-
-    // pageMainscroller = ScrollController();
-    // pageMainscroller.addListener(() {
-    //   if (pageMainscroller.position.pixels >=
-    //       pageMainscroller.position.maxScrollExtent * 0.5) {
-    //     // if (ispostsVisible) {
-    //     //   profileloadPosts(postscounter, userProfile.userID!);
-    //     // }
-    //     if (isgalleryVisible) {
-    //       gallery(gallerycounter, userProfile.userID!);
-    //     }
-    //   }
-    //   setState(() {
-    //     isAppBarExpanded = pageMainscroller.offset <
-    //         ARMOYU.screenHeight * 0.20; // veya başka bir eşik değeri
-    //   });
-    // });
-
-    tabController.addListener(() {
-      if (tabController.indexIsChanging ||
-          tabController.index != tabController.previousIndex) {
-        if (tabController.index == 0) {
-          if (mounted) {
-            setState(() {
-              isgalleryVisible = false;
-              ispostsVisible = true;
-            });
-          }
-        }
-        if (tabController.index == 1) {
-          if (!firstgalleryfetcher) {
-            gallery(gallerycounter, userProfile.userID!);
-          }
-          if (mounted) {
-            setState(() {
-              isgalleryVisible = true;
-              ispostsVisible = false;
-            });
-          }
-        }
-      }
-    });
   }
 
   @override
@@ -138,28 +94,43 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   List<Widget> widgetPosts = [];
+  List<Widget> widgetTaggedPosts = [];
   List<Media> medialist = [];
 
-  profileloadPosts(int page, int userID) async {
+  profileloadPosts(
+      int page, int userID, List<Widget> list, String category) async {
     if (postsfetchproccess) {
       return;
     }
-    postsfetchproccess = true;
+    if (mounted) {
+      setState(() {
+        postsfetchproccess = true;
+      });
+    }
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getprofilePosts(page, userID);
+    Map<String, dynamic> response =
+        await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      postsfetchproccess = false;
+      if (mounted) {
+        setState(() {
+          postsfetchproccess = false;
+        });
+      }
+
       return;
     }
 
     if (response["icerik"].length == 0) {
-      postsfetchproccess = false;
+      if (mounted) {
+        setState(() {
+          postsfetchproccess = false;
+        });
+      }
       return;
     }
-    int dynamicItemCount = response["icerik"].length;
 
-    for (int i = 0; i < dynamicItemCount; i++) {
+    for (int i = 0; i < response["icerik"].length; i++) {
       List<Media> media = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
@@ -199,50 +170,62 @@ class _ProfilePageState extends State<ProfilePage>
         } else {
           ismecomment = false;
         }
-
-        setState(() {
-          Post post = Post(
-            postID: response["icerik"][i]["paylasimID"],
-            content: response["icerik"][i]["paylasimicerik"],
-            postDate: response["icerik"][i]["paylasimzamangecen"],
-            sharedDevice: response["icerik"][i]["paylasimnereden"],
-            likesCount: response["icerik"][i]["begenisay"],
-            isLikeme: ismelike,
-            commentsCount: response["icerik"][i]["yorumsay"],
-            iscommentMe: ismecomment,
-            media: media,
-            owner: User(
-              userID: response["icerik"][i]["sahipID"],
-              userName: response["icerik"][i]["sahipad"],
-              avatar: Media(
-                mediaURL: MediaURL(
-                  bigURL: response["icerik"][i]["sahipavatarminnak"],
-                  normalURL: response["icerik"][i]["sahipavatarminnak"],
-                  minURL: response["icerik"][i]["sahipavatarminnak"],
+        if (mounted) {
+          setState(() {
+            Post post = Post(
+              postID: response["icerik"][i]["paylasimID"],
+              content: response["icerik"][i]["paylasimicerik"],
+              postDate: response["icerik"][i]["paylasimzamangecen"],
+              sharedDevice: response["icerik"][i]["paylasimnereden"],
+              likesCount: response["icerik"][i]["begenisay"],
+              isLikeme: ismelike,
+              commentsCount: response["icerik"][i]["yorumsay"],
+              iscommentMe: ismecomment,
+              media: media,
+              owner: User(
+                userID: response["icerik"][i]["sahipID"],
+                userName: response["icerik"][i]["sahipad"],
+                avatar: Media(
+                  mediaURL: MediaURL(
+                    bigURL: response["icerik"][i]["sahipavatarminnak"],
+                    normalURL: response["icerik"][i]["sahipavatarminnak"],
+                    minURL: response["icerik"][i]["sahipavatarminnak"],
+                  ),
                 ),
               ),
-            ),
-          );
+            );
 
-          widgetPosts.add(
-            TwitterPostWidget(
-              post: post,
-            ),
-          );
-        });
+            list.add(
+              TwitterPostWidget(
+                post: post,
+              ),
+            );
+          });
+        }
       }
     }
-    postscounter = postscounter + 1;
-    postsfetchproccess = false;
+    if (mounted) {
+      setState(() {
+        postscounter++;
+        postsfetchproccess = false;
+      });
+    }
   }
 
   gallery(int page, int userID) async {
-    firstgalleryfetcher = true;
-
+    if (mounted) {
+      setState(() {
+        firstgalleryfetcher = true;
+      });
+    }
     if (galleryproccess) {
       return;
     }
-    galleryproccess = true;
+    if (mounted) {
+      setState(() {
+        galleryproccess = true;
+      });
+    }
 
     if (page == 1) {
       if (mounted) {
@@ -262,6 +245,11 @@ class _ProfilePageState extends State<ProfilePage>
 
     if (response["icerik"].length == 0) {
       log("Sayfa Sonu");
+      if (mounted) {
+        setState(() {
+          galleryproccess = false;
+        });
+      }
       return;
     }
 
@@ -283,14 +271,130 @@ class _ProfilePageState extends State<ProfilePage>
               ),
             ),
           );
-          // imageUrls.add(response["icerik"][i]["fotominnakurl"]);
-          // imageufakUrls.add(response["icerik"][i]["fotoufaklikurl"]);
-          // imagesownerID.add(response["icerik"][i]["fotosahipID"]);
         });
       }
     }
-    galleryproccess = false;
-    gallerycounter++;
+    if (mounted) {
+      setState(() {
+        galleryproccess = false;
+        gallerycounter++;
+      });
+    }
+  }
+
+  profileloadtaggedPosts(
+      int page, int userID, List<Widget> list, String category) async {
+    if (postsfetchProccessv2) {
+      return;
+    }
+    if (mounted) {
+      setState(() {
+        postsfetchProccessv2 = true;
+      });
+    }
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response =
+        await f.getprofilePosts(page, userID, category);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      if (mounted) {
+        setState(() {
+          postsfetchProccessv2 = false;
+        });
+      }
+      return;
+    }
+
+    if (response["icerik"].length == 0) {
+      if (mounted) {
+        setState(() {
+          postsfetchProccessv2 = false;
+        });
+      }
+
+      return;
+    }
+
+    for (int i = 0; i < response["icerik"].length; i++) {
+      List<Media> media = [];
+
+      if (response["icerik"][i]["paylasimfoto"].length != 0) {
+        int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
+
+        for (int j = 0; j < mediaItemCount; j++) {
+          media.add(
+            Media(
+              mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
+              ownerID: response["icerik"][i]["sahipID"],
+              mediaType: response["icerik"][i]["paylasimfoto"][j]
+                  ["paylasimkategori"],
+              mediaDirection: response["icerik"][i]["paylasimfoto"][j]
+                  ["medyayonu"],
+              mediaURL: MediaURL(
+                  bigURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotoufakurl"],
+                  normalURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotominnakurl"],
+                  minURL: response["icerik"][i]["paylasimfoto"][j]
+                      ["fotominnakurl"]),
+            ),
+          );
+        }
+      }
+      if (mounted) {
+        bool ismelike = false;
+        if (response["icerik"][i]["benbegendim"] == 1) {
+          ismelike = true;
+        } else {
+          ismelike = false;
+        }
+        bool ismecomment = false;
+
+        if (response["icerik"][i]["benyorumladim"] == 1) {
+          ismecomment = true;
+        } else {
+          ismecomment = false;
+        }
+        if (mounted) {
+          setState(() {
+            Post post = Post(
+              postID: response["icerik"][i]["paylasimID"],
+              content: response["icerik"][i]["paylasimicerik"],
+              postDate: response["icerik"][i]["paylasimzamangecen"],
+              sharedDevice: response["icerik"][i]["paylasimnereden"],
+              likesCount: response["icerik"][i]["begenisay"],
+              isLikeme: ismelike,
+              commentsCount: response["icerik"][i]["yorumsay"],
+              iscommentMe: ismecomment,
+              media: media,
+              owner: User(
+                userID: response["icerik"][i]["sahipID"],
+                userName: response["icerik"][i]["sahipad"],
+                avatar: Media(
+                  mediaURL: MediaURL(
+                    bigURL: response["icerik"][i]["sahipavatarminnak"],
+                    normalURL: response["icerik"][i]["sahipavatarminnak"],
+                    minURL: response["icerik"][i]["sahipavatarminnak"],
+                  ),
+                ),
+              ),
+            );
+
+            list.add(
+              TwitterPostWidget(
+                post: post,
+              ),
+            );
+          });
+        }
+      }
+    }
+    if (mounted) {
+      setState(() {
+        postscounterv2++;
+        postsfetchProccessv2 = false;
+      });
+    }
   }
 
   Future<void> test() async {
@@ -331,6 +435,8 @@ class _ProfilePageState extends State<ProfilePage>
         );
 
         userProfile.level = oyuncubilgi["seviye"];
+        userProfile.levelColor = oyuncubilgi["seviyerenk"];
+        userProfile.xp = oyuncubilgi["seviyexp"];
         userProfile.friendsCount = oyuncubilgi["arkadaslar"];
         userProfile.postsCount = oyuncubilgi["gonderiler"];
         userProfile.awardsCount = oyuncubilgi["oduller"];
@@ -430,6 +536,10 @@ class _ProfilePageState extends State<ProfilePage>
         );
 
         userProfile.level = oyuncubilgi["seviye"];
+        userProfile.levelColor = oyuncubilgi["seviyerenk"];
+
+        userProfile.xp = oyuncubilgi["seviyexp"];
+
         userProfile.friendsCount = oyuncubilgi["arkadaslar"];
         userProfile.postsCount = oyuncubilgi["gonderiler"];
         userProfile.awardsCount = oyuncubilgi["oduller"];
@@ -520,8 +630,34 @@ class _ProfilePageState extends State<ProfilePage>
       }
     }
 
-    await profileloadPosts(postscounter, userProfile.userID!);
-    await gallery(gallerycounter, userProfile.userID!);
+    if (firstFetchPosts) {
+      await profileloadPosts(
+          postscounter, userProfile.userID!, widgetPosts, "");
+      if (mounted) {
+        setState(() {
+          firstFetchPosts = false;
+        });
+      }
+    }
+    if (firstFetchGallery) {
+      await gallery(gallerycounter, userProfile.userID!);
+
+      if (mounted) {
+        setState(() {
+          firstFetchGallery = false;
+        });
+      }
+    }
+
+    if (firstFetchTaggedPost) {
+      await profileloadtaggedPosts(postscounterv2, userProfile.userID!,
+          widgetTaggedPosts, "etiketlenmis");
+      if (mounted) {
+        setState(() {
+          firstFetchTaggedPost = false;
+        });
+      }
+    }
   }
 
   Future<void> _handleRefresh() async {
@@ -541,18 +677,21 @@ class _ProfilePageState extends State<ProfilePage>
       log(response["aciklama"]);
       return;
     }
-    setState(() {
-      ARMOYU.Appuser.avatar = Media(
-        mediaID: 1000000,
-        mediaURL: MediaURL(
-          bigURL: response["aciklamadetay"].toString(),
-          normalURL: response["aciklamadetay"].toString(),
-          minURL: response["aciklamadetay"].toString(),
-        ),
-      );
 
-      _handleRefresh();
-    });
+    if (mounted) {
+      setState(() {
+        ARMOYU.Appuser.avatar = Media(
+          mediaID: 1000000,
+          mediaURL: MediaURL(
+            bigURL: response["aciklamadetay"].toString(),
+            normalURL: response["aciklamadetay"].toString(),
+            minURL: response["aciklamadetay"].toString(),
+          ),
+        );
+
+        _handleRefresh();
+      });
+    }
   }
 
   Future<void> changebanner() async {
@@ -568,17 +707,19 @@ class _ProfilePageState extends State<ProfilePage>
       log(response["aciklama"]);
       return;
     }
-    setState(() {
-      ARMOYU.Appuser.banner = Media(
-        mediaID: 1000000,
-        mediaURL: MediaURL(
-          bigURL: response["aciklamadetay"].toString(),
-          normalURL: response["aciklamadetay"].toString(),
-          minURL: response["aciklamadetay"].toString(),
-        ),
-      );
-      _handleRefresh();
-    });
+    if (mounted) {
+      setState(() {
+        ARMOYU.Appuser.banner = Media(
+          mediaID: 1000000,
+          mediaURL: MediaURL(
+            bigURL: response["aciklamadetay"].toString(),
+            normalURL: response["aciklamadetay"].toString(),
+            minURL: response["aciklamadetay"].toString(),
+          ),
+        );
+        _handleRefresh();
+      });
+    }
   }
 
   Future<void> friendrequest() async {
@@ -1019,22 +1160,82 @@ class _ProfilePageState extends State<ProfilePage>
                                         style: SkeletonAvatarStyle(
                                           borderRadius:
                                               BorderRadius.circular(50),
-                                          width: 60,
-                                          height: 60,
+                                          width: 80,
+                                          height: 80,
                                         ),
                                       )
-                                    : ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl: userProfile
-                                              .avatar!.mediaURL.minURL,
-                                          fit: BoxFit.cover,
-                                          width: 60,
-                                          height: 60,
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.error),
-                                        ),
+                                    : Column(
+                                        children: [
+                                          ClipOval(
+                                            child: Container(
+                                              width: 100,
+                                              height: 100,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Color(
+                                                    int.parse(
+                                                        "0xFF${userProfile.levelColor}"),
+                                                  ),
+                                                  width: 4,
+                                                ),
+                                                image: DecorationImage(
+                                                  fit: BoxFit.cover,
+                                                  filterQuality:
+                                                      FilterQuality.high,
+                                                  image:
+                                                      CachedNetworkImageProvider(
+                                                    userProfile.avatar!.mediaURL
+                                                        .minURL,
+                                                  ),
+                                                ),
+                                              ),
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Container(
+                                                  height: 26,
+                                                  width: 26,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(
+                                                      int.parse(
+                                                          "0xFF${userProfile.levelColor}"),
+                                                    ),
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                      Radius.elliptical(
+                                                        100,
+                                                        100,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Align(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      userProfile.level
+                                                          .toString(),
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          userProfile.xp == null
+                                              ? const SkeletonLine(
+                                                  style: SkeletonLineStyle(
+                                                    width: 50,
+                                                    padding: EdgeInsets.all(5),
+                                                  ),
+                                                )
+                                              : CustomText.costum1(
+                                                  "${userProfile.xp} XP",
+                                                  weight: FontWeight.bold),
+                                        ],
                                       ),
                               ),
                             ],
@@ -1154,9 +1355,7 @@ class _ProfilePageState extends State<ProfilePage>
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 5),
                     userProfile.displayName == null
                         ? const SkeletonLine(
                             style: SkeletonLineStyle(
@@ -1400,88 +1599,164 @@ class _ProfilePageState extends State<ProfilePage>
         body: TabBarView(
           controller: tabController,
           children: [
-            widgetPosts.isEmpty
+            firstFetchPosts
                 ? const Center(child: CupertinoActivityIndicator())
-                : NotificationListener<ScrollNotification>(
-                    onNotification: (scrollNotification) {
-                      if (scrollNotification is ScrollUpdateNotification) {
-                        final metrics = scrollNotification.metrics;
+                : widgetPosts.isEmpty
+                    ? const Center(
+                        child: Text("Boş"),
+                      )
+                    : NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          if (scrollNotification is ScrollUpdateNotification) {
+                            final metrics = scrollNotification.metrics;
 
-                        if (metrics.atEdge &&
-                            metrics.pixels >= metrics.maxScrollExtent * 0.5) {
-                          // Listenin sonuna ulaşıldı
-                          print("------Paylaşım------");
+                            if (metrics.atEdge &&
+                                metrics.pixels >=
+                                    metrics.maxScrollExtent * 0.5) {
+                              // Listenin sonuna ulaşıldı
+                              log("------Paylaşım------");
+                              profileloadPosts(postscounter,
+                                  userProfile.userID!, widgetPosts, "");
 
-                          profileloadPosts(postscounter, userProfile.userID!);
-
-                          return true;
-                        }
-                      }
-                      return false;
-                    },
-                    child: ListView.builder(
-                      // controller: pageMainscroller,
-                      padding: EdgeInsets.zero,
-                      key: const PageStorageKey('Tab1'),
-                      itemCount: widgetPosts.length,
-                      itemBuilder: (context, index) {
-                        return widgetPosts[index];
-                      },
-                    ),
-                  ),
-            medialist.isEmpty
-                ? const Center(child: CupertinoActivityIndicator())
-                : NotificationListener<ScrollNotification>(
-                    onNotification: (scrollNotification) {
-                      if (scrollNotification is ScrollUpdateNotification) {
-                        final metrics = scrollNotification.metrics;
-                        if (metrics.atEdge &&
-                            metrics.pixels >= metrics.maxScrollExtent * 0.5) {
-                          print("------Galeri------");
-                          gallery(gallerycounter, userProfile.userID!);
-                          return true;
-                        }
-                      }
-                      return false;
-                    },
-                    child: GridView.builder(
-                      padding: EdgeInsets.zero,
-                      key: const PageStorageKey('Tab2'),
-                      itemCount: medialist.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 4.0, // Yatayda boşluk
-                        mainAxisSpacing: 4.0, // Dikeyde boşluk
-                      ),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MediaViewer(
-                                  media: medialist,
-                                  initialIndex: index,
-                                ),
+                              return true;
+                            }
+                          }
+                          return false;
+                        },
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                physics: const ClampingScrollPhysics(),
+                                key: const PageStorageKey('Tab1'),
+                                itemCount: widgetPosts.length,
+                                itemBuilder: (context, index) {
+                                  return widgetPosts[index];
+                                },
                               ),
-                            );
+                            ),
+                            Visibility(
+                              visible: postsfetchproccess,
+                              child: Container(
+                                height: 100,
+                                width: ARMOYU.screenWidth,
+                                color: ARMOYU.appbarColor,
+                                child: const CupertinoActivityIndicator(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+            firstFetchGallery
+                ? const Center(child: CupertinoActivityIndicator())
+                : medialist.isEmpty
+                    ? const Center(
+                        child: Text("Boş"),
+                      )
+                    : NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          if (scrollNotification is ScrollUpdateNotification) {
+                            final metrics = scrollNotification.metrics;
+                            if (metrics.atEdge &&
+                                metrics.pixels >=
+                                    metrics.maxScrollExtent * 0.5) {
+                              log("------Galeri------");
+                              gallery(gallerycounter, userProfile.userID!);
+                              return true;
+                            }
+                          }
+                          return false;
+                        },
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: GridView.builder(
+                                padding: EdgeInsets.zero,
+                                physics: const ClampingScrollPhysics(),
+                                key: const PageStorageKey('Tab2'),
+                                itemCount: medialist.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 4.0, // Yatayda boşluk
+                                  mainAxisSpacing: 4.0, // Dikeyde boşluk
+                                ),
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MediaViewer(
+                                            media: medialist,
+                                            initialIndex: index,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          medialist[index].mediaURL.minURL,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) =>
+                                          const CupertinoActivityIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Visibility(
+                              visible: galleryproccess,
+                              child: Container(
+                                height: 100,
+                                width: ARMOYU.screenWidth,
+                                color: ARMOYU.backgroundcolor,
+                                child: const CupertinoActivityIndicator(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+            firstFetchTaggedPost
+                ? const Center(child: CupertinoActivityIndicator())
+                : widgetTaggedPosts.isEmpty
+                    ? const Center(
+                        child: Text("Boş"),
+                      )
+                    : NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          if (scrollNotification is ScrollUpdateNotification) {
+                            final metrics = scrollNotification.metrics;
+
+                            if (metrics.atEdge &&
+                                metrics.pixels >=
+                                    metrics.maxScrollExtent * 0.5) {
+                              // Listenin sonuna ulaşıldı
+                              log("------Paylaşım Etiketlenmiş------");
+                              profileloadtaggedPosts(
+                                  postscounterv2,
+                                  userProfile.userID!,
+                                  widgetTaggedPosts,
+                                  "etiketlenmis");
+
+                              return true;
+                            }
+                          }
+                          return false;
+                        },
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          physics: const ClampingScrollPhysics(),
+                          key: const PageStorageKey('Tab3'),
+                          itemCount: widgetTaggedPosts.length,
+                          itemBuilder: (context, index) {
+                            return widgetTaggedPosts[index];
                           },
-                          child: CachedNetworkImage(
-                            imageUrl: medialist[index].mediaURL.minURL,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) =>
-                                const CupertinoActivityIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-            const Center(
-              child: CupertinoActivityIndicator(),
-            )
+                        ),
+                      )
           ],
         ),
       ),
@@ -1519,10 +1794,10 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 40.0; // Başlığın maksimum yüksekliği
+  double get maxExtent => 40.0;
 
   @override
-  double get minExtent => 40.0; // Başlığın minimum yüksekliği
+  double get minExtent => 40.0;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {

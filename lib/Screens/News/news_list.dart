@@ -105,12 +105,22 @@ class _NewslistStatePage extends State<NewslistPage>
             : RefreshIndicator(
                 key: _refreshIndicatorKey,
                 onRefresh: getnewslist,
-                child: ListView.builder(
+                child: ListView.separated(
                   controller: scrollController,
+                  physics: const ClampingScrollPhysics(),
                   itemCount: newsList.length,
                   itemBuilder: (context, index) {
                     News aa = newsList[index];
                     return aa.newsListWidget(context);
+                  },
+                  separatorBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Container(color: ARMOYU.appbarColor, height: 10),
+                        const SizedBox(height: 1),
+                        Container(color: ARMOYU.appbarColor, height: 10),
+                      ],
+                    );
                   },
                 ),
               ),

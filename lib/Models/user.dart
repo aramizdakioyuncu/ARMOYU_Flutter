@@ -28,6 +28,8 @@ class User {
   String? invitecode = "";
 
   int? level = 0;
+  String? levelColor;
+  String? xp;
 
   int? friendsCount = 0;
   int? postsCount = 0;
@@ -55,6 +57,8 @@ class User {
     this.burc,
     this.invitecode,
     this.level,
+    this.levelColor,
+    this.xp,
     this.friendsCount,
     this.postsCount,
     this.awardsCount,

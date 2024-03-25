@@ -1,5 +1,6 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Screens/News/news_page.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -25,9 +26,8 @@ class News {
   });
 
   Widget newsListWidget(context) {
-    return Container(
+    return SizedBox(
       width: ARMOYU.screenWidth,
-      padding: const EdgeInsets.all(2),
       child: Material(
         color: ARMOYU.appbarColor,
         child: InkWell(
@@ -40,47 +40,74 @@ class News {
             );
           },
           child: SizedBox(
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  newsImage.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: newsImage,
-                          height: 200,
-                          width: ARMOYU.screenWidth,
-                          fit: BoxFit.cover,
-                        )
-                      : const Icon(
-                          Icons.car_crash,
-                          size: 50,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        foregroundImage: CachedNetworkImageProvider(
+                          authoravatar,
                         ),
-                  const SizedBox(height: 10),
-                  Column(
+                        radius: 14,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        author,
+                        style: TextStyle(color: ARMOYU.color),
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Icon(
+                              Icons.visibility,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              newsViews.toString(),
+                              style: TextStyle(color: ARMOYU.color),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                newsImage.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: newsImage,
+                        height: 200,
+                        width: ARMOYU.screenWidth,
+                        fit: BoxFit.cover,
+                      )
+                    : const Icon(
+                        Icons.car_crash,
+                        size: 50,
+                      ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(newsTitle),
+                      Center(
+                        child: CustomText.costum1(newsTitle,
+                            weight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 10),
                       Text(
                         newssummary,
                         style: TextStyle(color: ARMOYU.textColor),
                       ),
                       const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            author,
-                            style: const TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

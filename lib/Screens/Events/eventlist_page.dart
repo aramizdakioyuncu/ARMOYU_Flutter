@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/event.dart';
 import 'package:ARMOYU/Models/event.dart';
+import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -55,23 +57,30 @@ class _EventlistPage extends State<EventlistPage>
         setState(() {
           eventsList.add(
             Event(
-              eventID: element["etkinlik_ID"],
-              name: element["etkinlik_adi"].toString(),
-              eventType: element["etkinlik_tip"].toString(),
-              eventDate: element["etkinlik_zaman"].toString(),
-              gameImage: element["etkinlik_oyunlogo"],
-              image: element["etkinlik_foto"],
-              banner: element["etkinlik_oyunbanner"],
-              eventmanager: element["etkinlik_yetkili"],
-              eventmanageravatar: element["etkinlik_yetkiliavatar"],
-              eventPlace: element["etkinlik_yer"].toString(),
-              description: element["etkinlik_aciklama"].toString(),
-              rules: element["etkinlik_kural"].toString(),
-              maxParticipants: element["etkinlik_katilimcilimit"] == 0
-                  ? 100000
-                  : element["etkinlik_katilimcilimit"],
-              currentParticipants: element["etkinlik_katilimcimevcut"],
-              location: 'etkinlik_konum',
+              eventID: element["event_ID"],
+              status: element["event_status"],
+              name: element["event_name"].toString(),
+              eventType: element["event_type"].toString(),
+              eventDate: element["event_date"].toString(),
+              gameImage: element["event_gamelogo"],
+              image: element["event_foto"].toString(),
+              banner: element["event_gamebanner"],
+              eventorganizer: User(
+                displayName: element["event_organizername"],
+                avatar: Media(
+                  mediaURL: MediaURL(
+                    bigURL: element["event_organizeravatar"],
+                    normalURL: element["event_organizeravatar"],
+                    minURL: element["event_organizeravatar"],
+                  ),
+                ),
+              ),
+              eventPlace: element["event_yer"].toString(),
+              description: element["event_description"],
+              rules: element["event_rules"],
+              participantsLimit: element["event_participantlimit"],
+              participantsCurrent: element["event_participantcurrent"],
+              location: element["event_location"],
             ),
           );
         });
@@ -96,11 +105,15 @@ class _EventlistPage extends State<EventlistPage>
             : RefreshIndicator(
                 key: _refreshIndicatorKey,
                 onRefresh: geteventslist,
-                child: ListView.builder(
+                child: ListView.separated(
+                  physics: const ClampingScrollPhysics(),
                   itemCount: eventsList.length,
                   itemBuilder: (context, index) {
                     Event aa = eventsList[index];
                     return aa.eventListWidget(context);
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 1);
                   },
                 ),
               ),

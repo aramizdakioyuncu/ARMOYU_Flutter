@@ -15,6 +15,15 @@ class FunctionsProfile {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> sendauthmailURL(
+    int userID,
+  ) async {
+    Map<String, String> formData = {"userID": "$userID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("profil/maildogrulamaURL/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> invitecoderefresh() async {
     Map<String, String> formData = {"": ""};
     Map<String, dynamic> jsonData =
