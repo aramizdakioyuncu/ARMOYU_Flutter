@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
-
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';

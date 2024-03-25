@@ -79,5 +79,9 @@
 	<string>Uygulama, konumunuzu her zaman ve kullanım sırasında kullanarak, örneğin harita üzerinde nerede olduğunuzu görmeleri gibi oyunsal faaliyetler için erişim istemektedir. Bu izin, uygulamanın konumunuzu belirlemesini ve oyunsal deneyimlerde kullanılmasını sağlar.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Uygulamanın Bluetooth&apos;u her zaman kullanarak sürekli cihazlarla etkileşim kurması gerekiyor. Bu izin, uygulamanın Bluetooth bağlantılarını sürdürmesini ve arka planda cihazlarla iletişim kurmasını sağlar.</string>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<string>Bu uygulama, fotoğraf ve video çekimi için kamera erişimine ihtiyaç duyar. Kullanıcı izni olmadan kamera özelliği kullanılamaz. Bu izin, kullanıcıların fotoğraf ve video çekimi yapmasına ve uygulama içinde paylaşmasına olanak tanır.</string>
+	<key>NSPrivacyAccessedAPICategoryUserDefaults</key>
+	<string>Bu anahtar, kullanıcının belirli API kategorilerine erişim izni verdiği tercihlerini saklamak için kullanılır. Kullanıcı tercihleri, uygulamanın belirli özelliklerini etkinleştirmek veya devre dışı bırakmak için kullanılır. Örneğin, kullanıcının kamera erişimini veya konum bilgilerine erişimi açma veya kapatma tercihleri bu anahtar altında saklanabilir</string>
 </dict>
 </plist>
