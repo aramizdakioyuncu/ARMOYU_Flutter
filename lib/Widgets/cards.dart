@@ -15,14 +15,14 @@ class CustomCards extends StatefulWidget {
   final bool firstFetch;
 
   const CustomCards({
-    Key? key,
+    super.key,
     required this.title,
     required this.content,
     required this.icon,
     required this.effectcolor,
     required this.scrollController,
     required this.firstFetch,
-  }) : super(key: key);
+  });
 
   @override
   State<CustomCards> createState() => _CustomCardsState();

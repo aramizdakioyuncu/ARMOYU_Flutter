@@ -47,9 +47,10 @@ class _NotificationPage extends State<NotificationPage>
   }
 
   Future<void> _handleRefresh() async {
+    await loadnoifications(postpage);
+
     setState(() {
       postpage = 1;
-      loadnoifications(postpage);
     });
   }
 

@@ -680,7 +680,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
         // log(_controller.value.toString());
         // chewieController.dispose();
-        log(chewieController.videoPlayerController.value.toString());
+        // log(chewieController.videoPlayerController.value.toString());
         return FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(
@@ -732,9 +732,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           break;
         }
 
-        // BoxFit mediadirection = BoxFit.contain;
-        if (widget.post.media[i].mediaDirection.toString() == "dikey") {
-          // mediadirection = BoxFit.cover;
+        BoxFit mediadirection = BoxFit.cover;
+        if (widget.post.media[i].mediaDirection.toString() == "yatay" &&
+            widget.post.media.length == 1) {
+          mediadirection = BoxFit.contain;
         }
 
         double mediawidth = ARMOYU.screenWidth;
@@ -770,11 +771,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
               ),
             );
           },
-          child: mediaSablon(
-            widget.post.media[i].mediaURL.normalURL,
-            width: mediawidth,
-            height: mediaheight,
-          ),
+          child: mediaSablon(widget.post.media[i].mediaURL.normalURL,
+              width: mediawidth, height: mediaheight, fit: mediadirection),
         );
 
         if (widget.post.media.length == 3) {

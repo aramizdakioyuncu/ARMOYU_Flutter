@@ -13,12 +13,13 @@ class Event {
   String gameImage;
   String image;
   String banner;
-  User eventorganizer;
+  List<User> eventorganizer;
   String eventPlace;
   String description;
   String rules;
   int participantsLimit;
   int participantsCurrent;
+  int participantsgroupplayerlimit;
   String location;
 
   Event({
@@ -36,6 +37,7 @@ class Event {
     required this.rules,
     required this.participantsLimit,
     required this.participantsCurrent,
+    required this.participantsgroupplayerlimit,
     required this.location,
   });
 
@@ -128,7 +130,7 @@ class Event {
                                   ),
                                   const SizedBox(width: 10),
                                   participantsLimit == 0
-                                      ? Text("∞")
+                                      ? Text("$participantsCurrent/∞")
                                       : Text(
                                           "$participantsCurrent/$participantsLimit"),
                                 ],

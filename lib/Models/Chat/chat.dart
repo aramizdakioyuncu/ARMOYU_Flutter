@@ -1,30 +1,27 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Chat/chat_message.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
+import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Chat {
-  final int chatID;
-  final String displayName;
-  final String avatar;
-  final int userID;
+  final int? chatID;
+  final User user;
   final String? lastonlinetime;
   final ChatMessage? lastmessage;
-  final List<ChatMessage>? messages;
-  final String chatType;
+  List<ChatMessage> messages = [];
+  final String? chatType;
   final bool chatNotification;
 
   Chat({
-    required this.chatID,
-    required this.displayName,
-    required this.avatar,
-    required this.userID,
+    this.chatID,
+    required this.user,
     this.lastonlinetime,
     this.lastmessage,
-    this.messages,
-    required this.chatType,
+    this.chatType,
     required this.chatNotification,
   });
 
@@ -35,11 +32,12 @@ class Chat {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
           leading: CircleAvatar(
-            foregroundImage: CachedNetworkImageProvider(avatar),
+            foregroundImage:
+                CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
           ),
           tileColor:
               chatNotification ? Colors.red.shade900 : ARMOYU.appbarColor,
-          title: CustomText.costum1(displayName),
+          title: CustomText.costum1(user.displayName!),
           subtitle:
               lastmessage == null ? null : Text(lastmessage!.messageContext),
           trailing: chatType == "ozel"
@@ -49,12 +47,7 @@ class Chat {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (pagecontext) => ChatDetailPage(
-                  userID: userID,
-                  appbar: true,
-                  useravatar: avatar,
-                  userdisplayname: displayName,
-                  lastonlinetime: lastonlinetime,
-                  chats: const [],
+                  chat: this,
                 ),
               ),
             );
@@ -70,9 +63,10 @@ class Chat {
       children: [
         ListTile(
           leading: CircleAvatar(
-            foregroundImage: CachedNetworkImageProvider(avatar),
+            foregroundImage:
+                CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
           ),
-          title: CustomText.costum1(displayName),
+          title: CustomText.costum1(user.displayName!),
           tileColor: ARMOYU.appbarColor,
           subtitle:
               lastmessage == null ? null : Text(lastmessage!.messageContext),
@@ -81,12 +75,7 @@ class Chat {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (pagecontext) => ChatDetailPage(
-                  userID: userID,
-                  appbar: true,
-                  useravatar: avatar,
-                  userdisplayname: displayName,
-                  lastonlinetime: lastonlinetime,
-                  chats: const [],
+                  chat: this,
                 ),
               ),
             );
@@ -95,5 +84,20 @@ class Chat {
         const SizedBox(height: 1)
       ],
     );
+  }
+
+  Widget profilesendMessage(context) {
+    Future<void> sendmessage() async {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ChatDetailPage(
+            chat: this,
+          ),
+        ),
+      );
+    }
+
+    return CustomButtons.friendbuttons(
+        "Mesaj Gönder", sendmessage, Colors.blue);
   }
 }

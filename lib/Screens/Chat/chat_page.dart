@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/Chat/chat_message.dart';
+import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Chat/chat_new_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,16 +91,22 @@ class _ChatPageState extends State<ChatPage>
         chatlist.add(
           Chat(
             chatID: 1,
-            displayName: response["icerik"][i]["adisoyadi"],
-            avatar: response["icerik"][i]["foto"],
-            userID: response["icerik"][i]["kullid"],
             lastonlinetime: response["icerik"][i]["songiris"],
+            user: User(
+              userID: response["icerik"][i]["kullid"],
+              displayName: response["icerik"][i]["adisoyadi"],
+              avatar: Media(
+                mediaURL: MediaURL(
+                  bigURL: response["icerik"][i]["foto"],
+                  normalURL: response["icerik"][i]["foto"],
+                  minURL: response["icerik"][i]["foto"],
+                ),
+              ),
+            ),
             lastmessage: ChatMessage(
-              avatar: "",
+              user: User(userID: 1, avatar: null, displayName: ""),
               messageContext: sonmesaj,
-              displayName: "",
               messageID: 1,
-              userID: 1,
               isMe: false,
             ),
             chatType: response["icerik"][i]["sohbetturu"],

@@ -32,8 +32,6 @@ class FunctionService {
       password = generateMd5(password);
     }
 
-    log(password);
-
     ARMOYU.Appuser.userName = username;
     ARMOYU.Appuser.password = password;
 
@@ -62,7 +60,7 @@ class FunctionService {
         userMail: oyuncubilgi["eposta"],
         aboutme: oyuncubilgi["hakkimda"],
         avatar: Media(
-          mediaID: 100000,
+          mediaID: oyuncubilgi["presimID"],
           ownerID: oyuncubilgi["oyuncuID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["presim"],
@@ -71,7 +69,7 @@ class FunctionService {
           ),
         ),
         banner: Media(
-          mediaID: 100001,
+          mediaID: oyuncubilgi["parkaresimID"],
           ownerID: oyuncubilgi["oyuncuID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["parkaresim"],
@@ -107,6 +105,7 @@ class FunctionService {
     prefs.setString('password', password);
 
     if (ARMOYU.deviceModel != "Bilinmeyen") {
+      log("Onesignal işlemleri!");
       OneSignalApi.setupOneSignal(
         ARMOYU.Appuser.userID!,
         ARMOYU.Appuser.userName!,

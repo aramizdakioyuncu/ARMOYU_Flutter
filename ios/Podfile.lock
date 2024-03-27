@@ -159,13 +159,13 @@ SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_barcode_scanner: 7a1144744c28dc0c57a8de7218ffe5ec59a9e4bf
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
-  image_picker_ios: 99dfe1854b4fa34d0364e74a78448a0151025425
+  image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   onesignal_flutter: b2e0779721deaffb67ba8abaa5417da139318090
   OneSignalXCFramework: 613f696d70d7e544b9f99e7a21c8b49fa47d7942
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
-  permission_handler_apple: 036b856153a2b1f61f21030ff725f3e6fece2b78
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   ReachabilitySwift: 5ae15e16814b5f9ef568963fb2c87aeb49158c66
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
@@ -176,4 +176,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f844f8533214bc685be8ec5819b26487a4ecd6f2
 
-COCOAPODS: 1.14.2
+COCOAPODS: 1.15.2

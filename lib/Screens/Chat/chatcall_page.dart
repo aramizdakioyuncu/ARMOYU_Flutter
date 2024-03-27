@@ -2,21 +2,18 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChatCallPage extends StatefulWidget {
-  final int userID;
-  final String useravatar;
-  final String userdisplayname;
+  final User user;
 
   const ChatCallPage({
     super.key,
-    required this.userID,
-    required this.useravatar,
-    required this.userdisplayname,
+    required this.user,
   });
 
   @override
@@ -120,7 +117,7 @@ class _ChaCallPageState extends State<ChatCallPage>
             const SizedBox(height: 50),
             ClipOval(
               child: CachedNetworkImage(
-                imageUrl: widget.useravatar,
+                imageUrl: widget.user.avatar!.mediaURL.minURL,
                 width: 100, // Set the desired width
                 height: 100, // Set the desired height
                 fit: BoxFit.cover,
@@ -133,7 +130,7 @@ class _ChaCallPageState extends State<ChatCallPage>
                   children: [
                     const SizedBox(height: 20),
                     Text(
-                      widget.userdisplayname,
+                      widget.user.displayName!,
                       style: const TextStyle(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     ),

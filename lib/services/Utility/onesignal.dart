@@ -1,9 +1,9 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, unused_local_variable
 
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/AppCore.dart';
-import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
+import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -50,13 +50,16 @@ class OneSignalApi {
   static setupOneSignal(int ID, String username, String mail, String role) {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
     OneSignal.initialize("c741c6f1-e84e-41d7-85b1-a596ffcfb5bd");
+    OneSignal.consentRequired(false);
+    OneSignal.Notifications.clearAll();
+
     OneSignal.Notifications.requestPermission(true);
 
     OneSignal.login(username);
     OneSignal.User.setLanguage("tr");
-    Map<String, dynamic> tags = {"ID": ID, "Role": role};
+    Map<String, dynamic> tags = {"ID": ID, "Role": role, "username": username};
     OneSignal.User.addTags(tags);
-    OneSignal.User.addEmail(mail);
+
     OneSignal.Location.setShared(true);
 
     OneSignal.Notifications.addClickListener((event) {
@@ -68,24 +71,20 @@ class OneSignalApi {
         log(event.notification.additionalData.toString());
 
         if (responseData["category"].toString() == "chat") {
-          // AppCore.navigatorKey.currentState?.push(
-          //     MaterialPageRoute(builder: (context) => GroupCreatePage()));
-
           String avatar = "";
           String displayname = "";
+          String userID = "";
           for (Map<String, dynamic> element in responseData["content"]) {
             avatar = element["avatar"];
             displayname = element["displayname"];
+            userID = element["userID"];
           }
 
           AppCore.navigatorKey.currentState?.push(
             MaterialPageRoute(
-              builder: (context) => ChatDetailPage(
+              builder: (context) => ProfilePage(
                 appbar: true,
-                userID: int.parse(responseData["categoryvalue"].toString()),
-                useravatar: avatar,
-                userdisplayname: displayname,
-                chats: const [],
+                userID: int.parse(userID),
               ),
             ),
           );

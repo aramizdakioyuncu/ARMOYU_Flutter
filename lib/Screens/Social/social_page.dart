@@ -168,7 +168,7 @@ class _SocialPageState extends State<SocialPage>
 
   Future<void> _handleRefresh() async {
     isRefreshing = true;
-    loadPosts(1);
+    await loadPosts(1);
     isRefreshing = false;
   }
 
@@ -326,7 +326,9 @@ class _SocialPageState extends State<SocialPage>
       backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
         color: Colors.blue,
-        onRefresh: _handleRefresh,
+        onRefresh: () async {
+          await _handleRefresh();
+        },
         child: ListView(
           controller: _scrollController,
           children: [

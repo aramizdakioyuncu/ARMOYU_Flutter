@@ -5,12 +5,12 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Functions/functions.dart';
+import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 
-import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
@@ -418,7 +418,7 @@ class _ProfilePageState extends State<ProfilePage>
         userProfile.userName = oyuncubilgi["kullaniciadi"];
         userProfile.displayName = oyuncubilgi["adim"];
         userProfile.banner = Media(
-          mediaID: 1000000,
+          mediaID: oyuncubilgi["parkaresimID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["parkaresimminnak"],
             normalURL: oyuncubilgi["parkaresimminnak"],
@@ -426,7 +426,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         );
         userProfile.avatar = Media(
-          mediaID: 1000001,
+          mediaID: oyuncubilgi["presimID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["presimminnak"],
             normalURL: oyuncubilgi["presimminnak"],
@@ -519,7 +519,7 @@ class _ProfilePageState extends State<ProfilePage>
         userProfile.userName = oyuncubilgi["kullaniciadi"];
         userProfile.displayName = oyuncubilgi["adim"];
         userProfile.banner = Media(
-          mediaID: 1000000,
+          mediaID: oyuncubilgi["parkaresimID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["parkaresimminnak"],
             normalURL: oyuncubilgi["parkaresimminnak"],
@@ -527,7 +527,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
         );
         userProfile.avatar = Media(
-          mediaID: 1000000,
+          mediaID: oyuncubilgi["presimID"],
           mediaURL: MediaURL(
             bigURL: oyuncubilgi["presimminnak"],
             normalURL: oyuncubilgi["presimminnak"],
@@ -733,21 +733,6 @@ class _ProfilePageState extends State<ProfilePage>
 
     friendStatus = "Bekleniyor";
     friendStatuscolor = Colors.black;
-  }
-
-  Future<void> sendmessage() async {
-    log("Sohbet açılacak");
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ChatDetailPage(
-          appbar: true,
-          userID: userProfile.userID!,
-          useravatar: userProfile.avatar!.mediaURL.minURL,
-          userdisplayname: userProfile.userName!,
-          chats: const [],
-        ),
-      ),
-    );
   }
 
   Future<void> cancelfriendrequest() async {
@@ -1329,8 +1314,13 @@ class _ProfilePageState extends State<ProfilePage>
                                     userProfile.favTeam != null
                                         ? Column(
                                             children: [
-                                              InkWell(
+                                              GestureDetector(
                                                 onTap: () {
+                                                  if (userProfile.userID !=
+                                                      ARMOYU.Appuser.userID) {
+                                                    return;
+                                                  }
+
                                                   setState(() {
                                                     ARMOYUFunctions
                                                         .selectFavTeam(context,
@@ -1563,8 +1553,9 @@ class _ProfilePageState extends State<ProfilePage>
                               isFriend &&
                               userProfile.userID != ARMOYU.Appuser.userID,
                           child: Expanded(
-                            child: CustomButtons.friendbuttons(
-                                friendStatus, sendmessage, friendStatuscolor),
+                            child:
+                                Chat(user: userProfile, chatNotification: false)
+                                    .profilesendMessage(context),
                           ),
                         )
                       ],

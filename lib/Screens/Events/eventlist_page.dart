@@ -55,6 +55,24 @@ class _EventlistPage extends State<EventlistPage>
     for (dynamic element in response['icerik']) {
       if (mounted) {
         setState(() {
+          List<User> aa = [];
+
+          for (dynamic element2 in element['event_organizer']) {
+            aa.add(
+              User(
+                userID: element2["player_ID"],
+                displayName: element2["player_displayname"],
+                avatar: Media(
+                  mediaURL: MediaURL(
+                    bigURL: element2["player_avatar"],
+                    normalURL: element2["player_avatar"],
+                    minURL: element2["player_avatar"],
+                  ),
+                ),
+              ),
+            );
+          }
+
           eventsList.add(
             Event(
               eventID: element["event_ID"],
@@ -65,21 +83,14 @@ class _EventlistPage extends State<EventlistPage>
               gameImage: element["event_gamelogo"],
               image: element["event_foto"].toString(),
               banner: element["event_gamebanner"],
-              eventorganizer: User(
-                displayName: element["event_organizername"],
-                avatar: Media(
-                  mediaURL: MediaURL(
-                    bigURL: element["event_organizeravatar"],
-                    normalURL: element["event_organizeravatar"],
-                    minURL: element["event_organizeravatar"],
-                  ),
-                ),
-              ),
+              eventorganizer: aa,
               eventPlace: element["event_yer"].toString(),
               description: element["event_description"],
               rules: element["event_rules"],
               participantsLimit: element["event_participantlimit"],
               participantsCurrent: element["event_participantcurrent"],
+              participantsgroupplayerlimit:
+                  element["event_participantgroupplayerlimit"],
               location: element["event_location"],
             ),
           );

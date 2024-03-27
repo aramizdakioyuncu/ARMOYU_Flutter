@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:isolate';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/Chat/chat_message.dart';
 import 'package:ARMOYU/Screens/Chat/chatcall_page.dart';
 import 'package:ARMOYU/Services/Socket/socket.dart';
@@ -15,21 +16,11 @@ import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:skeletons/skeletons.dart';
 
 class ChatDetailPage extends StatefulWidget {
-  final bool appbar;
-  final int userID;
-  final String useravatar;
-  final String userdisplayname;
-  final String? lastonlinetime;
-  final List<ChatMessage> chats;
+  final Chat chat;
 
   const ChatDetailPage({
     super.key,
-    required this.appbar,
-    required this.userID,
-    required this.useravatar,
-    required this.userdisplayname,
-    this.lastonlinetime,
-    required this.chats,
+    required this.chat,
   });
 
   @override
@@ -37,9 +28,7 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 final TextEditingController _messageController = TextEditingController();
-
 final ScrollController _scrollController = ScrollController();
-List<ChatMessage> chatList = [];
 
 class _ChatDetailPage extends State<ChatDetailPage>
     with AutomaticKeepAliveClientMixin {
@@ -58,10 +47,13 @@ class _ChatDetailPage extends State<ChatDetailPage>
   @override
   void initState() {
     super.initState();
-
-    getchat().then((_) {
+    if (widget.chat.messages.isEmpty) {
+      getchat().then((_) {
+        isolatestart();
+      });
+    } else {
       isolatestart();
-    });
+    }
   }
 
   @override
@@ -87,7 +79,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
     isolateListen = await Isolate.spawn(socketListenMessage, [
       receiveportListen!.sendPort,
       ARMOYU.Appuser.userID.toString(),
-      widget.userID.toString()
+      widget.chat.user.userID.toString()
     ]);
 
     receiveportListen!.listen((message) async {
@@ -107,14 +99,12 @@ class _ChatDetailPage extends State<ChatDetailPage>
         }
 
         setState(() {
-          chatList.add(
+          widget.chat.messages.add(
             ChatMessage(
-              avatar: widget.useravatar,
-              displayName: widget.userdisplayname,
+              messageID: 0,
               isMe: false,
               messageContext: message,
-              messageID: 0,
-              userID: widget.userID,
+              user: widget.chat.user,
             ),
           );
         });
@@ -139,7 +129,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
         ARMOYU.Appuser.userID.toString(),
         ARMOYU.Appuser.userName!,
         ARMOYU.Appuser.password!,
-        widget.userID.toString());
+        widget.chat.user.userID.toString());
 
     receiveportSend!.listen(
       (message) {
@@ -168,44 +158,47 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
   Future<void> getchat() async {
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getdeailchats(widget.userID);
+    Map<String, dynamic> response =
+        await f.getdeailchats(widget.chat.user.userID!);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
     }
 
-    int dynamicItemCount = response["icerik"].length;
-    if (dynamicItemCount == 0) {
+    if (response["icerik"].length == 0) {
       return;
     }
+
+    log("------");
+
     bool ismee = true;
+    if (mounted) {
+      widget.chat.messages.clear();
+    }
 
-    chatList.clear();
+    log(response["icerik"].length.toString());
 
-    for (int i = 0; i < dynamicItemCount; i++) {
+    log(widget.chat.messages.length.toString());
+    for (dynamic element in response["icerik"]) {
       try {
+        if (element["sohbetkim"] == "ben") {
+          ismee = true;
+        } else {
+          ismee = false;
+        }
         setState(() {
-          if (response["icerik"][i]["sohbetkim"] == "ben") {
-            ismee = true;
-          } else {
-            ismee = false;
-          }
-
-          chatList.add(
+          widget.chat.messages.add(
             ChatMessage(
-              avatar: response["icerik"][i]["avatar"],
-              displayName: response["icerik"][i]["avatar"],
-              isMe: ismee,
-              messageContext: response["icerik"][i]["mesajicerik"],
               messageID: 0,
-              userID: widget.userID,
+              isMe: ismee,
+              messageContext: element["mesajicerik"],
+              user: widget.chat.user,
             ),
           );
         });
       } catch (e) {
-        log("Sohbet getirilemedi!");
+        log("Sohbet getirilemedi! : $e");
       }
-
       try {
         Future.delayed(const Duration(milliseconds: 100), () {
           _scrollController.animateTo(
@@ -228,101 +221,97 @@ class _ChatDetailPage extends State<ChatDetailPage>
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey.shade900,
-        appBar: widget.appbar
-            ? AppBar(
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.userdisplayname,
-                      style: const TextStyle(
-                          fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                    Row(
-                      children: [
-                        widget.lastonlinetime == null
-                            ? const SkeletonLine(
-                                style: SkeletonLineStyle(width: 20),
-                              )
-                            : Text(
-                                widget.lastonlinetime == null
-                                    ? ""
-                                    : widget.lastonlinetime.toString(),
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: widget.lastonlinetime!.toString() ==
-                                          "Çevrimiçi"
-                                      ? Colors.green
-                                      : Colors.red,
-                                ),
-                              ),
-                      ],
-                    ),
-                  ],
-                ),
-                leading: Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ProfilePage(
-                                  userID: widget.userID,
-                                  appbar: true,
-                                ),
-                              ),
-                            );
-                          },
-                          child: CachedNetworkImage(
-                            imageUrl: widget.useravatar,
-                            width: 30,
-                            height: 30,
-                            fit: BoxFit.cover,
+        appBar: AppBar(
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.chat.user.displayName!,
+                style:
+                    const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+              Row(
+                children: [
+                  widget.chat.lastonlinetime == null
+                      ? const SkeletonLine(
+                          style: SkeletonLineStyle(width: 20),
+                        )
+                      : Text(
+                          widget.chat.lastonlinetime == null
+                              ? ""
+                              : widget.chat.lastonlinetime.toString(),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: widget.chat.lastonlinetime!.toString() ==
+                                    "Çevrimiçi"
+                                ? Colors.green
+                                : Colors.red,
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.black,
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.call),
-                    onPressed: () {
+                ],
+              ),
+            ],
+          ),
+          leading: Builder(
+            builder: (BuildContext context) {
+              return Container(
+                padding: const EdgeInsets.all(12.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(50.0),
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatCallPage(
-                            userID: widget.userID,
-                            useravatar: widget.useravatar,
-                            userdisplayname: widget.userdisplayname,
+                          builder: (context) => ProfilePage(
+                            userID: widget.chat.user.userID!,
+                            appbar: true,
                           ),
                         ),
                       );
                     },
+                    child: CachedNetworkImage(
+                      imageUrl: widget.chat.user.avatar!.mediaURL.minURL,
+                      width: 30,
+                      height: 30,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.refresh),
-                    onPressed: () {
-                      getchat();
-                    },
+                ),
+              );
+            },
+          ),
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.black,
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.call),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatCallPage(
+                      user: widget.chat.user,
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              )
-            : null,
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                getchat();
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -337,9 +326,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
               Expanded(
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: chatList.length,
+                  itemCount: widget.chat.messages.length,
                   itemBuilder: (context, index) {
-                    return chatList[index].messageBumble(context);
+                    return widget.chat.messages[index].messageBumble(context);
                   },
                 ),
               ),
@@ -380,14 +369,12 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         String message = _messageController.text;
                         _messageController.text = "";
                         setState(() {
-                          chatList.add(
+                          widget.chat.messages.add(
                             ChatMessage(
-                              avatar: ARMOYU.Appuser.avatar!.mediaURL.minURL,
-                              displayName: ARMOYU.Appuser.displayName!,
+                              messageID: 0,
                               isMe: true,
                               messageContext: message,
-                              messageID: 0,
-                              userID: ARMOYU.Appuser.userID!,
+                              user: ARMOYU.Appuser,
                             ),
                           );
                           try {
@@ -407,7 +394,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
                         FunctionService f = FunctionService();
                         Map<String, dynamic> response = await f.sendchatmessage(
-                            widget.userID, message, "ozel");
+                            widget.chat.user.userID!, message, "ozel");
                         if (response["durum"] == 0) {
                           log(response["aciklama"]);
                           return;

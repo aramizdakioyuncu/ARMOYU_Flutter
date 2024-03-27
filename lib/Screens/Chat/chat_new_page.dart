@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
+import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/material.dart';
 
 class ChatNewPage extends StatefulWidget {
@@ -69,12 +71,19 @@ class _ChatNewPageState extends State<ChatNewPage>
           newchatList.add(
             Chat(
               chatID: 1,
-              displayName: response["icerik"][i]["adisoyadi"],
-              avatar: response["icerik"][i]["avatar"],
-              userID: response["icerik"][i]["kullid"],
               chatType: "ozel",
               lastonlinetime: response["icerik"][i]["songiris"],
               chatNotification: false,
+              user: User(
+                  userID: response["icerik"][i]["kullid"],
+                  displayName: response["icerik"][i]["adisoyadi"],
+                  avatar: Media(
+                    mediaURL: MediaURL(
+                      bigURL: response["icerik"][i]["avatar"],
+                      normalURL: response["icerik"][i]["avatar"],
+                      minURL: response["icerik"][i]["avatar"],
+                    ),
+                  )),
             ),
           );
         });

@@ -22,9 +22,9 @@ void main() async {
 class MyApp extends StatelessWidget {
   final Widget homePage;
   const MyApp({
-    Key? key,
+    super.key,
     required this.homePage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

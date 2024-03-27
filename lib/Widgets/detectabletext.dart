@@ -17,9 +17,6 @@ class CustomDedectabletext {
         "(?!\\n)(?:^|\\s)([#@]([$detectionContentLetters]+))|$urlRegexContent",
         multiLine: true,
       ),
-      callback: (bool readMore) {
-        debugPrint('Read more >>>>>>> $readMore');
-      },
       onTap: (tappedText) async {
         log(tappedText);
         if (tappedText.startsWith('#')) {

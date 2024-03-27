@@ -1,20 +1,17 @@
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage {
   final int messageID;
   final String messageContext;
-  final String avatar;
-  final String displayName;
-  final int userID;
+  final User user;
   final bool isMe;
 
   ChatMessage({
     required this.messageID,
     required this.messageContext,
-    required this.avatar,
-    required this.displayName,
-    required this.userID,
+    required this.user,
     required this.isMe,
   });
 
@@ -29,7 +26,8 @@ class ChatMessage {
             Container(
               padding: const EdgeInsets.only(right: 5),
               child: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(avatar),
+                backgroundImage:
+                    CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
               ),
             ),
           Container(

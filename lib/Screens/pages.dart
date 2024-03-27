@@ -102,7 +102,8 @@ class _PagesState extends State<Pages> {
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında yapılacak işlemler
-        return false;
+        _changePage(0);
+        return true;
       },
       child: Scaffold(
         backgroundColor: Colors.black,
