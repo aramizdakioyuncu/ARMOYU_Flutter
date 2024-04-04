@@ -78,6 +78,7 @@ class _ChatNewPageState extends State<ChatNewPage>
                   userID: response["icerik"][i]["kullid"],
                   displayName: response["icerik"][i]["adisoyadi"],
                   avatar: Media(
+                    mediaID: response["icerik"][i]["kullid"],
                     mediaURL: MediaURL(
                       bigURL: response["icerik"][i]["avatar"],
                       normalURL: response["icerik"][i]["avatar"],

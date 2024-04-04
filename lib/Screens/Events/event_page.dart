@@ -78,6 +78,7 @@ class _EventStatePage extends State<EventPage> {
             displayName: element2["player_name"],
             userName: element2["player_username"],
             avatar: Media(
+              mediaID: element2["player_ID"],
               mediaURL: MediaURL(
                 bigURL: element2["player_avatar"],
                 normalURL: element2["player_avatar"],
@@ -92,6 +93,7 @@ class _EventStatePage extends State<EventPage> {
       Group g = Group(
         groupID: element["group_ID"],
         groupLogo: Media(
+          mediaID: element["group_ID"],
           mediaURL: MediaURL(
             bigURL: element["group_logo"],
             normalURL: element["group_logo"],
@@ -99,6 +101,7 @@ class _EventStatePage extends State<EventPage> {
           ),
         ),
         groupBanner: Media(
+          mediaID: element["group_ID"],
           mediaURL: MediaURL(
             bigURL: element["group_banner"],
             normalURL: element["group_banner"],
@@ -128,6 +131,7 @@ class _EventStatePage extends State<EventPage> {
           displayName: element["player_name"],
           userName: element["player_username"],
           avatar: Media(
+            mediaID: element["player_ID"],
             mediaURL: MediaURL(
               bigURL: element["player_avatar"],
               normalURL: element["player_avatar"],

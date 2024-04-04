@@ -1,17 +1,18 @@
-import 'dart:io';
-import 'package:ARMOYU/Core/AppCore.dart';
+import 'dart:developer';
+
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
+import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
+import 'package:ARMOYU/Widgets/textfields.dart';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PostSharePage extends StatefulWidget {
-  final bool appbar;
-
-  const PostSharePage({super.key, required this.appbar});
+  const PostSharePage({super.key});
 
   @override
   State<PostSharePage> createState() => _PostSharePageState();
@@ -19,12 +20,12 @@ class PostSharePage extends StatefulWidget {
 
 class _PostSharePageState extends State<PostSharePage>
     with AutomaticKeepAliveClientMixin<PostSharePage> {
+  GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
   @override
   bool get wantKeepAlive => true;
 
-  TextEditingController textController = TextEditingController();
+  // TextEditingController textController = TextEditingController();
   TextEditingController postsharetext = TextEditingController();
-  List<XFile> imagePath = [];
   List<Media> media = [];
   bool postshareProccess = false;
 
@@ -38,7 +39,7 @@ class _PostSharePageState extends State<PostSharePage>
     });
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response =
-        await funct.share(textController.text, imagePath);
+        await funct.share(key.currentState!.controller!.text, media);
     if (response["durum"] == 0) {
       postsharetext.text = response["aciklama"].toString();
       if (mounted) {
@@ -60,105 +61,125 @@ class _PostSharePageState extends State<PostSharePage>
     }
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      appBar: widget.appbar
-          ? AppBar(
-              backgroundColor: Colors.black,
-            )
-          : null,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text("Paylaşım Yap"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              // height: 30,
-              child: Column(
-                children: [
-                  TextField(
-                    controller: textController,
-                    decoration:
-                        const InputDecoration(hintText: "Bir şeyler yaz..."),
-                    maxLines: null,
-                  ),
-                  ElevatedButton(
-                    // Görsel ekleme alanı
-
-                    onPressed: () async {
-                      List<XFile> selectedImages = await AppCore.pickImages();
-                      if (selectedImages.isNotEmpty) {
-                        setState(() {
-                          //Çok Önemli sakın silme
-                          imagePath.addAll(selectedImages);
-                          //
-                          for (XFile element in selectedImages) {
-                            media.add(
-                              Media(
-                                mediaID: element.hashCode,
-                                mediaURL: MediaURL(
-                                  bigURL: element.path,
-                                  normalURL: element.path,
-                                  minURL: element.path,
-                                ),
-                              ),
-                            );
-                          }
-                        });
-                      }
-                    },
-                    child: const Text("Görsel Ekle"),
-                  ),
-
-                  // Görsellerin önizlemesi
-                  if (media.isNotEmpty)
-                    SizedBox(
-                      height: 100,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: media.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => MediaViewer(
-                                    media: media,
-                                    initialIndex: index,
-                                    isFile: true,
-                                  ),
-                                ));
-                              },
-                              child: Image.file(
-                                File(media[index].mediaURL.bigURL),
-                                width: 100,
-                                height: 100,
-                              ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Media.mediaList(media, setstatefunction, big: true),
+              CustomTextfields.mentionTextFiled(
+                key: key,
+                setstate: setstatefunction,
+                minLines: 3,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () async {
+                        dynamic aa = await _determinePosition();
+                        log(aa.toString());
+                      },
+                      icon: const Icon(
+                        Icons.location_on,
+                        color: Colors.red,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.person_2,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    const Spacer(),
+                    if (ARMOYU.cameras!.isNotEmpty)
+                      IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const CameraScreen(),
                             ),
                           );
                         },
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.deepPurple,
+                        ),
                       ),
-                    )
-                ],
+                    if (ARMOYU.cameras!.isNotEmpty) const Spacer(),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.calendar_month,
+                        color: Colors.blue,
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 100,
-              child: Column(
-                children: [
-                  CustomButtons.costum1(
-                    "Paylaş",
-                    onPressed: sharePost,
-                    loadingStatus: postshareProccess,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(postsharetext.text),
-                ],
+              SizedBox(
+                height: 100,
+                child: Column(
+                  children: [
+                    CustomButtons.costum1(
+                      "Paylaş",
+                      onPressed: sharePost,
+                      loadingStatus: postshareProccess,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(postsharetext.text),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -187,10 +187,12 @@ class _EventStatePage extends State<InvitePage>
     }
 
     invitePage++;
-    setState(() {
-      inviteListProcces = false;
-      isfirstfetch = false;
-    });
+    if (mounted) {
+      setState(() {
+        inviteListProcces = false;
+        isfirstfetch = false;
+      });
+    }
   }
 
   @override

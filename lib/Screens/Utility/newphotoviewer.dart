@@ -90,7 +90,7 @@ class _MediaViewerPage extends State<MediaViewer> {
                     isRotationprocces = true;
                     FunctionsMedia f = FunctionsMedia();
                     Map<String, dynamic> response = await f.rotation(
-                        widget.media[widget.initialIndex].mediaID!,
+                        widget.media[widget.initialIndex].mediaID,
                         360 - (rotateangle % 360));
 
                     if (response["durum"] == 0) {
@@ -152,7 +152,7 @@ class _MediaViewerPage extends State<MediaViewer> {
               imageProvider: imageProvider,
               initialScale: PhotoViewComputedScale.contained * 1,
               heroAttributes:
-                  PhotoViewHeroAttributes(tag: widget.media[index].mediaID!),
+                  PhotoViewHeroAttributes(tag: widget.media[index].mediaID),
             );
           },
           loadingBuilder: (context, event) => const Center(

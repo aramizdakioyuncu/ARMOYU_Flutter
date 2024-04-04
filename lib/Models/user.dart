@@ -26,6 +26,8 @@ class User {
   String? aboutme = "";
   String? burc = "";
   String? invitecode = "";
+  String? lastlogin = "";
+  String? lastfaillogin = "";
 
   int? level = 0;
   String? levelColor;
@@ -56,6 +58,8 @@ class User {
     this.aboutme,
     this.burc,
     this.invitecode,
+    this.lastlogin,
+    this.lastfaillogin,
     this.level,
     this.levelColor,
     this.xp,

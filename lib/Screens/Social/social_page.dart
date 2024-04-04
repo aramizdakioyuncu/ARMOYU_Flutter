@@ -255,6 +255,7 @@ class _SocialPageState extends State<SocialPage>
               userID: response["icerik"][i]["sahipID"],
               userName: response["icerik"][i]["sahipad"],
               avatar: Media(
+                mediaID: response["icerik"][i]["sahipID"],
                 mediaURL: MediaURL(
                   bigURL: response["icerik"][i]["sahipavatarminnak"],
                   normalURL: response["icerik"][i]["sahipavatarminnak"],
@@ -358,9 +359,7 @@ class _SocialPageState extends State<SocialPage>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const PostSharePage(
-              appbar: true,
-            ),
+            builder: (context) => const PostSharePage(),
           ));
         },
         backgroundColor: ARMOYU.buttonColor,

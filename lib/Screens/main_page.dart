@@ -19,6 +19,7 @@ import 'package:ARMOYU/Screens/School/school_login.dart';
 import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
+import 'package:ARMOYU/Screens/Survey/surveylist_page.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -261,6 +262,7 @@ class _MainPageState extends State<MainPage>
               stationID: element["station_ID"],
               name: element["station_name"],
               logo: Media(
+                mediaID: element["station_ID"],
                 mediaURL: MediaURL(
                   bigURL: element["station_logo"],
                   normalURL: element["station_logo"],
@@ -268,6 +270,7 @@ class _MainPageState extends State<MainPage>
                 ),
               ),
               banner: Media(
+                mediaID: element["station_ID"],
                 mediaURL: MediaURL(
                   bigURL: element["station_banner"],
                   normalURL: element["station_banner"],
@@ -599,6 +602,20 @@ class _MainPageState extends State<MainPage>
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const EventlistPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          textColor: ARMOYU.textColor,
+                          iconColor: ARMOYU.textColor,
+                          leading: const Icon(Icons.analytics_rounded),
+                          title: const Text("Anketler"),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const SurveyListPage(),
                               ),
                             );
                           },

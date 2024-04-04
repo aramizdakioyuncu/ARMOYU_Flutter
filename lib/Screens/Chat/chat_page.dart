@@ -96,6 +96,7 @@ class _ChatPageState extends State<ChatPage>
               userID: response["icerik"][i]["kullid"],
               displayName: response["icerik"][i]["adisoyadi"],
               avatar: Media(
+                mediaID: response["icerik"][i]["kullid"],
                 mediaURL: MediaURL(
                   bigURL: response["icerik"][i]["foto"],
                   normalURL: response["icerik"][i]["foto"],

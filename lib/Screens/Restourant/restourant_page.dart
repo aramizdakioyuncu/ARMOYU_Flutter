@@ -62,6 +62,7 @@ class _RestourantPage extends State<RestourantPage>
               productsID: element["equipment_ID"],
               name: element["equipment_name"],
               logo: Media(
+                mediaID: element["equipment_ID"],
                 mediaURL: MediaURL(
                   bigURL: element["equipment_image"],
                   normalURL: element["equipment_image"],
@@ -69,6 +70,7 @@ class _RestourantPage extends State<RestourantPage>
                 ),
               ),
               banner: Media(
+                mediaID: element["equipment_ID"],
                 mediaURL: MediaURL(
                   bigURL: element["equipment_image"],
                   normalURL: element["equipment_image"],

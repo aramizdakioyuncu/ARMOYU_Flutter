@@ -149,6 +149,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
           userName: element["hgoruntuleyen_kullaniciad"],
           displayName: element["hgoruntuleyen_adsoyad"],
           avatar: Media(
+            mediaID: 0,
             mediaURL: MediaURL(
               bigURL: element["hgoruntuleyen_avatar"],
               normalURL: element["hgoruntuleyen_avatar"],

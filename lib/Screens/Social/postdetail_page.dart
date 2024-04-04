@@ -143,6 +143,7 @@ class _PostDetailPage extends State<PostDetailPage>
         userID: response["icerik"][0]["sahipID"],
         userName: response["icerik"][0]["sahipad"],
         avatar: Media(
+          mediaID: response["icerik"][0]["sahipID"],
           mediaURL: MediaURL(
             bigURL: response["icerik"][0]["sahipavatarminnak"],
             normalURL: response["icerik"][0]["sahipavatarminnak"],

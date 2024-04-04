@@ -3,7 +3,7 @@ import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Services/Utility/theme.dart';
 import 'package:ARMOYU/Screens/Utility/startingscreen_page.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -12,30 +12,25 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      child: const MyApp(
-        homePage: StartingScreen(),
+      child: const Portal(
+        child: MyApp(),
       ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  final Widget homePage;
-  const MyApp({
-    super.key,
-    required this.homePage,
-  });
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     themeProvider.startingTheme();
 
-    Intl.defaultLocale = 'tr_TR';
     return MaterialApp(
       title: 'ARMOYU',
       theme: themeProvider.themeData,
-      home: homePage,
+      home: const StartingScreen(),
       debugShowCheckedModeBanner: false,
       navigatorKey: AppCore.navigatorKey,
     );

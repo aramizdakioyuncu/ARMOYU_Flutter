@@ -86,8 +86,8 @@ class _SettingsPage extends State<SettingsPage> {
                       radius: 28,
                     ),
                     title: Text(ARMOYU.Appuser.displayName!),
-                    subtitle:
-                        CustomText.costum1("Son Hatalı Giriş: 20.02.2002"),
+                    subtitle: CustomText.costum1(
+                        "Hatalı Giriş: ${ARMOYU.Appuser.lastfaillogin}"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -373,6 +373,8 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                     ],
                   ),
+                  Text(
+                      "Versiyon : ${ARMOYU.appVersion.toString()} (${ARMOYU.appBuild.toString()})"),
                 ],
               ),
             ],

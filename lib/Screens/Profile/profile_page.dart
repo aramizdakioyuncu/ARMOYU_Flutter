@@ -186,6 +186,7 @@ class _ProfilePageState extends State<ProfilePage>
                 userID: response["icerik"][i]["sahipID"],
                 userName: response["icerik"][i]["sahipad"],
                 avatar: Media(
+                  mediaID: response["icerik"][i]["sahipID"],
                   mediaURL: MediaURL(
                     bigURL: response["icerik"][i]["sahipavatarminnak"],
                     normalURL: response["icerik"][i]["sahipavatarminnak"],
@@ -371,6 +372,7 @@ class _ProfilePageState extends State<ProfilePage>
                 userID: response["icerik"][i]["sahipID"],
                 userName: response["icerik"][i]["sahipad"],
                 avatar: Media(
+                  mediaID: response["icerik"][i]["sahipID"],
                   mediaURL: MediaURL(
                     bigURL: response["icerik"][i]["sahipavatarminnak"],
                     normalURL: response["icerik"][i]["sahipavatarminnak"],
@@ -1498,7 +1500,8 @@ class _ProfilePageState extends State<ProfilePage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 20),
-                                specialText(context, friendTextLine)
+                                WidgetUtility.specialText(
+                                    context, friendTextLine)
                               ],
                             ),
                           )

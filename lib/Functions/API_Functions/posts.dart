@@ -1,6 +1,6 @@
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsPosts {
@@ -44,11 +44,15 @@ class FunctionsPosts {
   }
 
 //Share
-  Future<Map<String, dynamic>> share(String text, List<XFile> files) async {
+  Future<Map<String, dynamic>> share(String text, List<Media> files) async {
     List<MultipartFile> photosCollection = [];
-    for (var file in files) {
-      photosCollection
-          .add(await AppCore.generateImageFile("paylasimfoto[]", file));
+    for (Media file in files) {
+      photosCollection.add(
+        await AppCore.generateImageFile(
+          "paylasimfoto[]",
+          file.mediaXFile!,
+        ),
+      );
     }
 
     Map<String, String> formData = {

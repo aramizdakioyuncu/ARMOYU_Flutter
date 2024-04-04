@@ -138,6 +138,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
   }
 
+  void setstatefunction() {
+    setState(() {});
+  }
+
   void postcomments(int postID, List<Widget> listComments) {
     //Yorumları Çekmeye başla
     getcommentsfetch(postID, listComments);
@@ -592,7 +596,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: specialText(context, widget.post.content),
+              child: WidgetUtility.specialText(context, widget.post.content),
             ),
             const SizedBox(height: 5),
             Center(

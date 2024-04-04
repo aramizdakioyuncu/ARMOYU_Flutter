@@ -79,6 +79,8 @@ class FunctionService {
         ),
         burc: oyuncubilgi["burc"],
         invitecode: oyuncubilgi["davetkodu"],
+        lastlogin: oyuncubilgi["songiris"],
+        lastfaillogin: oyuncubilgi["sonhataligiris"],
         job: oyuncubilgi["isyeriadi"],
         level: oyuncubilgi["seviye"],
         levelColor: oyuncubilgi["seviyerenk"],

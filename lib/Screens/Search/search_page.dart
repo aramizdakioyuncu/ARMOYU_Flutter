@@ -128,13 +128,16 @@ class _SearchPagePage extends State<SearchPage>
     TextEditingController controller,
     String text,
   ) async {
-    if (controller.text == "") {
+    if (controller.text == "" || controller.text.isEmpty) {
+      searchTimer?.cancel();
+
       setState(() {
         widgetSearch.clear();
       });
       return;
     }
-    searchTimer = Timer(const Duration(milliseconds: 300), () async {
+
+    searchTimer = Timer(const Duration(milliseconds: 500), () async {
       loadSkeletonpost();
       log("$text ${controller.text}");
 

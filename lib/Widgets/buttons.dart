@@ -1,4 +1,5 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomButtons {
@@ -30,7 +31,7 @@ class CustomButtons {
     Color foregroundColor = Colors.white;
 
     return loadingStatus
-        ? CircularProgressIndicator(color: ARMOYU.color)
+        ? CupertinoActivityIndicator(color: ARMOYU.color)
         : ElevatedButton(
             onPressed: () async {
               if (!loadingStatus) {
@@ -56,7 +57,16 @@ class CustomButtons {
           );
   }
 
-  Widget costum2(Icon icon, String text, onPressed) {
+  static Widget costum2({
+    required Icon icon,
+    String? text,
+    required onPressed,
+  }) {
+    List<Widget> aa = [icon];
+    if (text != null) {
+      aa.add(const SizedBox(width: 10));
+      aa.add(Text(text));
+    }
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
@@ -68,9 +78,9 @@ class CustomButtons {
         ),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[icon, const SizedBox(width: 10), Text(text)],
+        children: aa,
       ),
     );
   }

@@ -63,6 +63,7 @@ class _EventlistPage extends State<EventlistPage>
                 userID: element2["player_ID"],
                 displayName: element2["player_displayname"],
                 avatar: Media(
+                  mediaID: element2["player_ID"],
                   mediaURL: MediaURL(
                     bigURL: element2["player_avatar"],
                     normalURL: element2["player_avatar"],
