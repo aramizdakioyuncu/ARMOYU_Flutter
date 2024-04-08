@@ -42,6 +42,7 @@ class ApiService {
 
       if (response.statusCode == 200) {
         String responseContent = response.body;
+        // log(responseContent);
         try {
           Map<String, dynamic> jsonData = json.decode(responseContent);
           log(jsonData["aciklama"].toString());

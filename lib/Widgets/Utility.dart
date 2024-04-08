@@ -7,7 +7,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class WidgetUtility {
-  static Widget specialText(BuildContext context, String text) {
+  static Widget specialText(
+    BuildContext context,
+    String text, {
+    TextAlign textAlign = TextAlign.start,
+    FontWeight fontWeight = FontWeight.normal,
+    Color color = Colors.white,
+  }) {
     final lines = text.split('\n');
     final textSpans = <TextSpan>[];
 
@@ -58,7 +64,7 @@ class WidgetUtility {
           } else {
             lineSpans.add(TextSpan(
               text: word,
-              style: TextStyle(color: ARMOYU.color),
+              style: TextStyle(color: color),
             ));
           }
 
@@ -73,7 +79,13 @@ class WidgetUtility {
     }
 
     return RichText(
-      text: TextSpan(children: textSpans),
+      text: TextSpan(
+        children: textSpans,
+        style: TextStyle(
+          fontWeight: fontWeight,
+        ),
+      ),
+      textAlign: textAlign,
     );
   }
 

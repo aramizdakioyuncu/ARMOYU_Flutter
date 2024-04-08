@@ -1,12 +1,6 @@
-import 'dart:developer';
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Functions/API_Functions/survey.dart';
-import 'package:ARMOYU/Models/Survey/answer.dart';
-import 'package:ARMOYU/Models/Survey/question.dart';
+import 'package:ARMOYU/Functions/Client_Functions/survey.dart';
 import 'package:ARMOYU/Models/Survey/survey.dart';
-import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Survey/surveynew_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +16,10 @@ int surveyCounter = 1;
 List<Survey> surveyList = [];
 bool firstfetching = true;
 
+ScrollController _controller = ScrollController();
+
+bool surveyListProcces = false;
+
 class _ChatPageState extends State<SurveyListPage>
     with AutomaticKeepAliveClientMixin<SurveyListPage> {
   final ScrollController chatScrollController = ScrollController();
@@ -36,81 +34,44 @@ class _ChatPageState extends State<SurveyListPage>
     if (surveyList.isEmpty) {
       fetchsurveys();
     }
+
+    _controller.addListener(() {
+      if (_controller.position.pixels >=
+          _controller.position.maxScrollExtent * 0.5) {
+        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
+        fetchsurveys();
+      }
+    });
+  }
+
+  void setstatefonction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> fetchsurveys() async {
-    FunctionsSurvey function = FunctionsSurvey();
-    Map<String, dynamic> response = await function.fetchSurveys(surveyCounter);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      //Tekrar çekmeyi dene
-      fetchsurveys();
+    if (surveyListProcces) {
       return;
     }
 
-    for (var element in response["icerik"]) {
-      List<SurveyAnswer> surveyOptions = [];
+    surveyListProcces = true;
+    ClientFunctionSurvey function = ClientFunctionSurvey();
+    List<Survey>? response = await function.fetchsurvey(page: surveyCounter);
 
-      for (var options in element["survey_options"]) {
-        surveyOptions.add(
-          SurveyAnswer(
-            answerID: options["option_ID"],
-            answerType: "answerType",
-            value: options["option_answer"],
-          ),
-        );
-      }
-      surveyList.add(
-        Survey(
-          surveyID: element["survey_ID"],
-          surveyQuestion: SurveyQuestion(
-            questionValue: element["survey_question"],
-            questionImages: [
-              Media(
-                mediaID: element["survey_ID"],
-                mediaURL: MediaURL(
-                  bigURL:
-                      "https://github.com/imaNNeo/fl_chart/raw/main/repo_files/images/bar_chart/bar_chart_sample_1.gif",
-                  normalURL:
-                      "https://github.com/imaNNeo/fl_chart/raw/main/repo_files/images/bar_chart/bar_chart_sample_1.gif",
-                  minURL:
-                      "https://github.com/imaNNeo/fl_chart/raw/main/repo_files/images/bar_chart/bar_chart_sample_1.gif",
-                ),
-              ),
-              Media(
-                mediaID: element["survey_ID"],
-                mediaURL: MediaURL(
-                  bigURL:
-                      "https://github.com/imaNNeo/fl_chart/raw/main/repo_files/images/bar_chart/bar_chart_sample_1.gif",
-                  normalURL:
-                      "https://github.com/imaNNeo/fl_chart/raw/main/repo_files/images/bar_chart/bar_chart_sample_1.gif",
-                  minURL:
-                      "https://github.com/imaNNeo/fl_chart/raw/main/repo_files/images/bar_chart/bar_chart_sample_1.gif",
-                ),
-              ),
-            ],
-          ),
-          surveyOptions: surveyOptions,
-          surveyOwner: User(
-            avatar: Media(
-              mediaID: element["survey_ID"],
-              mediaURL: MediaURL(
-                bigURL: element["survey_owner"]["owner_avatar"],
-                normalURL: element["survey_owner"]["owner_avatar"],
-                minURL: element["survey_owner"]["owner_avatar"],
-              ),
-            ),
-          ),
-          surveyStatus: true,
-          surveyvotingPercentage: element["survey_votingPercentage"],
-          surveyvotingCount: element["survey_votingCount"],
-        ),
-      );
+    if (response == null) {
+      surveyListProcces = false;
+      return;
     }
-
-    setState(() {
-      firstfetching = false;
-    });
+    if (surveyCounter == 1) {
+      surveyList = response;
+    } else {
+      surveyList += response;
+    }
+    surveyCounter++;
+    firstfetching = false;
+    setstatefonction();
+    surveyListProcces = false;
   }
 
   @override
@@ -121,12 +82,23 @@ class _ChatPageState extends State<SurveyListPage>
       appBar: AppBar(
         title: const Text("Anketler"),
         backgroundColor: ARMOYU.appbarColor,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              surveyCounter = 1;
+              surveyListProcces = false;
+              await fetchsurveys();
+            },
+            icon: const Icon(Icons.refresh),
+          )
+        ],
       ),
       body: firstfetching
           ? const Center(child: CupertinoActivityIndicator())
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.separated(
+                controller: _controller,
                 itemCount: surveyList.length,
                 itemBuilder: (context, index) {
                   return surveyList[index].surveyList(context);

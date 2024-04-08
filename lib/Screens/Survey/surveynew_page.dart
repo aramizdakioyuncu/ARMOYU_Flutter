@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/survey.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
@@ -15,26 +16,34 @@ class SurveyNewPage extends StatefulWidget {
   State<SurveyNewPage> createState() => _ChatPageState();
 }
 
-List<XFile> imagePath = [];
-List<Media> media = [];
-
 class _ChatPageState extends State<SurveyNewPage>
     with AutomaticKeepAliveClientMixin<SurveyNewPage> {
-  final ScrollController chatScrollController = ScrollController();
+  List<XFile> imagePath = [];
+  List<Media> media = [];
+  TextEditingController t1 = TextEditingController();
+  TextEditingController t2 = TextEditingController();
   int answercounter = 3;
-  List<Map<int, Widget>> answerlist = [
-    {
-      1: CustomTextfields.costum3("1.Seçenek",
-          controller: TextEditingController()),
-    },
-    {
-      2: CustomTextfields.costum3("2.Seçenek",
-          controller: TextEditingController()),
-    }
-  ];
-
+  List<Map<int, Widget>> answerlist = [];
+  List<TextEditingController> controllers = [];
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    answerlist = [
+      {
+        1: CustomTextfields.costum3("1.Seçenek", controller: t1),
+      },
+      {
+        2: CustomTextfields.costum3("2.Seçenek", controller: t2),
+      }
+    ];
+    controllers = [
+      t1,
+      t2,
+    ];
+  }
 
   void setstatefunction() {
     if (mounted) {
@@ -46,10 +55,12 @@ class _ChatPageState extends State<SurveyNewPage>
 
   void addtextfield() {
     final int countID = answercounter;
+
+    final TextEditingController t = TextEditingController();
     answerlist.add({
       countID: CustomTextfields.costum3(
         "Seçenek",
-        controller: TextEditingController(),
+        controller: t,
         suffixiconbutton: IconButton(
           onPressed: () {
             log(answercounter.toString());
@@ -63,13 +74,16 @@ class _ChatPageState extends State<SurveyNewPage>
         ),
       ),
     });
+
+    controllers.add(t);
     answercounter++;
     setstatefunction();
   }
 
   String? surveyDate;
   String? surveyTime;
-
+  TextEditingController controllerSurveyQuestion = TextEditingController();
+  TextEditingController controllerOptions = TextEditingController();
   String selectedValue = 'Çoktan Seçmeli'; // Başlangıçta seçili değer
   @override
   Widget build(BuildContext context) {
@@ -89,7 +103,7 @@ class _ChatPageState extends State<SurveyNewPage>
               const Text("Anket Sorusu"),
               CustomTextfields.costum3(
                 "",
-                controller: TextEditingController(),
+                controller: controllerSurveyQuestion,
                 maxLines: null,
                 minLines: 2,
               ),
@@ -230,7 +244,33 @@ class _ChatPageState extends State<SurveyNewPage>
               ),
               CustomButtons.costum1(
                 "Oluştur",
-                onPressed: () {},
+                onPressed: () async {
+                  FunctionsSurvey f = FunctionsSurvey();
+
+                  if (surveyDate == null) {
+                    return;
+                  }
+                  List<String> words = surveyDate!.split(".");
+                  if (words.isEmpty) {
+                    return;
+                  }
+                  String newDate = "${words[2]}-${words[1]}-${words[0]}";
+
+                  List<String> values = [];
+                  for (TextEditingController element in controllers) {
+                    values.add(element.text);
+                  }
+                  Map<String, dynamic> response = await f.createSurvey(
+                    controllerSurveyQuestion.text,
+                    values,
+                    "$newDate $surveyTime",
+                  );
+
+                  if (response["durum"] == 0) {
+                    log(response["aciklama"]);
+                    return;
+                  }
+                },
                 loadingStatus: false,
               ),
             ],
