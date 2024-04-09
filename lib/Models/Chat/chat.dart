@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 class Chat {
   final int? chatID;
   final User user;
-  final String? lastonlinetime;
   final ChatMessage? lastmessage;
   List<ChatMessage> messages = [];
   final String? chatType;
@@ -19,7 +18,6 @@ class Chat {
   Chat({
     this.chatID,
     required this.user,
-    this.lastonlinetime,
     this.lastmessage,
     this.chatType,
     required this.chatNotification,
@@ -70,7 +68,7 @@ class Chat {
           tileColor: ARMOYU.appbarColor,
           subtitle:
               lastmessage == null ? null : Text(lastmessage!.messageContext),
-          trailing: Text(lastonlinetime.toString()),
+          trailing: Text(user.lastloginv2.toString()),
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(

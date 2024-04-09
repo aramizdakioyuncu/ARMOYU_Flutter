@@ -45,14 +45,14 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                   }
 
                   bool ishasstory = false;
-                  if (cardData.ownerID == ARMOYU.Appuser.userID) {
+                  if (cardData.ownerID == ARMOYU.appUser.userID) {
                     if (cardData.story != null) {
                       storycolor = Colors.blue;
                       ishasstory = true;
                     }
                   }
                   Color circleColor = Colors.transparent;
-                  if (cardData.ownerID == ARMOYU.Appuser.userID) {
+                  if (cardData.ownerID == ARMOYU.appUser.userID) {
                     circleColor = storycolor;
                   } else {
                     circleColor = otherstorycolor;
@@ -60,7 +60,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
 
                   return GestureDetector(
                     onTap: () {
-                      if (cardData.ownerID == ARMOYU.Appuser.userID) {
+                      if (cardData.ownerID == ARMOYU.appUser.userID) {
                         if (ishasstory) {
                           Navigator.push(
                             context,
@@ -106,7 +106,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                               ),
                             ),
                           ),
-                          child: cardData.ownerID == ARMOYU.Appuser.userID
+                          child: cardData.ownerID == ARMOYU.appUser.userID
                               ? Align(
                                   alignment: Alignment.bottomRight,
                                   child: Container(
@@ -126,7 +126,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                         ),
                         const SizedBox(height: 2),
                         CustomText.costum1(
-                            cardData.ownerID == ARMOYU.Appuser.userID
+                            cardData.ownerID == ARMOYU.appUser.userID
                                 ? "Hikayen"
                                 : cardData.ownerusername,
                             size: 11),

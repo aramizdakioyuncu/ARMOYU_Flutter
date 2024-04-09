@@ -118,7 +118,7 @@ class _MainPageState extends State<MainPage>
       return;
     }
 
-    ARMOYU.Appuser.favTeam =
+    ARMOYU.appUser.favTeam =
         Team(teamID: team.teamID, name: team.name, logo: team.logo);
   }
 
@@ -372,11 +372,11 @@ class _MainPageState extends State<MainPage>
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(
                                 50.0), // Kenar yarıçapını ayarlayın
-                            child: ARMOYU.Appuser.avatar == null
+                            child: ARMOYU.appUser.avatar == null
                                 ? const SkeletonAvatar()
                                 : CachedNetworkImage(
                                     imageUrl:
-                                        ARMOYU.Appuser.avatar!.mediaURL.minURL,
+                                        ARMOYU.appUser.avatar!.mediaURL.minURL,
                                     width: 30,
                                     height: 30,
                                     fit: BoxFit.cover,
@@ -437,39 +437,39 @@ class _MainPageState extends State<MainPage>
             child: Column(
               children: [
                 UserAccountsDrawerHeader(
-                  accountName: ARMOYU.Appuser.displayName == null
+                  accountName: ARMOYU.appUser.displayName == null
                       ? const SkeletonLine(
                           style: SkeletonLineStyle(width: 20),
                         )
                       : Text(
-                          ARMOYU.Appuser.displayName!,
+                          ARMOYU.appUser.displayName!,
                           style: const TextStyle(color: Colors.white),
                         ),
-                  accountEmail: ARMOYU.Appuser.userMail == null
+                  accountEmail: ARMOYU.appUser.userMail == null
                       ? const SkeletonLine(
                           style: SkeletonLineStyle(width: 20),
                         )
-                      : Text(ARMOYU.Appuser.userMail!,
+                      : Text(ARMOYU.appUser.userMail!,
                           style: const TextStyle(color: Colors.white)),
                   currentAccountPicture: GestureDetector(
                     onTap: () {
                       _changePage(3);
                       Navigator.of(context).pop();
                     },
-                    child: ARMOYU.Appuser.avatar == null
+                    child: ARMOYU.appUser.avatar == null
                         ? const SkeletonAvatar()
                         : CircleAvatar(
                             foregroundImage: CachedNetworkImageProvider(
-                                ARMOYU.Appuser.avatar!.mediaURL.minURL),
+                                ARMOYU.appUser.avatar!.mediaURL.minURL),
                           ),
                   ),
                   currentAccountPictureSize: const Size.square(70),
-                  decoration: ARMOYU.Appuser.banner == null
+                  decoration: ARMOYU.appUser.banner == null
                       ? null
                       : BoxDecoration(
                           image: DecorationImage(
                             image: CachedNetworkImageProvider(
-                                ARMOYU.Appuser.banner!.mediaURL.minURL),
+                                ARMOYU.appUser.banner!.mediaURL.minURL),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -713,7 +713,7 @@ class _MainPageState extends State<MainPage>
               NotificationPage(
                 scrollController: _notificationController,
               ),
-              ProfilePage(userID: ARMOYU.Appuser.userID, appbar: false),
+              ProfilePage(userID: ARMOYU.appUser.userID, appbar: false),
             ],
           ),
           bottomNavigationBar: Visibility(
@@ -735,10 +735,10 @@ class _MainPageState extends State<MainPage>
                 BottomNavigationBarItem(
                   icon: Badge(
                     isLabelVisible:
-                        (ARMOYU.GroupInviteCount + ARMOYU.friendRequestCount) >
+                        (ARMOYU.groupInviteCount + ARMOYU.friendRequestCount) >
                             0,
                     label: Text(
-                        (ARMOYU.GroupInviteCount + ARMOYU.friendRequestCount)
+                        (ARMOYU.groupInviteCount + ARMOYU.friendRequestCount)
                             .toString()),
                     backgroundColor: Colors.red,
                     textColor: Colors.white,

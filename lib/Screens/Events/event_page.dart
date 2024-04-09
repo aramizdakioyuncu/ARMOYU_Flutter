@@ -119,7 +119,7 @@ class _EventStatePage extends State<EventPage> {
     for (var element in response["icerik"]["participant_players"]) {
       // log("Oyuncu: -> " + element["player_name"]);
 
-      if (element["player_ID"] == ARMOYU.Appuser.userID) {
+      if (element["player_ID"] == ARMOYU.appUser.userID) {
         setState(() {
           didijoin = true;
         });

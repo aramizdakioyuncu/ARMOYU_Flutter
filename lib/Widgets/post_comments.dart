@@ -4,32 +4,18 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
+import 'package:ARMOYU/Models/Social/comment.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class WidgetPostComments extends StatefulWidget {
-  final int userID;
-  final String profileImageUrl;
-  final String username;
-  final String displayname;
-  final int postID;
-  final String comment;
-  final int commentID;
-  int islike;
-  int commentslikecount;
+  final Comment comment;
 
-  WidgetPostComments({
+  const WidgetPostComments({
     super.key,
-    required this.userID,
-    required this.profileImageUrl,
-    required this.username,
-    required this.displayname,
-    required this.postID,
     required this.comment,
-    required this.commentID,
-    required this.islike,
-    required this.commentslikecount,
   });
 
   @override
@@ -37,11 +23,8 @@ class WidgetPostComments extends StatefulWidget {
 }
 
 class _WidgetPostComments extends State<WidgetPostComments> {
-  Icon favoritestatus = const Icon(
-    Icons.favorite_outline,
-    size: 11,
-  );
-  Color favoritelikestatus = Colors.grey;
+  Icon favoritestatus =
+      const Icon(Icons.favorite_outline_rounded, color: Colors.grey, size: 20);
   bool isvisiblecomment = true;
 
   @override
@@ -51,12 +34,12 @@ class _WidgetPostComments extends State<WidgetPostComments> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.islike == 1) {
-      favoritestatus = const Icon(Icons.favorite);
-      favoritelikestatus = Colors.red;
+    if (widget.comment.didIlike == true) {
+      favoritestatus =
+          const Icon(Icons.favorite_rounded, color: Colors.red, size: 20);
     } else {
-      favoritestatus = const Icon(Icons.favorite_outline);
-      favoritelikestatus = Colors.grey;
+      favoritestatus = const Icon(Icons.favorite_outline_rounded,
+          color: Colors.grey, size: 20);
     }
 
     return Visibility(
@@ -65,81 +48,95 @@ class _WidgetPostComments extends State<WidgetPostComments> {
         minLeadingWidth: 1.0,
         minVerticalPadding: 5.0,
         contentPadding: const EdgeInsets.all(0),
-        leading: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfilePage(
-                  appbar: true,
-                  userID: widget.userID,
+        leading: SizedBox(
+          height: double.infinity,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        appbar: true,
+                        userID: widget.comment.user.userID,
+                      ),
+                    ),
+                  );
+                },
+                child: CircleAvatar(
+                  foregroundImage: CachedNetworkImageProvider(
+                      widget.comment.user.avatar!.mediaURL.minURL),
+                  radius: 20,
                 ),
               ),
-            );
-          },
-          child: CircleAvatar(
-            foregroundImage: CachedNetworkImageProvider(widget.profileImageUrl),
-            radius: 20,
+            ],
           ),
         ),
-        title: Text(widget.displayname),
-        subtitle: Text(widget.comment),
+        title: Text(widget.comment.user.displayName!),
+        subtitle: Text(widget.comment.content),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            IconButton(
-              onPressed: () async {
-                int currentstatus = widget.islike;
+            GestureDetector(
+              onTap: () async {
+                bool currentstatus = widget.comment.didIlike;
                 setState(
                   () {
-                    if (currentstatus == 1) {
-                      widget.islike = 0;
-                      widget.commentslikecount--;
+                    if (currentstatus) {
+                      widget.comment.didIlike = false;
+                      widget.comment.likeCount--;
                     } else {
-                      widget.islike = 1;
-                      widget.commentslikecount++;
+                      widget.comment.didIlike = true;
+                      widget.comment.likeCount++;
                     }
                   },
                 );
                 FunctionsPosts funct = FunctionsPosts();
                 Map<String, dynamic> response =
-                    await funct.commentlikeordislike(widget.commentID);
+                    await funct.commentlikeordislike(widget.comment.commentID);
                 if (response["durum"] == 0) {
                   log(response["aciklama"]);
                   return;
                 }
                 if (response['aciklama'] == "Paylaşımı beğendin.") {
                   if (mounted) {
-                    setState(
-                      () {
-                        if (currentstatus == 1) {
-                          widget.islike = 1;
-                        }
-                      },
-                    );
+                    setState(() {
+                      if (currentstatus) {
+                        widget.comment.didIlike = true;
+                      }
+                    });
                   }
                 } else {
                   if (mounted) {
-                    setState(
-                      () {
-                        if (currentstatus == 0) {
-                          widget.islike = 0;
-                        }
-                      },
-                    );
+                    setState(() {
+                      if (currentstatus == false) {
+                        widget.comment.didIlike = false;
+                      }
+                    });
                   }
                 }
               },
-              icon: favoritestatus,
-              color: favoritelikestatus,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  favoritestatus,
+                  const SizedBox(height: 3),
+                  CustomText.costum1(widget.comment.likeCount.toString(),
+                      weight: FontWeight.bold),
+                ],
+              ),
             ),
             Visibility(
-              visible: ARMOYU.Appuser.userID == widget.userID,
+              visible: ARMOYU.appUser.userID == widget.comment.user.userID,
               child: IconButton(
                 onPressed: () async {
                   FunctionsPosts funct = FunctionsPosts();
                   Map<String, dynamic> response =
-                      await funct.removecomment(widget.commentID);
+                      await funct.removecomment(widget.comment.commentID);
                   if (response["durum"] == 0) {
                     log(response["aciklama"]);
                     return;
@@ -148,10 +145,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
                     isvisiblecomment = false;
                   });
                 },
-                icon: const Icon(
-                  Icons.delete,
-                  color: Colors.grey,
-                ),
+                icon: const Icon(Icons.delete, color: Colors.grey),
               ),
             ),
           ],

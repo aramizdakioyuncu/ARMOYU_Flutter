@@ -47,7 +47,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                ARMOYU.Appuser.avatar!.mediaURL.minURL,
+                                ARMOYU.appUser.avatar!.mediaURL.minURL,
                               ),
                             ),
                           )

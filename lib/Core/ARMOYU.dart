@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, deprecated_member_use, file_names
+// ignore_for_file: deprecated_member_use, file_names
 
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
@@ -38,7 +38,7 @@ class ARMOYU {
 
   static List<CameraDescription>? cameras;
 
-  static User Appuser = User();
+  static User appUser = User();
 
   //Takım Seçme işlemleri
   static List<Team> favoriteteams = [];
@@ -53,5 +53,5 @@ class ARMOYU {
   static int downloadableCount = 0;
 
   static int friendRequestCount = 0;
-  static int GroupInviteCount = 0;
+  static int groupInviteCount = 0;
 }

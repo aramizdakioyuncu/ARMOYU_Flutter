@@ -57,11 +57,11 @@ class _SocialPageState extends State<SocialPage>
   @override
   void initState() {
     super.initState();
-    userID = ARMOYU.Appuser.userID!;
-    userName = ARMOYU.Appuser.displayName!;
-    userEmail = ARMOYU.Appuser.userMail!;
-    useravatar = ARMOYU.Appuser.avatar!.mediaURL.minURL;
-    userbanner = ARMOYU.Appuser.banner!.mediaURL.minURL;
+    userID = ARMOYU.appUser.userID!;
+    userName = ARMOYU.appUser.displayName!;
+    userEmail = ARMOYU.appUser.userMail!;
+    useravatar = ARMOYU.appUser.avatar!.mediaURL.minURL;
+    userbanner = ARMOYU.appUser.banner!.mediaURL.minURL;
 
     loadSkeletonpost();
     // ScrollController'ı dinle
@@ -92,9 +92,9 @@ class _SocialPageState extends State<SocialPage>
     if (response["icerik"].length == 0) {
       widgetStoriescard.add(
         StoryList(
-          ownerID: ARMOYU.Appuser.userID!,
+          ownerID: ARMOYU.appUser.userID!,
           ownerusername: "Hikayen",
-          owneravatar: ARMOYU.Appuser.avatar!.mediaURL.minURL,
+          owneravatar: ARMOYU.appUser.avatar!.mediaURL.minURL,
           story: null,
           isView: true,
         ),
@@ -106,12 +106,12 @@ class _SocialPageState extends State<SocialPage>
 
       if (i == 0) {
         if (response["icerik"][i]["oyuncu_ID"].toString() !=
-            ARMOYU.Appuser.userID.toString()) {
+            ARMOYU.appUser.userID.toString()) {
           widgetStoriescard.add(
             StoryList(
-              ownerID: ARMOYU.Appuser.userID!,
+              ownerID: ARMOYU.appUser.userID!,
               ownerusername: "Hikayen",
-              owneravatar: ARMOYU.Appuser.avatar!.mediaURL.minURL,
+              owneravatar: ARMOYU.appUser.avatar!.mediaURL.minURL,
               story: null,
               isView: true,
             ),

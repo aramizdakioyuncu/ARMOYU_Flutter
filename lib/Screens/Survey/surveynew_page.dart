@@ -138,6 +138,8 @@ class _ChatPageState extends State<SurveyNewPage>
                           WidgetUtility.cupertinoDatePicker(
                             context: context,
                             setstatefunction: setstatefunction,
+                            dontallowPastDate: true,
+                            yearCount: 1,
                             onChanged: (value) {
                               surveyDate = value;
                             },

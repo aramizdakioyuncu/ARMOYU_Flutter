@@ -93,37 +93,45 @@ class WidgetUtility {
     required context,
     required Function(String) onChanged,
     required Function setstatefunction,
+    bool dontallowPastDate = false,
+    int yearCount = 40,
   }) {
-    String selectedYear = "2000";
+    int startYearDate = 1945;
+
+    if (dontallowPastDate) {
+      startYearDate = DateTime.now().year;
+    }
+
+    String selectedYear = "$startYearDate";
     String selectedMonth = "1";
     String selectedDay = "1";
+
+    List<Map<int, String>> yearList = List.generate(
+      yearCount,
+      (index) => {startYearDate + index: (startYearDate + index).toString()},
+    );
+    List<Map<int, String>> monthList = [
+      {1: "Ocak"},
+      {2: "Şubat"},
+      {3: "Mart"},
+      {4: "Nisan"},
+      {5: "Mayıs"},
+      {6: "Haziran"},
+      {7: "Temmuz"},
+      {8: "Ağustos"},
+      {9: "Eylül"},
+      {10: "Ekim"},
+      {11: "Kasım"},
+      {12: "Aralık"},
+    ];
+
+    List<Map<int, String>> dayList =
+        List.generate(31, (index) => {index + 1: (index + 1).toString()});
 
     return showCupertinoModalPopup(
       // barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        List<Map<int, String>> yearList = List.generate(
-          DateTime.now().year - 1999,
-          (index) => {2000 + index: (2000 + index).toString()},
-        );
-        List<Map<int, String>> monthList = [
-          {1: "Ocak"},
-          {2: "Şubat"},
-          {3: "Mart"},
-          {4: "Nisan"},
-          {5: "Mayıs"},
-          {6: "Haziran"},
-          {7: "Temmuz"},
-          {8: "Ağustos"},
-          {9: "Eylül"},
-          {10: "Ekim"},
-          {11: "Kasım"},
-          {12: "Aralık"},
-        ];
-
-        List<Map<int, String>> dayList =
-            List.generate(31, (index) => {index + 1: (index + 1).toString()});
-
         if (selectedDay.length == 1) {
           selectedDay = "0$selectedDay";
         }
@@ -190,6 +198,12 @@ class WidgetUtility {
                       onSelectedItemChanged: (value) {
                         Map<int, String> monthMap = monthList[value];
                         selectedMonth = monthMap.keys.first.toString();
+
+                        // dayList.clear();
+                        dayList = List.generate(
+                            findDaysInMonth(int.parse(selectedYear),
+                                int.parse(selectedMonth)),
+                            (index) => {index + 1: (index + 1).toString()});
                       },
                     ),
                   ),
@@ -218,6 +232,23 @@ class WidgetUtility {
         );
       },
     );
+  }
+
+  static int findDaysInMonth(int year, int month) {
+    // Ay 1'den 12'ye kadar bir sayı olmalıdır.
+    if (month < 1 || month > 12) {
+      throw ArgumentError(
+          'Geçersiz ay: $month. Ay 1 ila 12 arasında olmalıdır.');
+    }
+
+    // Dart'ta DateTime sınıfı ile belirli bir yıl ve ay oluşturulabilir.
+    // Ardından add metodunu kullanarak bir ay ileri gidilir ve ayın başlangıç ve bitiş tarihleri arasındaki fark bulunur.
+    // DateTime startOfMonth = DateTime(year, month, 1);
+    DateTime endOfMonth =
+        DateTime(year, month + 1, 1).subtract(const Duration(days: 1));
+
+    // Ardından iki tarih arasındaki fark, yani gün sayısı, hesaplanır ve döndürülür.
+    return endOfMonth.day;
   }
 
   //CupertioTimeSelector

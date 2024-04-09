@@ -110,7 +110,7 @@ class _MediaViewerPage extends State<MediaViewer> {
           ),
           Visibility(
             visible: (widget.media[widget.initialIndex].ownerID ==
-                        ARMOYU.Appuser.userID) &&
+                        ARMOYU.appUser.userID) &&
                     !isRotationprocces
                 ? true
                 : false,

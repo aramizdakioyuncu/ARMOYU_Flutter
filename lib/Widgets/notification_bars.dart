@@ -125,7 +125,7 @@ class _CustomMenusNotificationbarsState
                                         log(response["aciklama"]);
                                         return;
                                       }
-                                      ARMOYU.GroupInviteCount--;
+                                      ARMOYU.groupInviteCount--;
 
                                       setState(() {
                                         widget.natificationisVisible = false;

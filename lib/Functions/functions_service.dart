@@ -5,7 +5,6 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Chat/chat_page.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
@@ -32,8 +31,8 @@ class FunctionService {
       password = generateMd5(password);
     }
 
-    ARMOYU.Appuser.userName = username;
-    ARMOYU.Appuser.password = password;
+    ARMOYU.appUser.userName = username;
+    ARMOYU.appUser.password = password;
 
     Map<String, String> formData = {"param1": "value1"};
     String link = "0/0/0/";
@@ -50,7 +49,7 @@ class FunctionService {
         response["aciklamadetay"]["projegizliliksozlesmesi"];
 
     Map<String, dynamic> oyuncubilgi = response["icerik"];
-    ARMOYU.Appuser = User(
+    ARMOYU.appUser = User(
         userID: oyuncubilgi["oyuncuID"],
         userName: oyuncubilgi["kullaniciadi"],
         password: password,
@@ -80,6 +79,7 @@ class FunctionService {
         burc: oyuncubilgi["burc"],
         invitecode: oyuncubilgi["davetkodu"],
         lastlogin: oyuncubilgi["songiris"],
+        lastloginv2: oyuncubilgi["songirisv2"],
         lastfaillogin: oyuncubilgi["sonhataligiris"],
         job: oyuncubilgi["isyeriadi"],
         level: oyuncubilgi["seviye"],
@@ -109,10 +109,10 @@ class FunctionService {
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");
       OneSignalApi.setupOneSignal(
-        ARMOYU.Appuser.userID!,
-        ARMOYU.Appuser.userName!,
-        ARMOYU.Appuser.userMail!,
-        ARMOYU.Appuser.role.toString(),
+        ARMOYU.appUser.userID!,
+        ARMOYU.appUser.userName!,
+        ARMOYU.appUser.userMail!,
+        ARMOYU.appUser.role.toString(),
       );
     }
 
@@ -154,10 +154,9 @@ class FunctionService {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('username');
     prefs.remove('password');
-    ARMOYU.Appuser.userID = null;
-    ARMOYU.Appuser.userName = "0";
-    ARMOYU.Appuser.password = "0";
-    chatlist.clear();
+    ARMOYU.appUser.userID = null;
+    ARMOYU.appUser.userName = "0";
+    ARMOYU.appUser.password = "0";
     Map<String, dynamic> jsonData = {
       'durum': 1,
       'aciklama': "Başarılı bir şekilde çıkış yapıldı.",

@@ -17,7 +17,11 @@ class ChatNewPage extends StatefulWidget {
 int chatnewpage = 1;
 bool chatFriendsprocess = false;
 bool isFirstFetch = true;
-List<Chat> newchatList = [];
+List<Chat> _newchatList = [];
+
+List<Chat> _filteredItems = []; // Filtrelenmiş liste
+
+TextEditingController _newchatcontroller = TextEditingController();
 
 class _ChatNewPageState extends State<ChatNewPage>
     with AutomaticKeepAliveClientMixin<ChatNewPage> {
@@ -40,6 +44,23 @@ class _ChatNewPageState extends State<ChatNewPage>
         getchatfriendlist();
       }
     });
+
+    _newchatcontroller.addListener(() {
+      String newText = _newchatcontroller.text.toLowerCase();
+      // Filtreleme işlemi
+      _filteredItems = _newchatList.where((item) {
+        return item.user.displayName!.toLowerCase().contains(newText);
+      }).toList();
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // newchatcontroller.dispose();
+    super.dispose();
   }
 
   Future<void> getchatfriendlist() async {
@@ -58,7 +79,7 @@ class _ChatNewPageState extends State<ChatNewPage>
     }
 
     if (chatnewpage == 1) {
-      newchatList.clear();
+      _newchatList.clear();
     }
     if (response["icerik"].length == 0) {
       chatFriendsprocess = true;
@@ -68,15 +89,16 @@ class _ChatNewPageState extends State<ChatNewPage>
     for (int i = 0; i < response["icerik"].length; i++) {
       if (mounted) {
         setState(() {
-          newchatList.add(
+          _newchatList.add(
             Chat(
               chatID: 1,
               chatType: "ozel",
-              lastonlinetime: response["icerik"][i]["songiris"],
               chatNotification: false,
               user: User(
                   userID: response["icerik"][i]["kullid"],
                   displayName: response["icerik"][i]["adisoyadi"],
+                  lastlogin: response["icerik"][i]["songiris"],
+                  lastloginv2: response["icerik"][i]["songiris"],
                   avatar: Media(
                     mediaID: response["icerik"][i]["kullid"],
                     mediaURL: MediaURL(
@@ -90,6 +112,7 @@ class _ChatNewPageState extends State<ChatNewPage>
         });
       }
     }
+    _filteredItems = _newchatList;
     chatnewpage++;
     chatFriendsprocess = false;
   }
@@ -103,12 +126,45 @@ class _ChatNewPageState extends State<ChatNewPage>
         backgroundColor: ARMOYU.appbarColor,
         title: const Text("Yeni Sohbet"),
       ),
-      body: ListView.builder(
-        itemCount: newchatList.length,
-        controller: chatScrollController,
-        itemBuilder: (context, index) {
-          return newchatList[index].listtilenewchat(context);
-        },
+      body: Column(
+        children: [
+          Container(
+            color: ARMOYU.appbarColor,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  color: ARMOYU.bodyColor,
+                ),
+                child: TextField(
+                  controller: _newchatcontroller,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 20,
+                    ),
+                    hintText: 'Ara',
+                  ),
+                  style: TextStyle(
+                    color: ARMOYU.color,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _filteredItems.length,
+              controller: chatScrollController,
+              itemBuilder: (context, index) {
+                return _filteredItems[index].listtilenewchat(context);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

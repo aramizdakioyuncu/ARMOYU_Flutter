@@ -208,7 +208,7 @@ class _EventStatePage extends State<InvitePage>
         return;
       }
       setState(() {
-        ARMOYU.Appuser.invitecode = response["aciklamadetay"];
+        ARMOYU.appUser.invitecode = response["aciklamadetay"];
       });
     }
 
@@ -256,14 +256,14 @@ class _EventStatePage extends State<InvitePage>
                     ),
                     CircleAvatar(
                       foregroundImage: CachedNetworkImageProvider(
-                          ARMOYU.Appuser.avatar!.mediaURL.normalURL),
+                          ARMOYU.appUser.avatar!.mediaURL.normalURL),
                       radius: 40,
                     ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
                         const Spacer(),
-                        ARMOYU.Appuser.invitecode == null
+                        ARMOYU.appUser.invitecode == null
                             ? InkWell(
                                 onTap: () async {
                                   refreshInviteCode();
@@ -289,7 +289,7 @@ class _EventStatePage extends State<InvitePage>
                                 onTap: () {
                                   Clipboard.setData(
                                     ClipboardData(
-                                        text: ARMOYU.Appuser.invitecode!
+                                        text: ARMOYU.appUser.invitecode!
                                             .toString()),
                                   );
                                   Fluttertoast.showToast(
@@ -314,7 +314,7 @@ class _EventStatePage extends State<InvitePage>
                                     child: Row(
                                       children: [
                                         Text(
-                                          ARMOYU.Appuser.invitecode.toString(),
+                                          ARMOYU.appUser.invitecode.toString(),
                                           style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,

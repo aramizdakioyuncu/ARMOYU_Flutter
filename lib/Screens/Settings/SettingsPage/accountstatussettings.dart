@@ -35,12 +35,12 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 children: [
                   CircleAvatar(
                     foregroundImage: CachedNetworkImageProvider(
-                        ARMOYU.Appuser.avatar!.mediaURL.minURL),
+                        ARMOYU.appUser.avatar!.mediaURL.minURL),
                     radius: 60,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CustomText.costum1(ARMOYU.Appuser.displayName!,
+                    child: CustomText.costum1(ARMOYU.appUser.displayName!,
                         weight: FontWeight.bold, size: 22),
                   ),
                   RichText(

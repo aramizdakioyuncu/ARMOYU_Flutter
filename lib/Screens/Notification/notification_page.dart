@@ -114,8 +114,8 @@ class _NotificationPage extends State<NotificationPage>
           title: CustomText.costum1("Grup İstekleri"),
           subtitle: CustomText.costum1("Grup isteklerini gözden geçir"),
           trailing: Badge(
-            isLabelVisible: ARMOYU.GroupInviteCount == 0 ? false : true,
-            label: Text(ARMOYU.GroupInviteCount.toString()),
+            isLabelVisible: ARMOYU.groupInviteCount == 0 ? false : true,
+            label: Text(ARMOYU.groupInviteCount.toString()),
             backgroundColor: Colors.red,
             textColor: Colors.white,
             child: const Icon(

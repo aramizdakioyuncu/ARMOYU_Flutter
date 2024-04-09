@@ -43,7 +43,7 @@ class _PagesState extends State<Pages> {
       return;
     }
 
-    if (ARMOYU.Appuser.userID == null) {
+    if (ARMOYU.appUser.userID == null) {
       someCondition = true;
       return;
     }
@@ -75,7 +75,7 @@ class _PagesState extends State<Pages> {
         ARMOYU.downloadableCount = response["icerik"]["indirmeler"];
 
         ARMOYU.friendRequestCount = response["icerik"]["arkadaslikistekleri"];
-        ARMOYU.GroupInviteCount = response["icerik"]["grupistekleri"];
+        ARMOYU.groupInviteCount = response["icerik"]["grupistekleri"];
       });
     } catch (e) {
       log(e.toString());
@@ -87,7 +87,7 @@ class _PagesState extends State<Pages> {
 // /////////////////////////////
 
   PageController pageController = PageController(initialPage: 0);
-  void _changePage(int page) {
+  void changePage(int page) {
     setState(() {
       pageController.animateToPage(
         page,
@@ -102,17 +102,16 @@ class _PagesState extends State<Pages> {
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında yapılacak işlemler
-        _changePage(0);
+        changePage(0);
         return true;
       },
       child: Scaffold(
         backgroundColor: Colors.black,
         body: PageView(
-          // onPageChanged: (int page) {},
           controller: pageController,
           children: [
-            MainPage(changePage: _changePage),
-            const ChatPage(appbar: true),
+            MainPage(changePage: changePage),
+            ChatPage(changePage: changePage),
           ],
         ),
       ),

@@ -222,7 +222,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
               InkWell(
                 onTap: () {
                   if (widget.story[0].ownerusername ==
-                      ARMOYU.Appuser.userName) {
+                      ARMOYU.appUser.userName) {
                     _stopAnimation();
                     Navigator.push(
                       context,
@@ -248,7 +248,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                   child: Align(
                     alignment: Alignment.bottomRight,
                     child:
-                        widget.story[0].ownerusername == ARMOYU.Appuser.userName
+                        widget.story[0].ownerusername == ARMOYU.appUser.userName
                             ? Container(
                                 height: 12,
                                 width: 12,
@@ -270,7 +270,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
               ),
               const SizedBox(width: 5),
               Text(
-                widget.story[0].ownerusername == ARMOYU.Appuser.userName
+                widget.story[0].ownerusername == ARMOYU.appUser.userName
                     ? "Hikayen"
                     : widget.story[0].ownerusername,
                 style: const TextStyle(fontSize: 13),
@@ -350,7 +350,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                           },
                           onVerticalDragUpdate: (details) {
                             if (widget.story[index].ownerID !=
-                                ARMOYU.Appuser.userID) {
+                                ARMOYU.appUser.userID) {
                               return;
                             }
                             if (details.delta.dy > 0) {
@@ -392,14 +392,14 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                         ),
                       ),
                       if (widget.story[index].ownerusername !=
-                          ARMOYU.Appuser.userName)
+                          ARMOYU.appUser.userName)
                         Row(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
                                   foregroundImage: CachedNetworkImageProvider(
-                                      ARMOYU.Appuser.avatar!.mediaURL.minURL),
+                                      ARMOYU.appUser.avatar!.mediaURL.minURL),
                                   radius: 20),
                             ),
                             Expanded(

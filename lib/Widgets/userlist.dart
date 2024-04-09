@@ -103,7 +103,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
         Visibility(
-          visible: widget.isFriend && widget.userID != ARMOYU.Appuser.userID,
+          visible: widget.isFriend && widget.userID != ARMOYU.appUser.userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(
@@ -114,7 +114,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
         Visibility(
-          visible: !widget.isFriend && widget.userID != ARMOYU.Appuser.userID,
+          visible: !widget.isFriend && widget.userID != ARMOYU.appUser.userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(

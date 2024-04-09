@@ -63,7 +63,7 @@ class ARMOYUFunctions {
 
   static void selectFavTeam(context, {bool? force}) {
     if (force == null || force == false) {
-      if (ARMOYU.Appuser.favTeam != null) {
+      if (ARMOYU.appUser.favTeam != null) {
         log("Favori Takım seçilmiş");
         return;
       }
@@ -164,10 +164,10 @@ class ARMOYUFunctions {
       return;
     }
     if (team != null) {
-      ARMOYU.Appuser.favTeam =
+      ARMOYU.appUser.favTeam =
           Team(teamID: team.teamID, name: team.name, logo: team.logo);
     } else {
-      ARMOYU.Appuser.favTeam = null;
+      ARMOYU.appUser.favTeam = null;
     }
   }
 

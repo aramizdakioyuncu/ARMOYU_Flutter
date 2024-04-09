@@ -85,7 +85,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     ismediaProcces = true;
     FunctionsMedia f = FunctionsMedia();
     Map<String, dynamic> response =
-        await f.fetch(ARMOYU.Appuser.userID!, "-1", gallerycounter + 1);
+        await f.fetch(ARMOYU.appUser.userID!, "-1", gallerycounter + 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

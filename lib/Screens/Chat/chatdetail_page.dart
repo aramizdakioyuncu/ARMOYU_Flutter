@@ -7,6 +7,7 @@ import 'dart:isolate';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/Chat/chat_message.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Chat/chatcall_page.dart';
 import 'package:ARMOYU/Services/Socket/socket.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -47,6 +48,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
   @override
   void initState() {
     super.initState();
+
     if (widget.chat.messages.isEmpty) {
       getchat().then((_) {
         isolatestart();
@@ -78,7 +80,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
     isolateListen = await Isolate.spawn(socketListenMessage, [
       receiveportListen!.sendPort,
-      ARMOYU.Appuser.userID.toString(),
+      ARMOYU.appUser,
       widget.chat.user.userID.toString()
     ]);
 
@@ -89,12 +91,12 @@ class _ChatDetailPage extends State<ChatDetailPage>
         Map<String, dynamic> responseData = jsonData;
 
         if (responseData["sender_id"].toString() ==
-            ARMOYU.Appuser.userID.toString()) {
+            ARMOYU.appUser.userID.toString()) {
           return;
         }
 
         if (responseData["receiver_id"].toString() ==
-            ARMOYU.Appuser.userID.toString()) {
+            ARMOYU.appUser.userID.toString()) {
           message = responseData["message"].toString();
         }
 
@@ -109,16 +111,6 @@ class _ChatDetailPage extends State<ChatDetailPage>
           );
         });
 
-        try {
-          await Future.delayed(const Duration(milliseconds: 20));
-          await _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 20),
-            curve: Curves.easeOut,
-          );
-        } catch (e) {
-          log(e.toString());
-        }
         log(message);
       } catch (e) {
         log("json hatası");
@@ -126,9 +118,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
     });
 
     ARMOYU_Socket socket2 = ARMOYU_Socket(
-        ARMOYU.Appuser.userID.toString(),
-        ARMOYU.Appuser.userName!,
-        ARMOYU.Appuser.password!,
+        ARMOYU.appUser.userID.toString(),
+        ARMOYU.appUser.userName!,
+        ARMOYU.appUser.password!,
         widget.chat.user.userID.toString());
 
     receiveportSend!.listen(
@@ -143,16 +135,23 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
   static Future<void> socketListenMessage(List<dynamic> arguments) async {
     final SendPort sendPort = arguments.first;
-    final String senderID = arguments[1];
+    final User user = arguments[1];
     final String receiverID = arguments.last;
-    log("$senderID >>>> $receiverID");
+    log("${user.userID} >>>> $receiverID");
 
     try {
-      ARMOYU_Socket socket2 = ARMOYU_Socket(senderID, ARMOYU.Appuser.userName!,
-          ARMOYU.Appuser.password!, receiverID);
+      ARMOYU_Socket socket2 = ARMOYU_Socket(
+        user.userID.toString(),
+        user.userName!,
+        user.password!,
+        receiverID,
+      );
       socket2.receiveMessages(sendPort);
+
+      log("asd");
     } catch (e) {
       log(e.toString());
+      log("asd!!!");
     }
   }
 
@@ -199,20 +198,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
       } catch (e) {
         log("Sohbet getirilemedi! : $e");
       }
-      try {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent + 100,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        });
-      } catch (e) {
-        log(e.toString());
-      }
     }
-
-    // Biraz bekleme süresi ekleyin,
   }
 
   @override
@@ -233,17 +219,17 @@ class _ChatDetailPage extends State<ChatDetailPage>
               ),
               Row(
                 children: [
-                  widget.chat.lastonlinetime == null
+                  widget.chat.user.lastloginv2 == null
                       ? const SkeletonLine(
                           style: SkeletonLineStyle(width: 20),
                         )
                       : Text(
-                          widget.chat.lastonlinetime == null
+                          widget.chat.user.lastloginv2 == null
                               ? ""
-                              : widget.chat.lastonlinetime.toString(),
+                              : widget.chat.user.lastloginv2.toString(),
                           style: TextStyle(
                             fontSize: 10,
-                            color: widget.chat.lastonlinetime!.toString() ==
+                            color: widget.chat.user.lastloginv2.toString() ==
                                     "Çevrimiçi"
                                 ? Colors.green
                                 : Colors.red,
@@ -317,7 +303,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
             image: DecorationImage(
               image: CachedNetworkImageProvider(
                   'https://i.pinimg.com/originals/f7/ae/e8/f7aee8753832af613b63e51d5f07011a.jpg'), // Resim dosyasının yolu
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               repeat: ImageRepeat.noRepeat,
             ),
           ),
@@ -325,10 +311,13 @@ class _ChatDetailPage extends State<ChatDetailPage>
             children: [
               Expanded(
                 child: ListView.builder(
+                  reverse: true,
                   controller: _scrollController,
                   itemCount: widget.chat.messages.length,
                   itemBuilder: (context, index) {
-                    return widget.chat.messages[index].messageBumble(context);
+                    return widget
+                        .chat.messages[widget.chat.messages.length - 1 - index]
+                        .messageBumble(context);
                   },
                 ),
               ),
@@ -374,22 +363,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
                               messageID: 0,
                               isMe: true,
                               messageContext: message,
-                              user: ARMOYU.Appuser,
+                              user: ARMOYU.appUser,
                             ),
                           );
-                          try {
-                            Future.delayed(const Duration(milliseconds: 100),
-                                () {
-                              _scrollController.animateTo(
-                                _scrollController.position.maxScrollExtent +
-                                    100,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOut,
-                              );
-                            });
-                          } catch (e) {
-                            log(e.toString());
-                          }
                         });
 
                         FunctionService f = FunctionService();

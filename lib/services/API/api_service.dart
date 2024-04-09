@@ -15,7 +15,7 @@ class ApiService {
       String link, Map<String, dynamic> formData,
       {List<MultipartFile>? files}) async {
     String requestUrl =
-        "$ssl://$host:$port/botlar/$apiKey/${ARMOYU.Appuser.userName}/${ARMOYU.Appuser.password}/$link";
+        "$ssl://$host:$port/botlar/$apiKey/${ARMOYU.appUser.userName}/${ARMOYU.appUser.password}/$link";
     log(requestUrl);
 
     formData['versiyon'] = ARMOYU.version;

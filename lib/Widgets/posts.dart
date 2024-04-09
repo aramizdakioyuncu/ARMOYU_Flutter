@@ -3,7 +3,10 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/Skeletons/comments_skeleton.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
@@ -84,15 +87,25 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
           listComments.add(
             WidgetPostComments(
-              comment: text,
-              commentID: yorumID,
-              displayname: displayname,
-              userID: userID,
-              profileImageUrl: avatar,
-              islike: islike,
-              postID: postID,
-              username: text,
-              commentslikecount: commentlikescount,
+              comment: Comment(
+                commentID: yorumID,
+                content: text,
+                didIlike: islike == 1 ? true : false,
+                likeCount: commentlikescount,
+                postID: postID,
+                user: User(
+                  userID: userID,
+                  displayName: displayname,
+                  avatar: Media(
+                    mediaID: userID,
+                    mediaURL: MediaURL(
+                      bigURL: avatar,
+                      normalURL: avatar,
+                      minURL: avatar,
+                    ),
+                  ),
+                ),
+              ),
             ),
           );
         });
@@ -193,7 +206,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           child: CircleAvatar(
                             backgroundColor: ARMOYU.backgroundcolor,
                             foregroundImage: CachedNetworkImageProvider(
-                              ARMOYU.Appuser.avatar!.mediaURL.minURL,
+                              ARMOYU.appUser.avatar!.mediaURL.minURL,
                             ),
                             radius: 20,
                           ),
@@ -420,7 +433,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID == ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID == ARMOYU.appUser.userID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -436,7 +449,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: Divider(),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID != ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID != ARMOYU.appUser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -450,7 +463,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID != ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID != ARMOYU.appUser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -464,7 +477,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID == ARMOYU.Appuser.userID,
+                    visible: widget.post.owner.userID == ARMOYU.appUser.userID,
                     child: InkWell(
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts();

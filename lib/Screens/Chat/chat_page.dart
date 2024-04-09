@@ -11,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 
 class ChatPage extends StatefulWidget {
-  final bool appbar;
+  final Function changePage;
   const ChatPage({
     super.key,
-    required this.appbar,
+    required this.changePage,
   });
 
   @override
@@ -23,7 +23,9 @@ class ChatPage extends StatefulWidget {
 
 int chatPage = 1;
 bool chatsearchprocess = false;
-List<Chat> chatlist = [];
+List<Chat> _chatlist = [];
+List<Chat> _filteredItems = [];
+TextEditingController _chatcontroller = TextEditingController();
 
 class _ChatPageState extends State<ChatPage>
     with AutomaticKeepAliveClientMixin<ChatPage> {
@@ -39,6 +41,17 @@ class _ChatPageState extends State<ChatPage>
     if (!chatsearchprocess) {
       getchat();
     }
+
+    _chatcontroller.addListener(() {
+      String newText = _chatcontroller.text.toLowerCase();
+      // Filtreleme işlemi
+      _filteredItems = _chatlist.where((item) {
+        return item.user.displayName!.toLowerCase().contains(newText);
+      }).toList();
+      if (mounted) {
+        setState(() {});
+      }
+    });
 
     chatScrollController.addListener(() {
       if (chatScrollController.position.pixels >=
@@ -70,7 +83,7 @@ class _ChatPageState extends State<ChatPage>
     }
 
     if (chatPage == 1) {
-      chatlist.clear();
+      _chatlist.clear();
     }
 
     if (response["icerik"].length == 0) {
@@ -88,13 +101,14 @@ class _ChatPageState extends State<ChatPage>
         if (response["icerik"][i]["bildirim"] == 1) {
           notification = true;
         }
-        chatlist.add(
+        _chatlist.add(
           Chat(
             chatID: 1,
-            lastonlinetime: response["icerik"][i]["songiris"],
             user: User(
               userID: response["icerik"][i]["kullid"],
               displayName: response["icerik"][i]["adisoyadi"],
+              lastlogin: response["icerik"][i]["songiris"],
+              lastloginv2: response["icerik"][i]["songiris"],
               avatar: Media(
                 mediaID: response["icerik"][i]["kullid"],
                 mediaURL: MediaURL(
@@ -116,31 +130,67 @@ class _ChatPageState extends State<ChatPage>
         );
       });
     }
+    if (mounted) {
+      setState(() {
+        _filteredItems = _chatlist;
+      });
+    }
+
     chatsearchprocess = false;
     chatPage++;
   }
 
+  bool searchStatus = false;
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
-      appBar: widget.appbar
-          ? AppBar(
-              title: const Text("Sohbetler"),
-              automaticallyImplyLeading: false,
-              backgroundColor: ARMOYU.appbarColor,
-              actions: <Widget>[
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {},
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            widget.changePage(0);
+          },
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
+        title: searchStatus
+            ? Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  color: ARMOYU.bodyColor,
                 ),
-              ],
-            )
-          : null,
+                child: TextField(
+                  controller: _chatcontroller,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 20,
+                    ),
+                    hintText: 'Ara',
+                  ),
+                  style: TextStyle(
+                    color: ARMOYU.color,
+                  ),
+                ),
+              )
+            : const Text("Sohbetler"),
+        backgroundColor: ARMOYU.appbarColor,
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              setState(() {
+                searchStatus = !searchStatus;
+              });
+            },
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
-        child: chatlist.isEmpty
+        child: _chatlist.isEmpty
             ? const Center(
                 child: CupertinoActivityIndicator(),
               )
@@ -150,9 +200,9 @@ class _ChatPageState extends State<ChatPage>
                 },
                 child: ListView.builder(
                   controller: chatScrollController,
-                  itemCount: chatlist.length,
+                  itemCount: _filteredItems.length,
                   itemBuilder: (BuildContext context, index) {
-                    return chatlist[index].listtilechat(context);
+                    return _filteredItems[index].listtilechat(context);
                   },
                 ),
               ),

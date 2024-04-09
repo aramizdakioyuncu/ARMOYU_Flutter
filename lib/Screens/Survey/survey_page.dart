@@ -102,7 +102,7 @@ class _ChatPageState extends State<SurveyPage>
             icon: const Icon(Icons.refresh),
           ),
           Visibility(
-            visible: widget.survey.surveyOwner.userID == ARMOYU.Appuser.userID,
+            visible: widget.survey.surveyOwner.userID == ARMOYU.appUser.userID,
             child: IconButton(
               onPressed: () async => await deleteSurvey(),
               icon: const Icon(
