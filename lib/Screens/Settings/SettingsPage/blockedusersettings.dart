@@ -4,6 +4,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsBlockeduserPage extends StatefulWidget {
@@ -14,14 +15,17 @@ class SettingsBlockeduserPage extends StatefulWidget {
       _SettingsBlockeduserStatePage();
 }
 
-class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
-  List<Map<int, Widget>> blockedList = [];
+List<Map<int, Widget>> _blockedList = [];
+bool _blockedProcces = false;
+bool _isFirstProcces = true;
 
+class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
   @override
   void initState() {
     super.initState();
-
-    getblockedlist();
+    if (_isFirstProcces) {
+      getblockedlist();
+    }
   }
 
   Future<void> removeblock(int userID, int index) async {
@@ -32,27 +36,32 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
       return;
     }
     setState(() {
-      // blockedList.removeAt(index);
-      blockedList.removeWhere((element) => element.keys.first == userID);
+      _blockedList.removeWhere((element) => element.keys.first == userID);
     });
   }
 
   Future<void> getblockedlist() async {
+    if (_blockedProcces) {
+      return;
+    }
+    _blockedProcces = true;
     FunctionsBlocking f = FunctionsBlocking();
     Map<String, dynamic> response = await f.list();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      _blockedProcces = false;
+      _isFirstProcces = false;
       return;
     }
 
-    blockedList.clear();
+    _blockedList.clear();
 
     for (int i = 0; i < response['icerik'].length; i++) {
       int blockeduserID =
           int.parse(response['icerik'][i]["engel_kimeID"].toString());
 
       setState(() {
-        blockedList.add({
+        _blockedList.add({
           blockeduserID: ListTile(
             leading: CircleAvatar(
               radius: 20,
@@ -90,6 +99,8 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
         });
       });
     }
+    _blockedProcces = false;
+    _isFirstProcces = false;
   }
 
   @override
@@ -104,15 +115,21 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
         children: [
           Container(color: ARMOYU.bodyColor, height: 1),
           Expanded(
-            child: ListView.builder(
-              itemCount: blockedList.length,
-              itemBuilder: (context, index) {
-                final Map<int, Widget> blockedUserMap = blockedList[index];
-                final Widget userWidget = blockedUserMap.values.first;
+            child: _blockedList.isEmpty
+                ? Center(
+                    child: _blockedProcces && _isFirstProcces
+                        ? const Text("Engellenen hesap yok")
+                        : const CupertinoActivityIndicator())
+                : ListView.builder(
+                    itemCount: _blockedList.length,
+                    itemBuilder: (context, index) {
+                      final Map<int, Widget> blockedUserMap =
+                          _blockedList[index];
+                      final Widget userWidget = blockedUserMap.values.first;
 
-                return userWidget;
-              },
-            ),
+                      return userWidget;
+                    },
+                  ),
           ),
         ],
       ),

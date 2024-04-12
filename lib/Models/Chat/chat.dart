@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 class Chat {
   final int? chatID;
   final User user;
-  final ChatMessage? lastmessage;
+  ChatMessage? lastmessage;
   List<ChatMessage> messages = [];
   final String? chatType;
   final bool chatNotification;
@@ -36,8 +36,9 @@ class Chat {
           tileColor:
               chatNotification ? Colors.red.shade900 : ARMOYU.appbarColor,
           title: CustomText.costum1(user.displayName!),
-          subtitle:
-              lastmessage == null ? null : Text(lastmessage!.messageContext),
+          subtitle: lastmessage == null
+              ? const Text("")
+              : Text(lastmessage!.messageContext),
           trailing: chatType == "ozel"
               ? const Icon(Icons.person)
               : const Icon(Icons.people_alt),

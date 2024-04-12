@@ -67,6 +67,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
                   );
                 },
                 child: CircleAvatar(
+                  backgroundColor: Colors.transparent,
                   foregroundImage: CachedNetworkImageProvider(
                       widget.comment.user.avatar!.mediaURL.minURL),
                   radius: 20,

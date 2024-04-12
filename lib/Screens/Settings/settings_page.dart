@@ -229,6 +229,7 @@ class _SettingsPage extends State<SettingsPage> {
                   ListTile(
                     tileColor: ARMOYU.backgroundcolor,
                     leading: CircleAvatar(
+                      backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
                           ARMOYU.appUser.avatar!.mediaURL.minURL),
                       radius: 28,

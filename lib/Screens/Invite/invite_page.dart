@@ -8,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class InvitePage extends StatefulWidget {
   const InvitePage({
@@ -214,7 +213,7 @@ class _EventStatePage extends State<InvitePage>
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ARMOYU.bodyColor,
+        backgroundColor: ARMOYU.backgroundcolor,
         body: Column(
           children: [
             Container(
@@ -289,18 +288,12 @@ class _EventStatePage extends State<InvitePage>
                                 onTap: () {
                                   Clipboard.setData(
                                     ClipboardData(
-                                        text: ARMOYU.appUser.invitecode!
-                                            .toString()),
+                                      text:
+                                          ARMOYU.appUser.invitecode!.toString(),
+                                    ),
                                   );
-                                  Fluttertoast.showToast(
-                                    msg: "Kod kopyalandı",
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.BOTTOM,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: ARMOYU.bodyColor,
-                                    textColor: ARMOYU.color,
-                                    fontSize: 14.0,
-                                  );
+                                  ARMOYUWidget.toastNotification(
+                                      "Kod koyalandı");
                                 },
                                 child: Container(
                                   decoration: const BoxDecoration(

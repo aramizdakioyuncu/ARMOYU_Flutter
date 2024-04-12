@@ -5,6 +5,7 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatNewPage extends StatefulWidget {
@@ -15,8 +16,8 @@ class ChatNewPage extends StatefulWidget {
 }
 
 int chatnewpage = 1;
-bool chatFriendsprocess = false;
-bool isFirstFetch = true;
+bool _chatFriendsprocess = false;
+bool _isFirstFetch = true;
 List<Chat> _newchatList = [];
 
 List<Chat> _filteredItems = []; // Filtrelenmiş liste
@@ -33,7 +34,7 @@ class _ChatNewPageState extends State<ChatNewPage>
   @override
   void initState() {
     super.initState();
-    if (isFirstFetch) {
+    if (_isFirstFetch) {
       getchatfriendlist();
     }
 
@@ -64,16 +65,19 @@ class _ChatNewPageState extends State<ChatNewPage>
   }
 
   Future<void> getchatfriendlist() async {
-    if (chatFriendsprocess) {
+    if (_chatFriendsprocess) {
       return;
     }
-    chatFriendsprocess = true;
-    isFirstFetch = false;
+    _chatFriendsprocess = true;
+    _isFirstFetch = false;
+    if (mounted) {
+      setState(() {});
+    }
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getnewchatfriendlist(chatnewpage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      chatFriendsprocess = false;
+      _chatFriendsprocess = false;
       getchatfriendlist();
       return;
     }
@@ -82,8 +86,14 @@ class _ChatNewPageState extends State<ChatNewPage>
       _newchatList.clear();
     }
     if (response["icerik"].length == 0) {
-      chatFriendsprocess = true;
       log("Sohbet Arkadaşlarım Sayfa Sonu");
+
+      _chatFriendsprocess = true;
+      _isFirstFetch = false;
+
+      if (mounted) {
+        setState(() {});
+      }
       return;
     }
     for (int i = 0; i < response["icerik"].length; i++) {
@@ -114,7 +124,7 @@ class _ChatNewPageState extends State<ChatNewPage>
     }
     _filteredItems = _newchatList;
     chatnewpage++;
-    chatFriendsprocess = false;
+    _chatFriendsprocess = false;
   }
 
   @override
@@ -156,13 +166,19 @@ class _ChatNewPageState extends State<ChatNewPage>
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _filteredItems.length,
-              controller: chatScrollController,
-              itemBuilder: (context, index) {
-                return _filteredItems[index].listtilenewchat(context);
-              },
-            ),
+            child: _filteredItems.isEmpty
+                ? Center(
+                    child: !_isFirstFetch && !_chatFriendsprocess
+                        ? const Text("Arkadaş listesi boş")
+                        : const CupertinoActivityIndicator(),
+                  )
+                : ListView.builder(
+                    itemCount: _filteredItems.length,
+                    controller: chatScrollController,
+                    itemBuilder: (context, index) {
+                      return _filteredItems[index].listtilenewchat(context);
+                    },
+                  ),
           ),
         ],
       ),

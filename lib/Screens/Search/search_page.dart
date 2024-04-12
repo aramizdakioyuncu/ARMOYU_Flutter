@@ -145,7 +145,7 @@ class _SearchPagePage extends State<SearchPage>
         return;
       }
       FunctionsSearchEngine f = FunctionsSearchEngine();
-      Map<String, dynamic> response = await f.searchengine(1, text);
+      Map<String, dynamic> response = await f.searchengine(text, 1);
       if (response["durum"] == 0) {
         log(response["aciklama"]);
         return;

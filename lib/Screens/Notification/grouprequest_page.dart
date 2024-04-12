@@ -81,6 +81,7 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
 
     if (response["icerik"].length == 0) {
       setState(() {
+        firstFetchProcces = false;
         postpageproccess = false;
       });
       return;
@@ -146,15 +147,16 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
         ],
       ),
       backgroundColor: ARMOYU.bodyColor,
-      body: widgetNotifications.isEmpty
-          ? Center(
-              child: !firstFetchProcces && !postpageproccess
-                  ? const Text("İstek Kutusu Boş")
-                  : const CupertinoActivityIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: _handleRefresh,
-              child: ListView.builder(
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        child: widgetNotifications.isEmpty
+            ? Center(
+                child: !firstFetchProcces && !postpageproccess
+                    ? const Text("Grup istek kutusu boş")
+                    : const CupertinoActivityIndicator(),
+              )
+            : ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
                 controller: _scrollController,
                 itemCount: widgetNotifications.length,
                 itemBuilder: (context, index) {
@@ -166,7 +168,7 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
                   );
                 },
               ),
-            ),
+      ),
     );
   }
 }

@@ -3,6 +3,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Functions/Client_Functions/profile.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
@@ -204,7 +206,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CircleAvatar(
-                            backgroundColor: ARMOYU.backgroundcolor,
+                            backgroundColor: Colors.transparent,
                             foregroundImage: CachedNetworkImageProvider(
                               ARMOYU.appUser.avatar!.mediaURL.minURL,
                             ),
@@ -465,7 +467,15 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   Visibility(
                     visible: widget.post.owner.userID != ARMOYU.appUser.userID,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () async {
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+
+                        ARMOYUWidget.toastNotification(
+                            await ClientFunctionsProfile.userblock(
+                                widget.post.owner.userID!));
+                      },
                       child: const ListTile(
                         textColor: Colors.red,
                         leading: Icon(
@@ -569,7 +579,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       );
                     },
                     child: CircleAvatar(
-                      backgroundColor: ARMOYU.backgroundcolor,
+                      backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
                         widget.post.owner.avatar!.mediaURL.minURL,
                       ),

@@ -112,10 +112,12 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                                   child: Container(
                                     height: 24,
                                     width: 24,
-                                    decoration: const BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.elliptical(100, 100))),
+                                    decoration: BoxDecoration(
+                                      color: ARMOYU.backgroundcolor,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(100, 100),
+                                      ),
+                                    ),
                                     child: const Icon(
                                       Icons.add,
                                       color: Colors.blue,

@@ -1,6 +1,7 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ARMOYUWidget {
   final ScrollController scrollController;
@@ -53,6 +54,18 @@ class ARMOYUWidget {
         ),
         duration: const Duration(milliseconds: 500),
       ),
+    );
+  }
+
+  static void toastNotification(String text) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: ARMOYU.bodyColor,
+      textColor: ARMOYU.color,
+      fontSize: 14.0,
     );
   }
 }

@@ -22,7 +22,8 @@ class ChatPage extends StatefulWidget {
 }
 
 int chatPage = 1;
-bool chatsearchprocess = false;
+bool _chatsearchprocess = false;
+bool _isFirstFetch = true;
 List<Chat> _chatlist = [];
 List<Chat> _filteredItems = [];
 TextEditingController _chatcontroller = TextEditingController();
@@ -38,7 +39,7 @@ class _ChatPageState extends State<ChatPage>
   void initState() {
     super.initState();
 
-    if (!chatsearchprocess) {
+    if (_isFirstFetch) {
       getchat();
     }
 
@@ -69,15 +70,16 @@ class _ChatPageState extends State<ChatPage>
   }
 
   Future<void> getchat() async {
-    if (chatsearchprocess) {
+    if (_chatsearchprocess) {
       return;
     }
-    chatsearchprocess = true;
+    _chatsearchprocess = true;
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.getchats(chatPage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      chatsearchprocess = false;
+      _chatsearchprocess = false;
+      _isFirstFetch = false;
       getchat();
       return;
     }
@@ -87,8 +89,13 @@ class _ChatPageState extends State<ChatPage>
     }
 
     if (response["icerik"].length == 0) {
+      _chatsearchprocess = false;
+      _isFirstFetch = false;
+
       log("Sohbet Liste Sonu!");
-      chatsearchprocess = true;
+      if (mounted) {
+        setState(() {});
+      }
       return;
     }
     for (int i = 0; i < response["icerik"].length; i++) {
@@ -96,39 +103,43 @@ class _ChatPageState extends State<ChatPage>
       if (sonmesaj == "null") {
         sonmesaj = "";
       }
-      setState(() {
-        bool notification = false;
-        if (response["icerik"][i]["bildirim"] == 1) {
-          notification = true;
-        }
-        _chatlist.add(
-          Chat(
-            chatID: 1,
-            user: User(
-              userID: response["icerik"][i]["kullid"],
-              displayName: response["icerik"][i]["adisoyadi"],
-              lastlogin: response["icerik"][i]["songiris"],
-              lastloginv2: response["icerik"][i]["songiris"],
-              avatar: Media(
-                mediaID: response["icerik"][i]["kullid"],
-                mediaURL: MediaURL(
-                  bigURL: response["icerik"][i]["foto"],
-                  normalURL: response["icerik"][i]["foto"],
-                  minURL: response["icerik"][i]["foto"],
+      if (mounted) {
+        setState(() {
+          bool notification = false;
+          if (response["icerik"][i]["bildirim"] == 1) {
+            notification = true;
+          }
+          _chatlist.add(
+            Chat(
+              chatID: 1,
+              user: User(
+                userID: response["icerik"][i]["kullid"],
+                displayName: response["icerik"][i]["adisoyadi"],
+                lastlogin: response["icerik"][i]["songiris"],
+                lastloginv2: response["icerik"][i]["songiris"],
+                avatar: Media(
+                  mediaID: response["icerik"][i]["kullid"],
+                  mediaURL: MediaURL(
+                    bigURL: response["icerik"][i]["foto"],
+                    normalURL: response["icerik"][i]["foto"],
+                    minURL: response["icerik"][i]["foto"],
+                  ),
                 ),
               ),
+              lastmessage: ChatMessage(
+                user: User(userID: 1, avatar: null, displayName: ""),
+                messageContext: sonmesaj,
+                messageID: 1,
+                isMe: response["icerik"][i]["kullid"] == ARMOYU.appUser.userID
+                    ? true
+                    : false,
+              ),
+              chatType: response["icerik"][i]["sohbetturu"],
+              chatNotification: notification,
             ),
-            lastmessage: ChatMessage(
-              user: User(userID: 1, avatar: null, displayName: ""),
-              messageContext: sonmesaj,
-              messageID: 1,
-              isMe: false,
-            ),
-            chatType: response["icerik"][i]["sohbetturu"],
-            chatNotification: notification,
-          ),
-        );
-      });
+          );
+        });
+      }
     }
     if (mounted) {
       setState(() {
@@ -136,7 +147,8 @@ class _ChatPageState extends State<ChatPage>
       });
     }
 
-    chatsearchprocess = false;
+    _chatsearchprocess = false;
+    _isFirstFetch = false;
     chatPage++;
   }
 
@@ -190,22 +202,24 @@ class _ChatPageState extends State<ChatPage>
       ),
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
-        child: _chatlist.isEmpty
-            ? const Center(
-                child: CupertinoActivityIndicator(),
-              )
-            : RefreshIndicator(
-                onRefresh: () async {
-                  log("s");
-                },
-                child: ListView.builder(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            log("s");
+          },
+          child: _filteredItems.isEmpty
+              ? Center(
+                  child: !_isFirstFetch && !_chatsearchprocess
+                      ? const Text("Sohbet geçmişi boş")
+                      : const CupertinoActivityIndicator(),
+                )
+              : ListView.builder(
                   controller: chatScrollController,
                   itemCount: _filteredItems.length,
                   itemBuilder: (BuildContext context, index) {
                     return _filteredItems[index].listtilechat(context);
                   },
                 ),
-              ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: "NewChatButton",

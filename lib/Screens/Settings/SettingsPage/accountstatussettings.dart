@@ -34,6 +34,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
               child: Column(
                 children: [
                   CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     foregroundImage: CachedNetworkImageProvider(
                         ARMOYU.appUser.avatar!.mediaURL.minURL),
                     radius: 60,

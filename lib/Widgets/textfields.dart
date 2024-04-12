@@ -92,13 +92,53 @@ class CustomTextfields {
           return;
         }
 
-        if (lastWord[0] != "@" && lastWord[0] != "#") {
-          // Eğer son kelime @ veya # ile başlamıyorsa, mevcut sorguyu iptal eder
-          searchTimer?.cancel();
+        //Oyuncu listesi bomboşsa
+        if (WidgetMention.peopleList.isEmpty) {
+          searchTimer = Timer(const Duration(milliseconds: 500), () async {
+            FunctionsSearchEngine f = FunctionsSearchEngine();
+            Map<String, dynamic> response = await f.onlyusers("", 1);
+            if (response["durum"] == 0) {
+              log(response["aciklama"]);
+              return;
+            }
+            for (var element in response["icerik"]) {
+              WidgetMention.addpeopleList({
+                'id': element["ID"].toString(),
+                'display': element["username"].toString(),
+                'full_name': element["Value"].toString(),
+                'photo': element["avatar"].toString()
+              });
+            }
+            setstate();
+          });
+        }
+        //Hashtag listesi bomboşsa
+        if (WidgetMention.hashtagList.isEmpty) {
+          searchTimer = Timer(const Duration(milliseconds: 500), () async {
+            FunctionsSearchEngine f = FunctionsSearchEngine();
+            Map<String, dynamic> response = await f.hashtag("", 1);
+            if (response["durum"] == 0) {
+              log(response["aciklama"]);
+              return;
+            }
+            for (var element in response["icerik"]) {
+              WidgetMention.addhashtagList({
+                'id': element["hashtag_ID"].toString(),
+                'display': element["hashtag_value"].toString(),
+                'numberofuses': element["hashtag_numberofuses"],
+              });
+            }
+            setstate();
+          });
+        }
+
+        if (lastWord.length <= 3) {
           return;
         }
 
-        if (lastWord.length < 4) {
+        if (lastWord[0] != "@" && lastWord[0] != "#") {
+          // Eğer son kelime @ veya # ile başlamıyorsa, mevcut sorguyu iptal eder
+          searchTimer?.cancel();
           return;
         }
 
@@ -106,20 +146,36 @@ class CustomTextfields {
         searchTimer?.cancel();
         searchTimer = Timer(const Duration(milliseconds: 500), () async {
           FunctionsSearchEngine f = FunctionsSearchEngine();
-          Map<String, dynamic> response =
-              await f.onlyusers(1, lastWord.substring(1));
+
+          Map<String, dynamic> response;
+          if (lastWord[0] == "@") {
+            response = await f.onlyusers(lastWord.substring(1), 1);
+          } else if (lastWord[0] == "#") {
+            response = await f.hashtag(lastWord.substring(1), 1);
+          } else {
+            return;
+          }
+
           if (response["durum"] == 0) {
             log(response["aciklama"]);
             return;
           }
-
           for (var element in response["icerik"]) {
-            WidgetMention.addpeopleList({
-              'id': element["ID"].toString(),
-              'display': element["username"].toString(),
-              'full_name': element["Value"].toString(),
-              'photo': element["avatar"].toString()
-            });
+            if (lastWord[0] == "@") {
+              WidgetMention.addpeopleList({
+                'id': element["ID"].toString(),
+                'display': element["username"].toString(),
+                'full_name': element["Value"].toString(),
+                'photo': element["avatar"].toString()
+              });
+            }
+            if (lastWord[0] == "#") {
+              WidgetMention.addhashtagList({
+                'id': element["hashtag_ID"].toString(),
+                'display': element["hashtag_value"].toString(),
+                'numberofuses': element["hashtag_numberofuses"],
+              });
+            }
           }
 
           setstate();

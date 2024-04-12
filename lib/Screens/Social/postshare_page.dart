@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
@@ -9,6 +10,7 @@ import 'package:ARMOYU/Widgets/textfields.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class PostSharePage extends StatefulWidget {
@@ -99,7 +101,7 @@ class _PostSharePageState extends State<PostSharePage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: ARMOYU.appbarColor,
         title: const Text("Paylaşım Yap"),
       ),
       body: Padding(
@@ -122,6 +124,22 @@ class _PostSharePageState extends State<PostSharePage>
                       onPressed: () async {
                         dynamic aa = await _determinePosition();
                         log(aa.toString());
+
+                        Position position = await Geolocator.getCurrentPosition(
+                            desiredAccuracy: LocationAccuracy.high);
+
+                        await placemarkFromCoordinates(
+                                position.latitude, position.longitude)
+                            .then((List<Placemark> placemarks) {
+                          Placemark place = placemarks[0];
+                          setState(() {
+                            ARMOYUWidget.toastNotification(
+                                "${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
+                            log("${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
+                          });
+                        }).catchError((e) {
+                          debugPrint(e);
+                        });
                       },
                       icon: const Icon(
                         Icons.location_on,

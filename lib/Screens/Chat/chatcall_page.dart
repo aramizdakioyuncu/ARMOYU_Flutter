@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +76,7 @@ class _ChaCallPageState extends State<ChatCallPage>
         return true; // true döndürmek, normal geri tuşu işlevini sürdürür.
       },
       child: Scaffold(
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: ARMOYU.backgroundcolor,
         appBar: AppBar(
           title: const Row(
             mainAxisAlignment: MainAxisAlignment.center,

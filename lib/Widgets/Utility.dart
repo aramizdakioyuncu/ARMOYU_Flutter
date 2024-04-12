@@ -12,8 +12,12 @@ class WidgetUtility {
     String text, {
     TextAlign textAlign = TextAlign.start,
     FontWeight fontWeight = FontWeight.normal,
-    Color color = Colors.white,
+    Color color = Colors.red,
   }) {
+    if (color == Colors.red) {
+      color = ARMOYU.textColor;
+    }
+
     final lines = text.split('\n');
     final textSpans = <TextSpan>[];
 

@@ -15,9 +15,9 @@ class NotificationFriendRequestPage extends StatefulWidget {
   State<NotificationFriendRequestPage> createState() => _NotificationPage();
 }
 
-bool postpageproccess = false;
-int postpage = 1;
-bool firstFetchProcces = true;
+bool _pageproccess = false;
+int _page = 1;
+bool _firstFetchProcces = true;
 List<Widget> widgetNotifications = [];
 
 final ScrollController _scrollController = ScrollController();
@@ -29,8 +29,8 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
   @override
   void initState() {
     super.initState();
-    if (firstFetchProcces) {
-      loadnoifications(postpage);
+    if (_firstFetchProcces) {
+      loadnoifications();
     }
 
     _scrollController.addListener(() {
@@ -43,45 +43,52 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
   }
 
   Future<void> _loadMoreData() async {
-    if (!postpageproccess) {
-      await loadnoifications(postpage);
+    if (!_pageproccess) {
+      await loadnoifications();
     }
   }
 
   Future<void> _handleRefresh() async {
     setState(() {
-      postpage = 1;
-      loadnoifications(postpage);
+      _page = 1;
+      loadnoifications();
     });
   }
 
-  Future<void> loadnoifications(int page) async {
-    if (postpageproccess) {
+  Future<void> loadnoifications() async {
+    if (_pageproccess) {
       return;
     }
     setState(() {
-      postpageproccess = true;
+      _pageproccess = true;
     });
-    if (page == 1) {
-      widgetNotifications.clear();
-    }
+
     FunctionService f = FunctionService();
     Map<String, dynamic> response =
-        await f.getnotifications("arkadaslik", "istek", page);
+        await f.getnotifications("arkadaslik", "istek", _page);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      setState(() {
-        postpageproccess = false;
-        firstFetchProcces = false;
-      });
+      _pageproccess = false;
+      _firstFetchProcces = false;
+
+      if (mounted) {
+        setState(() {});
+      }
+
       return;
     }
-
+    if (_page == 1) {
+      widgetNotifications.clear();
+    }
     if (response["icerik"].length == 0) {
-      setState(() {
-        postpageproccess = false;
-      });
+      _pageproccess = false;
+      _firstFetchProcces = false;
+
+      if (mounted) {
+        setState(() {});
+      }
+
       return;
     }
 
@@ -117,12 +124,14 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
         });
       }
     }
-    setState(() {
-      firstFetchProcces = false;
-      postpageproccess = false;
-    });
 
-    postpage++;
+    _firstFetchProcces = false;
+    _pageproccess = false;
+    _page++;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -135,9 +144,8 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
         actions: [
           IconButton(
             onPressed: () async {
-              postpage = 1;
-
-              await loadnoifications(postpage);
+              _page = 1;
+              await loadnoifications();
             },
             icon: const Icon(Icons.refresh),
           )
@@ -146,14 +154,15 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
       backgroundColor: ARMOYU.bodyColor,
       body: widgetNotifications.isEmpty
           ? Center(
-              child: !firstFetchProcces && !postpageproccess
-                  ? const Text("İstek Kutusu Boş")
+              child: !_firstFetchProcces && !_pageproccess
+                  ? const Text("Arkadaşlık istek kutusu boş")
                   : const CupertinoActivityIndicator(),
             )
           : RefreshIndicator(
               onRefresh: _handleRefresh,
               child: ListView.builder(
                 controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
                 itemCount: widgetNotifications.length,
                 itemBuilder: (context, index) {
                   return Column(

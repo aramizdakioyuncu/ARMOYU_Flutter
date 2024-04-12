@@ -351,6 +351,7 @@ class _MainPageState extends State<MainPage>
         return false;
       },
       child: SafeArea(
+        top: false,
         child: Scaffold(
           // backgroundColor: ARMOYU.appbarColor,
           appBar: !isBottomNavbarVisible
@@ -358,7 +359,6 @@ class _MainPageState extends State<MainPage>
               : AppBar(
                   // Arkaplan rengini ayarlayın
                   backgroundColor: ARMOYU.appbarColor,
-
                   elevation: 0,
                   leading: Builder(
                     builder: (BuildContext context) {
@@ -367,11 +367,9 @@ class _MainPageState extends State<MainPage>
                           Scaffold.of(context).openDrawer();
                         },
                         child: Container(
-                          padding: const EdgeInsets.all(
-                              12.0), // İç boşluğu belirleyin
+                          padding: const EdgeInsets.all(12.0),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                50.0), // Kenar yarıçapını ayarlayın
+                            borderRadius: BorderRadius.circular(50.0),
                             child: ARMOYU.appUser.avatar == null
                                 ? const SkeletonAvatar()
                                 : CachedNetworkImage(
@@ -459,6 +457,7 @@ class _MainPageState extends State<MainPage>
                     child: ARMOYU.appUser.avatar == null
                         ? const SkeletonAvatar()
                         : CircleAvatar(
+                            backgroundColor: Colors.transparent,
                             foregroundImage: CachedNetworkImageProvider(
                                 ARMOYU.appUser.avatar!.mediaURL.minURL),
                           ),
@@ -740,8 +739,8 @@ class _MainPageState extends State<MainPage>
                     label: Text(
                         (ARMOYU.groupInviteCount + ARMOYU.friendRequestCount)
                             .toString()),
-                    backgroundColor: Colors.red,
                     textColor: Colors.white,
+                    backgroundColor: Colors.red,
                     child: const Icon(Icons.notifications),
                   ),
                   label: 'Bildirimler',

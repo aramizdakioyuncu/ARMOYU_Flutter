@@ -10,6 +10,7 @@ import 'package:ARMOYU/Models/Chat/chat_message.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Chat/chatcall_page.dart';
 import 'package:ARMOYU/Services/Socket/socket.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -99,18 +100,26 @@ class _ChatDetailPage extends State<ChatDetailPage>
             ARMOYU.appUser.userID.toString()) {
           message = responseData["message"].toString();
         }
+        if (mounted) {
+          setState(() {
+            widget.chat.messages.add(
+              ChatMessage(
+                messageID: 0,
+                isMe: false,
+                messageContext: message,
+                user: widget.chat.user,
+              ),
+            );
 
-        setState(() {
-          widget.chat.messages.add(
-            ChatMessage(
+            //SonMesajı güncelle
+            widget.chat.lastmessage = ChatMessage(
               messageID: 0,
               isMe: false,
               messageContext: message,
               user: widget.chat.user,
-            ),
-          );
-        });
-
+            );
+          });
+        }
         log(message);
       } catch (e) {
         log("json hatası");
@@ -185,16 +194,26 @@ class _ChatDetailPage extends State<ChatDetailPage>
         } else {
           ismee = false;
         }
-        setState(() {
-          widget.chat.messages.add(
-            ChatMessage(
-              messageID: 0,
-              isMe: ismee,
-              messageContext: element["mesajicerik"],
-              user: widget.chat.user,
-            ),
-          );
-        });
+
+        if (mounted) {
+          setState(() {
+            widget.chat.messages.add(
+              ChatMessage(
+                messageID: 0,
+                isMe: ismee,
+                messageContext: element["mesajicerik"],
+                user: widget.chat.user,
+              ),
+            );
+          });
+        }
+        //SonMesajı güncelle
+        widget.chat.lastmessage = ChatMessage(
+          messageID: 0,
+          isMe: ismee,
+          messageContext: element["mesajicerik"],
+          user: widget.chat.user,
+        );
       } catch (e) {
         log("Sohbet getirilemedi! : $e");
       }
@@ -206,16 +225,18 @@ class _ChatDetailPage extends State<ChatDetailPage>
     super.build(context);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: ARMOYU.backgroundcolor,
         appBar: AppBar(
+          backgroundColor: ARMOYU.backgroundcolor,
+          automaticallyImplyLeading: false,
           title: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              CustomText.costum1(
                 widget.chat.user.displayName!,
-                style:
-                    const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                size: 17,
+                weight: FontWeight.bold,
               ),
               Row(
                 children: [
@@ -268,8 +289,6 @@ class _ChatDetailPage extends State<ChatDetailPage>
               );
             },
           ),
-          automaticallyImplyLeading: false,
-          backgroundColor: Colors.black,
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.call),
@@ -332,13 +351,13 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         child: Container(
                           padding: const EdgeInsets.only(left: 5),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade800,
+                            color: ARMOYU.textbackColor,
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           child: TextField(
                             controller: _messageController,
-                            style: const TextStyle(
-                                color: Colors.white, fontSize: 16),
+                            style: TextStyle(
+                                color: ARMOYU.textColor, fontSize: 16),
                             decoration: const InputDecoration(
                               hintText: 'Mesaj yaz',
                               border: InputBorder.none,
@@ -357,16 +376,25 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         }
                         String message = _messageController.text;
                         _messageController.text = "";
-                        setState(() {
-                          widget.chat.messages.add(
-                            ChatMessage(
-                              messageID: 0,
-                              isMe: true,
-                              messageContext: message,
-                              user: ARMOYU.appUser,
-                            ),
-                          );
-                        });
+                        if (mounted) {
+                          setState(() {
+                            widget.chat.messages.add(
+                              ChatMessage(
+                                messageID: 0,
+                                isMe: true,
+                                messageContext: message,
+                                user: ARMOYU.appUser,
+                              ),
+                            );
+                          });
+                        }
+                        //SonMesajı güncelle
+                        widget.chat.lastmessage = ChatMessage(
+                          messageID: 0,
+                          isMe: true,
+                          messageContext: message,
+                          user: ARMOYU.appUser,
+                        );
 
                         FunctionService f = FunctionService();
                         Map<String, dynamic> response = await f.sendchatmessage(
@@ -389,89 +417,6 @@ class _ChatDetailPage extends State<ChatDetailPage>
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class MessageBubble extends StatelessWidget {
-  final String message;
-  final bool isMe;
-  final String avatar;
-
-  const MessageBubble({
-    super.key,
-    required this.message,
-    required this.isMe,
-    required this.avatar,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!isMe)
-            Container(
-              padding: const EdgeInsets.only(right: 5),
-              child: CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(avatar),
-              ),
-            ),
-          Container(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - 70),
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color:
-                  isMe ? Colors.blue : const Color.fromARGB(255, 212, 78, 69),
-              borderRadius: isMe
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(0),
-                      bottomLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12),
-                    )
-                  : const BorderRadius.only(
-                      topLeft: Radius.circular(0),
-                      topRight: Radius.circular(12),
-                      bottomLeft: Radius.circular(12),
-                      bottomRight: Radius.circular(12),
-                    ),
-            ),
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15),
-                      child: Text(
-                        message,
-                        style: TextStyle(
-                          color: isMe ? Colors.white : Colors.white,
-                        ),
-                      ),
-                    ),
-                    const Visibility(
-                      child: Positioned(
-                        bottom: -3,
-                        right: 0,
-                        child: Icon(
-                          Icons.done_all,
-                          color: Color.fromRGBO(116, 243, 20, 1),
-                          size: 14,
-                        ), // Okundu işareti
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

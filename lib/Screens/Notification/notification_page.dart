@@ -17,8 +17,9 @@ class NotificationPage extends StatefulWidget {
   State<NotificationPage> createState() => _NotificationPage();
 }
 
-bool postpageproccess = false;
-int postpage = 1;
+bool _firstProccess = true;
+bool _notificationProccess = false;
+int _page = 1;
 
 class _NotificationPage extends State<NotificationPage>
     with AutomaticKeepAliveClientMixin<NotificationPage> {
@@ -29,113 +30,63 @@ class _NotificationPage extends State<NotificationPage>
   void initState() {
     super.initState();
 
-    loadnoifications(postpage);
+    loadnoifications();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent * 0.5) {
-        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
         _loadMoreData();
       }
     });
   }
 
   Future<void> _loadMoreData() async {
-    if (!postpageproccess) {
-      await loadnoifications(postpage);
+    if (!_notificationProccess) {
+      await loadnoifications();
     }
   }
 
   Future<void> _handleRefresh() async {
-    await loadnoifications(postpage);
-
-    setState(() {
-      postpage = 1;
-    });
+    _page = 1;
+    await loadnoifications();
   }
 
   List<Widget> widgetNotifications = [];
 
-  Future<void> loadnoifications(int page) async {
-    if (postpageproccess) {
+  Future<void> loadnoifications() async {
+    if (_notificationProccess) {
       return;
     }
-    postpageproccess = true;
-
+    _notificationProccess = true;
+    if (mounted) {
+      setState(() {});
+    }
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getnotifications("", "", page);
-
+    Map<String, dynamic> response = await f.getnotifications("", "", _page);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      postpageproccess = false;
+      _notificationProccess = false;
+      _firstProccess = false;
+
+      if (mounted) {
+        setState(() {});
+      }
       return;
     }
 
-    if (page == 1) {
+    if (_page == 1) {
       widgetNotifications.clear();
-
-      setState(() {
-        widgetNotifications.add(ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-          leading: Icon(
-            Icons.person_add_rounded,
-            color: ARMOYU.color,
-          ),
-          tileColor: ARMOYU.appbarColor,
-          title: CustomText.costum1("Arkadaşlık İstekleri"),
-          subtitle: CustomText.costum1("Arkadaşlık isteklerini gözden geçir"),
-          trailing: Badge(
-            isLabelVisible: ARMOYU.friendRequestCount == 0 ? false : true,
-            label: Text(ARMOYU.friendRequestCount.toString()),
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            child: const Icon(
-              Icons.notifications_active,
-              color: Colors.white,
-            ),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NotificationFriendRequestPage(),
-              ),
-            );
-          },
-        ));
-      });
-      setState(() {
-        widgetNotifications.add(ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-          leading: Icon(Icons.groups_2, color: ARMOYU.color),
-          tileColor: ARMOYU.appbarColor,
-          title: CustomText.costum1("Grup İstekleri"),
-          subtitle: CustomText.costum1("Grup isteklerini gözden geçir"),
-          trailing: Badge(
-            isLabelVisible: ARMOYU.groupInviteCount == 0 ? false : true,
-            label: Text(ARMOYU.groupInviteCount.toString()),
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            child: const Icon(
-              Icons.notifications_active,
-              color: Colors.white,
-            ),
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const NotificationGroupRequestPage(),
-              ),
-            );
-          },
-        ));
-      });
+      if (mounted) {
+        setState(() {});
+      }
     }
+
     if (response["icerik"].length == 0) {
-      postpageproccess = false;
+      _notificationProccess = false;
+      _firstProccess = false;
+      if (mounted) {
+        setState(() {});
+      }
       return;
     }
 
@@ -153,24 +104,31 @@ class _NotificationPage extends State<NotificationPage>
           noticiationbuttons = true;
         }
       }
-      setState(() {
-        widgetNotifications.add(
-          CustomMenusNotificationbars(
-            avatar: response["icerik"][i]["bildirimgonderenavatar"],
-            userID: response["icerik"][i]["bildirimgonderenID"],
-            category: response["icerik"][i]["bildirimamac"],
-            categorydetail: response["icerik"][i]["bildirimkategori"],
-            categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
-            date: response["icerik"][i]["bildirimzaman"],
-            displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
-            enableButtons: noticiationbuttons,
-            text: response["icerik"][i]["bildirimicerik"],
-          ),
-        );
-      });
+      if (mounted) {
+        setState(() {
+          widgetNotifications.add(
+            CustomMenusNotificationbars(
+              avatar: response["icerik"][i]["bildirimgonderenavatar"],
+              userID: response["icerik"][i]["bildirimgonderenID"],
+              category: response["icerik"][i]["bildirimamac"],
+              categorydetail: response["icerik"][i]["bildirimkategori"],
+              categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
+              date: response["icerik"][i]["bildirimzaman"],
+              displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
+              enableButtons: noticiationbuttons,
+              text: response["icerik"][i]["bildirimicerik"],
+            ),
+          );
+        });
+      }
     }
-    postpageproccess = false;
-    postpage++;
+
+    _notificationProccess = false;
+    _firstProccess = false;
+    _page++;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -178,23 +136,94 @@ class _NotificationPage extends State<NotificationPage>
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.bodyColor,
-      body: widgetNotifications.isEmpty
-          ? const Center(child: CupertinoActivityIndicator())
-          : RefreshIndicator(
-              onRefresh: _handleRefresh,
-              child: ListView.builder(
-                controller: _scrollController,
-                itemCount: widgetNotifications.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      widgetNotifications[index],
-                      const SizedBox(height: 1)
-                    ],
-                  );
-                },
+      body: Column(
+        children: [
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+            leading: Icon(
+              Icons.person_add_rounded,
+              color: ARMOYU.color,
+            ),
+            tileColor: ARMOYU.appbarColor,
+            title: CustomText.costum1("Arkadaşlık İstekleri"),
+            subtitle: CustomText.costum1("Arkadaşlık isteklerini gözden geçir"),
+            trailing: Badge(
+              isLabelVisible: ARMOYU.friendRequestCount == 0 ? false : true,
+              label: Text(ARMOYU.friendRequestCount.toString()),
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              child: const Icon(
+                Icons.notifications_active,
+                color: Colors.white,
               ),
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationFriendRequestPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+            leading: Icon(Icons.groups_2, color: ARMOYU.color),
+            tileColor: ARMOYU.appbarColor,
+            title: CustomText.costum1("Grup İstekleri"),
+            subtitle: CustomText.costum1("Grup isteklerini gözden geçir"),
+            trailing: Badge(
+              isLabelVisible: ARMOYU.groupInviteCount == 0 ? false : true,
+              label: Text(ARMOYU.groupInviteCount.toString()),
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              child: const Icon(
+                Icons.notifications_active,
+                color: Colors.white,
+              ),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NotificationGroupRequestPage(),
+                ),
+              );
+            },
+          ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: widgetNotifications.isEmpty
+                  ? Container(
+                      color: ARMOYU.backgroundcolor,
+                      child: Stack(children: [
+                        Center(
+                          child: !_firstProccess && !_notificationProccess
+                              ? const Text("Bildirimler Boş")
+                              : const CupertinoActivityIndicator(),
+                        ),
+                      ]),
+                    )
+                  : ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      controller: _scrollController,
+                      itemCount: widgetNotifications.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: [
+                            widgetNotifications[index],
+                            const SizedBox(height: 1)
+                          ],
+                        );
+                      },
+                    ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

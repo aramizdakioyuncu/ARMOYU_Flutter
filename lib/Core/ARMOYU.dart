@@ -4,7 +4,6 @@ import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ARMOYU {
   static String appName = "";
@@ -18,18 +17,18 @@ class ARMOYU {
   static String devicePlatform = "";
   static String deviceModel = "";
 
-  static Color? appbarColor;
-  static Color? appbottomColor;
-  static Color? bodyColor;
+  static Color appbarColor = Colors.black;
+  static Color appbottomColor = Colors.black;
+  static Color bodyColor = Colors.black;
 
-  static Color? color;
-  static Color? backgroundcolor;
+  static Color color = Colors.black;
+  static Color backgroundcolor = Colors.black;
 
-  static Color? textColor;
-  static Color? textbackColor;
-  static Color? texthintColor;
+  static Color textColor = Colors.black;
+  static Color textbackColor = Colors.black;
+  static Color texthintColor = Colors.black;
 
-  static Color? buttonColor;
+  static Color buttonColor = Colors.black;
 
   static double get screenWidth =>
       MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;

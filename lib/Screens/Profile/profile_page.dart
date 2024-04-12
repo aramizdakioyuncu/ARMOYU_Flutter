@@ -788,8 +788,27 @@ class _ProfilePageState extends State<ProfilePage>
             SliverAppBar(
               pinned:
                   ARMOYU.appUser.userID != userProfile.userID ? true : false,
-              backgroundColor: Colors.black,
+              backgroundColor: ARMOYU.appbarColor,
               expandedHeight: ARMOYU.screenHeight * 0.25,
+              leading: userProfile.userID == ARMOYU.appUser.userID ||
+                      userProfile.userName == ARMOYU.appUser.userName
+                  ? null
+                  : IconButton(
+                      onPressed: () {
+                        if (mounted) {
+                          Navigator.pop(context);
+                        }
+                      },
+                      icon: const Icon(Icons.arrow_back_ios_rounded),
+                    ),
+              title: userProfile.userID == ARMOYU.appUser.userID ||
+                      userProfile.userName == ARMOYU.appUser.userName
+                  ? null
+                  : userProfile.displayName == null
+                      ? const SkeletonLine(
+                          style: SkeletonLineStyle(width: 200),
+                        )
+                      : Text(userProfile.displayName.toString()),
               actions: <Widget>[
                 userProfile.userID == null
                     ? const SizedBox()

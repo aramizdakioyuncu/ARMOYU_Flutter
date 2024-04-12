@@ -61,6 +61,7 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
           );
         },
         child: CircleAvatar(
+          backgroundColor: Colors.transparent,
           foregroundImage: CachedNetworkImageProvider(widget.profileImageUrl),
           radius: 20,
         ),
