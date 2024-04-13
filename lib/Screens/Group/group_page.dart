@@ -1,14 +1,80 @@
+import 'dart:developer';
+
+import 'package:ARMOYU/Functions/API_Functions/group.dart';
+import 'package:ARMOYU/Models/group.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:skeletons/skeletons.dart';
 
 class GroupPage extends StatefulWidget {
-  const GroupPage({super.key});
+  final int groupID;
+  const GroupPage({
+    super.key,
+    required this.groupID,
+  });
 
   @override
   State<GroupPage> createState() => _GroupPage();
 }
 
 class _GroupPage extends State<GroupPage> {
+  bool _groupProcces = false;
+  Group _group = Group();
+  @override
+  void initState() {
+    super.initState();
+
+    _group.groupID = widget.groupID;
+    fetchGroupInfo();
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> fetchGroupInfo() async {
+    if (_groupProcces) {
+      return;
+    }
+    _groupProcces = true;
+    FunctionsGroup f = FunctionsGroup();
+    Map<String, dynamic> response = await f.groupFetch(widget.groupID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"].toString());
+      _groupProcces = false;
+      return;
+    }
+    _group = Group(
+      groupID: response["icerik"]["group_ID"],
+      groupName: response["icerik"]["group_name"],
+      groupshortName: response["icerik"]["group_shortname"],
+      groupURL: response["icerik"]["group_URL"],
+      groupType: "",
+      groupBanner: Media(
+        mediaID: response["icerik"]["group_banner"]["media_ID"],
+        mediaURL: MediaURL(
+          bigURL: response["icerik"]["group_banner"]["media_bigURL"],
+          normalURL: response["icerik"]["group_banner"]["media_URL"],
+          minURL: response["icerik"]["group_banner"]["media_minURL"],
+        ),
+      ),
+      groupLogo: Media(
+        mediaID: response["icerik"]["group_logo"]["media_ID"],
+        mediaURL: MediaURL(
+          bigURL: response["icerik"]["group_logo"]["media_bigURL"],
+          normalURL: response["icerik"]["group_logo"]["media_URL"],
+          minURL: response["icerik"]["group_logo"]["media_minURL"],
+        ),
+      ),
+    );
+    setstatefunction();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,64 +88,72 @@ class _GroupPage extends State<GroupPage> {
             }),
             backgroundColor: Colors.black,
             expandedHeight: 160.0,
-            actions: const <Widget>[
-              // const SizedBox(width: 10),
-            ],
+            actions: const <Widget>[],
             flexibleSpace: FlexibleSpaceBar(
               titlePadding: const EdgeInsets.only(left: 30.0),
               centerTitle: false,
-              // expandedTitleScale: 1,
               title: Stack(
                 children: [
                   Wrap(
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png",
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black26, // Set the background color
-                              borderRadius: BorderRadius.circular(
-                                  10), // Set the border radius
-                              border: Border.all(
-                                color: Colors.black26, // Set the border color
-                                width: 2, // Set the border width
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          children: [
+                            _group.groupLogo == null
+                                ? const SkeletonAvatar(
+                                    style: SkeletonAvatarStyle(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(30),
+                                      ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    foregroundImage: CachedNetworkImageProvider(
+                                      _group.groupLogo!.mediaURL.minURL,
+                                    ),
+                                    radius: 24,
+                                  ),
+                            const SizedBox(height: 2),
+                            Container(
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: Colors.black26,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Colors.black26,
+                                  width: 2,
+                                ),
                               ),
+                              padding: const EdgeInsets.all(2),
+                              child: _group.groupName == null
+                                  ? const SkeletonLine(
+                                      style: SkeletonLineStyle(width: 100),
+                                    )
+                                  : Text(
+                                      _group.groupName.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             ),
-                            padding: const EdgeInsets.all(
-                                2), // Set padding as needed
-                            child: const Text(
-                              'YMaradana',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white, // Set the text color
-                              ),
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ],
               ),
-              background: GestureDetector(
-                child: CachedNetworkImage(
-                  imageUrl:
-                      "https://aramizdakioyuncu.com/galeri/istasyonlar/maracana-arkaplan.png",
-                  fit: BoxFit.cover,
-                ),
-              ),
+              background: _group.groupBanner == null
+                  ? null
+                  : CachedNetworkImage(
+                      imageUrl: _group.groupBanner!.mediaURL.minURL,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          const CupertinoActivityIndicator(),
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           SliverList(

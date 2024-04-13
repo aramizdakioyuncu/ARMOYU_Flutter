@@ -245,8 +245,7 @@ class _EventStatePage extends State<EventPage> {
                             const SizedBox(height: 5),
                             Text(widget
                                 .event.eventorganizer[index].displayName!),
-                            const Text(
-                                "Yetkili"), // Yetkili bilgisini isteğinize göre güncelleyebilirsiniz
+                            const Text("Yetkili"),
                           ],
                         ),
                       ),
@@ -316,7 +315,9 @@ class _EventStatePage extends State<EventPage> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (content) =>
-                                                  const GroupPage(),
+                                                  const GroupPage(
+                                                groupID: 1,
+                                              ),
                                             ),
                                           );
                                         },

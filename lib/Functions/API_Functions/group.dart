@@ -3,6 +3,13 @@ import 'package:ARMOYU/Services/API/api_service.dart';
 class FunctionsGroup {
   final ApiService apiService = ApiService();
 
+  Future<Map<String, dynamic>> groupFetch(int grupID) async {
+    Map<String, String> formData = {"grupID": "$grupID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("gruplar/0/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> grouprequestanswer(
       int grupID, int answer) async {
     Map<String, String> formData = {"grupID": "$grupID", "cevap": "$answer"};

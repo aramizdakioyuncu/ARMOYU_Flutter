@@ -11,6 +11,7 @@ import 'package:ARMOYU/Models/station.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
+import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/Invite/invite_page.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
@@ -250,7 +251,6 @@ class _MainPageState extends State<MainPage>
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       loadGroupProcess = false;
-
       return;
     }
     if (response["icerik"].length == 0) {
@@ -274,7 +274,16 @@ class _MainPageState extends State<MainPage>
                 ),
               ),
               title: Text(element["grupadi"]),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GroupPage(
+                      groupID: element["grupID"],
+                    ),
+                  ),
+                );
+              },
             ),
           );
         }
