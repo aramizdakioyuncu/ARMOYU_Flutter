@@ -124,7 +124,6 @@ class _StartingScreenState extends State<StartingScreen> {
           ),
         );
       }
-
       return;
     }
 
@@ -139,25 +138,8 @@ class _StartingScreenState extends State<StartingScreen> {
         }
         return;
       }
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Pages(),
-          ),
-        );
-      }
 
-      return;
-    } else if (response["durum"] == 0) {
-      if (response["aciklama"] == "Hatalı giriş!") {
-        log("Web Versiyon ${response["aciklamadetay"]["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
-        if (response["aciklamadetay"]["build"] > int.parse(ARMOYU.appBuild)) {
-          if (mounted) {
-            ARMOYUFunctions.updateForce(context);
-          }
-          return;
-        }
+      if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
         if (mounted) {
           Navigator.pushReplacement(
             context,
@@ -169,13 +151,16 @@ class _StartingScreenState extends State<StartingScreen> {
         return;
       }
 
-      if (response["aciklama"] == "Lütfen Geçerli API_KEY giriniz!") {
-        if (mounted) {
-          ARMOYUFunctions.updateForce(context);
-        }
-        return;
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const Pages(),
+          ),
+        );
       }
-
+      return;
+    } else if (response["durum"] == 0) {
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -186,6 +171,7 @@ class _StartingScreenState extends State<StartingScreen> {
       }
       return;
     }
+
     if (mounted) {
       Navigator.pushReplacement(
         context,
