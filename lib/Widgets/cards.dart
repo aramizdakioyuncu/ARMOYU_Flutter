@@ -123,6 +123,7 @@ class _CustomCardsState extends State<CustomCards> {
                         builder: (context) => ProfilePage(
                           appbar: true,
                           userID: int.parse(cardData["userID"].toString()),
+                          scrollController: ScrollController(),
                         ),
                       ),
                     );

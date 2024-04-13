@@ -63,7 +63,16 @@ class _MainPageState extends State<MainPage>
   bool isRefreshing = false;
 
   bool firstProcces = false;
-  ScrollController homepageScrollController = ScrollController();
+  final PageController _mainpagecontroller = PageController(initialPage: 0);
+  final PageController _pageController2 = PageController(initialPage: 1);
+
+  final ScrollController _homepageScrollController = ScrollController();
+  final ScrollController _searchScrollController =
+      ScrollController(initialScrollOffset: 0);
+  final ScrollController _notificationScrollController =
+      ScrollController(initialScrollOffset: 0);
+  final ScrollController _profileScrollController =
+      ScrollController(initialScrollOffset: 0);
   @override
   void initState() {
     super.initState();
@@ -101,9 +110,11 @@ class _MainPageState extends State<MainPage>
           title: const Text("Okula Katıl"),
           onTap: () {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const SchoolLoginPage()));
+              context,
+              MaterialPageRoute(
+                builder: (context) => const SchoolLoginPage(),
+              ),
+            );
           },
         ),
       );
@@ -122,10 +133,6 @@ class _MainPageState extends State<MainPage>
         Team(teamID: team.teamID, name: team.name, logo: team.logo);
   }
 
-  final PageController _mainpagecontroller = PageController(initialPage: 0);
-  final PageController _pageController2 = PageController(initialPage: 1);
-
-  final PageController _notificationController = PageController(initialPage: 0);
   int _currentPage = 0;
   bool bottombarVisible = true;
   void _changePage(int page) {
@@ -141,7 +148,7 @@ class _MainPageState extends State<MainPage>
       if (_currentPage.toString() == "0") {
         try {
           Future.delayed(const Duration(milliseconds: 100), () {
-            homepageScrollController.animateTo(
+            _homepageScrollController.animateTo(
               0,
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
@@ -154,13 +161,50 @@ class _MainPageState extends State<MainPage>
       }
     }
 
+    //Arama butonuna basıldığında
+    if (page.toString() == "1") {
+      //Arama sayfasında aramaya basarsan en üstte çıkartan kod
+      if (_currentPage.toString() == "1") {
+        try {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _searchScrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+        } catch (e) {
+          log(e.toString());
+        }
+        return;
+      }
+    }
     //Bildirimler butonuna basıldığında
     if (page.toString() == "2") {
       //Bildirimler sayfasında bildirimler basarsan en üstte çıkartan kod
       if (_currentPage.toString() == "2") {
         try {
           Future.delayed(const Duration(milliseconds: 100), () {
-            _notificationController.animateTo(
+            _notificationScrollController.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeInOut,
+            );
+          });
+        } catch (e) {
+          log(e.toString());
+        }
+        return;
+      }
+    }
+
+    //Profil butonuna basıldığında
+    if (page.toString() == "3") {
+      //Profil sayfasında profile basarsan en üstte çıkartan kod
+      if (_currentPage.toString() == "3") {
+        try {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _profileScrollController.animateTo(
               0,
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
@@ -352,8 +396,9 @@ class _MainPageState extends State<MainPage>
       },
       child: SafeArea(
         top: false,
+        bottom: false,
         child: Scaffold(
-          // backgroundColor: ARMOYU.appbarColor,
+          // backgroundColor: ARMOYU.backgroundcolor,
           appBar: !isBottomNavbarVisible
               ? null
               : AppBar(
@@ -650,9 +695,8 @@ class _MainPageState extends State<MainPage>
                         ListTile(
                           // Sağ tarafta bir buton
                           trailing: IconButton(
-                            icon: Icon(Icons.nightlight,
-                                color:
-                                    ARMOYU.textColor), // Sağdaki butonun ikonu
+                            icon:
+                                Icon(Icons.nightlight, color: ARMOYU.textColor),
                             onPressed: () {
                               setState(() {
                                 ThemeProvider().toggleTheme();
@@ -662,8 +706,7 @@ class _MainPageState extends State<MainPage>
                           // Sol tarafta bir buton
                           leading: IconButton(
                             icon: Icon(Icons.qr_code_2_rounded,
-                                color:
-                                    ARMOYU.textColor), // Soldaki butonun ikonu
+                                color: ARMOYU.textColor),
                             onPressed: () async {
                               BarcodeService bc = BarcodeService();
                               String responsew = await bc.scanQR();
@@ -704,15 +747,24 @@ class _MainPageState extends State<MainPage>
                   ARMOYU.cameras!.isNotEmpty
                       ? const CameraScreen()
                       : Container(),
-                  SocialPage(homepageScrollController: homepageScrollController)
+                  SocialPage(
+                    homepageScrollController: _homepageScrollController,
+                  )
                 ],
               ),
               SearchPage(
-                  appbar: true, searchController: appbarSearchTextController),
-              NotificationPage(
-                scrollController: _notificationController,
+                appbar: true,
+                searchController: appbarSearchTextController,
+                scrollController: _searchScrollController,
               ),
-              ProfilePage(userID: ARMOYU.appUser.userID, appbar: false),
+              NotificationPage(
+                scrollController: _notificationScrollController,
+              ),
+              ProfilePage(
+                userID: ARMOYU.appUser.userID,
+                appbar: false,
+                scrollController: _profileScrollController,
+              ),
             ],
           ),
           bottomNavigationBar: Visibility(

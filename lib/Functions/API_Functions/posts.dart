@@ -26,20 +26,23 @@ class FunctionsPosts {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> likeordislike(int postID) async {
-    Map<String, String> formData = {"postID": "$postID", "kategori": "post"};
-    Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begen/", formData);
-    return jsonData;
-  }
-
-  Future<Map<String, dynamic>> commentlikeordislike(int commentID) async {
+  Future<Map<String, dynamic>> commentlike(int commentID) async {
     Map<String, String> formData = {
       "postID": "$commentID",
       "kategori": "postyorum",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begen/", formData);
+        await _apiService.request("sosyal/begeni-ekle/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> commentdislike(int commentID) async {
+    Map<String, String> formData = {
+      "postID": "$commentID",
+      "kategori": "postyorum",
+    };
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/begeni-sil/", formData);
     return jsonData;
   }
 

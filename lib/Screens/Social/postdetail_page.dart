@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/Social/like.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/user.dart';
@@ -91,6 +92,7 @@ class _PostDetailPage extends State<PostDetailPage>
                     ),
                   ),
                 ),
+                date: "",
               ),
             ),
           );
@@ -117,11 +119,11 @@ class _PostDetailPage extends State<PostDetailPage>
     }
 
     List<Media> media = [];
+    List<Comment> comments = [];
+    List<Like> likers = [];
 
     if (response["icerik"][0]["paylasimfoto"].length != 0) {
-      int mediaItemCount = response["icerik"][0]["paylasimfoto"].length;
-
-      for (int j = 0; j < mediaItemCount; j++) {
+      for (int j = 0; j < response["icerik"][0]["paylasimfoto"].length; j++) {
         media.add(
           Media(
             mediaID: response["icerik"][0]["paylasimfoto"][j]["fotoID"],
@@ -131,14 +133,59 @@ class _PostDetailPage extends State<PostDetailPage>
             mediaDirection: response["icerik"][0]["paylasimfoto"][j]
                 ["medyayonu"],
             mediaURL: MediaURL(
-                bigURL: response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"],
-                normalURL: response["icerik"][0]["paylasimfoto"][j]
-                    ["fotominnakurl"],
-                minURL: response["icerik"][0]["paylasimfoto"][j]
-                    ["fotominnakurl"]),
+              bigURL: response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"],
+              normalURL: response["icerik"][0]["paylasimfoto"][j]
+                  ["fotominnakurl"],
+              minURL: response["icerik"][0]["paylasimfoto"][j]["fotominnakurl"],
+            ),
           ),
         );
       }
+    }
+
+    for (var firstthreelike in response["icerik"][0]["paylasimilkucbegenen"]) {
+      likers.add(
+        Like(
+            likeID: firstthreelike["begeni_ID"],
+            user: User(
+              userID: firstthreelike["ID"],
+              displayName: firstthreelike["adsoyad"],
+              userName: firstthreelike["kullaniciadi"],
+              avatar: Media(
+                mediaID: firstthreelike["ID"],
+                mediaURL: MediaURL(
+                  bigURL: firstthreelike["avatar"],
+                  normalURL: firstthreelike["avatar"],
+                  minURL: firstthreelike["avatar"],
+                ),
+              ),
+            ),
+            date: firstthreelike["begeni_zaman"]),
+      );
+    }
+
+    for (var firstthreecomment in response["icerik"][0]["ilkucyorum"]) {
+      comments.add(
+        Comment(
+            commentID: firstthreecomment["yorumID"],
+            postID: firstthreecomment["paylasimID"],
+            user: User(
+              userID: firstthreecomment["yorumcuid"],
+              displayName: firstthreecomment["yorumcuadsoyad"],
+              avatar: Media(
+                mediaID: firstthreecomment["yorumcuid"],
+                mediaURL: MediaURL(
+                  bigURL: firstthreecomment["yorumcuavatar"],
+                  normalURL: firstthreecomment["yorumcuufakavatar"],
+                  minURL: firstthreecomment["yorumcuminnakavatar"],
+                ),
+              ),
+            ),
+            content: firstthreecomment["yorumcuicerik"],
+            likeCount: firstthreecomment["yorumbegenisayi"],
+            didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
+            date: firstthreecomment["yorumcuzamangecen"]),
+      );
     }
     Post post = Post(
       postID: response["icerik"][0]["paylasimID"],
@@ -162,23 +209,10 @@ class _PostDetailPage extends State<PostDetailPage>
           ),
         ),
       ),
+      firstthreecomment: comments,
+      firstthreelike: likers,
     );
-    asa = TwitterPostWidget(
-      // userID: response["icerik"][0]["sahipID"],
-      // profileImageUrl: response["icerik"][0]["sahipavatarminnak"],
-      // username: response["icerik"][0]["sahipad"],
-      // sharedDevice: response["icerik"][0]["paylasimnereden"],
-      // postID: response["icerik"][0]["paylasimID"],
-      // postText: response["icerik"][0]["paylasimicerik"],
-      // postDate: response["icerik"][0]["paylasimzamangecen"],
-      // media: media,
-      // postlikeCount: response["icerik"][0]["begenisay"],
-      // postcommentCount: response["icerik"][0]["yorumsay"],
-      // postMecomment: response["icerik"][0]["benyorumladim"],
-      // postMelike: response["icerik"][0]["benbegendim"],
-      // isPostdetail: true,
-      post: post,
-    );
+    asa = TwitterPostWidget(post: post);
   }
 
   @override

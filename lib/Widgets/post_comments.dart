@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -32,6 +30,12 @@ class _WidgetPostComments extends State<WidgetPostComments> {
     super.initState();
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.comment.didIlike == true) {
@@ -62,6 +66,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
                       builder: (context) => ProfilePage(
                         appbar: true,
                         userID: widget.comment.user.userID,
+                        scrollController: ScrollController(),
                       ),
                     ),
                   );
@@ -85,40 +90,32 @@ class _WidgetPostComments extends State<WidgetPostComments> {
             GestureDetector(
               onTap: () async {
                 bool currentstatus = widget.comment.didIlike;
-                setState(
-                  () {
-                    if (currentstatus) {
-                      widget.comment.didIlike = false;
-                      widget.comment.likeCount--;
-                    } else {
-                      widget.comment.didIlike = true;
-                      widget.comment.likeCount++;
-                    }
-                  },
-                );
+                if (currentstatus) {
+                  widget.comment.didIlike = false;
+                  widget.comment.likeCount--;
+                } else {
+                  widget.comment.didIlike = true;
+                  widget.comment.likeCount++;
+                }
+                setstatefunction();
                 FunctionsPosts funct = FunctionsPosts();
-                Map<String, dynamic> response =
-                    await funct.commentlikeordislike(widget.comment.commentID);
+                Map<String, dynamic> response;
+                if (!widget.comment.didIlike) {
+                  response =
+                      await funct.commentdislike(widget.comment.commentID);
+                } else {
+                  response = await funct.commentlike(widget.comment.commentID);
+                }
                 if (response["durum"] == 0) {
                   log(response["aciklama"]);
+                  if (currentstatus) {
+                    widget.comment.likeCount--;
+                  } else {
+                    widget.comment.likeCount++;
+                  }
+                  widget.comment.didIlike = !widget.comment.didIlike;
+                  setstatefunction();
                   return;
-                }
-                if (response['aciklama'] == "Paylaşımı beğendin.") {
-                  if (mounted) {
-                    setState(() {
-                      if (currentstatus) {
-                        widget.comment.didIlike = true;
-                      }
-                    });
-                  }
-                } else {
-                  if (mounted) {
-                    setState(() {
-                      if (currentstatus == false) {
-                        widget.comment.didIlike = false;
-                      }
-                    });
-                  }
                 }
               },
               child: Column(

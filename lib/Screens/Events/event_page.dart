@@ -437,6 +437,8 @@ class _EventStatePage extends State<EventPage> {
                                                                   .groupUsers![
                                                                       index2]
                                                                   .userID,
+                                                          scrollController:
+                                                              ScrollController(),
                                                         ),
                                                       ),
                                                     );
@@ -521,6 +523,8 @@ class _EventStatePage extends State<EventPage> {
                                             appbar: false,
                                             userID:
                                                 userParticipant[index].userID,
+                                            scrollController:
+                                                ScrollController(),
                                           ),
                                         ),
                                       );

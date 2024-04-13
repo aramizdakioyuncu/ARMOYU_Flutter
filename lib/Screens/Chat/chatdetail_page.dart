@@ -224,6 +224,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
   Widget build(BuildContext context) {
     super.build(context);
     return SafeArea(
+      top: false,
       child: Scaffold(
         backgroundColor: ARMOYU.backgroundcolor,
         appBar: AppBar(
@@ -274,6 +275,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
                           builder: (context) => ProfilePage(
                             userID: widget.chat.user.userID!,
                             appbar: true,
+                            scrollController: ScrollController(),
                           ),
                         ),
                       );

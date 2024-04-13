@@ -131,7 +131,7 @@ class _ChatNewPageState extends State<ChatNewPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         backgroundColor: ARMOYU.appbarColor,
         title: const Text("Yeni Sohbet"),

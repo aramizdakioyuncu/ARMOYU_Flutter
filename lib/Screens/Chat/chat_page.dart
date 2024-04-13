@@ -157,7 +157,7 @@ class _ChatPageState extends State<ChatPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {

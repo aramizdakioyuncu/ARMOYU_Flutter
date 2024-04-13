@@ -80,10 +80,15 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: GestureDetector(
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage(userID: widget.userID, appbar: true)));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(
+                    userID: widget.userID,
+                    appbar: true,
+                    scrollController: ScrollController(),
+                  ),
+                ),
+              );
             },
             child: CircleAvatar(
               foregroundImage:

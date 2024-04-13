@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
+import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/Social/like.dart';
 import 'package:ARMOYU/Models/Story/story.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Models/media.dart';
@@ -198,32 +200,72 @@ class _SocialPageState extends State<SocialPage>
       widgetPosts.clear();
     }
 
-    int dynamicItemCount = response["icerik"].length;
-    for (int i = 0; i < dynamicItemCount; i++) {
+    for (int i = 0; i < response["icerik"].length; i++) {
       List<Media> media = [];
+      List<Comment> comments = [];
+      List<Like> likers = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
-        int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
-
-        for (int j = 0; j < mediaItemCount; j++) {
+        for (var mediaInfo in response["icerik"][i]["paylasimfoto"]) {
           media.add(
             Media(
-              mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
+              mediaID: mediaInfo["fotoID"],
               ownerID: response["icerik"][i]["sahipID"],
-              mediaType: response["icerik"][i]["paylasimfoto"][j]
-                  ["paylasimkategori"],
-              mediaDirection: response["icerik"][i]["paylasimfoto"][j]
-                  ["medyayonu"],
+              mediaType: mediaInfo["paylasimkategori"],
+              mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                  bigURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotoufakurl"],
-                  normalURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotominnakurl"],
-                  minURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotominnakurl"]),
+                bigURL: mediaInfo["fotoufakurl"],
+                normalURL: mediaInfo["fotominnakurl"],
+                minURL: mediaInfo["fotominnakurl"],
+              ),
             ),
           );
         }
+      }
+      for (var firstthreelike in response["icerik"][i]
+          ["paylasimilkucbegenen"]) {
+        likers.add(
+          Like(
+              likeID: firstthreelike["begeni_ID"],
+              user: User(
+                userID: firstthreelike["ID"],
+                displayName: firstthreelike["adsoyad"],
+                userName: firstthreelike["kullaniciadi"],
+                avatar: Media(
+                  mediaID: firstthreelike["ID"],
+                  mediaURL: MediaURL(
+                    bigURL: firstthreelike["avatar"],
+                    normalURL: firstthreelike["avatar"],
+                    minURL: firstthreelike["avatar"],
+                  ),
+                ),
+              ),
+              date: firstthreelike["begeni_zaman"]),
+        );
+      }
+      for (var firstthreecomment in response["icerik"][i]["ilkucyorum"]) {
+        comments.add(
+          Comment(
+              commentID: firstthreecomment["yorumID"],
+              postID: firstthreecomment["paylasimID"],
+              user: User(
+                userID: firstthreecomment["yorumcuid"],
+                displayName: firstthreecomment["yorumcuadsoyad"],
+                userName: firstthreecomment["yorumcukullaniciad"],
+                avatar: Media(
+                  mediaID: firstthreecomment["yorumcuid"],
+                  mediaURL: MediaURL(
+                    bigURL: firstthreecomment["yorumcuavatar"],
+                    normalURL: firstthreecomment["yorumcuufakavatar"],
+                    minURL: firstthreecomment["yorumcuminnakavatar"],
+                  ),
+                ),
+              ),
+              content: firstthreecomment["yorumcuicerik"],
+              likeCount: firstthreecomment["yorumbegenisayi"],
+              didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
+              date: firstthreecomment["yorumcuzamangecen"]),
+        );
       }
 
       if (mounted) {
@@ -263,11 +305,11 @@ class _SocialPageState extends State<SocialPage>
                 ),
               ),
             ),
+            firstthreecomment: comments,
+            firstthreelike: likers,
           );
           widgetPosts.add(
-            TwitterPostWidget(
-              post: post,
-            ),
+            TwitterPostWidget(post: post),
           );
 
           if (i / 3 == 1) {
@@ -300,8 +342,8 @@ class _SocialPageState extends State<SocialPage>
       widgetPosts.add(const SkeletonSocailPosts());
       widgetPosts.add(const SkeletonSocailPosts());
       widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts
-          .add(const SkeletonCustomCards(count: 5, icon: Icon(Icons.abc)));
+      widgetPosts.add(const SkeletonCustomCards(
+          count: 5, icon: Icon(Icons.view_comfortable_sharp)));
       widgetPosts.add(const SkeletonSocailPosts());
       widgetPosts.add(const SkeletonSocailPosts());
       widgetPosts.add(const SkeletonSocailPosts());

@@ -56,6 +56,7 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
               builder: (context) => ProfilePage(
                 appbar: false,
                 userID: widget.userID,
+                scrollController: ScrollController(),
               ),
             ),
           );

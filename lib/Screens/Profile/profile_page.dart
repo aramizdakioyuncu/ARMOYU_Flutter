@@ -6,6 +6,8 @@ import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
+import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/Social/like.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/team.dart';
@@ -33,11 +35,13 @@ class ProfilePage extends StatefulWidget {
   final int? userID;
   final String? username;
   final bool appbar;
+  final ScrollController scrollController;
 
   const ProfilePage({
     super.key,
     this.userID,
     required this.appbar,
+    required this.scrollController,
     this.username,
   });
   @override
@@ -132,30 +136,71 @@ class _ProfilePageState extends State<ProfilePage>
 
     for (int i = 0; i < response["icerik"].length; i++) {
       List<Media> media = [];
+      List<Comment> comments = [];
+      List<Like> likers = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
-        int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
-
-        for (int j = 0; j < mediaItemCount; j++) {
+        for (var mediaInfo in response["icerik"][i]["paylasimfoto"]) {
           media.add(
             Media(
-              mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
+              mediaID: mediaInfo["fotoID"],
               ownerID: response["icerik"][i]["sahipID"],
-              mediaType: response["icerik"][i]["paylasimfoto"][j]
-                  ["paylasimkategori"],
-              mediaDirection: response["icerik"][i]["paylasimfoto"][j]
-                  ["medyayonu"],
+              mediaType: mediaInfo["paylasimkategori"],
+              mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                  bigURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotoufakurl"],
-                  normalURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotominnakurl"],
-                  minURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotominnakurl"]),
+                bigURL: mediaInfo["fotoufakurl"],
+                normalURL: mediaInfo["fotominnakurl"],
+                minURL: mediaInfo["fotominnakurl"],
+              ),
             ),
           );
         }
       }
+      for (var firstthreelike in response["icerik"][i]
+          ["paylasimilkucbegenen"]) {
+        likers.add(
+          Like(
+              likeID: firstthreelike["begeni_ID"],
+              user: User(
+                userID: firstthreelike["ID"],
+                displayName: firstthreelike["adsoyad"],
+                userName: firstthreelike["kullaniciadi"],
+                avatar: Media(
+                  mediaID: firstthreelike["ID"],
+                  mediaURL: MediaURL(
+                    bigURL: firstthreelike["avatar"],
+                    normalURL: firstthreelike["avatar"],
+                    minURL: firstthreelike["avatar"],
+                  ),
+                ),
+              ),
+              date: firstthreelike["begeni_zaman"]),
+        );
+      }
+      for (var firstthreecomment in response["icerik"][i]["ilkucyorum"]) {
+        comments.add(
+          Comment(
+              commentID: firstthreecomment["yorumID"],
+              postID: firstthreecomment["paylasimID"],
+              user: User(
+                userID: firstthreecomment["yorumcuid"],
+                displayName: firstthreecomment["yorumcuadsoyad"],
+                avatar: Media(
+                  mediaID: firstthreecomment["yorumcuid"],
+                  mediaURL: MediaURL(
+                    bigURL: firstthreecomment["yorumcuavatar"],
+                    normalURL: firstthreecomment["yorumcuufakavatar"],
+                    minURL: firstthreecomment["yorumcuminnakavatar"],
+                  ),
+                ),
+              ),
+              content: firstthreecomment["yorumcuicerik"],
+              likeCount: firstthreecomment["yorumbegenisayi"],
+              didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
+              date: firstthreecomment["yorumcuzamangecen"]),
+        );
+      }
+
       if (mounted) {
         bool ismelike = false;
         if (response["icerik"][i]["benbegendim"] == 1) {
@@ -194,6 +239,8 @@ class _ProfilePageState extends State<ProfilePage>
                   ),
                 ),
               ),
+              firstthreecomment: comments,
+              firstthreelike: likers,
             );
 
             list.add(
@@ -318,29 +365,69 @@ class _ProfilePageState extends State<ProfilePage>
 
     for (int i = 0; i < response["icerik"].length; i++) {
       List<Media> media = [];
+      List<Comment> comments = [];
+      List<Like> likers = [];
 
       if (response["icerik"][i]["paylasimfoto"].length != 0) {
-        int mediaItemCount = response["icerik"][i]["paylasimfoto"].length;
-
-        for (int j = 0; j < mediaItemCount; j++) {
+        for (var mediaInfo in response["icerik"][i]["paylasimfoto"]) {
           media.add(
             Media(
-              mediaID: response["icerik"][i]["paylasimfoto"][j]["fotoID"],
+              mediaID: mediaInfo["fotoID"],
               ownerID: response["icerik"][i]["sahipID"],
-              mediaType: response["icerik"][i]["paylasimfoto"][j]
-                  ["paylasimkategori"],
-              mediaDirection: response["icerik"][i]["paylasimfoto"][j]
-                  ["medyayonu"],
+              mediaType: mediaInfo["paylasimkategori"],
+              mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                  bigURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotoufakurl"],
-                  normalURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotominnakurl"],
-                  minURL: response["icerik"][i]["paylasimfoto"][j]
-                      ["fotominnakurl"]),
+                bigURL: mediaInfo["fotoufakurl"],
+                normalURL: mediaInfo["fotominnakurl"],
+                minURL: mediaInfo["fotominnakurl"],
+              ),
             ),
           );
         }
+      }
+      for (var firstthreelike in response["icerik"][i]
+          ["paylasimilkucbegenen"]) {
+        likers.add(
+          Like(
+              likeID: firstthreelike["begeni_ID"],
+              user: User(
+                userID: firstthreelike["ID"],
+                displayName: firstthreelike["adsoyad"],
+                userName: firstthreelike["kullaniciadi"],
+                avatar: Media(
+                  mediaID: firstthreelike["ID"],
+                  mediaURL: MediaURL(
+                    bigURL: firstthreelike["avatar"],
+                    normalURL: firstthreelike["avatar"],
+                    minURL: firstthreelike["avatar"],
+                  ),
+                ),
+              ),
+              date: firstthreelike["begeni_zaman"]),
+        );
+      }
+      for (var firstthreecomment in response["icerik"][i]["ilkucyorum"]) {
+        comments.add(
+          Comment(
+              commentID: firstthreecomment["yorumID"],
+              postID: firstthreecomment["paylasimID"],
+              user: User(
+                userID: firstthreecomment["yorumcuid"],
+                displayName: firstthreecomment["yorumcuadsoyad"],
+                avatar: Media(
+                  mediaID: firstthreecomment["yorumcuid"],
+                  mediaURL: MediaURL(
+                    bigURL: firstthreecomment["yorumcuavatar"],
+                    normalURL: firstthreecomment["yorumcuufakavatar"],
+                    minURL: firstthreecomment["yorumcuminnakavatar"],
+                  ),
+                ),
+              ),
+              content: firstthreecomment["yorumcuicerik"],
+              likeCount: firstthreecomment["yorumbegenisayi"],
+              didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
+              date: firstthreecomment["yorumcuzamangecen"]),
+        );
       }
       if (mounted) {
         bool ismelike = false;
@@ -359,28 +446,29 @@ class _ProfilePageState extends State<ProfilePage>
         if (mounted) {
           setState(() {
             Post post = Post(
-              postID: response["icerik"][i]["paylasimID"],
-              content: response["icerik"][i]["paylasimicerik"],
-              postDate: response["icerik"][i]["paylasimzamangecen"],
-              sharedDevice: response["icerik"][i]["paylasimnereden"],
-              likesCount: response["icerik"][i]["begenisay"],
-              isLikeme: ismelike,
-              commentsCount: response["icerik"][i]["yorumsay"],
-              iscommentMe: ismecomment,
-              media: media,
-              owner: User(
-                userID: response["icerik"][i]["sahipID"],
-                userName: response["icerik"][i]["sahipad"],
-                avatar: Media(
-                  mediaID: response["icerik"][i]["sahipID"],
-                  mediaURL: MediaURL(
-                    bigURL: response["icerik"][i]["sahipavatarminnak"],
-                    normalURL: response["icerik"][i]["sahipavatarminnak"],
-                    minURL: response["icerik"][i]["sahipavatarminnak"],
+                postID: response["icerik"][i]["paylasimID"],
+                content: response["icerik"][i]["paylasimicerik"],
+                postDate: response["icerik"][i]["paylasimzamangecen"],
+                sharedDevice: response["icerik"][i]["paylasimnereden"],
+                likesCount: response["icerik"][i]["begenisay"],
+                isLikeme: ismelike,
+                commentsCount: response["icerik"][i]["yorumsay"],
+                iscommentMe: ismecomment,
+                media: media,
+                owner: User(
+                  userID: response["icerik"][i]["sahipID"],
+                  userName: response["icerik"][i]["sahipad"],
+                  avatar: Media(
+                    mediaID: response["icerik"][i]["sahipID"],
+                    mediaURL: MediaURL(
+                      bigURL: response["icerik"][i]["sahipavatarminnak"],
+                      normalURL: response["icerik"][i]["sahipavatarminnak"],
+                      minURL: response["icerik"][i]["sahipavatarminnak"],
+                    ),
                   ),
                 ),
-              ),
-            );
+                firstthreecomment: comments,
+                firstthreelike: likers);
 
             list.add(
               TwitterPostWidget(
@@ -411,6 +499,10 @@ class _ProfilePageState extends State<ProfilePage>
 
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
+          return;
+        }
+
+        if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
           return;
         }
         //Kullanıcı adında birisi var
@@ -754,8 +846,8 @@ class _ProfilePageState extends State<ProfilePage>
           child: CachedNetworkImage(
             imageUrl: imageUrl,
             fit: BoxFit.cover,
-            width: 30,
-            height: 30,
+            width: 25,
+            height: 25,
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           ),
@@ -768,8 +860,8 @@ class _ProfilePageState extends State<ProfilePage>
         child: CachedNetworkImage(
           imageUrl: imageUrl,
           fit: BoxFit.cover,
-          width: 30,
-          height: 30,
+          width: 25,
+          height: 25,
           placeholder: (context, url) => const CircularProgressIndicator(),
           errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
@@ -781,8 +873,9 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       body: NestedScrollView(
+        controller: widget.scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
@@ -1788,7 +1881,7 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       alignment: Alignment.center,
-      color: ARMOYU.bodyColor,
+      color: ARMOYU.backgroundcolor,
       child: TabBar(
         controller: tabController,
         isScrollable: true,

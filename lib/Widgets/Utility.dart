@@ -60,7 +60,10 @@ class WidgetUtility {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(
-                          username: username.substring(1), appbar: true),
+                        username: username.substring(1),
+                        appbar: true,
+                        scrollController: ScrollController(),
+                      ),
                     ),
                   );
                 },
@@ -85,9 +88,7 @@ class WidgetUtility {
     return RichText(
       text: TextSpan(
         children: textSpans,
-        style: TextStyle(
-          fontWeight: fontWeight,
-        ),
+        style: TextStyle(fontWeight: fontWeight),
       ),
       textAlign: textAlign,
     );

@@ -26,6 +26,8 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
     if (_isFirstProcces) {
       getblockedlist();
     }
+
+    log(_blockedList.length.toString());
   }
 
   Future<void> removeblock(int userID, int index) async {
@@ -101,6 +103,9 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
     }
     _blockedProcces = false;
     _isFirstProcces = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -110,6 +115,11 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
       appBar: AppBar(
         title: const Text('Engellenen Hesaplar'),
         backgroundColor: ARMOYU.appbarColor,
+        actions: [
+          IconButton(
+              onPressed: () async => await getblockedlist(),
+              icon: const Icon(Icons.refresh))
+        ],
       ),
       body: Column(
         children: [
@@ -117,7 +127,7 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
           Expanded(
             child: _blockedList.isEmpty
                 ? Center(
-                    child: _blockedProcces && _isFirstProcces
+                    child: !_blockedProcces && !_isFirstProcces
                         ? const Text("Engellenen hesap yok")
                         : const CupertinoActivityIndicator())
                 : ListView.builder(

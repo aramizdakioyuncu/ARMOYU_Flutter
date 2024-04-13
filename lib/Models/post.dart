@@ -1,3 +1,5 @@
+import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/Social/like.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 
@@ -12,6 +14,8 @@ class Post {
   bool iscommentMe;
   User owner;
   List<Media> media;
+  List<Comment> firstthreecomment;
+  List<Like> firstthreelike;
 
   Post({
     required this.postID,
@@ -24,5 +28,7 @@ class Post {
     required this.iscommentMe,
     required this.owner,
     required this.media,
+    required this.firstthreecomment,
+    required this.firstthreelike,
   });
 }

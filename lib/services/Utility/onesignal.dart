@@ -85,6 +85,7 @@ class OneSignalApi {
               builder: (context) => ProfilePage(
                 appbar: true,
                 userID: int.parse(userID),
+                scrollController: ScrollController(),
               ),
             ),
           );

@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 
 import 'dart:developer';
 
@@ -19,6 +19,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:like_button/like_button.dart';
 import 'package:video_player/video_player.dart';
 
@@ -26,10 +27,10 @@ import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class TwitterPostWidget extends StatefulWidget {
-  Post post;
-  bool? isPostdetail = false;
+  final Post post;
+  final bool? isPostdetail = false;
 
-  TwitterPostWidget({
+  const TwitterPostWidget({
     super.key,
     required this.post,
   });
@@ -107,6 +108,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                 ),
+                date: "",
               ),
             ),
           );
@@ -151,10 +153,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         );
       });
     }
-  }
-
-  void setstatefunction() {
-    setState(() {});
   }
 
   void postcomments(int postID, List<Widget> listComments) {
@@ -502,8 +500,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           setState(() {
                             postVisible = false;
                           });
+
                           try {
-                            Navigator.pop(context);
+                            if (mounted) {
+                              Navigator.pop(context);
+                            }
                           } catch (e) {
                             log(e.toString());
                           }
@@ -541,6 +542,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     super.dispose();
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  final GlobalKey<LikeButtonState> _likeButtonKey =
+      GlobalKey<LikeButtonState>();
   @override
   Widget build(BuildContext context) {
     if (widget.post.iscommentMe == true) {
@@ -563,73 +572,98 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfilePage(
-                              userID: widget.post.owner.userID, appbar: true),
-                        ),
-                      );
-                    },
-                    child: CircleAvatar(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        userID: widget.post.owner.userID,
+                        appbar: true,
+                        scrollController: ScrollController(),
+                      ),
+                    ),
+                  );
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CircleAvatar(
                       backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
                         widget.post.owner.avatar!.mediaURL.minURL,
                       ),
                       radius: 20,
                     ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              CustomText.costum1(widget.post.owner.userName!,
+                                  size: 16, weight: FontWeight.bold),
+                              widget.post.sharedDevice == "mobil"
+                                  ? const Text(" 📱")
+                                  : const Text(" 🌐")
+                            ],
+                          ),
+                          CustomText.costum1(
+                            widget.post.postDate,
+                            weight: FontWeight.normal,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
                       children: [
-                        Row(
-                          children: [
-                            CustomText.costum1(widget.post.owner.userName!,
-                                size: 16, weight: FontWeight.bold),
-                            widget.post.sharedDevice == "mobil"
-                                ? const Text(" 📱")
-                                : const Text(" 🌐")
-                          ],
+                        IconButton(
+                          onPressed: postfeedback,
+                          icon: const Icon(Icons.more_vert),
+                          color: Colors.grey,
                         ),
-                        CustomText.costum1(widget.post.postDate,
-                            size: 16, weight: FontWeight.normal),
                       ],
                     ),
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        onPressed: postfeedback,
-                        icon: const Icon(Icons.more_vert),
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: WidgetUtility.specialText(context, widget.post.content),
+            InkWell(
+              onDoubleTap: () {
+                if (!widget.post.isLikeme) {
+                  _likeButtonKey.currentState?.onTap();
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: WidgetUtility.specialText(
+                          context, widget.post.content),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 5),
-            Center(
-              child: _buildMediaContent(context),
+            InkWell(
+              onDoubleTap: () {
+                if (!widget.post.isLikeme) {
+                  _likeButtonKey.currentState?.onTap();
+                }
+              },
+              child: Center(
+                child: _buildMediaContent(context),
+              ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 2),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               child: Row(
                 children: [
-                  const Spacer(),
                   InkWell(
                     onLongPress: () {
                       if (widget.isPostdetail == false) {
@@ -637,11 +671,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       }
                     },
                     child: LikeButton(
+                      key: _likeButtonKey,
                       isLiked: widget.post.isLikeme,
                       likeCount: widget.post.likesCount,
-                      onTap: (isLiked) async {
-                        return await postLike(isLiked);
-                      },
+                      onTap: (isLiked) async => await postLike(isLiked),
                       likeBuilder: (bool isLiked) {
                         return Icon(
                           isLiked ? Icons.favorite : Icons.favorite_outline,
@@ -664,18 +697,88 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   Text(
                     widget.post.commentsCount.toString(),
                     style: const TextStyle(color: Colors.grey),
-                  ), // Yorum simgesi
+                  ),
                   const Spacer(),
                   IconButton(
                     iconSize: 25,
                     icon: postrepostIcon,
                     color: postrepostColor,
                     onPressed: () {},
-                  ), // Retweet simgesi (yeşil renkte)
+                  ),
                   const Spacer(),
-                  const Icon(Icons.share_outlined,
-                      color: Colors.grey), // Paylaşım simgesi
-                  const Spacer(),
+                  const Icon(Icons.share_outlined, color: Colors.grey),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Stack(
+                      children: [
+                        const SizedBox(height: 20),
+                        ...List.generate(widget.post.firstthreelike.length,
+                            (index) {
+                          int left = widget.post.firstthreelike.length * 10 -
+                              (index + 1) * 10;
+                          return Positioned(
+                            left: double.parse(left.toString()),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              foregroundImage: CachedNetworkImageProvider(
+                                widget
+                                    .post
+                                    .firstthreelike[
+                                        widget.post.firstthreelike.length -
+                                            index -
+                                            1]
+                                    .user
+                                    .avatar!
+                                    .mediaURL
+                                    .minURL,
+                              ),
+                              radius: 10,
+                            ),
+                          );
+                        }),
+                        Positioned(
+                          left: widget.post.firstthreelike.length * 10 + 15,
+                          child: widget.post.firstthreelike.isNotEmpty
+                              ? WidgetUtility.specialText(
+                                  context,
+                                  "@${widget.post.firstthreelike[0].user.userName.toString()} ${widget.post.likesCount - 1 > 0 ? "ve ${widget.post.likesCount - 1} kişi" : ""} beğendi",
+                                  // fontWeight: FontWeight.bold,
+                                )
+                              : Container(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Column(
+                    children: List.generate(
+                        widget.post.firstthreecomment.length, (index) {
+                      return widget.post.firstthreecomment[index]
+                          .commentlist(context, setstatefunction);
+                    }),
+                  ),
+                  Visibility(
+                    visible: widget.post.commentsCount > 3,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: () {
+                          postcomments(widget.post.postID, listComments);
+                        },
+                        child: CustomText.costum1(
+                          "${widget.post.commentsCount} yorumun tamamını gör",
+                          color: ARMOYU.textColor.withOpacity(0.8),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -694,7 +797,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       bool? isvideo = false,
     }) {
       if (isvideo == true) {
-        log(mediaUrl);
+        // log(mediaUrl);
         // mediaUrl
         final chewieController = ChewieController(
           videoPlayerController:
@@ -705,9 +808,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           looping: false,
         );
 
-        // log(_controller.value.toString());
-        // chewieController.dispose();
-        // log(chewieController.videoPlayerController.value.toString());
         return FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(

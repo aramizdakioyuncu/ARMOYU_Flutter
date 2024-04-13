@@ -30,6 +30,7 @@ class Chat {
           contentPadding:
               const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
           leading: CircleAvatar(
+            backgroundColor: Colors.transparent,
             foregroundImage:
                 CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
           ),
@@ -62,6 +63,7 @@ class Chat {
       children: [
         ListTile(
           leading: CircleAvatar(
+            backgroundColor: Colors.transparent,
             foregroundImage:
                 CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
           ),

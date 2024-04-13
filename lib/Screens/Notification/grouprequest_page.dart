@@ -121,10 +121,11 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
       }
     }
 
-    setState(() {
-      firstFetchProcces = false;
-      postpageproccess = false;
-    });
+    firstFetchProcces = false;
+    postpageproccess = false;
+    if (mounted) {
+      setState(() {});
+    }
 
     postpage++;
   }

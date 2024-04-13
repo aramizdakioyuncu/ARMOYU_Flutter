@@ -60,8 +60,11 @@ class _CustomMenusNotificationbarsState
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            ProfilePage(userID: widget.userID, appbar: true),
+                        builder: (context) => ProfilePage(
+                          userID: widget.userID,
+                          appbar: true,
+                          scrollController: ScrollController(),
+                        ),
                       ),
                     );
                   },

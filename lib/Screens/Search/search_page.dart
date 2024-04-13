@@ -20,11 +20,12 @@ import 'package:ARMOYU/Functions/API_Functions/search.dart';
 class SearchPage extends StatefulWidget {
   final bool appbar;
   final TextEditingController searchController;
-
+  final ScrollController scrollController;
   const SearchPage({
     super.key,
     required this.appbar,
     required this.searchController,
+    required this.scrollController,
   });
 
   @override
@@ -183,7 +184,10 @@ class _SearchPagePage extends State<SearchPage>
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ProfilePage(
-                        userID: response["icerik"][i]["ID"], appbar: true),
+                      userID: response["icerik"][i]["ID"],
+                      appbar: true,
+                      scrollController: ScrollController(),
+                    ),
                   ));
                 },
               ),
@@ -210,6 +214,7 @@ class _SearchPagePage extends State<SearchPage>
               },
             )
           : SingleChildScrollView(
+              controller: widget.scrollController,
               child: Column(
                 children: [
                   const SizedBox(height: 10),
