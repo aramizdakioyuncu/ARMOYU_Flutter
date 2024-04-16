@@ -1,7 +1,6 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Models/language.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
@@ -42,6 +41,32 @@ class _SettingsPage extends State<SettingsPage> {
 
   List<WidgetSettings> listSettingssupport = [];
   List<WidgetSettings> filteredlistSettingssupport = [];
+
+  Future<void> logoutfunction() async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.logOut();
+    ARMOYUWidget.toastNotification("r123");
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+    passwordController.text = "";
+
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (Route<dynamic> route) => false,
+      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => const LoginPage(),
+      //   ),
+      // );
+    }
+  }
 
   @override
   void initState() {
@@ -102,7 +127,11 @@ class _SettingsPage extends State<SettingsPage> {
                 });
               },
               children: List<Widget>.generate(languageList.length, (int index) {
-                return Center(child: Text(languageList[index].name.toString()));
+                return Center(
+                  child: CustomText.costum1(
+                    languageList[index].name.toString(),
+                  ),
+                );
               }),
             ),
           );
@@ -217,7 +246,7 @@ class _SettingsPage extends State<SettingsPage> {
       child: Scaffold(
         backgroundColor: ARMOYU.appbarColor,
         appBar: AppBar(
-          title: const Text('Ayarlar'),
+          title: CustomText.costum1('Ayarlar'),
           backgroundColor: ARMOYU.appbarColor,
         ),
         body: SingleChildScrollView(
@@ -234,7 +263,7 @@ class _SettingsPage extends State<SettingsPage> {
                           ARMOYU.appUser.avatar!.mediaURL.minURL),
                       radius: 28,
                     ),
-                    title: Text(ARMOYU.appUser.displayName!),
+                    title: CustomText.costum1(ARMOYU.appUser.displayName!),
                     subtitle: CustomText.costum1(
                         "Hatalı Giriş: ${ARMOYU.appUser.lastfaillogin}"),
                     onTap: () {
@@ -280,12 +309,12 @@ class _SettingsPage extends State<SettingsPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 2.5),
                   Visibility(
                     visible: filteredlistSettings.isNotEmpty,
                     child: ListTile(
                       tileColor: ARMOYU.backgroundcolor,
-                      title: const Text("Uygulaman ve medya"),
+                      title: CustomText.costum1("Uygulaman ve medya"),
                     ),
                   ),
                   Column(
@@ -296,13 +325,16 @@ class _SettingsPage extends State<SettingsPage> {
                   ),
                   Visibility(
                     visible: filteredlistSettings.isNotEmpty,
-                    child: Container(color: ARMOYU.bodyColor, height: 5),
+                    child: Container(
+                      color: ARMOYU.bodyColor,
+                      height: 2.5,
+                    ),
                   ),
                   Visibility(
                     visible: filteredlistSettingssupport.isNotEmpty,
                     child: ListTile(
                       tileColor: ARMOYU.backgroundcolor,
-                      title: const Text("Daha fazla bilgi ve destek"),
+                      title: CustomText.costum1("Daha fazla bilgi ve destek"),
                     ),
                   ),
                   Column(
@@ -313,46 +345,37 @@ class _SettingsPage extends State<SettingsPage> {
                     }),
                   ),
                   Visibility(
-                      visible: filteredlistSettingssupport.isNotEmpty,
-                      child: Container(color: ARMOYU.bodyColor, height: 5)),
+                    visible: filteredlistSettingssupport.isNotEmpty,
+                    child: Container(
+                      color: ARMOYU.bodyColor,
+                      height: 2.5,
+                    ),
+                  ),
                   Column(
                     children: [
                       ListTile(
-                        textColor: Colors.blue,
-                        iconColor: Colors.blue,
                         tileColor: ARMOYU.backgroundcolor,
-                        title: const Text("Hesap Ekle"),
-                        onTap: () async {},
+                        title: CustomText.costum1(
+                          "Hesap Ekle",
+                          color: Colors.blue,
+                        ),
+                        onTap: () {},
                       ),
                       ListTile(
-                        textColor: Colors.red,
-                        iconColor: Colors.red,
                         tileColor: ARMOYU.backgroundcolor,
-                        title: const Text("Çıkış Yap"),
-                        onTap: () async {
-                          FunctionService f = FunctionService();
-                          Map<String, dynamic> response = await f.logOut();
-
-                          if (response["durum"] == 0) {
-                            log(response["aciklama"]);
-                            return;
-                          }
-                          passwordController.text = "";
-
-                          if (mounted) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginPage(),
-                              ),
-                            );
-                          }
-                        },
+                        title: CustomText.costum1(
+                          "Çıkış Yap",
+                          color: Colors.red,
+                        ),
+                        onTap: () => logoutfunction(),
                       ),
                     ],
                   ),
-                  Text(
-                      "Versiyon : ${ARMOYU.appVersion.toString()} (${ARMOYU.appBuild.toString()})"),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: CustomText.costum1(
+                        "Versiyon : ${ARMOYU.appVersion.toString()} (${ARMOYU.appBuild.toString()})"),
+                  ),
                 ],
               ),
             ],

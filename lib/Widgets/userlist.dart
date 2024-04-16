@@ -112,7 +112,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(
-              buttonremovefriend,
+              text: buttonremovefriend,
               onPressed: removefriend,
               loadingStatus: false,
             ),
@@ -123,7 +123,7 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(
-              buttonbefriend,
+              text: buttonbefriend,
               onPressed: friendrequest,
               loadingStatus: false,
             ),

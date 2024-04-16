@@ -572,7 +572,7 @@ class _EventStatePage extends State<EventPage> {
                           child: Column(
                             children: [
                               CustomButtons.costum1(
-                                "VAZGEÇ",
+                                text: "VAZGEÇ",
                                 onPressed: leaveevent,
                                 loadingStatus: joineventProccess,
                               ),
@@ -586,7 +586,7 @@ class _EventStatePage extends State<EventPage> {
                       : Column(
                           children: [
                             CustomButtons.costum1(
-                              "KATIL",
+                              text: "KATIL",
                               onPressed: joinevent,
                               loadingStatus: joineventProccess,
                             ),

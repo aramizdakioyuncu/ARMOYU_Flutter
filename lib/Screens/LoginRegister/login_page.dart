@@ -33,6 +33,12 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   Future<void> _login() async {
     if (loginProcess) {
       return;
@@ -105,23 +111,23 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 16.0),
-            CustomTextfields.costum3(
-              "Kullanıcı Adı/E-posta",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Kullanıcı Adı / E-posta",
               controller: usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
               type: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum3(
-              "Şifreniz",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Şifreniz",
               controller: passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
             const SizedBox(height: 16),
             CustomButtons.costum1(
-              "Giriş Yap",
+              text: "Giriş Yap",
               onPressed: _login,
               loadingStatus: loginProcess,
             ),

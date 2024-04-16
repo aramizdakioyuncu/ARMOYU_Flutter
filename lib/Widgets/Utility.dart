@@ -95,7 +95,7 @@ class WidgetUtility {
   }
 
   static Future cupertinoDatePicker({
-    required context,
+    required BuildContext context,
     required Function(String) onChanged,
     required Function setstatefunction,
     bool dontallowPastDate = false,
@@ -258,7 +258,7 @@ class WidgetUtility {
 
   //CupertioTimeSelector
   static Future cupertinoTimepicker({
-    required context,
+    required BuildContext context,
     required Function(String) onChanged,
     required Function setstatefunction,
   }) {
@@ -351,6 +351,91 @@ class WidgetUtility {
                       }),
                       onSelectedItemChanged: (value) {
                         minute = minuteList[value].values.first;
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  static Future cupertinoselector({
+    required BuildContext context,
+    required title,
+    required Function(int, String) onChanged,
+    required Function setstatefunction,
+    required List<Map<int, String>> list,
+    bool looping = false,
+  }) {
+    if (list.isEmpty) {
+      list.insert(0, {0: title});
+    } else if (list[0].values.first.toString() != title) {
+      list.insert(0, {0: title});
+    }
+
+    int selectedItemID = 0;
+    String selectedItem = list[0].values.first.toString();
+
+    return showCupertinoModalPopup(
+      // barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 250,
+          width: ARMOYU.screenWidth,
+          color: ARMOYU.backgroundcolor,
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () {
+                    onChanged(selectedItemID - 1, selectedItem);
+                    setstatefunction();
+                    Navigator.pop(context);
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      "Bitti",
+                      style: TextStyle(
+                        color: Colors.lightBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                        decoration: TextDecoration.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: ARMOYU.screenWidth,
+                    height: 200,
+                    child: CupertinoPicker(
+                      looping: looping,
+                      itemExtent: 32,
+                      children: List.generate(list.length, (index) {
+                        return Text(
+                          list[index].values.first.toString(),
+                          style: index == 0
+                              ? const TextStyle(color: Colors.grey)
+                              : null,
+                        );
+                      }),
+                      onSelectedItemChanged: (value) {
+                        //
+                        selectedItemID = value;
+                        selectedItem = list[value].values.first.toString();
+                        //
+                        onChanged(selectedItemID - 1, selectedItem);
+
+                        setstatefunction();
                       },
                     ),
                   ),

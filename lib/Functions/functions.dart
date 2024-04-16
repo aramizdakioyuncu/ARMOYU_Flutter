@@ -4,7 +4,10 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Functions/API_Functions/teams.dart';
 import 'package:ARMOYU/Models/team.dart';
+import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
+import 'package:ARMOYU/Widgets/textfields.dart';
+import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -190,5 +193,184 @@ class ARMOYUFunctions {
         );
       }
     }
+  }
+
+  static void profileEdit(BuildContext context, Function setstatefunction) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 45.0),
+                    child: CachedNetworkImage(
+                      imageUrl: ARMOYU.appUser.banner!.mediaURL.normalURL,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned(
+                    left: 10,
+                    bottom: 0,
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          foregroundImage: CachedNetworkImageProvider(
+                            ARMOYU.appUser.avatar!.mediaURL.normalURL,
+                          ),
+                          radius: 40,
+                        ),
+                        Positioned(
+                          left: 25,
+                          top: 25,
+                          child: InkWell(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.add_a_photo,
+                                color: Colors.black,
+                              )),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: CustomText.costum1(
+                            "Ad Soyad",
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomTextfields(setstate: setstatefunction)
+                              .costum3(
+                            placeholder: ARMOYU.appUser.displayName,
+                            controller: TextEditingController(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: CustomText.costum1(
+                            "Hakkımda",
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomTextfields(setstate: setstatefunction)
+                              .costum3(
+                            placeholder: ARMOYU.appUser.aboutme,
+                            controller: TextEditingController(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: CustomText.costum1(
+                            "Konum",
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomTextfields(setstate: setstatefunction)
+                              .costum3(
+                            placeholder: ARMOYU.appUser.country,
+                            controller: TextEditingController(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: CustomText.costum1(
+                            "Doğum Tarihi",
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomButtons.costum1(
+                              text: "text",
+                              onPressed: () {
+                                WidgetUtility.cupertinoDatePicker(
+                                  context: context,
+                                  onChanged: (p0) {},
+                                  setstatefunction: setstatefunction,
+                                );
+                              },
+                              loadingStatus: false),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: CustomText.costum1(
+                            "Cep Telefon",
+                            weight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(
+                          child: CustomTextfields(setstate: setstatefunction)
+                              .costum3(
+                            placeholder: ARMOYU.appUser.userID.toString(),
+                            controller: TextEditingController(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomButtons.costum1(
+                      text: "Güncelle",
+                      onPressed: () {},
+                      loadingStatus: false,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 50),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

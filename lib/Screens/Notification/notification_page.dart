@@ -196,7 +196,8 @@ class _NotificationPage extends State<NotificationPage>
                           tileColor: ARMOYU.appbarColor,
                           title: CustomText.costum1("Grup İstekleri"),
                           subtitle: CustomText.costum1(
-                              "Grup isteklerini gözden geçir"),
+                            "Grup isteklerini gözden geçir",
+                          ),
                           trailing: Badge(
                             isLabelVisible:
                                 ARMOYU.groupInviteCount == 0 ? false : true,
@@ -229,19 +230,6 @@ class _NotificationPage extends State<NotificationPage>
                             );
                           },
                         )
-                        // ListView.builder(
-                        //   physics: const AlwaysScrollableScrollPhysics(),
-                        //   controller: _scrollController,
-                        //   itemCount: widgetNotifications.length,
-                        //   itemBuilder: (context, index) {
-                        //     return Column(
-                        //       children: [
-                        //         widgetNotifications[index],
-                        //         const SizedBox(height: 1)
-                        //       ],
-                        //     );
-                        //   },
-                        // ),
                       ],
                     ),
             ],

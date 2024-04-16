@@ -34,6 +34,12 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool resetpasswordauthProcess = false;
   DateTime dateTime = DateTime.now();
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   // Future<DateTime?> pickDate() => showDatePicker(
   //     context: context,
   //     initialDate: dateTime,
@@ -192,15 +198,15 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   visible: step1,
                   child: Column(
                     children: [
-                      CustomTextfields.costum3(
-                        "Kullanıcı Adı",
+                      CustomTextfields(setstate: setstatefunction).costum3(
+                        title: "Kullanıcı Adı",
                         controller: _usernameController,
                         isPassword: false,
                         preicon: const Icon(Icons.person),
                       ),
                       const SizedBox(height: 16),
-                      CustomTextfields.costum3(
-                        "E-posta",
+                      CustomTextfields(setstate: setstatefunction).costum3(
+                        title: "E-posta",
                         controller: _emailController,
                         isPassword: false,
                         preicon: const Icon(Icons.email),
@@ -243,7 +249,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       ),
                       const SizedBox(height: 16),
                       CustomButtons.costum1(
-                        "Devam et",
+                        text: "Devam et",
                         onPressed: forgotmypassword,
                         loadingStatus: resetpasswordProcess,
                       ),
@@ -285,20 +291,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         icon: const Icon(Icons.sms),
                       ),
                       const SizedBox(height: 16),
-                      CustomTextfields.costum3(
-                        "Şifre",
+                      CustomTextfields(setstate: setstatefunction).costum3(
+                        title: "Şifre",
                         controller: _passwordController,
                         isPassword: true,
                         preicon: const Icon(Icons.lock_outline),
                       ),
                       const SizedBox(height: 16),
-                      CustomTextfields.costum3("Şifre Tekrar",
+                      CustomTextfields(setstate: setstatefunction).costum3(
+                          title: "Şifre Tekrar",
                           controller: _repasswordController,
                           isPassword: true,
                           preicon: const Icon(Icons.lock_outline)),
                       const SizedBox(height: 16),
                       CustomButtons.costum1(
-                        "Kaydet",
+                        text: "Kaydet",
                         onPressed: forgotmypassworddone,
                         loadingStatus: resetpasswordauthProcess,
                       ),

@@ -4,75 +4,121 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
 import 'package:ARMOYU/Widgets/Mention/mention.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 
 class CustomTextfields {
-  static Timer? searchTimer;
-
-  static Widget costum3(
-    text, {
+  Timer? searchTimer;
+  final Function setstate;
+  CustomTextfields({
+    required this.setstate,
+    this.searchTimer,
+  });
+  Widget costum3({
+    String? title,
     required TextEditingController controller,
     bool isPassword = false,
+    String? placeholder,
     Icon? preicon,
     IconButton? suffixiconbutton,
     TextInputType? type,
     Function(String)? onChanged,
     Function? onTap,
     int? maxLength,
+    int? minLength,
     bool? enabled = true,
-    int? maxLines = 1,
+    int? maxLines,
     int? minLines = 1,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: TextField(
-        onTap: () {
-          if (onTap == null) {
-            return;
-          }
-          onTap();
-        },
-        onChanged: (value) {
-          if (onChanged == null) {
-            return;
-          }
-          onChanged(value);
-        },
-        minLines: minLines,
-        controller: controller,
-        enabled: enabled,
-        maxLines: maxLines,
-        keyboardType: type,
-        textInputAction: TextInputAction.next,
-        autofillHints: const [AutofillHints.username],
-        obscureText: isPassword,
-        maxLength: maxLength,
-        style: TextStyle(color: ARMOYU.textColor),
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(16.0),
-          suffixIcon: suffixiconbutton,
-          counterText: "", //Maxlength yazısını gizle
-          suffixText:
-              maxLength == null ? null : "${controller.text.length}/$maxLength",
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            borderSide: BorderSide.none,
+    if (minLines != null) {
+      maxLines = minLines + 5;
+    }
+
+    if (title != null) {
+      placeholder = title;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Visibility(
+          visible: title != null,
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: CustomText.costum1(title.toString()),
           ),
-          prefixIcon: preicon,
-          prefixIconColor: ARMOYU.textColor,
-          hintText: text,
-          hintStyle: TextStyle(color: ARMOYU.texthintColor),
-          filled: true,
-          fillColor: ARMOYU.textbackColor,
         ),
-      ),
+        TextField(
+          onTap: () {
+            if (onTap == null) {
+              return;
+            }
+            onTap();
+          },
+          onChanged: (value) {
+            setstate();
+            if (onChanged != null) {
+              onChanged(value);
+            }
+
+            if (!isPassword && maxLength != null) {
+              if (value.length >= maxLength) {
+                return;
+              }
+            }
+          },
+          enabled: enabled,
+          controller: controller,
+          obscureText: isPassword,
+          minLines: minLines,
+          maxLines: !isPassword ? maxLines : 1,
+          maxLength: maxLength,
+          keyboardType: type,
+          textInputAction: TextInputAction.next,
+          autofillHints: const [AutofillHints.username],
+          style: TextStyle(color: ARMOYU.textColor),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(16.0),
+            suffixIcon: suffixiconbutton,
+            counter: minLength != null || maxLength != null
+                ? minLength != null && controller.text.length < minLength
+                    ? Text(
+                        "${controller.text.length}/${controller.text.length <= minLength ? minLength : minLength}",
+                        style: TextStyle(
+                          color: controller.text.length < minLength
+                              ? Colors.red
+                              : Colors.grey,
+                        ),
+                      )
+                    : maxLength != null
+                        ? Text(
+                            "${controller.text.length}/${controller.text.length >= maxLength ? maxLength : maxLength}",
+                            style: TextStyle(
+                              color: controller.text.length == maxLength
+                                  ? Colors.red
+                                  : Colors.grey,
+                            ),
+                          )
+                        : null
+                : null,
+            border: const OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderSide: BorderSide.none,
+            ),
+            prefixIcon: preicon,
+            prefixIconColor: ARMOYU.textColor,
+            hintText: placeholder,
+            hintStyle: TextStyle(color: ARMOYU.texthintColor),
+            filled: true,
+            fillColor: ARMOYU.textbackColor,
+          ),
+        ),
+      ],
     );
   }
 
-  static mentionTextFiled({
+  mentionTextFiled({
     required key,
-    required Function setstate,
     int? minLines = 1,
   }) {
     return FlutterMentions(

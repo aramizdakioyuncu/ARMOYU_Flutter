@@ -745,10 +745,16 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         Positioned(
                           left: widget.post.firstthreelike.length * 10 + 15,
                           child: widget.post.firstthreelike.isNotEmpty
-                              ? WidgetUtility.specialText(
-                                  context,
-                                  "@${widget.post.firstthreelike[0].user.userName.toString()} ${widget.post.likesCount - 1 > 0 ? "ve ${widget.post.likesCount - 1} kişi" : ""} beğendi",
-                                  // fontWeight: FontWeight.bold,
+                              ? GestureDetector(
+                                  onTap: () {
+                                    postcomments(
+                                        widget.post.postID, listComments);
+                                  },
+                                  child: WidgetUtility.specialText(
+                                    context,
+                                    "@${widget.post.firstthreelike[0].user.userName.toString()} ${widget.post.likesCount - 1 > 0 ? "ve ${widget.post.likesCount - 1} kişi" : ""} beğendi",
+                                    // fontWeight: FontWeight.bold,
+                                  ),
                                 )
                               : Container(),
                         ),

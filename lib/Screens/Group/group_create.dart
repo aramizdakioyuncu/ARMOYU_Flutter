@@ -52,6 +52,12 @@ class _GroupCreatePageState extends State<GroupCreatePage>
     groupcreaterequest("E-spor", cupertinolist3);
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   Future<void> _handleRefresh() async {}
 
   Future<void> groupcreaterequest(
@@ -157,15 +163,15 @@ class _GroupCreatePageState extends State<GroupCreatePage>
           child: Column(
             children: [
               const SizedBox(height: 16),
-              CustomTextfields.costum3(
-                "Grup Adı",
+              CustomTextfields(setstate: setstatefunction).costum3(
+                title: "Grup Adı",
                 controller: groupname,
                 isPassword: false,
                 preicon: const Icon(Icons.business),
               ),
               const SizedBox(height: 16),
-              CustomTextfields.costum3(
-                "Grup Kısa Adı",
+              CustomTextfields(setstate: setstatefunction).costum3(
+                title: "Grup Kısa Adı",
                 controller: groupshortname,
                 isPassword: false,
                 preicon: const Icon(Icons.label),
@@ -325,7 +331,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
               ),
               const SizedBox(height: 16),
               CustomButtons.costum1(
-                "Oluştur",
+                text: "Oluştur",
                 onPressed: creategroupfunction,
                 loadingStatus: groupcreateProcess,
               ),

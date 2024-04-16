@@ -36,6 +36,13 @@ class _RegisterPageState extends State<RegisterPage> {
   String? inviteduserID;
   String? inviteduserdisplayName;
   String? inviteduseravatar;
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   Future<void> invitecodeTester(String code) async {
     if (inviteCodeProcces) {
       return;
@@ -165,44 +172,44 @@ class _RegisterPageState extends State<RegisterPage> {
                 width: 150,
               ),
             ),
-            CustomTextfields.costum3(
-              "Adınız",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Adınız",
               controller: _nameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum3(
-              "Soyadınız",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Soyadınız",
               controller: _lastnameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum3(
-              "Kullanıcı Adınız",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Kullanıcı Adınız",
               controller: _usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum3(
-              "E-posta",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "E-posta",
               controller: _emailController,
               isPassword: false,
               preicon: const Icon(Icons.email),
               type: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum3(
-              "Şifreniz",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Şifreniz",
               controller: _passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
             const SizedBox(height: 16),
-            CustomTextfields.costum3(
-              "Şifreniz Tekrar",
+            CustomTextfields(setstate: setstatefunction).costum3(
+              title: "Şifreniz Tekrar",
               controller: _rpasswordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
@@ -212,8 +219,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 ? Row(
                     children: [
                       Expanded(
-                        child: CustomTextfields.costum3(
-                          "Davet Kodu",
+                        child: CustomTextfields(setstate: setstatefunction)
+                            .costum3(
+                          title: "Davet Kodu",
                           controller: _inviteController,
                           isPassword: false,
                           maxLength: 5,
@@ -229,14 +237,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               },
                               icon: const Icon(Icons.refresh)),
                           onChanged: (value) {
-                            if (mounted) {
-                              setState(() {
-                                if (value.length == 5) {
-                                  log("5 karakter yazıldı: $value");
-
-                                  invitecodeTester(value);
-                                }
-                              });
+                            if (value.length == 5) {
+                              invitecodeTester(value);
                             }
                           },
                         ),
@@ -278,7 +280,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
             const SizedBox(height: 16),
             CustomButtons.costum1(
-              "Kayıt Ol",
+              text: "Kayıt Ol",
               onPressed: _register,
               loadingStatus: registerProccess,
             ),

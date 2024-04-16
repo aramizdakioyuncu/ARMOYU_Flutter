@@ -142,7 +142,8 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
                     style: TextStyle(fontSize: 18),
                   ),
             const SizedBox(height: 20),
-            CustomButtons.costum1("Tekrar dene",
+            CustomButtons.costum1(
+                text: "Tekrar dene",
                 onPressed: checkInternetConnection2,
                 loadingStatus: connectionProcess),
           ],

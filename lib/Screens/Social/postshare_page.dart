@@ -7,7 +7,6 @@ import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:geocoding/geocoding.dart';
@@ -96,6 +95,8 @@ class _PostSharePageState extends State<PostSharePage>
     return await Geolocator.getCurrentPosition();
   }
 
+  String? userLocation;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -110,9 +111,46 @@ class _PostSharePageState extends State<PostSharePage>
           child: Column(
             children: [
               Media.mediaList(media, setstatefunction, big: true),
-              CustomTextfields.mentionTextFiled(
+              SizedBox(
+                width: ARMOYU.screenWidth,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      userLocation == null
+                          ? Container()
+                          : Stack(children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CustomButtons.costum2(
+                                  text: userLocation,
+                                  icon: const Icon(Icons.location_on),
+                                  onPressed: () {},
+                                ),
+                              ),
+                              Positioned(
+                                right: 12,
+                                top: 12,
+                                child: InkWell(
+                                  onTap: () {
+                                    userLocation = null;
+                                    setstatefunction();
+                                  },
+                                  child: const Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                    size: 16,
+                                  ),
+                                ),
+                              ),
+                            ]),
+                    ],
+                  ),
+                ),
+              ),
+              CustomTextfields(setstate: setstatefunction).mentionTextFiled(
                 key: key,
-                setstate: setstatefunction,
                 minLines: 3,
               ),
               Padding(
@@ -132,6 +170,7 @@ class _PostSharePageState extends State<PostSharePage>
                                 position.latitude, position.longitude)
                             .then((List<Placemark> placemarks) {
                           Placemark place = placemarks[0];
+                          userLocation = place.subAdministrativeArea.toString();
                           setState(() {
                             ARMOYUWidget.toastNotification(
                                 "${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
@@ -187,7 +226,7 @@ class _PostSharePageState extends State<PostSharePage>
                 child: Column(
                   children: [
                     CustomButtons.costum1(
-                      "Paylaş",
+                      text: "Paylaş",
                       onPressed: sharePost,
                       loadingStatus: postshareProccess,
                     ),

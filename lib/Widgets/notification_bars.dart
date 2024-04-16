@@ -71,7 +71,7 @@ class _CustomMenusNotificationbarsState
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
                     foregroundImage: CachedNetworkImageProvider(widget.avatar),
-                    radius: 30,
+                    radius: 25,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -96,68 +96,74 @@ class _CustomMenusNotificationbarsState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            CustomButtons.costum1("Kabul ET",
+                            CustomButtons.costum1(
+                                text: "Kabul ET",
                                 onPressed: () async {
-                              if (widget.category == "arkadaslik") {
-                                if (widget.categorydetail == "istek") {
-                                  FunctionsProfile f = FunctionsProfile();
-                                  Map<String, dynamic> response = await f
-                                      .friendrequestanswer(widget.userID, 1);
-                                  if (response["durum"] == 0) {
-                                    log(response["aciklama"]);
-                                    return;
-                                  }
+                                  if (widget.category == "arkadaslik") {
+                                    if (widget.categorydetail == "istek") {
+                                      FunctionsProfile f = FunctionsProfile();
+                                      Map<String, dynamic> response =
+                                          await f.friendrequestanswer(
+                                              widget.userID, 1);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
 
-                                  ARMOYU.friendRequestCount--;
-                                  setState(() {
-                                    widget.natificationisVisible = false;
-                                  });
-                                }
-                              } else if (widget.category == "gruplar") {
-                                if (widget.categorydetail == "davet") {
-                                  FunctionsGroup f = FunctionsGroup();
-                                  Map<String, dynamic> response =
-                                      await f.grouprequestanswer(
-                                          widget.categorydetailID, 1);
-                                  if (response["durum"] == 0) {
-                                    log(response["aciklama"]);
-                                    return;
-                                  }
-                                  ARMOYU.groupInviteCount--;
+                                      ARMOYU.friendRequestCount--;
+                                      setState(() {
+                                        widget.natificationisVisible = false;
+                                      });
+                                    }
+                                  } else if (widget.category == "gruplar") {
+                                    if (widget.categorydetail == "davet") {
+                                      FunctionsGroup f = FunctionsGroup();
+                                      Map<String, dynamic> response =
+                                          await f.grouprequestanswer(
+                                              widget.categorydetailID, 1);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                        return;
+                                      }
+                                      ARMOYU.groupInviteCount--;
 
-                                  setState(() {
-                                    widget.natificationisVisible = false;
-                                  });
-                                }
-                              }
-                            }, loadingStatus: false),
+                                      setState(() {
+                                        widget.natificationisVisible = false;
+                                      });
+                                    }
+                                  }
+                                },
+                                loadingStatus: false),
                             const SizedBox(width: 16),
-                            CustomButtons.costum1("Reddet",
+                            CustomButtons.costum1(
+                                text: "Reddet",
                                 onPressed: () async {
-                              if (widget.category == "arkadaslik") {
-                                if (widget.categorydetail == "istek") {
-                                  FunctionsProfile f = FunctionsProfile();
-                                  Map<String, dynamic> response = await f
-                                      .friendrequestanswer(widget.userID, 0);
-                                  if (response["durum"] == 0) {
-                                    log(response["aciklama"]);
+                                  if (widget.category == "arkadaslik") {
+                                    if (widget.categorydetail == "istek") {
+                                      FunctionsProfile f = FunctionsProfile();
+                                      Map<String, dynamic> response =
+                                          await f.friendrequestanswer(
+                                              widget.userID, 0);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                      }
+                                    }
+                                  } else if (widget.category == "gruplar") {
+                                    if (widget.categorydetail == "davet") {
+                                      FunctionsGroup f = FunctionsGroup();
+                                      Map<String, dynamic> response =
+                                          await f.grouprequestanswer(
+                                              widget.categorydetailID, 0);
+                                      if (response["durum"] == 0) {
+                                        log(response["aciklama"]);
+                                      }
+                                    }
                                   }
-                                }
-                              } else if (widget.category == "gruplar") {
-                                if (widget.categorydetail == "davet") {
-                                  FunctionsGroup f = FunctionsGroup();
-                                  Map<String, dynamic> response =
-                                      await f.grouprequestanswer(
-                                          widget.categorydetailID, 0);
-                                  if (response["durum"] == 0) {
-                                    log(response["aciklama"]);
-                                  }
-                                }
-                              }
-                              setState(() {
-                                widget.natificationisVisible = false;
-                              });
-                            }, loadingStatus: false),
+                                  setState(() {
+                                    widget.natificationisVisible = false;
+                                  });
+                                },
+                                loadingStatus: false),
                           ],
                         ),
                       ),

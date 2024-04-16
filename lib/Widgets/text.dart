@@ -12,9 +12,9 @@ class CustomText {
     double? size,
     FontWeight? weight,
     TextAlign align = TextAlign.left,
-    Color color = Colors.red,
+    Color color = Colors.white70,
   }) {
-    if (color == Colors.red) {
+    if (color == Colors.white70) {
       color = ARMOYU.textColor;
     }
     return Text(

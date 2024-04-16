@@ -23,7 +23,7 @@ final List<String> imageufakUrls = [];
 int gallerycounter = 0;
 bool ismediaProcces = false;
 
-bool pageisactive = false;
+bool _pageisactive = false;
 late TabController tabController;
 List<XFile> imagePath = [];
 
@@ -42,9 +42,9 @@ class _GalleryScreenState extends State<GalleryScreen>
 
     imagePath.clear();
 
-    if (!pageisactive) {
+    if (!_pageisactive) {
       startingfunction();
-      pageisactive = true;
+      _pageisactive = true;
     }
 
     galleryscrollcontroller.addListener(() {

@@ -33,10 +33,12 @@ class _ChatPageState extends State<SurveyNewPage>
     super.initState();
     answerlist = [
       {
-        1: CustomTextfields.costum3("1.Seçenek", controller: t1),
+        1: CustomTextfields(setstate: setstatefunction)
+            .costum3(title: "1.Seçenek", controller: t1),
       },
       {
-        2: CustomTextfields.costum3("2.Seçenek", controller: t2),
+        2: CustomTextfields(setstate: setstatefunction)
+            .costum3(title: "2.Seçenek", controller: t2),
       }
     ];
     controllers = [
@@ -58,8 +60,8 @@ class _ChatPageState extends State<SurveyNewPage>
 
     final TextEditingController t = TextEditingController();
     answerlist.add({
-      countID: CustomTextfields.costum3(
-        "Seçenek",
+      countID: CustomTextfields(setstate: setstatefunction).costum3(
+        title: "Seçenek",
         controller: t,
         suffixiconbutton: IconButton(
           onPressed: () {
@@ -101,104 +103,124 @@ class _ChatPageState extends State<SurveyNewPage>
             children: [
               Media.mediaList(media, setstatefunction),
               const Text("Anket Sorusu"),
-              CustomTextfields.costum3(
-                "",
+              CustomTextfields(setstate: setstatefunction).costum3(
                 controller: controllerSurveyQuestion,
                 maxLines: null,
                 minLines: 2,
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CustomButtons.costum2(
-                        text:
-                            surveyTime != null ? '$surveyTime' : 'Saat Seçiniz',
-                        icon: const Icon(Icons.timelapse_sharp),
-                        onPressed: () {
-                          WidgetUtility.cupertinoTimepicker(
-                            context: context,
-                            setstatefunction: setstatefunction,
-                            onChanged: (value) {
-                              surveyTime = value;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CustomButtons.costum2(
-                        icon: const Icon(Icons.date_range),
-                        text:
-                            surveyDate != null ? '$surveyDate' : 'Tarih seçin',
-                        onPressed: () {
-                          WidgetUtility.cupertinoDatePicker(
-                            context: context,
-                            setstatefunction: setstatefunction,
-                            dontallowPastDate: true,
-                            yearCount: 1,
-                            onChanged: (value) {
-                              surveyDate = value;
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        color: ARMOYU.buttonColor,
-                        child: DropdownButton(
-                          underline: const SizedBox(),
-                          value: selectedValue,
-                          items: <String>[
-                            'Çoktan Seçmeli',
-                            'Onay Kutuları',
-                            'Kısa Yanıt',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            IconData? icon;
-                            if (value == "Çoktan Seçmeli") {
-                              icon = Icons.radio_button_checked_rounded;
-                            } else if (value == "Onay Kutuları") {
-                              icon = Icons.check_box;
-                            } else if (value == "Kısa Yanıt") {
-                              icon = Icons.short_text;
-                            }
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Icon(icon),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Text(value),
-                                ],
-                              ),
+              SizedBox(
+                width: ARMOYU.screenWidth,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CustomButtons.costum2(
+                          text: surveyTime != null
+                              ? '$surveyTime'
+                              : 'Saat Seçiniz',
+                          icon: const Icon(Icons.timelapse_sharp),
+                          onPressed: () {
+                            WidgetUtility.cupertinoTimepicker(
+                              context: context,
+                              setstatefunction: setstatefunction,
+                              onChanged: (value) {
+                                surveyTime = value;
+                              },
                             );
-                          }).toList(),
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedValue =
-                                  newValue!; // Seçilen değeri güncelle
-                              if (newValue == "Çoktan Seçmeli") {
-                                anwserIcon = Icons.radio_button_off_rounded;
-                              } else if (newValue == "Onay Kutuları") {
-                                anwserIcon =
-                                    Icons.check_box_outline_blank_rounded;
-                              } else if (newValue == "Kısa Yanıt") {
-                                anwserIcon = Icons.short_text;
-                              }
-                            });
                           },
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CustomButtons.costum2(
+                          icon: const Icon(Icons.date_range),
+                          text: surveyDate != null
+                              ? '$surveyDate'
+                              : 'Tarih seçin',
+                          onPressed: () {
+                            WidgetUtility.cupertinoDatePicker(
+                              context: context,
+                              setstatefunction: setstatefunction,
+                              dontallowPastDate: true,
+                              yearCount: 1,
+                              onChanged: (value) {
+                                surveyDate = value;
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: ARMOYU.buttonColor,
+                          ),
+                          child: DropdownButton(
+                            underline: const SizedBox(),
+                            value: selectedValue,
+                            dropdownColor: ARMOYU.buttonColor,
+                            borderRadius: BorderRadius.circular(3),
+                            items: <String>[
+                              'Çoktan Seçmeli',
+                              'Onay Kutuları',
+                              'Kısa Yanıt',
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              IconData? icon;
+                              if (value == "Çoktan Seçmeli") {
+                                icon = Icons.radio_button_checked_rounded;
+                              } else if (value == "Onay Kutuları") {
+                                icon = Icons.check_box;
+                              } else if (value == "Kısa Yanıt") {
+                                icon = Icons.short_text;
+                              }
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                      ),
+                                      child: Icon(
+                                        icon,
+                                        size: 14,
+                                        color: ARMOYU.textbackColor,
+                                      ),
+                                    ),
+                                    Text(
+                                      value,
+                                      style: TextStyle(
+                                        color: ARMOYU.textbackColor,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedValue =
+                                    newValue!; // Seçilen değeri güncelle
+                                if (newValue == "Çoktan Seçmeli") {
+                                  anwserIcon = Icons.radio_button_off_rounded;
+                                } else if (newValue == "Onay Kutuları") {
+                                  anwserIcon =
+                                      Icons.check_box_outline_blank_rounded;
+                                } else if (newValue == "Kısa Yanıt") {
+                                  anwserIcon = Icons.short_text;
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const Text("Anket Cevapları"),
@@ -238,14 +260,17 @@ class _ChatPageState extends State<SurveyNewPage>
                     SizedBox(
                       height: 80,
                       width: ARMOYU.screenWidth - 60,
-                      child: CustomTextfields.costum3("Seçenek Ekle",
-                          controller: TextEditingController(), enabled: false),
+                      child: CustomTextfields(setstate: setstatefunction)
+                          .costum3(
+                              title: "Seçenek Ekle",
+                              controller: TextEditingController(),
+                              enabled: false),
                     ),
                   ],
                 ),
               ),
               CustomButtons.costum1(
-                "Oluştur",
+                text: "Oluştur",
                 onPressed: () async {
                   FunctionsSurvey f = FunctionsSurvey();
 

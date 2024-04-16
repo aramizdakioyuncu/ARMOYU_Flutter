@@ -277,7 +277,7 @@ class _ChatPageState extends State<SurveyPage>
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CustomButtons.costum1(
-                            "OYLA",
+                            text: "OYLA",
                             onPressed: () async => await answerfunction(),
                             loadingStatus: answerSurveyProccess,
                           ),

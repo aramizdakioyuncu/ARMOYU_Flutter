@@ -47,7 +47,6 @@ class _EventlistPage extends State<EventlistPage>
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       eventlistProecces = false;
-
       return;
     }
 

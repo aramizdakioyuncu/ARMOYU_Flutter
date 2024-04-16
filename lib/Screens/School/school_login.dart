@@ -13,14 +13,14 @@ import 'package:flutter/cupertino.dart';
 import 'dart:developer';
 
 const double _kItemExtent = 32.0;
-List<Map<String, String>> cupertinolist = [
+List<Map<String, String>> _cupertinolist = [
   {
     'ID': '-1',
     'value': 'Seç',
     'logo': "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png"
   }
 ];
-List<Map<String, String>> cupertinolist2 = [
+List<Map<String, String>> _cupertinolist2 = [
   {
     'ID': '-1',
     'value': 'Sınıf Seç',
@@ -48,7 +48,13 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   void initState() {
     super.initState();
 
-    getschools(cupertinolist);
+    getschools(_cupertinolist);
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _handleRefresh() async {}
@@ -105,8 +111,8 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
       schoolProcess = true;
     });
     FunctionsSchool f = FunctionsSchool();
-    String? schoolID = cupertinolist[_selectedcupertinolist]["ID"];
-    String? classID = cupertinolist2[_selectedcupertinolist2]["ID"];
+    String? schoolID = _cupertinolist[_selectedcupertinolist]["ID"];
+    String? classID = _cupertinolist2[_selectedcupertinolist2]["ID"];
     String? jobID = "123";
     String classPassword = schoolpassword.text;
 
@@ -188,7 +194,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                           _selectedcupertinolist = selectedItem;
 
                           try {
-                            schoollogo = cupertinolist[_selectedcupertinolist]
+                            schoollogo = _cupertinolist[_selectedcupertinolist]
                                     ["logo"]
                                 .toString();
 
@@ -200,8 +206,8 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                               }
 
                               getschoolclass(
-                                  cupertinolist[_selectedcupertinolist]["ID"]!,
-                                  cupertinolist2);
+                                  _cupertinolist[_selectedcupertinolist]["ID"]!,
+                                  _cupertinolist2);
 
                               // isProcces = false;
                             });
@@ -210,11 +216,12 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                           }
                         });
                       },
-                      children: List<Widget>.generate(cupertinolist.length,
+                      children: List<Widget>.generate(_cupertinolist.length,
                           (int index) {
                         return Center(
-                            child:
-                                Text(cupertinolist[index]["value"].toString()));
+                          child:
+                              Text(_cupertinolist[index]["value"].toString()),
+                        );
                       }),
                     ),
                   );
@@ -224,7 +231,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                   padding: const EdgeInsets.all(16.0),
                   color: ARMOYU.textbackColor,
                   child: Text(
-                    cupertinolist[_selectedcupertinolist]["value"].toString(),
+                    _cupertinolist[_selectedcupertinolist]["value"].toString(),
                     style: const TextStyle(
                       fontSize: 22.0,
                     ),
@@ -249,11 +256,11 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                           _selectedcupertinolist2 = selectedItem;
                         });
                       },
-                      children: List<Widget>.generate(cupertinolist2.length,
+                      children: List<Widget>.generate(_cupertinolist2.length,
                           (int index) {
                         return Center(
                             child: Text(
-                                cupertinolist2[index]["value"].toString()));
+                                _cupertinolist2[index]["value"].toString()));
                       }),
                     ),
                   );
@@ -263,7 +270,8 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                   padding: const EdgeInsets.all(16.0),
                   color: ARMOYU.textbackColor,
                   child: Text(
-                    cupertinolist2[_selectedcupertinolist2]["value"].toString(),
+                    _cupertinolist2[_selectedcupertinolist2]["value"]
+                        .toString(),
                     style: const TextStyle(
                       fontSize: 22.0,
                     ),
@@ -271,8 +279,8 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
                 ),
               ),
               const SizedBox(height: 16),
-              CustomTextfields.costum3(
-                "Parola",
+              CustomTextfields(setstate: setstatefunction).costum3(
+                title: "Parola",
                 controller: schoolpassword,
                 isPassword: true,
                 preicon: const Icon(Icons.security),
@@ -280,7 +288,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
               ),
               const SizedBox(height: 16),
               CustomButtons.costum1(
-                "Katıl",
+                text: "Katıl",
                 onPressed: loginschool,
                 loadingStatus: schoolProcess,
               ),

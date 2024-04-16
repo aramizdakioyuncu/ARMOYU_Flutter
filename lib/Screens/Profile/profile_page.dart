@@ -22,6 +22,7 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
@@ -95,6 +96,12 @@ class _ProfilePageState extends State<ProfilePage>
   void dispose() {
     // TEST.cancel();
     super.dispose();
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   List<Widget> widgetPosts = [];
@@ -936,11 +943,19 @@ class _ProfilePageState extends State<ProfilePage>
                                             height: 5,
                                           ),
                                         ),
-                                        InkWell(
-                                          onTap: () {},
-                                          child: const ListTile(
-                                            leading: Icon(Icons.share_outlined),
-                                            title: Text("Profili paylaş."),
+                                        Visibility(
+                                          visible: userProfile.userID ==
+                                              ARMOYU.appUser.userID,
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              ARMOYUFunctions.profileEdit(
+                                                  context, setstatefunction);
+                                            },
+                                            child: const ListTile(
+                                              leading: Icon(Icons.edit),
+                                              title: Text("Profili Düzenle"),
+                                            ),
                                           ),
                                         ),
                                         InkWell(

@@ -31,6 +31,7 @@ class Comment {
     return Container(
       color: ARMOYU.backgroundcolor,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
             onTap: () {

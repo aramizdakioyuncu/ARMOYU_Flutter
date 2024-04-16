@@ -9,6 +9,7 @@ import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/station.dart';
 import 'package:ARMOYU/Models/team.dart';
+import 'package:ARMOYU/Screens/Business/applications_page.dart';
 import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Group/group_page.dart';
@@ -683,6 +684,21 @@ class _MainPageState extends State<MainPage>
                               context,
                               MaterialPageRoute(
                                 builder: (context) => const InvitePage(),
+                              ),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          textColor: ARMOYU.textColor,
+                          iconColor: ARMOYU.textColor,
+                          leading: const Icon(Icons.business_center),
+                          title: const Text("Bize Katıl"),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const BusinessApplicationsPage(),
                               ),
                             );
                           },

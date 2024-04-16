@@ -25,9 +25,15 @@ class CustomButtons {
     );
   }
 
-  static Widget costum1(String text,
-      {required Function onPressed, required bool loadingStatus}) {
-    Color? background = ARMOYU.buttonColor;
+  static Widget costum1({
+    required String text,
+    Color? background = Colors.amber,
+    required Function onPressed,
+    required bool loadingStatus,
+  }) {
+    if (background == Colors.amber) {
+      background = ARMOYU.buttonColor;
+    }
     Color foregroundColor = Colors.white;
 
     return loadingStatus
@@ -58,21 +64,30 @@ class CustomButtons {
   }
 
   static Widget costum2({
-    required Icon icon,
+    Icon? icon,
     String? text,
+    Color? background = Colors.amber,
     required onPressed,
   }) {
-    List<Widget> aa = [icon];
+    if (background == Colors.amber) {
+      background = ARMOYU.buttonColor;
+    }
+
+    List<Widget> aa = [];
+
+    if (icon != null) {
+      aa.add(icon);
+    }
     if (text != null) {
-      aa.add(const SizedBox(width: 10));
+      aa.add(const SizedBox(width: 6));
       aa.add(Text(text));
     }
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.grey.shade900,
+        backgroundColor: background,
         foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
