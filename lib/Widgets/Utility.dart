@@ -99,7 +99,7 @@ class WidgetUtility {
     required Function(String) onChanged,
     required Function setstatefunction,
     bool dontallowPastDate = false,
-    int yearCount = 40,
+    int yearCount = 65,
   }) {
     int startYearDate = 1945;
 

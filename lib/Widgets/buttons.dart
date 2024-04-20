@@ -30,6 +30,7 @@ class CustomButtons {
     Color? background = Colors.amber,
     required Function onPressed,
     required bool loadingStatus,
+    bool enabled = true,
   }) {
     if (background == Colors.amber) {
       background = ARMOYU.buttonColor;
@@ -39,11 +40,13 @@ class CustomButtons {
     return loadingStatus
         ? CupertinoActivityIndicator(color: ARMOYU.color)
         : ElevatedButton(
-            onPressed: () async {
-              if (!loadingStatus) {
-                await onPressed();
-              }
-            },
+            onPressed: !enabled
+                ? null
+                : () async {
+                    if (!loadingStatus) {
+                      await onPressed();
+                    }
+                  },
             style: ElevatedButton.styleFrom(
               backgroundColor: background, // Arka plan rengini belirleyin
               foregroundColor: foregroundColor,
@@ -68,6 +71,7 @@ class CustomButtons {
     String? text,
     Color? background = Colors.amber,
     required onPressed,
+    bool loadingStatus = false,
   }) {
     if (background == Colors.amber) {
       background = ARMOYU.buttonColor;
@@ -82,21 +86,23 @@ class CustomButtons {
       aa.add(const SizedBox(width: 6));
       aa.add(Text(text));
     }
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: background,
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: aa,
-      ),
-    );
+    return loadingStatus
+        ? CupertinoActivityIndicator(color: ARMOYU.color)
+        : ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: background,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: aa,
+            ),
+          );
   }
 }

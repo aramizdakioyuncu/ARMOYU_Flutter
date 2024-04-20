@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 
 import 'package:flutter/material.dart';
 
@@ -24,8 +27,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final TextEditingController _codeController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _repasswordController = TextEditingController();
-
-  String passwordtimer = "120";
+  Timer? timer;
+  int passwordtimer = 120;
+  Color countdownColor = Colors.green;
 
   bool step1 = true;
   bool step2 = false;
@@ -34,53 +38,69 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   bool resetpasswordauthProcess = false;
   DateTime dateTime = DateTime.now();
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
+  }
+
   void setstatefunction() {
     if (mounted) {
       setState(() {});
     }
   }
 
-  // Future<DateTime?> pickDate() => showDatePicker(
-  //     context: context,
-  //     initialDate: dateTime,
-  //     firstDate: DateTime(1900),
-  //     lastDate: DateTime.now());
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (passwordtimer == 0) {
+          setState(() {
+            countdownColor = Colors.red;
+            timer.cancel();
+          });
+        } else {
+          passwordtimer--;
 
-  // Future<void> datepicker() async {
-  //   final date = await pickDate();
-  //   if (date == null) return;
-  //   setState(() => dateTime = date);
-  //   _birthdayController.text =
-  //       "${dateTime.day}/${dateTime.month}/${dateTime.year}";
-  // }
+          if (passwordtimer < 30) {
+            countdownColor = Colors.red;
+          } else if (passwordtimer < 60) {
+            countdownColor = Colors.orange;
+          } else if (passwordtimer < 90) {
+            countdownColor = Colors.yellow;
+          } else if (passwordtimer < 120) {
+            countdownColor = Colors.green;
+          }
+          setstatefunction();
+        }
+      },
+    );
+  }
 
   Future<void> forgotmypassword() async {
-    setState(() {
-      resetpasswordProcess = true;
-    });
+    if (resetpasswordProcess) {
+      return;
+    }
 
     if (_emailController.text == "" || _usernameController.text == "") {
       String text = "Boş olan bırakmayın!";
       ARMOYUWidget.stackbarNotification(context, text);
-      log(text);
-
-      setState(() {
-        resetpasswordProcess = false;
-      });
       return;
     }
-
-    // List<String> words = _birthdayController.text.split("/");
-    // String gun = words[0];
-    // String ay = words[1];
-    // String yil = words[2];
-
-    // String yeniformat = "$yil-$ay-$gun";
 
     String type = "mail";
     if (isSelected[0] == true) {
       type = "telefon";
     }
+
+    resetpasswordProcess = true;
+    setstatefunction();
 
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.forgotpassword(
@@ -92,17 +112,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
         ARMOYUWidget.stackbarNotification(context, text);
       }
       log(text);
-
-      setState(() {
-        resetpasswordProcess = false;
-      });
+      resetpasswordProcess = false;
+      setstatefunction();
       return;
     }
 
-    log(response["aciklamadetay"].toString());
-    passwordtimer = response["aciklamadetay"].toString();
+    passwordtimer = response["aciklamadetay"];
     step1 = false;
     step2 = true;
+    resetpasswordProcess = false;
+    setstatefunction();
+    startTimer();
   }
 
   Future<void> forgotmypassworddone() async {
@@ -134,12 +154,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       return;
     }
 
-    // List<String> words = _birthdayController.text.split("/");
-    // String gun = words[0];
-    // String ay = words[1];
-    // String yil = words[2];
-
-    // String yeniformat = "$yil-$ay-$gun";
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.forgotpassworddone(
         // yeniformat,
@@ -163,7 +177,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     }
     step1 = true;
     step2 = false;
-
     if (mounted) {
       Navigator.of(context).pop();
     }
@@ -173,6 +186,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -212,23 +226,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                         preicon: const Icon(Icons.email),
                       ),
                       const SizedBox(height: 16),
-                      // CustomButtons.Costum2(Icon(Icons.date_range),
-                      //     _birthdayController.text, datepicker),
-                      // SizedBox(height: 16),
                       ToggleButtons(
                         isSelected: isSelected,
                         onPressed: (int index) {
-                          setState(() {
-                            for (int buttonIndex = 0;
-                                buttonIndex < isSelected.length;
-                                buttonIndex++) {
-                              if (buttonIndex == index) {
-                                isSelected[buttonIndex] = true;
-                              } else {
-                                isSelected[buttonIndex] = false;
-                              }
+                          for (int buttonIndex = 0;
+                              buttonIndex < isSelected.length;
+                              buttonIndex++) {
+                            if (buttonIndex == index) {
+                              isSelected[buttonIndex] = true;
+                            } else {
+                              isSelected[buttonIndex] = false;
                             }
-                          });
+                          }
+
+                          setstatefunction();
                         },
                         children: const <Widget>[
                           Padding(
@@ -282,10 +293,29 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   visible: step2,
                   child: Column(
                     children: [
-                      Text(passwordtimer.toString()),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.alarm,
+                              size: 40,
+                              color: countdownColor,
+                            ),
+                            const SizedBox(width: 5),
+                            CustomText.costum1(
+                              passwordtimer.toString(),
+                              size: 40,
+                              weight: FontWeight.bold,
+                              color: countdownColor,
+                            ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 10),
-                      CustomTextfields.number(
-                        "Kod",
+                      CustomTextfields(setstate: setstatefunction).number(
+                        placeholder: "Kod",
                         controller: _codeController,
                         length: 6,
                         icon: const Icon(Icons.sms),
@@ -304,14 +334,30 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                           isPassword: true,
                           preicon: const Icon(Icons.lock_outline)),
                       const SizedBox(height: 16),
-                      CustomButtons.costum1(
-                        text: "Kaydet",
-                        onPressed: forgotmypassworddone,
-                        loadingStatus: resetpasswordauthProcess,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Visibility(
+                            visible: passwordtimer != 0,
+                            child: CustomButtons.costum1(
+                              text: "Kaydet",
+                              onPressed: forgotmypassworddone,
+                              loadingStatus: resetpasswordauthProcess,
+                            ),
+                          ),
+                          Visibility(
+                            visible: passwordtimer == 0,
+                            child: CustomButtons.costum1(
+                              text: "Tekrar Kod Gönder",
+                              onPressed: forgotmypassword,
+                              loadingStatus: resetpasswordProcess,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ],

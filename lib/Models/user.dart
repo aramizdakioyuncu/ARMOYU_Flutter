@@ -1,3 +1,7 @@
+import 'package:ARMOYU/Models/ARMOYU/country.dart';
+import 'package:ARMOYU/Models/ARMOYU/job.dart';
+import 'package:ARMOYU/Models/ARMOYU/province.dart';
+import 'package:ARMOYU/Models/ARMOYU/role.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -16,12 +20,11 @@ class User {
 
   String? userMail = "";
 
-  String? country = "";
-  String? province = "";
+  Country? country;
+  Province? province;
   String? registerDate = "";
-  String? job = "";
-  String? role = "";
-  String? rolecolor = "";
+  Job? job;
+  Role? role;
 
   String? aboutme = "";
   String? burc = "";
@@ -38,6 +41,8 @@ class User {
   int? postsCount = 0;
   int? awardsCount = 0;
 
+  String? phoneNumber;
+  String? birthdayDate;
   Team? favTeam;
 
   User({
@@ -55,7 +60,6 @@ class User {
     this.registerDate,
     this.job,
     this.role,
-    this.rolecolor,
     this.aboutme,
     this.burc,
     this.invitecode,
@@ -69,6 +73,8 @@ class User {
     this.postsCount,
     this.awardsCount,
     this.favTeam,
+    this.phoneNumber,
+    this.birthdayDate,
   });
 
   Widget storyViewUserList() {

@@ -244,9 +244,10 @@ class _LoginPageState extends State<LoginPage> {
                     }
                   },
                   child: CustomText.costum1(
-                      "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
-                      size: 16,
-                      weight: FontWeight.bold),
+                    "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
+                    size: 16,
+                    weight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),

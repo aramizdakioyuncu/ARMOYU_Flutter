@@ -47,7 +47,11 @@ class FunctionsPosts {
   }
 
 //Share
-  Future<Map<String, dynamic>> share(String text, List<Media> files) async {
+  Future<Map<String, dynamic>> share(
+    String text,
+    List<Media> files, {
+    String? location,
+  }) async {
     List<MultipartFile> photosCollection = [];
     for (Media file in files) {
       photosCollection.add(
@@ -58,9 +62,18 @@ class FunctionsPosts {
       );
     }
 
-    Map<String, String> formData = {
-      "sosyalicerik": text,
-    };
+    Map<String, String> formData;
+
+    if (location != null) {
+      formData = {
+        "sosyalicerik": text,
+        "konum": location,
+      };
+    } else {
+      formData = {
+        "sosyalicerik": text,
+      };
+    }
 
     Map<String, dynamic> jsonData = await _apiService
         .request("sosyal/olustur/", formData, files: photosCollection);

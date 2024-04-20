@@ -596,23 +596,50 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                       ),
                       radius: 20,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              CustomText.costum1(widget.post.owner.userName!,
-                                  size: 16, weight: FontWeight.bold),
+                              CustomText.costum1(
+                                widget.post.owner.userName!,
+                                size: 16,
+                                weight: FontWeight.bold,
+                              ),
+                              const SizedBox(width: 5),
                               widget.post.sharedDevice == "mobil"
-                                  ? const Text(" 📱")
-                                  : const Text(" 🌐")
+                                  ? const Text("📱")
+                                  : const Text("🌐"),
+                              const SizedBox(width: 5),
+                              CustomText.costum1(
+                                widget.post.postDate,
+                                weight: FontWeight.normal,
+                                color: ARMOYU.textColor.withOpacity(0.69),
+                              ),
                             ],
                           ),
-                          CustomText.costum1(
-                            widget.post.postDate,
-                            weight: FontWeight.normal,
+                          Row(
+                            children: [
+                              Visibility(
+                                visible: widget.post.location != null,
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      color: Colors.red,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 1),
+                                    CustomText.costum1(
+                                      widget.post.location.toString(),
+                                      weight: FontWeight.normal,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -747,8 +774,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           child: widget.post.firstthreelike.isNotEmpty
                               ? GestureDetector(
                                   onTap: () {
-                                    postcomments(
-                                        widget.post.postID, listComments);
+                                    postcommentlikeslist(listCommentsLikes);
                                   },
                                   child: WidgetUtility.specialText(
                                     context,
@@ -802,14 +828,18 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       bool? isvideo = false,
     }) {
       if (isvideo == true) {
-        // log(mediaUrl);
-        // mediaUrl
+        log(mediaUrl);
+
+        final videoPlayerController = VideoPlayerController.networkUrl(
+          Uri.parse(mediaUrl),
+        );
+
         final chewieController = ChewieController(
-          videoPlayerController:
-              VideoPlayerController.networkUrl(Uri.parse(mediaUrl)),
+          videoPlayerController: videoPlayerController,
           autoInitialize: true,
           autoPlay: false,
           aspectRatio: 9 / 16,
+          // isLive: true,
           looping: false,
         );
 
@@ -852,10 +882,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
         List media = widget.post.media[i].mediaType!.split('/');
 
-        //video
-        // if (media[0] == "video") {
-        //   continue;
-        // }
         if (media[0] == "video") {
           mediarow1.clear();
           mediarow1.add(
@@ -903,8 +929,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
               ),
             );
           },
-          child: mediaSablon(widget.post.media[i].mediaURL.normalURL,
-              width: mediawidth, height: mediaheight, fit: mediadirection),
+          child: mediaSablon(
+            widget.post.media[i].mediaURL.normalURL,
+            width: mediawidth,
+            height: mediaheight,
+            fit: mediadirection,
+          ),
         );
 
         if (widget.post.media.length == 3) {

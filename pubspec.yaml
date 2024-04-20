@@ -68,6 +68,8 @@ dependencies:
   geocoding: ^3.0.0
   google_maps_flutter: ^2.6.0
   easy_localization: ^3.0.5
+  flutter_multi_formatter: ^2.12.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

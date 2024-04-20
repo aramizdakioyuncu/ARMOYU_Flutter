@@ -141,11 +141,15 @@ class _MediaViewerPage extends State<MediaViewer> {
             ImageProvider imageProvider;
 
             if (widget.isFile!) {
-              imageProvider =
-                  FileImage(File(widget.media[index].mediaURL.bigURL));
+              imageProvider = FileImage(
+                File(
+                  widget.media[index].mediaURL.bigURL,
+                ),
+              );
             } else {
               imageProvider = CachedNetworkImageProvider(
-                  widget.media[index].mediaURL.bigURL);
+                widget.media[index].mediaURL.bigURL,
+              );
             }
 
             return PhotoViewGalleryPageOptions(

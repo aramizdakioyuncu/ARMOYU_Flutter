@@ -232,9 +232,14 @@ class _ChatPageState extends State<SurveyNewPage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(anwserIcon),
+                        Column(
+                          children: [
+                            const SizedBox(height: 30),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(anwserIcon),
+                            ),
+                          ],
                         ),
                         SizedBox(
                           width: ARMOYU.screenWidth - 60,
@@ -258,7 +263,7 @@ class _ChatPageState extends State<SurveyNewPage>
                       child: Icon(anwserIcon, color: Colors.grey),
                     ),
                     SizedBox(
-                      height: 80,
+                      height: 115,
                       width: ARMOYU.screenWidth - 60,
                       child: CustomTextfields(setstate: setstatefunction)
                           .costum3(

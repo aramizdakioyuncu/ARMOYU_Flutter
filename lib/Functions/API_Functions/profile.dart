@@ -106,4 +106,30 @@ class FunctionsProfile {
         await apiService.request("profil/favoritakimsec/0/", formData);
     return jsonData;
   }
+
+  Future<Map<String, dynamic>> saveprofiledetails({
+    required String firstname,
+    required String lastname,
+    required String email,
+    required String countryID,
+    required String provinceID,
+    required String birthday,
+    required String phoneNumber,
+    required String passwordControl,
+  }) async {
+    Map<String, String> formData = {
+      "ad": firstname,
+      "soyad": lastname,
+      "email": email,
+      "countryID": countryID,
+      "provinceID": provinceID,
+      "birthday": birthday,
+      "phoneNumber": phoneNumber,
+      "passwordControl": passwordControl,
+      "v1": "1",
+    };
+    Map<String, dynamic> jsonData =
+        await apiService.request("profil/ozelbilgiler/0/", formData);
+    return jsonData;
+  }
 }

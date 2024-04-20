@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use, file_names
 
+import 'package:ARMOYU/Models/ARMOYU/country.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:camera/camera.dart';
@@ -44,6 +45,10 @@ class ARMOYU {
   static Map<String, dynamic> favTeam = {};
   static bool favteamRequest = false;
 
+  //Ülkeler ve Şehirler
+  static List<Country> countryList = [];
+
+  //Genel işlemler
   static int onlineMembersCount = 0;
   static int totalPlayerCount = 0;
   static int chatNotificationCount = 0;

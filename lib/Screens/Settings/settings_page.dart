@@ -45,10 +45,11 @@ class _SettingsPage extends State<SettingsPage> {
   Future<void> logoutfunction() async {
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.logOut();
-    ARMOYUWidget.toastNotification("r123");
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"].toString());
+
       return;
     }
     passwordController.text = "";
@@ -59,12 +60,6 @@ class _SettingsPage extends State<SettingsPage> {
         MaterialPageRoute(builder: (context) => const LoginPage()),
         (Route<dynamic> route) => false,
       );
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => const LoginPage(),
-      //   ),
-      // );
     }
   }
 

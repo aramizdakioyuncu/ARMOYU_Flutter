@@ -14,7 +14,7 @@ class ThemeProvider with ChangeNotifier {
     _themeData = ThemeData.dark();
 
     ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
-    ARMOYU.textbackColor = Colors.grey.shade800;
+    ARMOYU.textbackColor = Colors.grey.shade900;
     ARMOYU.texthintColor = const Color.fromARGB(255, 195, 195, 195);
 
     ARMOYU.color = Colors.white;

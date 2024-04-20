@@ -25,7 +25,6 @@ class _PostSharePageState extends State<PostSharePage>
   @override
   bool get wantKeepAlive => true;
 
-  // TextEditingController textController = TextEditingController();
   TextEditingController postsharetext = TextEditingController();
   List<Media> media = [];
   bool postshareProccess = false;
@@ -35,27 +34,27 @@ class _PostSharePageState extends State<PostSharePage>
       return;
     }
 
-    setState(() {
-      postshareProccess = true;
-    });
+    postshareProccess = true;
+    setstatefunction();
     FunctionsPosts funct = FunctionsPosts();
-    Map<String, dynamic> response =
-        await funct.share(key.currentState!.controller!.text, media);
+    Map<String, dynamic> response = await funct.share(
+      key.currentState!.controller!.text,
+      media,
+      location: userLocation,
+    );
     if (response["durum"] == 0) {
       postsharetext.text = response["aciklama"].toString();
-      if (mounted) {
-        setState(() {
-          postshareProccess = false;
-        });
-      }
+      postshareProccess = false;
+      setstatefunction();
+
       return;
     }
 
     if (response["durum"] == 1) {
       postsharetext.text = response["aciklama"].toString();
-      setState(() {
-        postshareProccess = false;
-      });
+      postshareProccess = false;
+      setstatefunction();
+
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -120,31 +119,33 @@ class _PostSharePageState extends State<PostSharePage>
                     children: [
                       userLocation == null
                           ? Container()
-                          : Stack(children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CustomButtons.costum2(
-                                  text: userLocation,
-                                  icon: const Icon(Icons.location_on),
-                                  onPressed: () {},
-                                ),
-                              ),
-                              Positioned(
-                                right: 12,
-                                top: 12,
-                                child: InkWell(
-                                  onTap: () {
-                                    userLocation = null;
-                                    setstatefunction();
-                                  },
-                                  child: const Icon(
-                                    Icons.close,
-                                    color: Colors.red,
-                                    size: 16,
+                          : Stack(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CustomButtons.costum2(
+                                    text: userLocation,
+                                    icon: const Icon(Icons.location_on),
+                                    onPressed: () {},
                                   ),
                                 ),
-                              ),
-                            ]),
+                                Positioned(
+                                  right: 12,
+                                  top: 12,
+                                  child: InkWell(
+                                    onTap: () {
+                                      userLocation = null;
+                                      setstatefunction();
+                                    },
+                                    child: const Icon(
+                                      Icons.close,
+                                      color: Colors.red,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                     ],
                   ),
                 ),
@@ -171,11 +172,8 @@ class _PostSharePageState extends State<PostSharePage>
                             .then((List<Placemark> placemarks) {
                           Placemark place = placemarks[0];
                           userLocation = place.subAdministrativeArea.toString();
-                          setState(() {
-                            ARMOYUWidget.toastNotification(
-                                "${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
-                            log("${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
-                          });
+                          ARMOYUWidget.toastNotification(
+                              "${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
                         }).catchError((e) {
                           debugPrint(e);
                         });
@@ -187,7 +185,9 @@ class _PostSharePageState extends State<PostSharePage>
                     ),
                     const Spacer(),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        key.currentState!.controller!.text += "@";
+                      },
                       icon: const Icon(
                         Icons.person_2,
                         color: Colors.amber,
@@ -196,13 +196,20 @@ class _PostSharePageState extends State<PostSharePage>
                     const Spacer(),
                     if (ARMOYU.cameras!.isNotEmpty)
                       IconButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          final List<Media> photo = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const CameraScreen(),
+                              builder: (context) => const CameraScreen(
+                                canPop: true,
+                              ),
                             ),
                           );
+                          for (var element in photo) {
+                            log(element.mediaURL.minURL);
+                          }
+                          media += photo;
+                          setstatefunction();
                         },
                         icon: const Icon(
                           Icons.camera_alt,
@@ -211,9 +218,11 @@ class _PostSharePageState extends State<PostSharePage>
                       ),
                     if (ARMOYU.cameras!.isNotEmpty) const Spacer(),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        key.currentState!.controller!.text += "#";
+                      },
                       icon: const Icon(
-                        Icons.calendar_month,
+                        Icons.numbers_rounded,
                         color: Colors.blue,
                       ),
                     ),

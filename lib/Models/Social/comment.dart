@@ -3,10 +3,9 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:like_button/like_button.dart';
 
 class Comment {
   final int commentID;
@@ -26,99 +25,104 @@ class Comment {
     required this.didIlike,
     required this.date,
   });
+  bool likeunlikeProcces = false;
+  final GlobalKey<LikeButtonState> _likeButtonKey =
+      GlobalKey<LikeButtonState>();
+  Future<void> likefunction(Function setstatefunction) async {
+    if (likeunlikeProcces) {
+      return;
+    }
+    likeunlikeProcces = true;
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response;
+    response = await funct.commentlike(commentID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      likeunlikeProcces = false;
+      setstatefunction();
+      return;
+    }
+    likeCount++;
+    didIlike = true;
+    likeunlikeProcces = false;
+    setstatefunction();
+  }
+
+  Future<void> dislikefunction(Function setstatefunction) async {
+    if (likeunlikeProcces) {
+      return;
+    }
+    likeunlikeProcces = true;
+
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response;
+    response = await funct.commentdislike(commentID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      likeunlikeProcces = false;
+      setstatefunction();
+
+      return;
+    }
+    likeCount--;
+    didIlike = false;
+    likeunlikeProcces = false;
+    setstatefunction();
+  }
+
+  Future<bool> postLike(bool isLiked, setstatefunction) async {
+    if (likeunlikeProcces) {
+      return isLiked;
+    }
+
+    if (isLiked) {
+      dislikefunction(setstatefunction);
+    } else {
+      likefunction(setstatefunction);
+    }
+    return !isLiked;
+  }
 
   Widget commentlist(BuildContext context, Function setstatefunction) {
-    return Container(
-      color: ARMOYU.backgroundcolor,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(
-                    appbar: false,
-                    scrollController: ScrollController(),
-                    username: user.userName,
+    return GestureDetector(
+      onDoubleTap: () {
+        _likeButtonKey.currentState?.onTap();
+      },
+      child: Container(
+        color: ARMOYU.backgroundcolor,
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText.usercomments(
+                    context,
+                    text: content,
+                    user: user,
                   ),
-                ),
-              );
-            },
-            child: CircleAvatar(
-              backgroundColor: Colors.transparent,
-              foregroundImage:
-                  CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
-              radius: 10,
+                ],
+              ),
             ),
-          ),
-          const SizedBox(width: 3),
-          Expanded(
-            child: CustomText.usercomments(context, text: content, user: user),
-          ),
-          GestureDetector(
-            onTap: () async {
-              bool currentstatus = didIlike;
-              if (currentstatus) {
-                didIlike = false;
-                likeCount--;
-              } else {
-                didIlike = true;
-                likeCount++;
-              }
-              setstatefunction();
-              FunctionsPosts funct = FunctionsPosts();
-              Map<String, dynamic> response;
-              if (!didIlike) {
-                response = await funct.commentdislike(commentID);
-              } else {
-                response = await funct.commentlike(commentID);
-              }
-              if (response["durum"] == 0) {
-                log(response["aciklama"]);
-                if (currentstatus) {
-                  likeCount--;
-                } else {
-                  likeCount++;
-                }
-                didIlike = !didIlike;
-                setstatefunction();
-                return;
-              }
-            },
-            child: Padding(
+            Padding(
               padding: const EdgeInsets.all(4.0),
-              child: didIlike
-                  ? Row(
-                      children: [
-                        SizedBox(
-                          width: 35,
-                          child: CustomText.costum1(
-                            likeCount.toString(),
-                            align: TextAlign.right,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        const Icon(Icons.favorite, size: 15, color: Colors.red),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        SizedBox(
-                          width: 35,
-                          child: CustomText.costum1(
-                            likeCount.toString(),
-                            align: TextAlign.right,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        const Icon(Icons.favorite_outline_rounded, size: 15),
-                      ],
-                    ),
+              child: LikeButton(
+                key: _likeButtonKey,
+                isLiked: didIlike,
+                likeCount: likeCount,
+                onTap: (isLiked) async =>
+                    await postLike(isLiked, setstatefunction),
+                likeBuilder: (bool isLiked) {
+                  return Icon(
+                    isLiked ? Icons.favorite : Icons.favorite_outline,
+                    color: isLiked ? Colors.red : Colors.grey,
+                    size: 15,
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

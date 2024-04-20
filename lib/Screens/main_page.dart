@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -46,27 +44,28 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
+bool _isBottomNavbarVisible = true;
+
+bool _drawermyschool = false;
+bool _drawermygroup = false;
+bool _drawermyfood = false;
+bool _appbarSearch = false;
+
+int postpage = 1;
+bool postpageproccess = false;
+bool isRefreshing = false;
+bool firstProcces = false;
+
+final PageController _mainpagecontroller = PageController(initialPage: 0);
+final PageController _socailpageController = PageController(initialPage: 1);
+
+final TextEditingController appbarSearchTextController =
+    TextEditingController();
+
 class _MainPageState extends State<MainPage>
     with AutomaticKeepAliveClientMixin<MainPage> {
   @override
   bool get wantKeepAlive => true;
-
-  bool isBottomNavbarVisible = true;
-
-  bool drawermyschool = false;
-  bool drawermygroup = false;
-  bool drawermyfood = false;
-  bool appbarSearch = false;
-  final TextEditingController appbarSearchTextController =
-      TextEditingController();
-
-  int postpage = 1;
-  bool postpageproccess = false;
-  bool isRefreshing = false;
-
-  bool firstProcces = false;
-  final PageController _mainpagecontroller = PageController(initialPage: 0);
-  final PageController _pageController2 = PageController(initialPage: 1);
 
   final ScrollController _homepageScrollController = ScrollController();
   final ScrollController _searchScrollController =
@@ -141,7 +140,7 @@ class _MainPageState extends State<MainPage>
     //Anasayfaya basıldığında
     if (page.toString() == "0") {
       setState(() {
-        _pageController2.jumpToPage(
+        _socailpageController.jumpToPage(
           1,
         );
       });
@@ -221,11 +220,11 @@ class _MainPageState extends State<MainPage>
 
     if (page.toString() == "1") {
       setState(() {
-        appbarSearch = true;
+        _appbarSearch = true;
       });
     } else {
       setState(() {
-        appbarSearch = false;
+        _appbarSearch = false;
       });
     }
 
@@ -260,7 +259,7 @@ class _MainPageState extends State<MainPage>
     }
 
     if (mounted) {
-      drawermygroup = true;
+      _drawermygroup = true;
       setState(() {
         for (dynamic element in response["icerik"]) {
           widgetmyGroups.add(
@@ -336,7 +335,7 @@ class _MainPageState extends State<MainPage>
         });
       }
     }
-    drawermyfood = true;
+    _drawermyfood = true;
     loadfoodStationProcess = false;
   }
 
@@ -361,7 +360,7 @@ class _MainPageState extends State<MainPage>
     }
 
     if (mounted) {
-      drawermyschool = true;
+      _drawermyschool = true;
       for (int i = 0; i < response["icerik"].length; i++) {
         setState(() {
           widgetmySchools.add(
@@ -393,23 +392,23 @@ class _MainPageState extends State<MainPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
         setState(() {
           _currentPage = 0;
           _mainpagecontroller.jumpToPage(
             0,
           );
-          _pageController2.jumpToPage(1);
+          _socailpageController.jumpToPage(1);
         });
-        return false;
       },
       child: SafeArea(
         top: false,
         bottom: false,
         child: Scaffold(
           // backgroundColor: ARMOYU.backgroundcolor,
-          appBar: !isBottomNavbarVisible
+          appBar: !_isBottomNavbarVisible
               ? null
               : AppBar(
                   // Arkaplan rengini ayarlayın
@@ -440,7 +439,7 @@ class _MainPageState extends State<MainPage>
                     },
                   ),
                   title: Visibility(
-                    visible: appbarSearch,
+                    visible: _appbarSearch,
                     child: Container(
                       height: 40,
                       decoration: BoxDecoration(
@@ -485,292 +484,305 @@ class _MainPageState extends State<MainPage>
                     ),
                   ],
                 ),
-          drawer: Drawer(
-            backgroundColor: ARMOYU.appbarColor,
-            child: Column(
-              children: [
-                UserAccountsDrawerHeader(
-                  accountName: ARMOYU.appUser.displayName == null
-                      ? const SkeletonLine(
-                          style: SkeletonLineStyle(width: 20),
-                        )
-                      : Text(
-                          ARMOYU.appUser.displayName!,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                  accountEmail: ARMOYU.appUser.userMail == null
-                      ? const SkeletonLine(
-                          style: SkeletonLineStyle(width: 20),
-                        )
-                      : Text(ARMOYU.appUser.userMail!,
-                          style: const TextStyle(color: Colors.white)),
-                  currentAccountPicture: GestureDetector(
-                    onTap: () {
-                      _changePage(3);
-                      Navigator.of(context).pop();
-                    },
-                    child: ARMOYU.appUser.avatar == null
-                        ? const SkeletonAvatar()
-                        : CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            foregroundImage: CachedNetworkImageProvider(
-                                ARMOYU.appUser.avatar!.mediaURL.minURL),
-                          ),
-                  ),
-                  currentAccountPictureSize: const Size.square(70),
-                  decoration: ARMOYU.appUser.banner == null
-                      ? null
-                      : BoxDecoration(
-                          image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                                ARMOYU.appUser.banner!.mediaURL.minURL),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                ),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.topCenter,
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      children: [
-                        Visibility(
-                          visible: "-11" == "-1" ? true : false,
-                          child: ListTile(
-                            textColor: ARMOYU.textColor,
-                            iconColor: ARMOYU.textColor,
-                            leading: const Icon(Icons.group),
-                            title: const Text("Toplantı"),
-                            onTap: () {},
-                          ),
-                        ),
-                        ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
-                          leading: const Icon(Icons.article),
-                          title: const Text("Haberler"),
+          drawer: !_isBottomNavbarVisible
+              ? null
+              : Drawer(
+                  backgroundColor: ARMOYU.appbarColor,
+                  child: Column(
+                    children: [
+                      UserAccountsDrawerHeader(
+                        accountName: ARMOYU.appUser.displayName == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 20),
+                              )
+                            : Text(
+                                ARMOYU.appUser.displayName!,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                        accountEmail: ARMOYU.appUser.userMail == null
+                            ? const SkeletonLine(
+                                style: SkeletonLineStyle(width: 20),
+                              )
+                            : Text(ARMOYU.appUser.userMail!,
+                                style: const TextStyle(color: Colors.white)),
+                        currentAccountPicture: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const NewslistPage()));
+                            _changePage(3);
+                            Navigator.of(context).pop();
                           },
+                          child: ARMOYU.appUser.avatar == null
+                              ? const SkeletonAvatar()
+                              : CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundImage: CachedNetworkImageProvider(
+                                      ARMOYU.appUser.avatar!.mediaURL.minURL),
+                                ),
                         ),
-                        ExpansionTile(
-                          textColor: ARMOYU.textColor,
-                          leading: Icon(Icons.group, color: ARMOYU.textColor),
-                          title: const Text('Gruplarım'),
-                          onExpansionChanged: (value) async {
-                            if (value) {
-                              if (!drawermygroup) {
-                                await loadMyGroups();
-                              }
-                            }
-                          },
-                          children: widgetmyGroups.length == 1
-                              ? [
-                                  widgetmyGroups[0],
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CupertinoActivityIndicator(),
-                                  )
-                                ]
-                              : widgetmyGroups,
-                        ),
-                        ExpansionTile(
-                          textColor: ARMOYU.textColor,
-                          leading: Icon(Icons.school, color: ARMOYU.textColor),
-                          title: const Text('Okullarım'),
-                          onExpansionChanged: (value) async {
-                            if (value) {
-                              if (!drawermyschool) {
-                                await loadMySchools();
-                              }
-                            }
-                          },
-                          children: widgetmySchools.length == 1
-                              ? [
-                                  widgetmySchools[0],
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CupertinoActivityIndicator(),
-                                  )
-                                ]
-                              : widgetmySchools,
-                        ),
-                        ExpansionTile(
-                          leading:
-                              Icon(Icons.local_drink, color: ARMOYU.textColor),
-                          title: const Text('Yemek'),
-                          onExpansionChanged: (value) async {
-                            if (value) {
-                              if (!drawermyfood) {
-                                await loadFoodStation();
-                              }
-                            }
-                          },
-                          children: widgetFoodStation.isEmpty
-                              ? [
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: CupertinoActivityIndicator(),
-                                  )
-                                ]
-                              : List.generate(widgetFoodStation.length,
-                                  (index) {
-                                  return ListTile(
-                                    leading: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      child: CachedNetworkImage(
-                                        imageUrl: widgetFoodStation[index]
-                                            .logo
-                                            .mediaURL
-                                            .minURL,
-                                        width: 30,
-                                        height: 30,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    title: Text(widgetFoodStation[index].name),
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => RestourantPage(
-                                            cafe: widgetFoodStation[index],
+                        currentAccountPictureSize: const Size.square(70),
+                        decoration: ARMOYU.appUser.banner == null
+                            ? null
+                            : BoxDecoration(
+                                image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                      ARMOYU.appUser.banner!.mediaURL.minURL),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.topCenter,
+                          child: ListView(
+                            padding: EdgeInsets.zero,
+                            children: [
+                              Visibility(
+                                visible: "-11" == "-1" ? true : false,
+                                child: ListTile(
+                                  textColor: ARMOYU.textColor,
+                                  iconColor: ARMOYU.textColor,
+                                  leading: const Icon(Icons.group),
+                                  title: const Text("Toplantı"),
+                                  onTap: () {},
+                                ),
+                              ),
+                              ListTile(
+                                textColor: ARMOYU.textColor,
+                                iconColor: ARMOYU.textColor,
+                                leading: const Icon(Icons.article),
+                                title: const Text("Haberler"),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const NewslistPage()));
+                                },
+                              ),
+                              ExpansionTile(
+                                textColor: ARMOYU.textColor,
+                                leading:
+                                    Icon(Icons.group, color: ARMOYU.textColor),
+                                title: const Text('Gruplarım'),
+                                onExpansionChanged: (value) async {
+                                  if (value) {
+                                    if (!_drawermygroup) {
+                                      await loadMyGroups();
+                                    }
+                                  }
+                                },
+                                children: widgetmyGroups.length == 1
+                                    ? [
+                                        widgetmyGroups[0],
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: CupertinoActivityIndicator(),
+                                        )
+                                      ]
+                                    : widgetmyGroups,
+                              ),
+                              ExpansionTile(
+                                textColor: ARMOYU.textColor,
+                                leading:
+                                    Icon(Icons.school, color: ARMOYU.textColor),
+                                title: const Text('Okullarım'),
+                                onExpansionChanged: (value) async {
+                                  if (value) {
+                                    if (!_drawermyschool) {
+                                      await loadMySchools();
+                                    }
+                                  }
+                                },
+                                children: widgetmySchools.length == 1
+                                    ? [
+                                        widgetmySchools[0],
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: CupertinoActivityIndicator(),
+                                        )
+                                      ]
+                                    : widgetmySchools,
+                              ),
+                              ExpansionTile(
+                                leading: Icon(Icons.local_drink,
+                                    color: ARMOYU.textColor),
+                                title: const Text('Yemek'),
+                                onExpansionChanged: (value) async {
+                                  if (value) {
+                                    if (!_drawermyfood) {
+                                      await loadFoodStation();
+                                    }
+                                  }
+                                },
+                                children: widgetFoodStation.isEmpty
+                                    ? [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: CupertinoActivityIndicator(),
+                                        )
+                                      ]
+                                    : List.generate(widgetFoodStation.length,
+                                        (index) {
+                                        return ListTile(
+                                          leading: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            child: CachedNetworkImage(
+                                              imageUrl: widgetFoodStation[index]
+                                                  .logo
+                                                  .mediaURL
+                                                  .minURL,
+                                              width: 30,
+                                              height: 30,
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                          title: Text(
+                                              widgetFoodStation[index].name),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RestourantPage(
+                                                  cafe:
+                                                      widgetFoodStation[index],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }),
+                              ),
+                              ListTile(
+                                textColor: ARMOYU.textColor,
+                                iconColor: ARMOYU.textColor,
+                                leading: const Icon(Icons.event),
+                                title: const Text("Etkinlikler"),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EventlistPage(),
+                                    ),
                                   );
-                                }),
-                        ),
-                        ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
-                          leading: const Icon(Icons.event),
-                          title: const Text("Etkinlikler"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const EventlistPage(),
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
-                          leading: const Icon(Icons.analytics_rounded),
-                          title: const Text("Anketler"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SurveyListPage(),
+                              ListTile(
+                                textColor: ARMOYU.textColor,
+                                iconColor: ARMOYU.textColor,
+                                leading: const Icon(Icons.analytics_rounded),
+                                title: const Text("Anketler"),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SurveyListPage(),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
-                          leading: const Icon(Icons.assignment_sharp),
-                          title: const Text("Davet Et"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const InvitePage(),
+                              ListTile(
+                                textColor: ARMOYU.textColor,
+                                iconColor: ARMOYU.textColor,
+                                leading: const Icon(Icons.assignment_sharp),
+                                title: const Text("Davet Et"),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const InvitePage(),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
-                          leading: const Icon(Icons.business_center),
-                          title: const Text("Bize Katıl"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const BusinessApplicationsPage(),
+                              ListTile(
+                                textColor: ARMOYU.textColor,
+                                iconColor: ARMOYU.textColor,
+                                leading: const Icon(Icons.business_center),
+                                title: const Text("Bize Katıl"),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const BusinessApplicationsPage(),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
-                          leading: const Icon(Icons.settings),
-                          title: const Text("Ayarlar"),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SettingsPage(),
+                              ListTile(
+                                textColor: ARMOYU.textColor,
+                                iconColor: ARMOYU.textColor,
+                                leading: const Icon(Icons.settings),
+                                title: const Text("Ayarlar"),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SettingsPage(),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          // Sağ tarafta bir buton
-                          trailing: IconButton(
-                            icon:
-                                Icon(Icons.nightlight, color: ARMOYU.textColor),
-                            onPressed: () {
-                              setState(() {
-                                ThemeProvider().toggleTheme();
-                              });
-                            },
-                          ),
-                          // Sol tarafta bir buton
-                          leading: IconButton(
-                            icon: Icon(Icons.qr_code_2_rounded,
-                                color: ARMOYU.textColor),
-                            onPressed: () async {
-                              BarcodeService bc = BarcodeService();
-                              String responsew = await bc.scanQR();
-                              log(responsew);
-                            },
+                              ListTile(
+                                // Sağ tarafta bir buton
+                                trailing: IconButton(
+                                  icon: Icon(Icons.nightlight,
+                                      color: ARMOYU.textColor),
+                                  onPressed: () {
+                                    setState(() {
+                                      ThemeProvider().toggleTheme();
+                                    });
+                                  },
+                                ),
+                                // Sol tarafta bir buton
+                                leading: IconButton(
+                                  icon: Icon(Icons.qr_code_2_rounded,
+                                      color: ARMOYU.textColor),
+                                  onPressed: () async {
+                                    BarcodeService bc = BarcodeService();
+                                    String responsew = await bc.scanQR();
+                                    log(responsew);
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
           body: PageView(
-            physics: const NeverScrollableScrollPhysics(), //kaydırma iptali
+            physics: const NeverScrollableScrollPhysics(),
             controller: _mainpagecontroller,
             onPageChanged: (int page) {
-              //  _changePage(page);
               ARMOYUFunctions.selectFavTeam(context);
             },
             children: [
               PageView(
-                controller: _pageController2,
+                controller: _socailpageController,
+                physics: _socailpageController.initialPage == 0 ? null : null,
                 onPageChanged: (value) {
-                  log(value.toString());
+                  log(_socailpageController.initialPage.toString());
                   if (value == 0) {
                     setState(() {
-                      isBottomNavbarVisible = false;
+                      _isBottomNavbarVisible = false;
                     });
                   } else {
                     setState(() {
-                      isBottomNavbarVisible = true;
+                      _isBottomNavbarVisible = true;
                     });
                   }
                 },
                 children: [
                   ARMOYU.cameras!.isNotEmpty
-                      ? const CameraScreen()
+                      ? const CameraScreen(
+                          canPop: false,
+                        )
                       : Container(),
                   SocialPage(
                     homepageScrollController: _homepageScrollController,
@@ -793,7 +805,7 @@ class _MainPageState extends State<MainPage>
             ],
           ),
           bottomNavigationBar: Visibility(
-            visible: isBottomNavbarVisible,
+            visible: _isBottomNavbarVisible,
             child: BottomNavigationBar(
               backgroundColor: ARMOYU.appbarColor,
               type: BottomNavigationBarType.fixed,

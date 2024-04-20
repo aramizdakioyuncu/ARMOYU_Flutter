@@ -1,3 +1,4 @@
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:flutter/material.dart';
 
 class TextPage extends StatefulWidget {
@@ -18,8 +19,10 @@ class _TextPageState extends State<TextPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: Text(widget.texttitle),
+        backgroundColor: ARMOYU.appbarColor,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

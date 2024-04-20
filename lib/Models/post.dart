@@ -16,6 +16,7 @@ class Post {
   List<Media> media;
   List<Comment> firstthreecomment;
   List<Like> firstthreelike;
+  String? location;
 
   Post({
     required this.postID,
@@ -30,5 +31,6 @@ class Post {
     required this.media,
     required this.firstthreecomment,
     required this.firstthreelike,
+    required this.location,
   });
 }

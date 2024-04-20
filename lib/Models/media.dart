@@ -2,8 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/appcore.dart';
+import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Functions/API_Functions/media.dart';
+import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -30,6 +35,117 @@ class Media {
     this.mediaDirection,
   });
 
+  Widget mediaGallery({
+    required context,
+    required index,
+    required List<Media> medialist,
+    bool storyShare = false,
+    required Function setstatefunction,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        if (storyShare) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StoryPublishPage(
+                imageID: 1,
+                imageURL: medialist[index].mediaURL.bigURL,
+              ),
+            ),
+          );
+          return;
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MediaViewer(
+              media: medialist,
+              initialIndex: index,
+            ),
+          ),
+        );
+      },
+      onLongPress: () {
+        if (ownerID != ARMOYU.appUser.userID) {
+          return;
+        }
+        showModalBottomSheet<void>(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(10),
+              ),
+            ),
+            context: context,
+            builder: (BuildContext context) {
+              return SafeArea(
+                child: Wrap(
+                  children: [
+                    Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(30),
+                              ),
+                            ),
+                            width: ARMOYU.screenWidth / 4,
+                            height: 5,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            Navigator.pop(context);
+
+                            FunctionsMedia funct = FunctionsMedia();
+                            Map<String, dynamic> response =
+                                await funct.delete(mediaID);
+
+                            if (response["durum"] == 0) {
+                              log(response["aciklama"].toString());
+                              ARMOYUWidget.toastNotification(
+                                  response["aciklama"].toString());
+                              return;
+                            }
+
+                            ARMOYUWidget.toastNotification("Medya silindi");
+
+                            medialist.removeAt(index);
+                            setstatefunction();
+                          },
+                          child: const ListTile(
+                            leading: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            title: Text(
+                              "Medyayı Sil",
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            });
+      },
+      child: CachedNetworkImage(
+        imageUrl: mediaURL.minURL,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => const CupertinoActivityIndicator(),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
+    );
+  }
+
   static Widget mediaList(List<Media> list, Function setState,
       {bool big = false}) {
     double imgheight = 100;
@@ -37,8 +153,8 @@ class Media {
     double closeSize = 16;
 
     if (big) {
-      imgheight = 500;
-      imgwidgth = ARMOYU.screenWidth - 50;
+      imgheight = ARMOYU.screenHeight * 0.6;
+      imgwidgth = ARMOYU.screenWidth - 25;
       closeSize = 30;
     }
     return SizedBox(
@@ -86,13 +202,15 @@ class Media {
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => MediaViewer(
-                    media: list,
-                    initialIndex: index,
-                    isFile: true,
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MediaViewer(
+                      media: list,
+                      initialIndex: index,
+                      isFile: true,
+                    ),
                   ),
-                ));
+                );
               },
               child: Container(
                 width: imgwidgth,

@@ -133,9 +133,9 @@ class _PostDetailPage extends State<PostDetailPage>
             mediaDirection: response["icerik"][0]["paylasimfoto"][j]
                 ["medyayonu"],
             mediaURL: MediaURL(
-              bigURL: response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"],
+              bigURL: response["icerik"][0]["paylasimfoto"][j]["fotourl"],
               normalURL: response["icerik"][0]["paylasimfoto"][j]
-                  ["fotominnakurl"],
+                  ["fotoufakurl"],
               minURL: response["icerik"][0]["paylasimfoto"][j]["fotominnakurl"],
             ),
           ),
@@ -211,6 +211,7 @@ class _PostDetailPage extends State<PostDetailPage>
       ),
       firstthreecomment: comments,
       firstthreelike: likers,
+      location: response["icerik"][0]["paylasimkonum"],
     );
     asa = TwitterPostWidget(post: post);
   }

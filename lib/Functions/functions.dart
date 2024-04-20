@@ -1,9 +1,18 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Functions/API_Functions/country.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Functions/API_Functions/teams.dart';
+import 'package:ARMOYU/Models/ARMOYU/country.dart';
+import 'package:ARMOYU/Models/ARMOYU/job.dart';
+import 'package:ARMOYU/Models/ARMOYU/province.dart';
+import 'package:ARMOYU/Models/ARMOYU/role.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
@@ -14,6 +23,86 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
   // Play Store'u açan metod
+
+  static User userfetch(response) {
+    return User(
+      userID: response["playerID"],
+      userName: response["username"],
+      // password: password,
+      firstName: response["firstName"],
+      lastName: response["lastName"],
+      displayName: response["displayName"],
+      userMail: response["detailInfo"]["email"],
+      aboutme: response["detailInfo"]["about"],
+      avatar: Media(
+        mediaID: response["avatar"]["media_ID"],
+        ownerID: response["playerID"],
+        mediaURL: MediaURL(
+          bigURL: response["avatar"]["media_bigURL"],
+          normalURL: response["avatar"]["media_URL"],
+          minURL: response["avatar"]["media_minURL"],
+        ),
+      ),
+      banner: Media(
+        mediaID: response["banner"]["media_ID"],
+        ownerID: response["playerID"],
+        mediaURL: MediaURL(
+          bigURL: response["banner"]["media_bigURL"],
+          normalURL: response["banner"]["media_URL"],
+          minURL: response["banner"]["media_minURL"],
+        ),
+      ),
+      burc: response["burc"],
+      invitecode: response["detailInfo"]["inviteCode"],
+      lastlogin: response["detailInfo"]["lastloginDate"],
+      lastloginv2: response["detailInfo"]["lastloginDateV2"],
+      lastfaillogin: response["detailInfo"]["lastfailedDate"],
+      job: Job(
+        jobID: response["job"]["job_ID"],
+        name: response["job"]["job_name"],
+        shortName: response["job"]["job_shortName"],
+      ),
+      level: response["level"],
+      levelColor: response["levelColor"],
+      xp: response["levelXP"],
+      awardsCount: response["detailInfo"]["awards"],
+      postsCount: response["detailInfo"]["posts"],
+      friendsCount: response["detailInfo"]["friends"],
+      country: response["detailInfo"]["country"] == null
+          ? null
+          : Country(
+              countryID: response["detailInfo"]["country"]["country_ID"],
+              name: response["detailInfo"]["country"]["country_name"],
+              countryCode: response["detailInfo"]["country"]["country_code"],
+              phoneCode: response["detailInfo"]["country"]["country_phoneCode"],
+            ),
+      province: response["detailInfo"]["province"] == null
+          ? null
+          : Province(
+              provinceID: response["detailInfo"]["province"]["province_ID"],
+              name: response["detailInfo"]["province"]["province_name"],
+              plateCode: response["detailInfo"]["province"]
+                  ["province_plateCode"],
+              phoneCode: response["detailInfo"]["province"]
+                  ["province_phoneCode"],
+            ),
+      registerDate: response["registeredDateV2"],
+      role: Role(
+        roleID: response["roleID"],
+        name: response["roleName"],
+        color: response["roleColor"],
+      ),
+      birthdayDate: response["detailInfo"]["birthdayDate"],
+      phoneNumber: response["detailInfo"]["phoneNumber"],
+      favTeam: response["favoritakim"] != null
+          ? Team(
+              teamID: response["favoritakim"]["takim_ID"],
+              name: response["favoritakim"]["takim_adi"],
+              logo: response["favoritakim"]["takim_logo"],
+            )
+          : null,
+    );
+  }
 
   static void openPlayStore() async {
     if (await canLaunchUrl(Uri.parse(
@@ -182,6 +271,7 @@ class ARMOYUFunctions {
         log(response["aciklama"].toString());
         return;
       }
+      ARMOYU.favoriteteams.clear();
 
       for (int i = 0; response["icerik"].length > i; i++) {
         ARMOYU.favoriteteams.add(
@@ -195,179 +285,528 @@ class ARMOYUFunctions {
     }
   }
 
+  static String formatString(String str) {
+    if (str == "null" || str.isEmpty || str.length < 10) {
+      return str;
+    }
+    String formattedStr = "(";
+
+    formattedStr += "${str.substring(0, 3)}) ";
+
+    formattedStr += "${str.substring(3, 6)} ";
+
+    formattedStr += "${str.substring(6, 8)} ";
+
+    formattedStr += str.substring(8);
+
+    return formattedStr;
+  }
+
+  static Future<void> fetchCountry(
+    setstatefunction,
+  ) async {
+    FunctionsCountry f = FunctionsCountry();
+    Map<String, dynamic> response = await f.fetch();
+    if (response["durum"] == 0) {
+      log(response["aciklama"].toString());
+      return;
+    }
+    ARMOYU.countryList.clear();
+
+    for (var country in response["icerik"]) {
+      ARMOYU.countryList.add(
+        Country(
+          countryID: country["country_ID"],
+          name: country["country_name"],
+          countryCode: country["country_code"],
+          phoneCode: country["country_phoneCode"],
+        ),
+      );
+
+      if (ARMOYU.appUser.country != null) {
+        if (country["country_ID"] == ARMOYU.appUser.country!.countryID) {
+          fetchProvince(
+            ARMOYU.appUser.country!.countryID,
+            ARMOYU.countryList.length - 1,
+            setstatefunction,
+          );
+        }
+      }
+    }
+  }
+
+  static Future<void> fetchProvince(
+      int countryID, selectedIndex, setstatefunction) async {
+    if (ARMOYU.countryList[selectedIndex].provinceList != null) {
+      if (ARMOYU.countryList[selectedIndex].provinceList!.isNotEmpty) {
+        provinceSelectStatus = true;
+      } else {
+        provinceSelectStatus = false;
+      }
+      return;
+    }
+    FunctionsCountry f = FunctionsCountry();
+    Map<String, dynamic> response = await f.fetchprovince(countryID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"].toString());
+      return;
+    }
+
+    if (response["icerik"].length == 0) {
+      provinceSelectStatus = false;
+      return;
+    }
+    List<Province> provinceList = [];
+
+    for (var province in response["icerik"]) {
+      log(province["province_name"].toString());
+      provinceList.add(
+        Province(
+          provinceID: province["province_ID"],
+          name: province["province_name"],
+          plateCode: province["province_plateCode"],
+          phoneCode: province["province_phoneCode"],
+        ),
+      );
+    }
+
+    ARMOYU.countryList.elementAt(selectedIndex).provinceList = provinceList;
+
+    if (provinceList.isNotEmpty) {
+      provinceSelectStatus = true;
+    } else {
+      provinceSelectStatus = false;
+    }
+    setstatefunction();
+  }
+
+  static bool provinceSelectStatus = false;
+
   static void profileEdit(BuildContext context, Function setstatefunction) {
+    final TextEditingController firstName = TextEditingController();
+    firstName.text = ARMOYU.appUser.firstName.toString();
+    final TextEditingController lastName = TextEditingController();
+    lastName.text = ARMOYU.appUser.lastName.toString();
+
+    final TextEditingController email = TextEditingController();
+    email.text = ARMOYU.appUser.userMail.toString();
+
+    final TextEditingController birthday = TextEditingController();
+    birthday.text = ARMOYU.appUser.birthdayDate.toString();
+
+    String country = "Ülke Seçim";
+    int? countryIndex = 0;
+    if (ARMOYU.appUser.country != null) {
+      country = ARMOYU.appUser.country!.name;
+      countryIndex = ARMOYU.appUser.country!.countryID;
+    }
+
+    String province = "İl Seçim";
+    int? provinceIndex = 0;
+    if (ARMOYU.appUser.province != null) {
+      province = ARMOYU.appUser.province!.name;
+      provinceIndex = ARMOYU.appUser.province!.provinceID;
+    }
+
+    if (ARMOYU.countryList.isNotEmpty) {
+      if (ARMOYU.countryList[countryIndex].provinceList != null) {
+        provinceSelectStatus = true;
+        setstatefunction();
+      }
+    }
+    Timer? searchTimer;
+
+    if (ARMOYU.countryList.isEmpty) {
+      fetchCountry(setstatefunction);
+    }
+
+    final TextEditingController phoneNumber = TextEditingController();
+    phoneNumber.text = formatString(ARMOYU.appUser.phoneNumber.toString());
+
+    final TextEditingController passwordControl = TextEditingController();
+    bool profileeditProcess = false;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 45.0),
-                    child: CachedNetworkImage(
-                      imageUrl: ARMOYU.appUser.banner!.mediaURL.normalURL,
-                      height: 200,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned(
-                    left: 10,
-                    bottom: 0,
-                    child: Stack(
+        return FractionallySizedBox(
+          heightFactor: 0.8,
+          child: Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Stack(
                       children: [
-                        CircleAvatar(
-                          foregroundImage: CachedNetworkImageProvider(
-                            ARMOYU.appUser.avatar!.mediaURL.normalURL,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 45.0),
+                          child: CachedNetworkImage(
+                            imageUrl: ARMOYU.appUser.banner!.mediaURL.normalURL,
+                            height: 200,
+                            fit: BoxFit.cover,
                           ),
-                          radius: 40,
                         ),
                         Positioned(
-                          left: 25,
-                          top: 25,
-                          child: InkWell(
-                              onTap: () {},
-                              child: const Icon(
-                                Icons.add_a_photo,
-                                color: Colors.black,
-                              )),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: CustomText.costum1(
-                            "Ad Soyad",
-                            weight: FontWeight.bold,
-                          ),
-                        ),
-                        Expanded(
-                          child: CustomTextfields(setstate: setstatefunction)
-                              .costum3(
-                            placeholder: ARMOYU.appUser.displayName,
-                            controller: TextEditingController(),
+                          left: 10,
+                          bottom: 0,
+                          child: Stack(
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                foregroundImage: CachedNetworkImageProvider(
+                                  ARMOYU.appUser.avatar!.mediaURL.normalURL,
+                                ),
+                                radius: 40,
+                              ),
+                              Positioned(
+                                left: 25,
+                                top: 25,
+                                child: InkWell(
+                                  onTap: () {
+                                    log("asd");
+                                  },
+                                  child: const Icon(
+                                    Icons.add_a_photo,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+                    Column(
                       children: [
-                        SizedBox(
-                          width: 100,
-                          child: CustomText.costum1(
-                            "Hakkımda",
-                            weight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: CustomText.costum1(
+                                  "Ad",
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child:
+                                    CustomTextfields(setstate: setstatefunction)
+                                        .costum3(
+                                  placeholder: ARMOYU.appUser.displayName,
+                                  controller: firstName,
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                        Expanded(
-                          child: CustomTextfields(setstate: setstatefunction)
-                              .costum3(
-                            placeholder: ARMOYU.appUser.aboutme,
-                            controller: TextEditingController(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: CustomText.costum1(
-                            "Konum",
-                            weight: FontWeight.bold,
-                          ),
-                        ),
-                        Expanded(
-                          child: CustomTextfields(setstate: setstatefunction)
-                              .costum3(
-                            placeholder: ARMOYU.appUser.country,
-                            controller: TextEditingController(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: CustomText.costum1(
-                            "Doğum Tarihi",
-                            weight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: CustomText.costum1(
+                                  "Soyad",
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child:
+                                    CustomTextfields(setstate: setstatefunction)
+                                        .costum3(
+                                  placeholder: ARMOYU.appUser.displayName,
+                                  controller: lastName,
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                        Expanded(
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: SizedBox(
+                                  width: 100,
+                                  child: CustomText.costum1(
+                                    "E-posta",
+                                    weight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child:
+                                    CustomTextfields(setstate: setstatefunction)
+                                        .costum3(
+                                  placeholder: ARMOYU.appUser.aboutme,
+                                  controller: email,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: CustomText.costum1(
+                                  "Konum",
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: CustomButtons.costum1(
+                                        text: country,
+                                        onPressed: () {
+                                          WidgetUtility.cupertinoselector(
+                                            context: context,
+                                            title: "Ülke Seçim",
+                                            onChanged:
+                                                (selectedIndex, selectedValue) {
+                                              if (selectedIndex == -1) {
+                                                return;
+                                              }
+                                              provinceSelectStatus = false;
+                                              province = "İl Seçim";
+                                              country = selectedValue;
+                                              countryIndex = selectedIndex;
+
+                                              int countryID = ARMOYU
+                                                  .countryList[selectedIndex]
+                                                  .countryID;
+
+                                              searchTimer?.cancel();
+                                              searchTimer = Timer(
+                                                  const Duration(
+                                                      milliseconds: 1000),
+                                                  () async {
+                                                await fetchProvince(
+                                                  countryID,
+                                                  selectedIndex,
+                                                  setstatefunction,
+                                                );
+                                              });
+                                            },
+                                            setstatefunction: setstatefunction,
+                                            list:
+                                                ARMOYU.countryList.map((item) {
+                                              return {
+                                                item.countryID:
+                                                    item.name.toString(),
+                                              };
+                                            }).toList(),
+                                          );
+                                        },
+                                        loadingStatus: false,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: CustomButtons.costum1(
+                                        text: province,
+                                        enabled: provinceSelectStatus,
+                                        onPressed: () {
+                                          WidgetUtility.cupertinoselector(
+                                            context: context,
+                                            title: "İl Seçim",
+                                            onChanged:
+                                                (selectedIndex, selectedValue) {
+                                              provinceIndex = selectedIndex;
+                                              province = selectedValue;
+                                            },
+                                            setstatefunction: setstatefunction,
+                                            list: ARMOYU
+                                                .countryList[countryIndex!]
+                                                .provinceList!
+                                                .map((item) {
+                                              return {
+                                                item.provinceID:
+                                                    item.name.toString(),
+                                              };
+                                            }).toList(),
+                                          );
+                                        },
+                                        loadingStatus: false,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: CustomText.costum1(
+                                  "Doğum Tarihi",
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child: CustomButtons.costum1(
+                                  text: birthday.text,
+                                  onPressed: () {
+                                    WidgetUtility.cupertinoDatePicker(
+                                      context: context,
+                                      onChanged: (selectedValue) {
+                                        birthday.text = selectedValue;
+                                      },
+                                      setstatefunction: setstatefunction,
+                                    );
+                                  },
+                                  loadingStatus: false,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: CustomText.costum1(
+                                  "Cep Telefon",
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child:
+                                    CustomTextfields(setstate: setstatefunction)
+                                        .number(
+                                  placeholder: "(XXX) XXX XX XX",
+                                  controller: phoneNumber,
+                                  icon: const Icon(Icons.phone),
+                                  category: "phoneNumber",
+                                  length: 10,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 100,
+                                child: CustomText.costum1(
+                                  "Parola Kontrolü",
+                                  weight: FontWeight.bold,
+                                ),
+                              ),
+                              Expanded(
+                                child:
+                                    CustomTextfields(setstate: setstatefunction)
+                                        .costum3(
+                                  controller: passwordControl,
+                                  isPassword: true,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: CustomButtons.costum1(
-                              text: "text",
-                              onPressed: () {
-                                WidgetUtility.cupertinoDatePicker(
-                                  context: context,
-                                  onChanged: (p0) {},
-                                  setstatefunction: setstatefunction,
-                                );
-                              },
-                              loadingStatus: false),
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          child: CustomText.costum1(
-                            "Cep Telefon",
-                            weight: FontWeight.bold,
+                            text: "Güncelle",
+                            onPressed: () async {
+                              String cleanedphoneNumber = phoneNumber.text
+                                  .replaceAll(RegExp(r'[()\s]'), '');
+
+                              List<String> words = birthday.text.split(".");
+                              if (words.isEmpty) {
+                                return;
+                              }
+                              String newDate =
+                                  "${words[2]}-${words[1]}-${words[0]}";
+
+                              String countryID = "";
+                              countryID = ARMOYU
+                                  .countryList[countryIndex!].countryID
+                                  .toString();
+
+                              String provinceID = "";
+                              if (ARMOYU.countryList[countryIndex!]
+                                      .provinceList !=
+                                  null) {
+                                provinceID = ARMOYU.countryList[countryIndex!]
+                                    .provinceList![provinceIndex!].provinceID
+                                    .toString();
+                              }
+
+                              log(firstName.text);
+                              log(lastName.text);
+                              log(email.text);
+                              log(countryID.toString());
+                              log(provinceID.toString());
+                              log(newDate);
+                              log(cleanedphoneNumber);
+                              log(passwordControl.text);
+
+                              if (profileeditProcess) {
+                                return;
+                              }
+                              profileeditProcess = true;
+                              setstatefunction();
+
+                              FunctionsProfile f = FunctionsProfile();
+                              Map<String, dynamic> response =
+                                  await f.saveprofiledetails(
+                                firstname: firstName.text,
+                                lastname: lastName.text,
+                                email: email.text,
+                                countryID: countryID.toString(),
+                                provinceID: provinceID.toString(),
+                                birthday: newDate,
+                                phoneNumber: cleanedphoneNumber,
+                                passwordControl: passwordControl.text,
+                              );
+
+                              profileeditProcess = false;
+                              setstatefunction();
+                              if (response["durum"] == 0) {
+                                log(response["aciklama"]);
+                                ARMOYUWidget.toastNotification(
+                                    response["aciklama"].toString());
+                                return;
+                              }
+                              log(response["aciklama"]);
+
+                              ARMOYUWidget.toastNotification(
+                                  response["aciklama"].toString());
+                            },
+                            loadingStatus: profileeditProcess,
                           ),
                         ),
-                        Expanded(
-                          child: CustomTextfields(setstate: setstatefunction)
-                              .costum3(
-                            placeholder: ARMOYU.appUser.userID.toString(),
-                            controller: TextEditingController(),
-                          ),
-                        )
                       ],
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CustomButtons.costum1(
-                      text: "Güncelle",
-                      onPressed: () {},
-                      loadingStatus: false,
-                    ),
-                  ),
-                ],
+                    const SizedBox(height: 50),
+                  ],
+                ),
               ),
-              const SizedBox(height: 50),
-            ],
+            ),
           ),
         );
       },

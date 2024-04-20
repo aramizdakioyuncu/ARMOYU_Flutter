@@ -109,6 +109,7 @@ class _PagesState extends State<Pages> {
         backgroundColor: Colors.black,
         body: PageView(
           controller: pageController,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             MainPage(changePage: changePage),
             ChatPage(changePage: changePage),

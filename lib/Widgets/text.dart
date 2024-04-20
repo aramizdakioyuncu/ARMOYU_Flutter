@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -28,9 +27,9 @@ class CustomText {
     );
   }
 
-  static RichText usercomments(BuildContext context,
+  static Widget usercomments(BuildContext context,
       {required String text, required User user}) {
-    final textSpans = <TextSpan>[];
+    final textSpans = <InlineSpan>[];
     textSpans.add(
       TextSpan(
         children: [
@@ -42,16 +41,13 @@ class CustomText {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                // Burada # işaretine tıklandığında yapılacak işlemi ekleyin
-                log('Tapped on : "${user.displayName}"');
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfilePage(
                       scrollController: ScrollController(),
                       appbar: true,
-                      username: user.displayName,
+                      username: user.userName,
                     ),
                   ),
                 );
@@ -70,6 +66,34 @@ class CustomText {
       ),
     );
 
-    return RichText(text: TextSpan(children: textSpans));
+    textSpans.insert(0, const WidgetSpan(child: SizedBox(width: 5)));
+    textSpans.insert(
+      0,
+      WidgetSpan(
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfilePage(
+                  scrollController: ScrollController(),
+                  appbar: true,
+                  username: user.userName,
+                ),
+              ),
+            );
+          },
+          child: CircleAvatar(
+            foregroundImage: CachedNetworkImageProvider(
+              user.avatar!.mediaURL.minURL,
+            ),
+            radius: 8,
+          ),
+        ),
+      ),
+    );
+    return RichText(
+      text: TextSpan(children: textSpans),
+    );
   }
 }

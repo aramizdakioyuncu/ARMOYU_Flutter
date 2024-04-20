@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Models/team.dart';
-import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Functions/functions.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
@@ -49,57 +47,9 @@ class FunctionService {
         response["aciklamadetay"]["projegizliliksozlesmesi"];
 
     Map<String, dynamic> oyuncubilgi = response["icerik"];
-    ARMOYU.appUser = User(
-        userID: oyuncubilgi["oyuncuID"],
-        userName: oyuncubilgi["kullaniciadi"],
-        password: password,
-        firstName: oyuncubilgi["adi"],
-        lastName: oyuncubilgi["soyadi"],
-        displayName: oyuncubilgi["adim"],
-        userMail: oyuncubilgi["eposta"],
-        aboutme: oyuncubilgi["hakkimda"],
-        avatar: Media(
-          mediaID: oyuncubilgi["presimID"],
-          ownerID: oyuncubilgi["oyuncuID"],
-          mediaURL: MediaURL(
-            bigURL: oyuncubilgi["presim"],
-            normalURL: oyuncubilgi["presimufak"],
-            minURL: oyuncubilgi["presimminnak"],
-          ),
-        ),
-        banner: Media(
-          mediaID: oyuncubilgi["parkaresimID"],
-          ownerID: oyuncubilgi["oyuncuID"],
-          mediaURL: MediaURL(
-            bigURL: oyuncubilgi["parkaresim"],
-            normalURL: oyuncubilgi["parkaresimufak"],
-            minURL: oyuncubilgi["parkaresimminnak"],
-          ),
-        ),
-        burc: oyuncubilgi["burc"],
-        invitecode: oyuncubilgi["davetkodu"],
-        lastlogin: oyuncubilgi["songiris"],
-        lastloginv2: oyuncubilgi["songirisv2"],
-        lastfaillogin: oyuncubilgi["sonhataligiris"],
-        job: oyuncubilgi["isyeriadi"],
-        level: oyuncubilgi["seviye"],
-        levelColor: oyuncubilgi["seviyerenk"],
-        xp: oyuncubilgi["seviyexp"],
-        awardsCount: oyuncubilgi["oduller"],
-        postsCount: oyuncubilgi["gonderiler"],
-        friendsCount: oyuncubilgi["arkadaslar"],
-        country: oyuncubilgi["ulkesi"],
-        province: oyuncubilgi["ili"],
-        registerDate: oyuncubilgi["kayittarihikisa"],
-        role: oyuncubilgi["yetkisiacikla"],
-        rolecolor: oyuncubilgi["yetkirenk"],
-        favTeam: oyuncubilgi["favoritakim"] != null
-            ? Team(
-                teamID: oyuncubilgi["favoritakim"]["takim_ID"],
-                name: oyuncubilgi["favoritakim"]["takim_adi"],
-                logo: oyuncubilgi["favoritakim"]["takim_logo"],
-              )
-            : null);
+
+    ARMOYU.appUser = ARMOYUFunctions.userfetch(oyuncubilgi);
+    ARMOYU.appUser.password = password;
 
     final prefs = await SharedPreferences.getInstance();
 

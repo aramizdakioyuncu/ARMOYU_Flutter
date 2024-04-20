@@ -6,7 +6,10 @@ import 'package:ARMOYU/Functions/API_Functions/search.dart';
 import 'package:ARMOYU/Widgets/Mention/mention.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
+import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 
 class CustomTextfields {
   Timer? searchTimer;
@@ -38,6 +41,7 @@ class CustomTextfields {
     if (title != null) {
       placeholder = title;
     }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -235,21 +239,27 @@ class CustomTextfields {
     );
   }
 
-  static TextField number(
-    String text, {
+  TextField number({
+    String? placeholder,
     required TextEditingController controller,
     required int length,
     required Icon icon,
+    String? category,
   }) {
+    List<TextInputFormatter>? formatter;
+    if (category.toString() == "phoneNumber") {
+      length = 15;
+      formatter = [MaskedInputFormatter('(###) ### ## ##')];
+    }
+
     return TextField(
       controller: controller,
       keyboardType: TextInputType.number,
       maxLength: length,
       textInputAction: TextInputAction.next,
       autofillHints: const [AutofillHints.username],
-      style: const TextStyle(
-        color: Colors.white,
-      ),
+      style: const TextStyle(color: Colors.white),
+      inputFormatters: formatter,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8.0),
         counterText: "", //Limiti gizler
@@ -259,7 +269,7 @@ class CustomTextfields {
         ),
         prefixIcon: icon,
         prefixIconColor: Colors.white,
-        hintText: text,
+        hintText: placeholder,
         hintStyle: const TextStyle(
           color: Colors.white,
         ),

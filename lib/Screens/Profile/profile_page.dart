@@ -1,8 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
@@ -10,7 +9,6 @@ import 'package:ARMOYU/Models/Social/comment.dart';
 import 'package:ARMOYU/Models/Social/like.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
-import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
 
 import 'package:ARMOYU/Screens/Profile/friendlist_page.dart';
@@ -22,7 +20,6 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
@@ -57,11 +54,8 @@ class _ProfilePageState extends State<ProfilePage>
   bool get wantKeepAlive => true;
 
   User userProfile = User();
-
   bool isFriend = false;
-
   bool isbeFriend = false;
-
   List<String> listFriendTOP3 = [];
   String friendTextLine = "";
 
@@ -88,7 +82,6 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     super.initState();
     test();
-
     tabController = TabController(initialIndex: 0, length: 3, vsync: this);
   }
 
@@ -104,6 +97,22 @@ class _ProfilePageState extends State<ProfilePage>
     }
   }
 
+  Future<void> userblockingfunction() async {
+    if (mounted) {
+      Navigator.pop(context);
+    }
+
+    FunctionsBlocking f = FunctionsBlocking();
+    Map<String, dynamic> response = await f.add(userProfile.userID!);
+
+    ARMOYUWidget.toastNotification(response["aciklama"]);
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      return;
+    }
+  }
+
   List<Widget> widgetPosts = [];
   List<Widget> widgetTaggedPosts = [];
   List<Media> medialist = [];
@@ -113,31 +122,23 @@ class _ProfilePageState extends State<ProfilePage>
     if (postsfetchproccess) {
       return;
     }
-    if (mounted) {
-      setState(() {
-        postsfetchproccess = true;
-      });
-    }
+    postsfetchproccess = true;
+    setstatefunction();
     FunctionService f = FunctionService();
     Map<String, dynamic> response =
         await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      if (mounted) {
-        setState(() {
-          postsfetchproccess = false;
-        });
-      }
 
+      postsfetchproccess = false;
+      setstatefunction();
       return;
     }
 
     if (response["icerik"].length == 0) {
-      if (mounted) {
-        setState(() {
-          postsfetchproccess = false;
-        });
-      }
+      postsfetchproccess = false;
+
+      setstatefunction();
       return;
     }
 
@@ -155,8 +156,8 @@ class _ProfilePageState extends State<ProfilePage>
               mediaType: mediaInfo["paylasimkategori"],
               mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                bigURL: mediaInfo["fotoufakurl"],
-                normalURL: mediaInfo["fotominnakurl"],
+                bigURL: mediaInfo["fotourl"],
+                normalURL: mediaInfo["fotoufakurl"],
                 minURL: mediaInfo["fotominnakurl"],
               ),
             ),
@@ -208,86 +209,68 @@ class _ProfilePageState extends State<ProfilePage>
         );
       }
 
-      if (mounted) {
-        bool ismelike = false;
-        if (response["icerik"][i]["benbegendim"] == 1) {
-          ismelike = true;
-        } else {
-          ismelike = false;
-        }
-        bool ismecomment = false;
-
-        if (response["icerik"][i]["benyorumladim"] == 1) {
-          ismecomment = true;
-        } else {
-          ismecomment = false;
-        }
-        if (mounted) {
-          setState(() {
-            Post post = Post(
-              postID: response["icerik"][i]["paylasimID"],
-              content: response["icerik"][i]["paylasimicerik"],
-              postDate: response["icerik"][i]["paylasimzamangecen"],
-              sharedDevice: response["icerik"][i]["paylasimnereden"],
-              likesCount: response["icerik"][i]["begenisay"],
-              isLikeme: ismelike,
-              commentsCount: response["icerik"][i]["yorumsay"],
-              iscommentMe: ismecomment,
-              media: media,
-              owner: User(
-                userID: response["icerik"][i]["sahipID"],
-                userName: response["icerik"][i]["sahipad"],
-                avatar: Media(
-                  mediaID: response["icerik"][i]["sahipID"],
-                  mediaURL: MediaURL(
-                    bigURL: response["icerik"][i]["sahipavatarminnak"],
-                    normalURL: response["icerik"][i]["sahipavatarminnak"],
-                    minURL: response["icerik"][i]["sahipavatarminnak"],
-                  ),
-                ),
-              ),
-              firstthreecomment: comments,
-              firstthreelike: likers,
-            );
-
-            list.add(
-              TwitterPostWidget(
-                post: post,
-              ),
-            );
-          });
-        }
+      bool ismelike = false;
+      if (response["icerik"][i]["benbegendim"] == 1) {
+        ismelike = true;
+      } else {
+        ismelike = false;
       }
+      bool ismecomment = false;
+
+      if (response["icerik"][i]["benyorumladim"] == 1) {
+        ismecomment = true;
+      } else {
+        ismecomment = false;
+      }
+      Post post = Post(
+          postID: response["icerik"][i]["paylasimID"],
+          content: response["icerik"][i]["paylasimicerik"],
+          postDate: response["icerik"][i]["paylasimzamangecen"],
+          sharedDevice: response["icerik"][i]["paylasimnereden"],
+          likesCount: response["icerik"][i]["begenisay"],
+          isLikeme: ismelike,
+          commentsCount: response["icerik"][i]["yorumsay"],
+          iscommentMe: ismecomment,
+          media: media,
+          owner: User(
+            userID: response["icerik"][i]["sahipID"],
+            userName: response["icerik"][i]["sahipad"],
+            avatar: Media(
+              mediaID: response["icerik"][i]["sahipID"],
+              mediaURL: MediaURL(
+                bigURL: response["icerik"][i]["sahipavatarminnak"],
+                normalURL: response["icerik"][i]["sahipavatarminnak"],
+                minURL: response["icerik"][i]["sahipavatarminnak"],
+              ),
+            ),
+          ),
+          firstthreecomment: comments,
+          firstthreelike: likers,
+          location: response["icerik"][i]["paylasimkonum"]);
+
+      list.add(TwitterPostWidget(post: post));
+
+      setstatefunction();
     }
-    if (mounted) {
-      setState(() {
-        postscounter++;
-        postsfetchproccess = false;
-      });
-    }
+    postscounter++;
+    postsfetchproccess = false;
+    setstatefunction();
   }
 
   gallery(int page, int userID) async {
-    if (mounted) {
-      setState(() {
-        firstgalleryfetcher = true;
-      });
-    }
+    firstgalleryfetcher = true;
+    setstatefunction();
+
     if (galleryproccess) {
       return;
     }
-    if (mounted) {
-      setState(() {
-        galleryproccess = true;
-      });
-    }
+
+    galleryproccess = true;
+    setstatefunction();
 
     if (page == 1) {
-      if (mounted) {
-        setState(() {
-          medialist.clear();
-        });
-      }
+      medialist.clear();
+      setstatefunction();
     }
 
     FunctionsMedia f = FunctionsMedia();
@@ -300,41 +283,33 @@ class _ProfilePageState extends State<ProfilePage>
 
     if (response["icerik"].length == 0) {
       log("Sayfa Sonu");
-      if (mounted) {
-        setState(() {
-          galleryproccess = false;
-        });
-      }
+
+      galleryproccess = false;
+      setstatefunction();
       return;
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      if (mounted) {
-        setState(() {
-          medialist.add(
-            Media(
-              mediaID: response["icerik"][i]["media_ID"],
-              ownerID: response["icerik"][i]["media_ownerID"],
-              ownerusername: response["icerik"][i]["media_ownerusername"],
-              owneravatar: response["icerik"][i]["media_owneravatar"],
-              mediaTime: response["icerik"][i]["media_time"],
-              mediaType: response["icerik"][i]["fotodosyatipi"],
-              mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["fotoorijinalurl"],
-                normalURL: response["icerik"][i]["fotoufaklikurl"],
-                minURL: response["icerik"][i]["fotominnakurl"],
-              ),
-            ),
-          );
-        });
-      }
+      medialist.add(
+        Media(
+          mediaID: response["icerik"][i]["media_ID"],
+          ownerID: response["icerik"][i]["media_ownerID"],
+          ownerusername: response["icerik"][i]["media_ownerusername"],
+          owneravatar: response["icerik"][i]["media_owneravatar"],
+          mediaTime: response["icerik"][i]["media_time"],
+          mediaType: response["icerik"][i]["fotodosyatipi"],
+          mediaURL: MediaURL(
+            bigURL: response["icerik"][i]["fotoorijinalurl"],
+            normalURL: response["icerik"][i]["fotoufaklikurl"],
+            minURL: response["icerik"][i]["fotominnakurl"],
+          ),
+        ),
+      );
+      setstatefunction();
     }
-    if (mounted) {
-      setState(() {
-        galleryproccess = false;
-        gallerycounter++;
-      });
-    }
+    galleryproccess = false;
+    gallerycounter++;
+    setstatefunction();
   }
 
   profileloadtaggedPosts(
@@ -342,31 +317,24 @@ class _ProfilePageState extends State<ProfilePage>
     if (postsfetchProccessv2) {
       return;
     }
-    if (mounted) {
-      setState(() {
-        postsfetchProccessv2 = true;
-      });
-    }
+
+    postsfetchProccessv2 = true;
+    setstatefunction();
+
     FunctionService f = FunctionService();
     Map<String, dynamic> response =
         await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      if (mounted) {
-        setState(() {
-          postsfetchProccessv2 = false;
-        });
-      }
+
+      postsfetchProccessv2 = false;
+      setstatefunction();
       return;
     }
 
     if (response["icerik"].length == 0) {
-      if (mounted) {
-        setState(() {
-          postsfetchProccessv2 = false;
-        });
-      }
-
+      postsfetchProccessv2 = false;
+      setstatefunction();
       return;
     }
 
@@ -436,62 +404,56 @@ class _ProfilePageState extends State<ProfilePage>
               date: firstthreecomment["yorumcuzamangecen"]),
         );
       }
-      if (mounted) {
-        bool ismelike = false;
-        if (response["icerik"][i]["benbegendim"] == 1) {
-          ismelike = true;
-        } else {
-          ismelike = false;
-        }
-        bool ismecomment = false;
-
-        if (response["icerik"][i]["benyorumladim"] == 1) {
-          ismecomment = true;
-        } else {
-          ismecomment = false;
-        }
-        if (mounted) {
-          setState(() {
-            Post post = Post(
-                postID: response["icerik"][i]["paylasimID"],
-                content: response["icerik"][i]["paylasimicerik"],
-                postDate: response["icerik"][i]["paylasimzamangecen"],
-                sharedDevice: response["icerik"][i]["paylasimnereden"],
-                likesCount: response["icerik"][i]["begenisay"],
-                isLikeme: ismelike,
-                commentsCount: response["icerik"][i]["yorumsay"],
-                iscommentMe: ismecomment,
-                media: media,
-                owner: User(
-                  userID: response["icerik"][i]["sahipID"],
-                  userName: response["icerik"][i]["sahipad"],
-                  avatar: Media(
-                    mediaID: response["icerik"][i]["sahipID"],
-                    mediaURL: MediaURL(
-                      bigURL: response["icerik"][i]["sahipavatarminnak"],
-                      normalURL: response["icerik"][i]["sahipavatarminnak"],
-                      minURL: response["icerik"][i]["sahipavatarminnak"],
-                    ),
-                  ),
-                ),
-                firstthreecomment: comments,
-                firstthreelike: likers);
-
-            list.add(
-              TwitterPostWidget(
-                post: post,
-              ),
-            );
-          });
-        }
+      bool ismelike = false;
+      if (response["icerik"][i]["benbegendim"] == 1) {
+        ismelike = true;
+      } else {
+        ismelike = false;
       }
+      bool ismecomment = false;
+
+      if (response["icerik"][i]["benyorumladim"] == 1) {
+        ismecomment = true;
+      } else {
+        ismecomment = false;
+      }
+      Post post = Post(
+        postID: response["icerik"][i]["paylasimID"],
+        content: response["icerik"][i]["paylasimicerik"],
+        postDate: response["icerik"][i]["paylasimzamangecen"],
+        sharedDevice: response["icerik"][i]["paylasimnereden"],
+        likesCount: response["icerik"][i]["begenisay"],
+        isLikeme: ismelike,
+        commentsCount: response["icerik"][i]["yorumsay"],
+        iscommentMe: ismecomment,
+        media: media,
+        owner: User(
+          userID: response["icerik"][i]["sahipID"],
+          userName: response["icerik"][i]["sahipad"],
+          avatar: Media(
+            mediaID: response["icerik"][i]["sahipID"],
+            mediaURL: MediaURL(
+              bigURL: response["icerik"][i]["sahipavatarminnak"],
+              normalURL: response["icerik"][i]["sahipavatarminnak"],
+              minURL: response["icerik"][i]["sahipavatarminnak"],
+            ),
+          ),
+        ),
+        firstthreecomment: comments,
+        firstthreelike: likers,
+        location: response["icerik"][i]["paylasimkonum"],
+      );
+
+      list.add(
+        TwitterPostWidget(
+          post: post,
+        ),
+      );
+      setstatefunction();
     }
-    if (mounted) {
-      setState(() {
-        postscounterv2++;
-        postsfetchProccessv2 = false;
-      });
-    }
+    postscounterv2++;
+    postsfetchProccessv2 = false;
+    setstatefunction();
   }
 
   Future<void> test() async {
@@ -515,54 +477,7 @@ class _ProfilePageState extends State<ProfilePage>
         //Kullanıcı adında birisi var
         Map<String, dynamic> oyuncubilgi = response["icerik"];
 
-        userProfile.userID = oyuncubilgi["oyuncuID"];
-        userProfile.userName = oyuncubilgi["kullaniciadi"];
-        userProfile.displayName = oyuncubilgi["adim"];
-        userProfile.lastlogin = oyuncubilgi["songiris"];
-        userProfile.lastloginv2 = oyuncubilgi["songirisv2"];
-        userProfile.banner = Media(
-          mediaID: oyuncubilgi["parkaresimID"],
-          mediaURL: MediaURL(
-            bigURL: oyuncubilgi["parkaresimminnak"],
-            normalURL: oyuncubilgi["parkaresimminnak"],
-            minURL: oyuncubilgi["parkaresimminnak"],
-          ),
-        );
-        userProfile.avatar = Media(
-          mediaID: oyuncubilgi["presimID"],
-          mediaURL: MediaURL(
-            bigURL: oyuncubilgi["presimminnak"],
-            normalURL: oyuncubilgi["presimminnak"],
-            minURL: oyuncubilgi["presimminnak"],
-          ),
-        );
-
-        userProfile.level = oyuncubilgi["seviye"];
-        userProfile.levelColor = oyuncubilgi["seviyerenk"];
-        userProfile.xp = oyuncubilgi["seviyexp"];
-        userProfile.friendsCount = oyuncubilgi["arkadaslar"];
-        userProfile.postsCount = oyuncubilgi["gonderiler"];
-        userProfile.awardsCount = oyuncubilgi["oduller"];
-
-        userProfile.country = oyuncubilgi["ulkesi"];
-        userProfile.province = oyuncubilgi["ili"];
-        userProfile.registerDate = oyuncubilgi["kayittarihikisa"];
-
-        userProfile.burc = oyuncubilgi["burc"];
-
-        if (oyuncubilgi["favoritakim"] != null) {
-          userProfile.favTeam = Team(
-            teamID: oyuncubilgi["favoritakim"]["takim_ID"],
-            name: oyuncubilgi["favoritakim"]["takim_adi"],
-            logo: oyuncubilgi["favoritakim"]["takim_logo"],
-          );
-        }
-
-        userProfile.job = oyuncubilgi["isyeriadi"];
-
-        userProfile.role = oyuncubilgi["yetkisiacikla"];
-        userProfile.rolecolor = oyuncubilgi["yetkirenk"];
-        userProfile.aboutme = oyuncubilgi["hakkimda"];
+        userProfile = ARMOYUFunctions.userfetch(oyuncubilgi);
 
         if (oyuncubilgi["arkadasdurum"] == "1") {
           isFriend = true;
@@ -576,26 +491,23 @@ class _ProfilePageState extends State<ProfilePage>
         }
         listFriendTOP3.clear();
         for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
-          if (mounted) {
-            setState(() {
-              if (i < 2) {
-                if (i == 0) {
-                  friendTextLine +=
-                      "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
-                } else {
-                  if (oyuncubilgi["ortakarkadasliste"].length == 2) {
-                    friendTextLine +=
-                        "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
-                  } else {
-                    friendTextLine +=
-                        ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
-                  }
-                }
+          if (i < 2) {
+            if (i == 0) {
+              friendTextLine +=
+                  "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+            } else {
+              if (oyuncubilgi["ortakarkadasliste"].length == 2) {
+                friendTextLine +=
+                    "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+              } else {
+                friendTextLine +=
+                    ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
               }
-              listFriendTOP3.add(
-                  oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
-            });
+            }
           }
+          listFriendTOP3
+              .add(oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
+          setstatefunction();
         }
 
         if (oyuncubilgi["ortakarkadasliste"].length > 2) {
@@ -618,57 +530,7 @@ class _ProfilePageState extends State<ProfilePage>
 
         Map<String, dynamic> oyuncubilgi = response["icerik"];
 
-        userProfile.userID = oyuncubilgi["oyuncuID"];
-        userProfile.userName = oyuncubilgi["kullaniciadi"];
-        userProfile.displayName = oyuncubilgi["adim"];
-        userProfile.lastlogin = oyuncubilgi["songiris"];
-        userProfile.lastloginv2 = oyuncubilgi["songirisv2"];
-
-        userProfile.banner = Media(
-          mediaID: oyuncubilgi["parkaresimID"],
-          mediaURL: MediaURL(
-            bigURL: oyuncubilgi["parkaresimminnak"],
-            normalURL: oyuncubilgi["parkaresimminnak"],
-            minURL: oyuncubilgi["parkaresimminnak"],
-          ),
-        );
-        userProfile.avatar = Media(
-          mediaID: oyuncubilgi["presimID"],
-          mediaURL: MediaURL(
-            bigURL: oyuncubilgi["presimminnak"],
-            normalURL: oyuncubilgi["presimminnak"],
-            minURL: oyuncubilgi["presimminnak"],
-          ),
-        );
-
-        userProfile.level = oyuncubilgi["seviye"];
-        userProfile.levelColor = oyuncubilgi["seviyerenk"];
-
-        userProfile.xp = oyuncubilgi["seviyexp"];
-
-        userProfile.friendsCount = oyuncubilgi["arkadaslar"];
-        userProfile.postsCount = oyuncubilgi["gonderiler"];
-        userProfile.awardsCount = oyuncubilgi["oduller"];
-
-        userProfile.country = oyuncubilgi["ulkesi"];
-        userProfile.province = oyuncubilgi["ili"];
-        userProfile.registerDate = oyuncubilgi["kayittarihikisa"];
-
-        userProfile.burc = oyuncubilgi["burc"];
-
-        if (oyuncubilgi["favoritakim"] != null) {
-          userProfile.favTeam = Team(
-            teamID: oyuncubilgi["favoritakim"]["takim_ID"],
-            name: oyuncubilgi["favoritakim"]["takim_adi"],
-            logo: oyuncubilgi["favoritakim"]["takim_logo"],
-          );
-        }
-
-        userProfile.job = oyuncubilgi["isyeriadi"];
-
-        userProfile.role = oyuncubilgi["yetkisiacikla"];
-        userProfile.rolecolor = oyuncubilgi["yetkirenk"];
-        userProfile.aboutme = oyuncubilgi["hakkimda"];
+        userProfile = ARMOYUFunctions.userfetch(oyuncubilgi);
 
         if (oyuncubilgi["arkadasdurum"] == "1") {
           isFriend = true;
@@ -683,26 +545,23 @@ class _ProfilePageState extends State<ProfilePage>
 
         listFriendTOP3.clear();
         for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
-          if (mounted) {
-            setState(() {
-              if (i < 2) {
-                if (i == 0) {
-                  friendTextLine +=
-                      "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
-                } else {
-                  if (oyuncubilgi["ortakarkadasliste"].length == 2) {
-                    friendTextLine +=
-                        "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]}";
-                  } else {
-                    friendTextLine +=
-                        ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
-                  }
-                }
+          if (i < 2) {
+            if (i == 0) {
+              friendTextLine +=
+                  "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+            } else {
+              if (oyuncubilgi["ortakarkadasliste"].length == 2) {
+                friendTextLine +=
+                    "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]}";
+              } else {
+                friendTextLine +=
+                    ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
               }
-              listFriendTOP3.add(
-                  oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
-            });
+            }
           }
+          listFriendTOP3
+              .add(oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
+          setstatefunction();
         }
 
         if (oyuncubilgi["ortakarkadasliste"].length > 2) {
@@ -739,30 +598,21 @@ class _ProfilePageState extends State<ProfilePage>
     if (firstFetchPosts) {
       await profileloadPosts(
           postscounter, userProfile.userID!, widgetPosts, "");
-      if (mounted) {
-        setState(() {
-          firstFetchPosts = false;
-        });
-      }
+      firstFetchPosts = false;
+      setstatefunction();
     }
     if (firstFetchGallery) {
       await gallery(gallerycounter, userProfile.userID!);
 
-      if (mounted) {
-        setState(() {
-          firstFetchGallery = false;
-        });
-      }
+      firstFetchGallery = false;
+      setstatefunction();
     }
 
     if (firstFetchTaggedPost) {
       await profileloadtaggedPosts(postscounterv2, userProfile.userID!,
           widgetTaggedPosts, "etiketlenmis");
-      if (mounted) {
-        setState(() {
-          firstFetchTaggedPost = false;
-        });
-      }
+      firstFetchTaggedPost = false;
+      setstatefunction();
     }
   }
 
@@ -784,20 +634,17 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
 
-    if (mounted) {
-      setState(() {
-        ARMOYU.appUser.avatar = Media(
-          mediaID: 1000000,
-          mediaURL: MediaURL(
-            bigURL: response["aciklamadetay"].toString(),
-            normalURL: response["aciklamadetay"].toString(),
-            minURL: response["aciklamadetay"].toString(),
-          ),
-        );
+    ARMOYU.appUser.avatar = Media(
+      mediaID: 1000000,
+      mediaURL: MediaURL(
+        bigURL: response["aciklamadetay"].toString(),
+        normalURL: response["aciklamadetay"].toString(),
+        minURL: response["aciklamadetay"].toString(),
+      ),
+    );
 
-        _handleRefresh();
-      });
-    }
+    setstatefunction();
+    _handleRefresh();
   }
 
   Future<void> changebanner() async {
@@ -813,19 +660,16 @@ class _ProfilePageState extends State<ProfilePage>
       log(response["aciklama"]);
       return;
     }
-    if (mounted) {
-      setState(() {
-        ARMOYU.appUser.banner = Media(
-          mediaID: 1000000,
-          mediaURL: MediaURL(
-            bigURL: response["aciklamadetay"].toString(),
-            normalURL: response["aciklamadetay"].toString(),
-            minURL: response["aciklamadetay"].toString(),
-          ),
-        );
-        _handleRefresh();
-      });
-    }
+    ARMOYU.appUser.banner = Media(
+      mediaID: 1000000,
+      mediaURL: MediaURL(
+        bigURL: response["aciklamadetay"].toString(),
+        normalURL: response["aciklamadetay"].toString(),
+        minURL: response["aciklamadetay"].toString(),
+      ),
+    );
+    _handleRefresh();
+    setstatefunction();
   }
 
   Future<void> friendrequest() async {
@@ -950,7 +794,9 @@ class _ProfilePageState extends State<ProfilePage>
                                             onTap: () {
                                               Navigator.pop(context);
                                               ARMOYUFunctions.profileEdit(
-                                                  context, setstatefunction);
+                                                context,
+                                                setstatefunction,
+                                              );
                                             },
                                             child: const ListTile(
                                               leading: Icon(Icons.edit),
@@ -974,24 +820,7 @@ class _ProfilePageState extends State<ProfilePage>
                                           visible: userProfile.userID !=
                                               ARMOYU.appUser.userID,
                                           child: InkWell(
-                                            onTap: () async {
-                                              FunctionsBlocking f =
-                                                  FunctionsBlocking();
-                                              Map<String, dynamic> response =
-                                                  await f
-                                                      .add(userProfile.userID!);
-                                              if (response["durum"] == 0) {
-                                                log(response["aciklama"]);
-                                                return;
-                                              }
-                                              try {
-                                                if (mounted) {
-                                                  Navigator.pop(context);
-                                                }
-                                              } catch (e) {
-                                                log(e.toString());
-                                              }
-                                            },
+                                            onTap: () => userblockingfunction(),
                                             child: const ListTile(
                                               textColor: Colors.red,
                                               leading: Icon(
@@ -1510,10 +1339,10 @@ class _ProfilePageState extends State<ProfilePage>
                                 style: SkeletonLineStyle(width: 20),
                               )
                             : Text(
-                                userProfile.role!,
+                                userProfile.role!.name,
                                 style: TextStyle(
                                   color: Color(
-                                    int.parse("0xFF${userProfile.rolecolor}"),
+                                    int.parse("0xFF${userProfile.role!.color}"),
                                   ),
                                 ),
                               ),
@@ -1576,8 +1405,18 @@ class _ProfilePageState extends State<ProfilePage>
                               ? const SkeletonLine(
                                   style: SkeletonLineStyle(width: 100),
                                 )
-                              : CustomText.costum1(
-                                  "${userProfile.country}, ${userProfile.province}",
+                              : Row(
+                                  children: [
+                                    CustomText.costum1(
+                                      "${userProfile.country?.name}",
+                                    ),
+                                    const SizedBox(width: 5),
+                                    userProfile.province == null
+                                        ? Container()
+                                        : CustomText.costum1(
+                                            "${userProfile.province?.name}",
+                                          ),
+                                  ],
                                 ),
                         ],
                       ),
@@ -1597,7 +1436,7 @@ class _ProfilePageState extends State<ProfilePage>
                               ? const SkeletonLine(
                                   style: SkeletonLineStyle(width: 100),
                                 )
-                              : CustomText.costum1(userProfile.job!),
+                              : CustomText.costum1(userProfile.job!.name),
                         ],
                       ),
                     ),
@@ -1809,28 +1648,11 @@ class _ProfilePageState extends State<ProfilePage>
                                   mainAxisSpacing: 4.0, // Dikeyde boşluk
                                 ),
                                 itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => MediaViewer(
-                                            media: medialist,
-                                            initialIndex: index,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          medialist[index].mediaURL.minURL,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          const CupertinoActivityIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
-                                  );
+                                  return medialist[index].mediaGallery(
+                                      context: context,
+                                      index: index,
+                                      medialist: medialist,
+                                      setstatefunction: setstatefunction);
                                 },
                               ),
                             ),

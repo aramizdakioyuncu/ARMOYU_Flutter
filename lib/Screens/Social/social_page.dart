@@ -214,8 +214,8 @@ class _SocialPageState extends State<SocialPage>
               mediaType: mediaInfo["paylasimkategori"],
               mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                bigURL: mediaInfo["fotoufakurl"],
-                normalURL: mediaInfo["fotominnakurl"],
+                bigURL: mediaInfo["fotourl"],
+                normalURL: mediaInfo["fotoufakurl"],
                 minURL: mediaInfo["fotominnakurl"],
               ),
             ),
@@ -307,6 +307,7 @@ class _SocialPageState extends State<SocialPage>
             ),
             firstthreecomment: comments,
             firstthreelike: likers,
+            location: response["icerik"][i]["paylasimkonum"],
           );
           widgetPosts.add(
             TwitterPostWidget(post: post),
@@ -400,9 +401,11 @@ class _SocialPageState extends State<SocialPage>
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const PostSharePage(),
-          ));
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const PostSharePage(),
+            ),
+          );
         },
         backgroundColor: ARMOYU.buttonColor,
         child: const Icon(

@@ -1,7 +1,7 @@
 import 'package:ARMOYU/Core/appcore.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 
 class FunctionsMedia {
   final ApiService apiService = ApiService();
@@ -29,19 +29,37 @@ class FunctionsMedia {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> share(String text, List<XFile> files) async {
+  Future<Map<String, dynamic>> delete(int mediaID) async {
+    Map<String, String> formData = {
+      "medyaID": "$mediaID",
+    };
+    Map<String, dynamic> jsonData =
+        await apiService.request("medya/sil/0/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> upload({
+    required List<Media> files,
+    required String category,
+  }) async {
     List<MultipartFile> photosCollection = [];
-    for (var file in files) {
-      photosCollection
-          .add(await AppCore.generateImageFile("paylasimfoto[]", file));
+    for (Media file in files) {
+      photosCollection.add(
+        await AppCore.generateImageFile(
+          "media[]",
+          file.mediaXFile!,
+        ),
+      );
     }
 
-    Map<String, String> formData = {
-      "sosyalicerik": text,
+    Map<String, String> formData;
+
+    formData = {
+      "category": category,
     };
 
     Map<String, dynamic> jsonData = await apiService
-        .request("sosyal/olustur/", formData, files: photosCollection);
+        .request("medya/yukle/", formData, files: photosCollection);
     return jsonData;
   }
 }
