@@ -22,13 +22,10 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
-  // Play Store'u açan metod
-
   static User userfetch(response) {
     return User(
       userID: response["playerID"],
       userName: response["username"],
-      // password: password,
       firstName: response["firstName"],
       lastName: response["lastName"],
       displayName: response["displayName"],
@@ -57,11 +54,13 @@ class ARMOYUFunctions {
       lastlogin: response["detailInfo"]["lastloginDate"],
       lastloginv2: response["detailInfo"]["lastloginDateV2"],
       lastfaillogin: response["detailInfo"]["lastfailedDate"],
-      job: Job(
-        jobID: response["job"]["job_ID"],
-        name: response["job"]["job_name"],
-        shortName: response["job"]["job_shortName"],
-      ),
+      job: response["job"] == null
+          ? null
+          : Job(
+              jobID: response["job"]["job_ID"],
+              name: response["job"]["job_name"],
+              shortName: response["job"]["job_shortName"],
+            ),
       level: response["level"],
       levelColor: response["levelColor"],
       xp: response["levelXP"],
@@ -104,6 +103,7 @@ class ARMOYUFunctions {
     );
   }
 
+  // Play Store'u açan metod
   static void openPlayStore() async {
     if (await canLaunchUrl(Uri.parse(
         "https://play.google.com/store/apps/details?id=com.ARMOYU"))) {
@@ -430,7 +430,7 @@ class ARMOYUFunctions {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return FractionallySizedBox(
-          heightFactor: 0.8,
+          heightFactor: 0.87,
           child: Scaffold(
             body: SafeArea(
               child: SingleChildScrollView(
@@ -443,6 +443,7 @@ class ARMOYUFunctions {
                           child: CachedNetworkImage(
                             imageUrl: ARMOYU.appUser.banner!.mediaURL.normalURL,
                             height: 200,
+                            width: ARMOYU.screenWidth,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -544,7 +545,7 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU.appUser.aboutme,
+                                  placeholder: ARMOYU.appUser.userMail,
                                   controller: email,
                                 ),
                               )
@@ -792,10 +793,35 @@ class ARMOYUFunctions {
                                     response["aciklama"].toString());
                                 return;
                               }
-                              log(response["aciklama"]);
+                              ARMOYU.appUser.firstName = firstName.text;
+                              ARMOYU.appUser.lastName = lastName.text;
+                              ARMOYU.appUser.displayName =
+                                  "${firstName.text} ${lastName.text}";
+                              ARMOYU.appUser.userMail = email.text;
+                              ARMOYU.appUser.country = Country(
+                                countryID: int.parse(countryID),
+                                name: ARMOYU.countryList[countryIndex!].name,
+                                countryCode: ARMOYU
+                                    .countryList[countryIndex!].countryCode,
+                                phoneCode:
+                                    ARMOYU.countryList[countryIndex!].phoneCode,
+                              );
+                              ARMOYU.appUser.province = Province(
+                                provinceID: int.parse(provinceID),
+                                name: ARMOYU.countryList[countryIndex!]
+                                    .provinceList![provinceIndex!].name,
+                                plateCode: ARMOYU.countryList[countryIndex!]
+                                    .provinceList![provinceIndex!].plateCode,
+                                phoneCode: ARMOYU.countryList[countryIndex!]
+                                    .provinceList![provinceIndex!].phoneCode,
+                              );
+                              ARMOYU.appUser.phoneNumber = cleanedphoneNumber;
+                              ARMOYU.appUser.birthdayDate = birthday.text;
 
                               ARMOYUWidget.toastNotification(
                                   response["aciklama"].toString());
+
+                              Navigator.pop(context);
                             },
                             loadingStatus: profileeditProcess,
                           ),

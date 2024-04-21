@@ -80,8 +80,14 @@
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Uygulamanın Bluetooth&apos;u her zaman kullanarak sürekli cihazlarla etkileşim kurması gerekiyor. Bu izin, uygulamanın Bluetooth bağlantılarını sürdürmesini ve arka planda cihazlarla iletişim kurmasını sağlar.</string>
 	<key>NSPrivacyAccessedAPITypes</key>
-	<string>Bu uygulama, fotoğraf ve video çekimi için kamera erişimine ihtiyaç duyar. Kullanıcı izni olmadan kamera özelliği kullanılamaz. Bu izin, kullanıcıların fotoğraf ve video çekimi yapmasına ve uygulama içinde paylaşmasına olanak tanır.</string>
+	<string>Uygulama, fotoğraf ve video çekimi için kamera erişimine ihtiyaç duyar. Kullanıcı izni olmadan kamera özelliği kullanılamaz. Bu izin, kullanıcıların fotoğraf ve video çekimi yapmasına ve uygulama içinde paylaşmasına olanak tanır.</string>
+	<key>NSPrivacyAccessedAPICategoryFileTimestamp</key>
+	<string>Uygulama, belirli API&apos;lere erişim sağlayarak işlevselliğini geliştirmek veya belirli bir özelliği sağlamak için bu API&apos;ye ihtiyaç duyuyor.</string>
+	<key>NSPrivacyAccessedAPICategoryDiskSpace</key>
+	<string>Uygulama, disk alanı yönetimi için gereken işlevselliği sağlamak amacıyla NSPrivacyAccessedAPICategoryDiskSpace API&apos;sine erişim talep etmektedir.</string>
+	<key>NSPrivacyAccessedAPICategorySystemBootTime</key>
+	<string>Uygulama, sistem başlangıç zamanıyla ilgili bilgilere erişim sağlamak amacıyla NSPrivacyAccessedAPICategorySystemBootTime API&apos;sini kullanmaktadır.</string>
 	<key>NSPrivacyAccessedAPICategoryUserDefaults</key>
-	<string>Bu anahtar, kullanıcının belirli API kategorilerine erişim izni verdiği tercihlerini saklamak için kullanılır. Kullanıcı tercihleri, uygulamanın belirli özelliklerini etkinleştirmek veya devre dışı bırakmak için kullanılır. Örneğin, kullanıcının kamera erişimini veya konum bilgilerine erişimi açma veya kapatma tercihleri bu anahtar altında saklanabilir</string>
+	<string>Uygulama, kullanıcı tercihleri ve ayarlarını depolamak ve yönetmek için NSPrivacyAccessedAPICategoryUserDefaults API&apos;sine erişim talep etmektedir.</string>
 </dict>
 </plist>

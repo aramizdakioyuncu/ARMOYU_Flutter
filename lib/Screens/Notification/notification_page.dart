@@ -40,6 +40,12 @@ class _NotificationPage extends State<NotificationPage>
     });
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   Future<void> _loadMoreData() async {
     if (!_notificationProccess) {
       await loadnoifications();
@@ -68,25 +74,20 @@ class _NotificationPage extends State<NotificationPage>
       _notificationProccess = false;
       _firstProccess = false;
 
-      if (mounted) {
-        setState(() {});
-      }
+      setstatefunction();
       return;
     }
 
     if (_page == 1) {
       widgetNotifications.clear();
-      if (mounted) {
-        setState(() {});
-      }
+      setstatefunction();
     }
 
     if (response["icerik"].length == 0) {
       _notificationProccess = false;
       _firstProccess = false;
-      if (mounted) {
-        setState(() {});
-      }
+      setstatefunction();
+
       return;
     }
 
@@ -104,31 +105,26 @@ class _NotificationPage extends State<NotificationPage>
           noticiationbuttons = true;
         }
       }
-      if (mounted) {
-        setState(() {
-          widgetNotifications.add(
-            CustomMenusNotificationbars(
-              avatar: response["icerik"][i]["bildirimgonderenavatar"],
-              userID: response["icerik"][i]["bildirimgonderenID"],
-              category: response["icerik"][i]["bildirimamac"],
-              categorydetail: response["icerik"][i]["bildirimkategori"],
-              categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
-              date: response["icerik"][i]["bildirimzaman"],
-              displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
-              enableButtons: noticiationbuttons,
-              text: response["icerik"][i]["bildirimicerik"],
-            ),
-          );
-        });
-      }
+      widgetNotifications.add(
+        CustomMenusNotificationbars(
+          avatar: response["icerik"][i]["bildirimgonderenavatar"],
+          userID: response["icerik"][i]["bildirimgonderenID"],
+          category: response["icerik"][i]["bildirimamac"],
+          categorydetail: response["icerik"][i]["bildirimkategori"],
+          categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
+          date: response["icerik"][i]["bildirimzaman"],
+          displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
+          enableButtons: noticiationbuttons,
+          text: response["icerik"][i]["bildirimicerik"],
+        ),
+      );
+      setstatefunction();
     }
 
     _notificationProccess = false;
     _firstProccess = false;
     _page++;
-    if (mounted) {
-      setState(() {});
-    }
+    setstatefunction();
   }
 
   @override
@@ -136,106 +132,98 @@ class _NotificationPage extends State<NotificationPage>
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
-      body: RefreshIndicator(
-        onRefresh: _handleRefresh,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            children: [
-              widgetNotifications.isEmpty
-                  ? Container(
-                      color: ARMOYU.backgroundcolor,
-                      child: Stack(
-                        children: [
-                          Center(
-                            child: !_firstProccess && !_notificationProccess
-                                ? const Text("Bildirimler Boş")
-                                : const CupertinoActivityIndicator(),
-                          ),
-                        ],
+      body: _firstProccess
+          ? const Center(
+              child: CupertinoActivityIndicator(),
+            )
+          : RefreshIndicator(
+              onRefresh: _handleRefresh,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 15),
+                      leading: Icon(
+                        Icons.person_add_rounded,
+                        color: ARMOYU.color,
                       ),
-                    )
-                  : Column(
-                      children: [
-                        ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 15),
-                          leading: Icon(
-                            Icons.person_add_rounded,
-                            color: ARMOYU.color,
-                          ),
-                          tileColor: ARMOYU.appbarColor,
-                          title: CustomText.costum1("Arkadaşlık İstekleri"),
-                          subtitle: CustomText.costum1(
-                              "Arkadaşlık isteklerini gözden geçir"),
-                          trailing: Badge(
-                            isLabelVisible:
-                                ARMOYU.friendRequestCount == 0 ? false : true,
-                            label: Text(ARMOYU.friendRequestCount.toString()),
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            child: const Icon(
-                              Icons.notifications_active,
-                              color: Colors.white,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotificationFriendRequestPage(),
-                              ),
-                            );
-                          },
+                      tileColor: ARMOYU.appbarColor,
+                      title: CustomText.costum1("Arkadaşlık İstekleri"),
+                      subtitle: CustomText.costum1(
+                          "Arkadaşlık isteklerini gözden geçir"),
+                      trailing: Badge(
+                        isLabelVisible:
+                            ARMOYU.friendRequestCount == 0 ? false : true,
+                        label: Text(ARMOYU.friendRequestCount.toString()),
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        child: Icon(
+                          ARMOYU.friendRequestCount == 0
+                              ? Icons.notifications
+                              : Icons.notifications_active,
+                          color: Colors.white,
                         ),
-                        ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 15),
-                          leading: Icon(Icons.groups_2, color: ARMOYU.color),
-                          tileColor: ARMOYU.appbarColor,
-                          title: CustomText.costum1("Grup İstekleri"),
-                          subtitle: CustomText.costum1(
-                            "Grup isteklerini gözden geçir",
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const NotificationFriendRequestPage(),
                           ),
-                          trailing: Badge(
-                            isLabelVisible:
-                                ARMOYU.groupInviteCount == 0 ? false : true,
-                            label: Text(ARMOYU.groupInviteCount.toString()),
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            child: const Icon(
-                              Icons.notifications_active,
-                              color: Colors.white,
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const NotificationGroupRequestPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        ...List.generate(
-                          widgetNotifications.length,
-                          (index) {
-                            return Column(
-                              children: [
-                                widgetNotifications[index],
-                                const SizedBox(height: 1)
-                              ],
-                            );
-                          },
-                        )
-                      ],
+                        );
+                      },
                     ),
-            ],
-          ),
-        ),
-      ),
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 15),
+                      leading: Icon(Icons.groups_2, color: ARMOYU.color),
+                      tileColor: ARMOYU.appbarColor,
+                      title: CustomText.costum1("Grup İstekleri"),
+                      subtitle: CustomText.costum1(
+                        "Grup isteklerini gözden geçir",
+                      ),
+                      trailing: Badge(
+                        isLabelVisible:
+                            ARMOYU.groupInviteCount == 0 ? false : true,
+                        label: Text(ARMOYU.groupInviteCount.toString()),
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        child: Icon(
+                          ARMOYU.groupInviteCount == 0
+                              ? Icons.notifications
+                              : Icons.notifications_active,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const NotificationGroupRequestPage(),
+                          ),
+                        );
+                      },
+                    ),
+                    ...List.generate(
+                      widgetNotifications.length,
+                      (index) {
+                        return Column(
+                          children: [
+                            widgetNotifications[index],
+                            const SizedBox(height: 1)
+                          ],
+                        );
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

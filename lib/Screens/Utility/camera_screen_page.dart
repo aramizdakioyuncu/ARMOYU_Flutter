@@ -4,6 +4,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/Camera/camfilter.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,6 +45,8 @@ late double _minZoom;
 
 bool _savemediaProcess = false;
 
+bool _isfirstProcess = true;
+
 class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
@@ -56,97 +59,100 @@ class _CameraScreenState extends State<CameraScreen> {
       keepPage: true,
     );
 
-    _camfilter.add(
-      FilterItem(
-        onFilterSelected: () => _takePicture(),
-      ),
-    );
-    _camfilter.add(
-      FilterItem(
-        color: Colors.white,
-        onFilterSelected: () => _takePicture(color: Colors.white),
-        media: Media(
-          mediaID: 0,
-          mediaURL: MediaURL(
-            bigURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            normalURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            minURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+    if (_isfirstProcess) {
+      _camfilter.add(
+        FilterItem(
+          onFilterSelected: () => _takePicture(),
+        ),
+      );
+      _camfilter.add(
+        FilterItem(
+          color: Colors.white,
+          onFilterSelected: () => _takePicture(color: Colors.white),
+          media: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              normalURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              minURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+            ),
           ),
         ),
-      ),
-    );
+      );
 
-    _camfilter.add(
-      FilterItem(
-        color: Colors.grey,
-        onFilterSelected: () => _takePicture(color: Colors.grey),
-        media: Media(
-          mediaID: 0,
-          mediaURL: MediaURL(
-            bigURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            normalURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            minURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+      _camfilter.add(
+        FilterItem(
+          color: Colors.grey,
+          onFilterSelected: () => _takePicture(color: Colors.grey),
+          media: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              normalURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              minURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+            ),
           ),
         ),
-      ),
-    );
-    _camfilter.add(
-      FilterItem(
-        color: Colors.red,
-        onFilterSelected: () => _takePicture(color: Colors.red),
-        media: Media(
-          mediaID: 0,
-          mediaURL: MediaURL(
-            bigURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            normalURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            minURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+      );
+      _camfilter.add(
+        FilterItem(
+          color: Colors.red,
+          onFilterSelected: () => _takePicture(color: Colors.red),
+          media: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              normalURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              minURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+            ),
           ),
         ),
-      ),
-    );
-    _camfilter.add(
-      FilterItem(
-        color: Colors.yellow,
-        onFilterSelected: () => _takePicture(color: Colors.yellow),
-        media: Media(
-          mediaID: 0,
-          mediaURL: MediaURL(
-            bigURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            normalURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            minURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+      );
+      _camfilter.add(
+        FilterItem(
+          color: Colors.yellow,
+          onFilterSelected: () => _takePicture(color: Colors.yellow),
+          media: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              normalURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              minURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+            ),
           ),
         ),
-      ),
-    );
-    _camfilter.add(
-      FilterItem(
-        color: Colors.green,
-        onFilterSelected: () => _takePicture(color: Colors.green),
-        media: Media(
-          mediaID: 0,
-          mediaURL: MediaURL(
-            bigURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            normalURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-            minURL:
-                "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+      );
+      _camfilter.add(
+        FilterItem(
+          color: Colors.green,
+          onFilterSelected: () => _takePicture(color: Colors.green),
+          media: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              normalURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              minURL:
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+            ),
           ),
         ),
-      ),
-    );
+      );
+      _isfirstProcess = false;
+    }
   }
 
   @override

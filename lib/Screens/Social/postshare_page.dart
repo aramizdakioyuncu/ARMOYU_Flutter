@@ -174,6 +174,7 @@ class _PostSharePageState extends State<PostSharePage>
                           userLocation = place.subAdministrativeArea.toString();
                           ARMOYUWidget.toastNotification(
                               "${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
+                          setstatefunction();
                         }).catchError((e) {
                           debugPrint(e);
                         });
