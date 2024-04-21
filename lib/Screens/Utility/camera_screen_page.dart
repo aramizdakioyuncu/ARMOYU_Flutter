@@ -383,7 +383,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       Visibility(
                         visible: widget.canPop,
                         child: Positioned(
-                          top: 35,
+                          top: 40,
                           left: 10,
                           child: InkWell(
                             onTap: () {
@@ -408,7 +408,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       Visibility(
                         visible: _viewMedia == null,
                         child: Positioned(
-                          top: 35,
+                          top: 40,
                           right: 10,
                           child: Container(
                             decoration: BoxDecoration(
@@ -453,6 +453,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
                                         ARMOYU
