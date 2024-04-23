@@ -93,11 +93,11 @@ class ARMOYUFunctions {
       ),
       birthdayDate: response["detailInfo"]["birthdayDate"],
       phoneNumber: response["detailInfo"]["phoneNumber"],
-      favTeam: response["favoritakim"] != null
+      favTeam: response["favTeam"] != null
           ? Team(
-              teamID: response["favoritakim"]["takim_ID"],
-              name: response["favoritakim"]["takim_adi"],
-              logo: response["favoritakim"]["takim_logo"],
+              teamID: response["favTeam"]["team_ID"],
+              name: response["favTeam"]["team_name"],
+              logo: response["favTeam"]["team_logo"],
             )
           : null,
     );
@@ -222,12 +222,14 @@ class ARMOYUFunctions {
                     ),
                     const SizedBox(height: 20),
                     Align(
-                        alignment: Alignment.center,
-                        child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).pop(null);
-                            },
-                            child: CustomText.costum1("Bunlardan Hiçbiri")))
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop(null);
+                        },
+                        child: CustomText.costum1("Bunlardan Hiçbiri"),
+                      ),
+                    )
                   ],
                 ),
               ),

@@ -10,6 +10,13 @@ class FunctionsEvent {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> detailfetch(int eventID) async {
+    Map<String, String> formData = {"": ""};
+    Map<String, dynamic> jsonData =
+        await apiService.request("etkinlikler/$eventID/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> joinOrleave(int eventID, bool status) async {
     int intStatus = 0;
     if (status) {

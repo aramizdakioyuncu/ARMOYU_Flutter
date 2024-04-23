@@ -4,7 +4,6 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/Camera/camfilter.dart';
 import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -466,6 +465,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 5),
                                     child: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
                                         ARMOYU

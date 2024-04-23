@@ -377,9 +377,13 @@ class _MainPageState extends State<MainPage>
               title: Text(response["icerik"][i]["okul_adi"]),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SchoolPage(schoolID: 1)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SchoolPage(
+                      schoolID: response["icerik"][i]["okul_ID"],
+                    ),
+                  ),
+                );
               },
             ),
           );

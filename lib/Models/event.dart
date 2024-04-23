@@ -1,4 +1,5 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/group.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Events/event_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,7 +12,8 @@ class Event {
   String eventType;
   String eventDate;
   String gameImage;
-  String image;
+  String? image;
+  String? detailImage;
   String banner;
   List<User> eventorganizer;
   String eventPlace;
@@ -22,6 +24,9 @@ class Event {
   int participantsgroupplayerlimit;
   String location;
 
+  List<Group>? participantgroupsList;
+  List<User>? participantpeopleList;
+
   Event({
     required this.eventID,
     required this.status,
@@ -30,6 +35,7 @@ class Event {
     required this.eventDate,
     required this.gameImage,
     required this.image,
+    required this.detailImage,
     required this.banner,
     required this.eventorganizer,
     required this.eventPlace,
@@ -77,7 +83,7 @@ class Event {
                     height: ARMOYU.screenWidth / 3,
                     child: Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: image.isNotEmpty
+                      child: banner.isNotEmpty
                           ? CachedNetworkImage(
                               imageUrl: banner,
                               fit: BoxFit.contain,

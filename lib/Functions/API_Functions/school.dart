@@ -10,6 +10,13 @@ class FunctionsSchool {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> fetchSchool(int schoolID) async {
+    Map<String, String> formData = {"okulID": "$schoolID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("okullar/detay/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> joinschool(String schoolID, String classID,
       String jobID, String classPassword) async {
     Map<String, String> formData = {

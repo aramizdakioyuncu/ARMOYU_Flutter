@@ -429,6 +429,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.2.4"
+  font_awesome_flutter:
+    dependency: "direct main"
+    description:
+      name: font_awesome_flutter
+      sha256: "275ff26905134bcb59417cf60ad979136f1f8257f2f449914b2c3e05bbb4cd6f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.7.0"
   geocoding:
     dependency: "direct main"
     description:
@@ -801,10 +809,10 @@ packages:
     dependency: "direct main"
     description:
       name: onesignal_flutter
-      sha256: "3b60033764e84b9a11a331f290eb21d569e94aeb260df5420fb8a5e073e51b7a"
+      sha256: "3435b1b7d422932683f145f8110e68628c005ec7807d83123729392de684c36f"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.3"
+    version: "5.1.5"
   package_info_plus:
     dependency: "direct main"
     description:

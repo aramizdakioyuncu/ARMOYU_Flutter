@@ -5,10 +5,12 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/news.dart';
 import 'package:ARMOYU/Models/news.dart';
+import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/News/news_page.dart';
 
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -180,15 +182,35 @@ class _SearchPagePage extends State<SearchPage>
                     weight: FontWeight.bold),
                 trailing: response["icerik"][i]["turu"] == "oyuncu"
                     ? const Icon(Icons.person)
-                    : const Icon(Icons.groups),
+                    : response["icerik"][i]["turu"] == "okullar"
+                        ? const Icon(Icons.school)
+                        : const Icon(Icons.groups),
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      userID: response["icerik"][i]["ID"],
-                      appbar: true,
-                      scrollController: ScrollController(),
-                    ),
-                  ));
+                  if (response["icerik"][i]["turu"] == "oyuncu") {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePage(
+                          userID: response["icerik"][i]["ID"],
+                          appbar: true,
+                          scrollController: ScrollController(),
+                        ),
+                      ),
+                    );
+                  } else if (response["icerik"][i]["turu"] == "gruplar") {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            GroupPage(groupID: response["icerik"][i]["ID"]),
+                      ),
+                    );
+                  } else if (response["icerik"][i]["turu"] == "okullar") {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            SchoolPage(schoolID: response["icerik"][i]["ID"]),
+                      ),
+                    );
+                  }
                 },
               ),
             );

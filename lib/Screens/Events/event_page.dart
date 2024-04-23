@@ -3,17 +3,22 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/event.dart';
+import 'package:ARMOYU/Models/ARMOYU/dlc.dart';
+import 'package:ARMOYU/Models/ARMOYU/file.dart';
+import 'package:ARMOYU/Models/ARMOYU/role.dart';
 import 'package:ARMOYU/Models/event.dart';
 import 'package:ARMOYU/Models/group.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({
@@ -33,36 +38,115 @@ class _EventStatePage extends State<EventPage> {
   List<User> userParticipant = [];
   List<Group> groupParticipant = [];
   bool fetchParticipantProccess = false;
+  bool fetcheventdetailProcess = false;
 
+  List<DLCInfo> dlcList = [];
+  List<FileInfo> fileList = [];
+  List detailList = [];
+  String? eventdetailImage;
   bool joineventProccess = false;
+
+  String date = "";
+  String time = "";
   @override
   void initState() {
     super.initState();
-    fetchparticipantList(widget.event.eventID);
+
+    List<String> datetime = widget.event.eventDate.split(' ');
+    date = datetime[0];
+    time = datetime[1];
+
+    if (widget.event.participantgroupsList == null &&
+        widget.event.participantpeopleList == null) {
+      fetchparticipantList(widget.event.eventID);
+    }
+
+    fetcheventdetail(widget.event.eventID);
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void onRefreshfunction() async {
+    await fetchparticipantList(widget.event.eventID);
+    fetcheventdetail(widget.event.eventID);
+  }
+
+  Future<void> fetcheventdetail(eventID) async {
+    if (fetcheventdetailProcess) {
+      return;
+    }
+    fetcheventdetailProcess = true;
+    setstatefunction();
+
+    FunctionsEvent f = FunctionsEvent();
+    Map<String, dynamic> response = await f.detailfetch(eventID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      fetchParticipantProccess = false;
+      setstatefunction();
+      return;
+    }
+
+    dlcList.clear();
+    for (var dlc in response["icerik"]["dlc"]) {
+      dlcList.add(
+        DLCInfo(
+          dlcID: dlc["dlc_ID"],
+          dlcname: dlc["dlc_name"],
+          dlcFile: dlc["dlc_file"],
+        ),
+      );
+    }
+
+    fileList.clear();
+    for (var files in response["icerik"]["files"]) {
+      fileList.add(
+        FileInfo(
+          fileID: files["file_ID"],
+          fileType: files["file_type"],
+          fileName: files["file_name"],
+          fileURL: files["file_URL"],
+        ),
+      );
+    }
+
+    detailList.clear();
+    for (var detail in response["icerik"]["detail"]) {
+      detail["detail_ID"];
+      if (detail["detail_name"] == "cekicilogo") {
+        eventdetailImage = detail["detail_info"];
+      }
+      detailList.add(
+        {
+          "name": detail["detail_name"],
+          "info": detail["detail_info"],
+        },
+      );
+    }
   }
 
   Future<void> fetchparticipantList(eventID) async {
     if (fetchParticipantProccess) {
       return;
     }
-    setState(() {
-      fetchParticipantProccess = true;
-    });
+    fetchParticipantProccess = true;
+    setstatefunction();
     FunctionsEvent f = FunctionsEvent();
     Map<String, dynamic> response = await f.participantList(eventID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
-      setState(() {
-        fetchParticipantProccess = false;
-      });
+      fetchParticipantProccess = false;
+      setstatefunction();
       return;
     }
-    if (mounted) {
-      setState(() {
-        userParticipant.clear();
-        groupParticipant.clear();
-      });
-    }
+
+    userParticipant.clear();
+    groupParticipant.clear();
+    setstatefunction();
 
     //Gruplu Katılımcılar
     int sayac = -1;
@@ -85,7 +169,8 @@ class _EventStatePage extends State<EventPage> {
                 minURL: element2["player_avatar"],
               ),
             ),
-            role: element2["player_role"],
+            role: Role(
+                roleID: 0, name: element2["player_role"].toString(), color: ""),
           ),
         );
       }
@@ -117,12 +202,9 @@ class _EventStatePage extends State<EventPage> {
 
     //Bireysel Katılımcılar
     for (var element in response["icerik"]["participant_players"]) {
-      // log("Oyuncu: -> " + element["player_name"]);
-
       if (element["player_ID"] == ARMOYU.appUser.userID) {
-        setState(() {
-          didijoin = true;
-        });
+        didijoin = true;
+        setstatefunction();
       }
 
       userParticipant.add(
@@ -141,11 +223,12 @@ class _EventStatePage extends State<EventPage> {
         ),
       );
     }
-    if (mounted) {
-      setState(() {
-        fetchParticipantProccess = false;
-      });
-    }
+
+    widget.event.participantpeopleList = userParticipant;
+    widget.event.participantgroupsList = groupParticipant;
+
+    fetchParticipantProccess = false;
+    setstatefunction();
   }
 
   Future<void> joinevent() async {
@@ -156,6 +239,8 @@ class _EventStatePage extends State<EventPage> {
     }
 
     joineventProccess = true;
+    setstatefunction();
+
     FunctionsEvent f = FunctionsEvent();
     Map<String, dynamic> response =
         await f.joinOrleave(widget.event.eventID, true);
@@ -166,10 +251,13 @@ class _EventStatePage extends State<EventPage> {
 
     await fetchparticipantList(widget.event.eventID);
     joineventProccess = false;
+    setstatefunction();
   }
 
   Future<void> leaveevent() async {
     joineventProccess = true;
+    setstatefunction();
+
     FunctionsEvent f = FunctionsEvent();
     Map<String, dynamic> response =
         await f.joinOrleave(widget.event.eventID, false);
@@ -177,44 +265,182 @@ class _EventStatePage extends State<EventPage> {
       log(response["aciklama"]);
       return;
     }
-    setState(() {
-      didijoin = false;
-    });
 
     await fetchparticipantList(widget.event.eventID);
 
+    didijoin = false;
     joineventProccess = false;
+    setstatefunction();
   }
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ARMOYU.bodyColor,
-        appBar: AppBar(
-          title: const Text('Etkinlikler'),
-          backgroundColor: ARMOYU.appbarColor,
-        ),
-        body: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
+      appBar: AppBar(
+        title: Text("${widget.event.name} Etkinliği"),
+        backgroundColor: ARMOYU.appbarColor,
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async => fetchparticipantList(widget.event.eventID),
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              CachedNetworkImage(
-                imageUrl: widget.event.image,
-                placeholder: (context, url) => const SizedBox(
-                  height: 40,
-                  width: 40,
-                  child: CupertinoActivityIndicator(),
+              InkWell(
+                onTap: () {
+                  if (widget.event.image == null) {
+                    return;
+                  }
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MediaViewer(
+                        media: [
+                          Media(
+                            mediaID: 0,
+                            mediaURL: MediaURL(
+                              bigURL: widget.event.image.toString(),
+                              normalURL: widget.event.image.toString(),
+                              minURL: widget.event.image.toString(),
+                            ),
+                          ),
+                        ],
+                        initialIndex: 0,
+                      ),
+                    ),
+                  );
+                },
+                child: CachedNetworkImage(
+                  height: ARMOYU.screenHeight / 4,
+                  width: ARMOYU.screenWidth,
+                  fit: widget.event.image != null
+                      ? BoxFit.cover
+                      : BoxFit.contain,
+                  imageUrl: widget.event.image != null
+                      ? widget.event.image.toString()
+                      : widget.event.gameImage,
+                  placeholder: (context, url) => const SizedBox(
+                    height: 40,
+                    width: 40,
+                    child: CupertinoActivityIndicator(),
+                  ),
+                  errorWidget: (context, url, error) =>
+                      ErrorWidget("exception"),
                 ),
-                errorWidget: (context, url, error) => ErrorWidget("exception"),
-                fit: BoxFit.cover,
-                width: ARMOYU.screenWidth,
               ),
               const SizedBox(height: 50),
-              const Text("Son Katılım Tarihi"),
-              Text(
-                widget.event.eventDate,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+              eventdetailImage != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CachedNetworkImage(
+                        imageUrl: eventdetailImage!,
+                        height: ARMOYU.screenWidth / 3,
+                        width: ARMOYU.screenWidth / 3,
+                        fit: BoxFit.contain,
+                      ),
+                    )
+                  : Container(),
+              eventdetailImage != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MediaViewer(
+                                media: [
+                                  Media(
+                                    mediaID: 0,
+                                    mediaURL: MediaURL(
+                                      bigURL:
+                                          widget.event.detailImage.toString(),
+                                      normalURL:
+                                          widget.event.detailImage.toString(),
+                                      minURL:
+                                          widget.event.detailImage.toString(),
+                                    ),
+                                  ),
+                                ],
+                                initialIndex: 0,
+                              ),
+                            ),
+                          );
+                        },
+                        child: CachedNetworkImage(
+                          imageUrl: widget.event.detailImage!,
+                          height: ARMOYU.screenHeight / 4,
+                          width: ARMOYU.screenWidth,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(detailList.length, (index) {
+                    if (detailList[index]["name"] == "cekici" ||
+                        detailList[index]["name"] == "Konvamiri" ||
+                        detailList[index]["name"] == "cekicilogo") {
+                      return Container();
+                    }
+
+                    FaIcon detailIcon = const FaIcon(FontAwesomeIcons.road);
+                    if (detailList[index]["name"] == "yol") {
+                      detailIcon = const FaIcon(FontAwesomeIcons.road);
+                    }
+                    if (detailList[index]["name"] == "sunucu") {
+                      detailIcon = const FaIcon(FontAwesomeIcons.globe);
+                    }
+                    if (detailList[index]["name"] == "yolculuk") {
+                      detailIcon = const FaIcon(FontAwesomeIcons.signsPost);
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 20,
+                      ),
+                      child: Column(
+                        children: [
+                          detailIcon,
+                          CustomText.costum1(
+                            detailList[index]["info"],
+                            weight: FontWeight.bold,
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.date_range),
+                    const SizedBox(width: 5),
+                    CustomText.costum1(
+                      date,
+                      weight: FontWeight.bold,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.alarm),
+                    const SizedBox(width: 5),
+                    CustomText.costum1(
+                      time,
+                      weight: FontWeight.bold,
+                      size: 20,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
               SizedBox(
@@ -233,19 +459,34 @@ class _EventStatePage extends State<EventPage> {
                             vertical: 8.0, horizontal: 0),
                         child: Column(
                           children: [
-                            ClipOval(
-                              child: CachedNetworkImage(
-                                imageUrl: widget.event.eventorganizer[index]
-                                    .avatar!.mediaURL.minURL,
-                                fit: BoxFit.cover,
-                                height: 100,
-                                width: 100,
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProfilePage(
+                                      appbar: false,
+                                      userID: widget
+                                          .event.eventorganizer[index].userID,
+                                      scrollController: ScrollController(),
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: ClipOval(
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.event.eventorganizer[index]
+                                      .avatar!.mediaURL.minURL,
+                                  fit: BoxFit.cover,
+                                  height: ARMOYU.screenWidth / 5,
+                                  width: ARMOYU.screenWidth / 5,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 5),
-                            Text(widget
+                            CustomText.costum1(widget
                                 .event.eventorganizer[index].displayName!),
-                            const Text("Yetkili"),
+                            CustomText.costum1("Yetkili"),
                           ],
                         ),
                       ),
@@ -253,360 +494,446 @@ class _EventStatePage extends State<EventPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
-                    const Text(
+                    CustomText.costum1(
                       "Kurallar",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      size: 22,
+                      weight: FontWeight.bold,
                     ),
                     const SizedBox(height: 10),
-                    Text(widget.event.rules),
+                    CustomText.costum1(widget.event.rules),
                     const SizedBox(height: 10),
-                    const Text(
+                    CustomText.costum1(
                       "Açıklama",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      size: 22,
+                      weight: FontWeight.bold,
                     ),
                     const SizedBox(height: 10),
-                    Text(widget.event.description),
+                    CustomText.costum1(widget.event.description),
                     const SizedBox(height: 10),
                   ],
                 ),
               ),
-              groupParticipant.isNotEmpty
-                  ? SizedBox(
-                      height: 600,
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 5),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: groupParticipant.length,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            width: ARMOYU.screenWidth - 30,
-                            color: ARMOYU.appbarColor,
-                            child: Column(
-                              children: [
-                                Container(
-                                  height: 190,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: CachedNetworkImageProvider(
-                                        groupParticipant[index]
-                                            .groupBanner!
-                                            .mediaURL
-                                            .minURL,
-                                      ),
-                                    ),
-                                  ),
+              !fetchParticipantProccess
+                  ? Column(
+                      children: [
+                        Visibility(
+                          visible:
+                              widget.event.participantgroupsList!.isNotEmpty,
+                          child: SizedBox(
+                            height: 600,
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(width: 5),
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  widget.event.participantgroupsList!.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: ARMOYU.screenWidth - 30,
+                                  color: ARMOYU.appbarColor,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const SizedBox(height: 20),
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (content) =>
-                                                  const GroupPage(
-                                                groupID: 1,
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                        child: CircleAvatar(
-                                          radius: 50,
-                                          foregroundImage:
-                                              CachedNetworkImageProvider(
-                                            groupParticipant[index]
-                                                .groupLogo!
-                                                .mediaURL
-                                                .minURL,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
                                       Container(
-                                        padding: const EdgeInsets.all(5),
+                                        height: 190,
                                         decoration: BoxDecoration(
-                                          color: Colors.black54,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: CachedNetworkImageProvider(
+                                              widget
+                                                  .event
+                                                  .participantgroupsList![index]
+                                                  .groupBanner!
+                                                  .mediaURL
+                                                  .minURL,
+                                            ),
+                                          ),
                                         ),
-                                        child: Text(
-                                          groupParticipant[index]
-                                              .groupName
-                                              .toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: const BoxDecoration(
-                                              color: Colors.black54,
-                                            ),
-                                            child: Text(
-                                              groupParticipant[index]
-                                                  .groupshortName
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Container(
-                                            padding: const EdgeInsets.all(5),
-                                            decoration: const BoxDecoration(
-                                              color: Colors.black54,
-                                            ),
-                                            child: Text(
-                                              "${groupParticipant[index].groupUsers!.length}/${widget.event.participantsgroupplayerlimit}",
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: List.generate(
-                                        groupParticipant[index]
-                                            .groupUsers!
-                                            .length,
-                                        (index2) => Container(
-                                          width: ARMOYU.screenWidth - 50,
-                                          alignment: Alignment.bottomLeft,
-                                          decoration: index2 == 0
-                                              ? const BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: [
-                                                      Colors.transparent,
-                                                      Colors.yellow,
-                                                    ],
-                                                  ),
-                                                )
-                                              : const BoxDecoration(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              children: [
-                                                SizedBox(
-                                                  width: 20,
-                                                  child: Text(
-                                                    (index2 + 1).toString(),
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 5),
-                                                InkWell(
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProfilePage(
-                                                          appbar: false,
-                                                          userID:
-                                                              groupParticipant[
-                                                                      index]
-                                                                  .groupUsers![
-                                                                      index2]
-                                                                  .userID,
-                                                          scrollController:
-                                                              ScrollController(),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: CircleAvatar(
-                                                    foregroundImage:
-                                                        CachedNetworkImageProvider(
-                                                      groupParticipant[index]
-                                                          .groupUsers![index2]
-                                                          .avatar!
-                                                          .mediaURL
-                                                          .minURL,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            const SizedBox(height: 20),
+                                            InkWell(
+                                              onTap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (content) =>
+                                                        GroupPage(
+                                                      groupID: widget
+                                                          .event
+                                                          .participantgroupsList![
+                                                              index]
+                                                          .groupID!,
                                                     ),
-                                                    radius: 18,
                                                   ),
+                                                );
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 50,
+                                                foregroundImage:
+                                                    CachedNetworkImageProvider(
+                                                  widget
+                                                      .event
+                                                      .participantgroupsList![
+                                                          index]
+                                                      .groupLogo!
+                                                      .mediaURL
+                                                      .minURL,
                                                 ),
-                                                const SizedBox(width: 5),
-                                                Expanded(
-                                                  child: Text(
-                                                    groupParticipant[index]
-                                                        .groupUsers![index2]
-                                                        .displayName
-                                                        .toString(),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 15),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  groupParticipant[index]
-                                                      .groupUsers![index2]
-                                                      .role
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Container(
+                                              padding: const EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                color: Colors.black54,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: CustomText.costum1(
+                                                  widget
+                                                      .event
+                                                      .participantgroupsList![
+                                                          index]
+                                                      .groupName
                                                       .toString(),
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                  weight: FontWeight.bold),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.black54,
+                                                  ),
+                                                  child: CustomText.costum1(
+                                                    widget
+                                                        .event
+                                                        .participantgroupsList![
+                                                            index]
+                                                        .groupshortName
+                                                        .toString(),
+                                                    weight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const Spacer(),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.all(5),
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                    color: Colors.black54,
+                                                  ),
+                                                  child: CustomText.costum1(
+                                                    "${widget.event.participantgroupsList![index].groupUsers!.length}/${widget.event.participantsgroupplayerlimit}",
+                                                    weight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ],
                                             ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: List.generate(
+                                              widget
+                                                  .event
+                                                  .participantgroupsList![index]
+                                                  .groupUsers!
+                                                  .length,
+                                              (index2) => Container(
+                                                width: ARMOYU.screenWidth - 50,
+                                                alignment: Alignment.bottomLeft,
+                                                decoration: index2 == 0
+                                                    ? const BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                          begin:
+                                                              Alignment.topLeft,
+                                                          end: Alignment
+                                                              .bottomRight,
+                                                          colors: [
+                                                            Colors.transparent,
+                                                            Colors.yellow,
+                                                          ],
+                                                        ),
+                                                      )
+                                                    : const BoxDecoration(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 20,
+                                                        child: Text(
+                                                          (index2 + 1)
+                                                              .toString(),
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 5),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      ProfilePage(
+                                                                appbar: false,
+                                                                userID: groupParticipant[
+                                                                        index]
+                                                                    .groupUsers![
+                                                                        index2]
+                                                                    .userID,
+                                                                scrollController:
+                                                                    ScrollController(),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: CircleAvatar(
+                                                          foregroundImage:
+                                                              CachedNetworkImageProvider(
+                                                            widget
+                                                                .event
+                                                                .participantgroupsList![
+                                                                    index]
+                                                                .groupUsers![
+                                                                    index2]
+                                                                .avatar!
+                                                                .mediaURL
+                                                                .minURL,
+                                                          ),
+                                                          radius: 18,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 5),
+                                                      Expanded(
+                                                        child: Text(
+                                                          widget
+                                                              .event
+                                                              .participantgroupsList![
+                                                                  index]
+                                                              .groupUsers![
+                                                                  index2]
+                                                              .displayName
+                                                              .toString(),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        widget
+                                                            .event
+                                                            .participantgroupsList![
+                                                                index]
+                                                            .groupUsers![index2]
+                                                            .role!
+                                                            .name,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    )
-                  : Container(),
-              userParticipant.isNotEmpty
-                  ? SizedBox(
-                      height: 350,
-                      child: ListView.separated(
-                        scrollDirection: Axis.vertical,
-                        itemCount: userParticipant.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            color: ARMOYU.appbarColor,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 20,
-                                    child: CustomText.costum1(
-                                        (index + 1).toString(),
-                                        weight: FontWeight.bold),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProfilePage(
-                                            appbar: false,
-                                            userID:
-                                                userParticipant[index].userID,
-                                            scrollController:
-                                                ScrollController(),
+                          ),
+                        ),
+                        Visibility(
+                          visible:
+                              widget.event.participantpeopleList!.isNotEmpty,
+                          child: SizedBox(
+                            height: 350,
+                            child: ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              itemCount:
+                                  widget.event.participantpeopleList!.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  color: ARMOYU.appbarColor,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 20,
+                                          child: CustomText.costum1(
+                                              (index + 1).toString(),
+                                              weight: FontWeight.bold),
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfilePage(
+                                                  appbar: false,
+                                                  userID: widget
+                                                      .event
+                                                      .participantpeopleList![
+                                                          index]
+                                                      .userID,
+                                                  scrollController:
+                                                      ScrollController(),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          child: CircleAvatar(
+                                            foregroundImage:
+                                                CachedNetworkImageProvider(
+                                              widget
+                                                  .event
+                                                  .participantpeopleList![index]
+                                                  .avatar!
+                                                  .mediaURL
+                                                  .minURL,
+                                            ),
+                                            radius: 12,
                                           ),
                                         ),
-                                      );
-                                    },
-                                    child: CircleAvatar(
-                                      foregroundImage:
-                                          CachedNetworkImageProvider(
-                                        userParticipant[index]
-                                            .avatar!
-                                            .mediaURL
-                                            .minURL,
-                                      ),
-                                      radius: 12,
+                                        const SizedBox(width: 5),
+                                        CustomText.costum1(
+                                          widget
+                                              .event
+                                              .participantpeopleList![index]
+                                              .displayName
+                                              .toString(),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const SizedBox(width: 5),
-                                  CustomText.costum1(userParticipant[index]
-                                      .displayName
-                                      .toString()),
-                                ],
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                height: 1,
                               ),
                             ),
-                          );
-                        },
-                        separatorBuilder: (context, index) => const SizedBox(
-                          height: 1,
-                        ),
-                      ),
-                    )
-                  : Container(),
-              widget.event.status == 0
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomText.costum1(
-                          "Etkinliğe katılım süresi sona erdi. Eğer bi yanlışlık olduğunu düşünüyorsanız lütfen yetkililer ile iletişime geçiniz. aramizdakioyuncu.com",
-                          align: TextAlign.center,
+                          ),
                         ),
                       ],
                     )
-                  : didijoin
-                      ? Padding(
+                  : const SizedBox(
+                      height: 350,
+                      child: CupertinoActivityIndicator(),
+                    ),
+              Visibility(
+                visible: widget.event.status != 0 && !fetchParticipantProccess,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Visibility(
+                        visible: didijoin,
+                        child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
+                              CustomText.costum1(
+                                "Etkinliğe zaten katıldınız vazgeçmek için en son süre etkinlikten 30 dakika öncedir.",
+                                align: TextAlign.center,
+                              ),
+                              const SizedBox(height: 10),
                               CustomButtons.costum1(
                                 text: "VAZGEÇ",
                                 onPressed: leaveevent,
                                 loadingStatus: joineventProccess,
                               ),
-                              const SizedBox(height: 20),
-                              CustomText.costum1(
-                                  "Etkinliğe zaten katıldınız vazgeçmek için en son süre etkinlikten 30 dakika öncedir.",
-                                  align: TextAlign.center),
                             ],
                           ),
-                        )
-                      : Column(
-                          children: [
-                            CustomButtons.costum1(
-                              text: "KATIL",
-                              onPressed: joinevent,
-                              loadingStatus: joineventProccess,
-                            ),
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: rulesacception,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      rulesacception = !rulesacception;
-                                    });
-                                  },
-                                ),
-                                CustomText.costum1(
-                                  "Kuralları okudum ve anladım kabul ediyorum.",
-                                ),
-                              ],
-                            ),
-                          ],
                         ),
+                      ),
+                      Visibility(
+                        visible: !didijoin,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: rulesacception,
+                                    onChanged: (value) {
+                                      rulesacception = !rulesacception;
+                                      setstatefunction();
+                                    },
+                                  ),
+                                  CustomText.costum1(
+                                    "Kuralları okudum ve anladım kabul ediyorum.",
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              CustomButtons.costum1(
+                                text: "KATIL",
+                                onPressed: joinevent,
+                                loadingStatus: joineventProccess,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Visibility(
+                visible: widget.event.status == 0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomText.costum1(
+                        "Etkinliğe katılım süresi sona erdi. Eğer bi yanlışlık olduğunu düşünüyorsanız lütfen yetkililer ile iletişime geçiniz. aramizdakioyuncu.com",
+                        align: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

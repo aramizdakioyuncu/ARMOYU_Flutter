@@ -77,14 +77,15 @@ class _EventlistPage extends State<EventlistPage>
             Event(
               eventID: element["event_ID"],
               status: element["event_status"],
-              name: element["event_name"].toString(),
-              eventType: element["event_type"].toString(),
-              eventDate: element["event_date"].toString(),
+              name: element["event_name"],
+              eventType: element["event_type"],
+              eventDate: element["event_date"],
               gameImage: element["event_gamelogo"],
-              image: element["event_foto"].toString(),
+              image: element["event_foto"],
+              detailImage: element["event_fotodetail"],
               banner: element["event_gamebanner"],
               eventorganizer: aa,
-              eventPlace: element["event_yer"].toString(),
+              eventPlace: element["event_location"],
               description: element["event_description"],
               rules: element["event_rules"],
               participantsLimit: element["event_participantlimit"],
@@ -104,31 +105,29 @@ class _EventlistPage extends State<EventlistPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ARMOYU.bodyColor,
-        appBar: AppBar(
-          title: const Text('Etkinlikler'),
-          backgroundColor: ARMOYU.appbarColor,
-        ),
-        body: eventsList.isEmpty
-            ? const Center(child: CupertinoActivityIndicator())
-            : RefreshIndicator(
-                key: _refreshIndicatorKey,
-                onRefresh: geteventslist,
-                child: ListView.separated(
-                  physics: const ClampingScrollPhysics(),
-                  itemCount: eventsList.length,
-                  itemBuilder: (context, index) {
-                    Event aa = eventsList[index];
-                    return aa.eventListWidget(context);
-                  },
-                  separatorBuilder: (context, index) {
-                    return const SizedBox(height: 1);
-                  },
-                ),
-              ),
+    return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
+      appBar: AppBar(
+        title: const Text('Etkinlikler'),
+        backgroundColor: ARMOYU.appbarColor,
       ),
+      body: eventsList.isEmpty
+          ? const Center(child: CupertinoActivityIndicator())
+          : RefreshIndicator(
+              key: _refreshIndicatorKey,
+              onRefresh: geteventslist,
+              child: ListView.separated(
+                physics: const ClampingScrollPhysics(),
+                itemCount: eventsList.length,
+                itemBuilder: (context, index) {
+                  Event aa = eventsList[index];
+                  return aa.eventListWidget(context);
+                },
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 1);
+                },
+              ),
+            ),
     );
   }
 }

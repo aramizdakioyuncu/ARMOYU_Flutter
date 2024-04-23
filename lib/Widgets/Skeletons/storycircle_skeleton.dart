@@ -19,7 +19,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ARMOYU.bodyColor,
+      color: ARMOYU.backgroundcolor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

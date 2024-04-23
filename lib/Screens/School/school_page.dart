@@ -1,6 +1,12 @@
+import 'dart:developer';
+
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/API_Functions/school.dart';
+import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/school.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletons/skeletons.dart';
 
 class SchoolPage extends StatefulWidget {
   final int schoolID; // Zorunlu olarak alınacak veri
@@ -15,15 +21,71 @@ class SchoolPage extends StatefulWidget {
 
 class _ProfilePageState extends State<SchoolPage>
     with AutomaticKeepAliveClientMixin<SchoolPage> {
+  bool schoolfetchProcess = false;
   @override
   bool get wantKeepAlive => true;
+  School _school = School();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _school = School();
+
+    schoolinfofetch();
+  }
 
   @override
   void dispose() {
     super.dispose();
   }
 
-  void schoolinfofetch() {}
+  setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> schoolinfofetch() async {
+    if (schoolfetchProcess) {
+      return;
+    }
+    schoolfetchProcess = true;
+    setstatefunction();
+    FunctionsSchool f = FunctionsSchool();
+    Map<String, dynamic> response = await f.fetchSchool(widget.schoolID);
+    if (response["durum"] == 0) {
+      log(response["aciklama"].toString());
+      schoolfetchProcess = false;
+      setstatefunction();
+      return;
+    }
+    _school = School(
+      schoolID: response["icerik"]["school_ID"],
+      schoolName: response["icerik"]["school_name"],
+      schoolshortName: response["icerik"]["school_shortname"],
+      schoolURL: response["icerik"]["school_URL"],
+      schoolBanner: Media(
+        mediaID: response["icerik"]["school_banner"]["media_ID"],
+        mediaURL: MediaURL(
+          bigURL: response["icerik"]["school_banner"]["media_bigURL"],
+          normalURL: response["icerik"]["school_banner"]["media_URL"],
+          minURL: response["icerik"]["school_banner"]["media_minURL"],
+        ),
+      ),
+      schoolLogo: Media(
+        mediaID: response["icerik"]["school_logo"]["media_ID"],
+        mediaURL: MediaURL(
+          bigURL: response["icerik"]["school_logo"]["media_bigURL"],
+          normalURL: response["icerik"]["school_logo"]["media_URL"],
+          minURL: response["icerik"]["school_logo"]["media_minURL"],
+        ),
+      ),
+    );
+
+    setstatefunction();
+  }
+
   Future<void> _handleRefresh() async {}
 
   @override
@@ -60,12 +122,14 @@ class _ProfilePageState extends State<SchoolPage>
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  CachedNetworkImage(
-                                    imageUrl:
-                                        "https://aramizdakioyuncu.com/galeri/okulresimleri/15okullogoorijinal1665778653.png",
-                                    height: 60,
-                                    fit: BoxFit.cover,
-                                  ),
+                                  _school.schoolLogo == null
+                                      ? Container()
+                                      : CachedNetworkImage(
+                                          imageUrl: _school
+                                              .schoolLogo!.mediaURL.minURL,
+                                          height: 60,
+                                          fit: BoxFit.cover,
+                                        ),
                                   const SizedBox(height: 5),
                                   Container(
                                     padding: const EdgeInsets.all(5),
@@ -73,14 +137,20 @@ class _ProfilePageState extends State<SchoolPage>
                                       color: Colors.black54,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: const Text(
-                                      "Sivas Cumhuriyet Üniversitesi",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                                    child: _school.schoolName == null
+                                        ? const SkeletonLine(
+                                            style: SkeletonLineStyle(
+                                              width: 30,
+                                            ),
+                                          )
+                                        : Text(
+                                            _school.schoolName.toString(),
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                   ),
                                   const SizedBox(height: 5),
                                 ],
@@ -93,11 +163,12 @@ class _ProfilePageState extends State<SchoolPage>
                   ],
                 ),
                 background: GestureDetector(
-                  child: CachedNetworkImage(
-                    imageUrl:
-                        "https://aramizdakioyuncu.com/galeri/okulresimleri/15okularkaresim1665778768.jpg",
-                    fit: BoxFit.cover,
-                  ),
+                  child: _school.schoolBanner == null
+                      ? Container()
+                      : CachedNetworkImage(
+                          imageUrl: _school.schoolBanner!.mediaURL.minURL,
+                          fit: BoxFit.cover,
+                        ),
                 ),
               ),
             ),
