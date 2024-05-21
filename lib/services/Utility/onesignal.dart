@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -84,7 +85,7 @@ class OneSignalApi {
             MaterialPageRoute(
               builder: (context) => ProfilePage(
                 appbar: true,
-                userID: int.parse(userID),
+                currentUser: User(userID: int.parse(userID)),
                 scrollController: ScrollController(),
               ),
             ),

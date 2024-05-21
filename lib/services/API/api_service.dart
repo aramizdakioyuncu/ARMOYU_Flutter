@@ -12,10 +12,30 @@ class ApiService {
   final String ssl = API.apiSSL; // https // https
 
   Future<Map<String, dynamic>> request(
-      String link, Map<String, dynamic> formData,
-      {List<MultipartFile>? files}) async {
+    String link,
+    Map<String, dynamic> formData, {
+    String? username,
+    String? password,
+    List<MultipartFile>? files,
+  }) async {
+    String usernameURL = "";
+    String passwordURL = "";
+
+    if (ARMOYU.appUsers.isNotEmpty) {
+      usernameURL = ARMOYU.appUsers[ARMOYU.selectedUser].userName!;
+      passwordURL = ARMOYU.appUsers[ARMOYU.selectedUser].password!;
+    }
+
+    if (username != null) {
+      usernameURL = username;
+    }
+
+    if (password != null) {
+      passwordURL = password;
+    }
+
     String requestUrl =
-        "$ssl://$host:$port/botlar/$apiKey/${ARMOYU.appUser.userName}/${ARMOYU.appUser.password}/$link";
+        "$ssl://$host:$port/botlar/$apiKey/$usernameURL/$passwordURL/$link";
     log(requestUrl);
 
     formData['versiyon'] = ARMOYU.version;

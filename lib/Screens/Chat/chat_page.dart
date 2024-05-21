@@ -12,8 +12,10 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 
 class ChatPage extends StatefulWidget {
   final Function changePage;
+  final User? currentUser;
   const ChatPage({
     super.key,
+    required this.currentUser,
     required this.changePage,
   });
 
@@ -21,15 +23,15 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
-int chatPage = 1;
-bool _chatsearchprocess = false;
-bool _isFirstFetch = true;
-List<Chat> _chatlist = [];
-List<Chat> _filteredItems = [];
-TextEditingController _chatcontroller = TextEditingController();
-
 class _ChatPageState extends State<ChatPage>
     with AutomaticKeepAliveClientMixin<ChatPage> {
+  int _chatPage = 1;
+  bool _chatsearchprocess = false;
+  bool _isFirstFetch = true;
+  final List<Chat> _chatlist = [];
+  List<Chat> _filteredItems = [];
+  final TextEditingController _chatcontroller = TextEditingController();
+
   final ScrollController chatScrollController = ScrollController();
 
   @override
@@ -75,7 +77,7 @@ class _ChatPageState extends State<ChatPage>
     }
     _chatsearchprocess = true;
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getchats(chatPage);
+    Map<String, dynamic> response = await f.getchats(_chatPage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       _chatsearchprocess = false;
@@ -84,7 +86,7 @@ class _ChatPageState extends State<ChatPage>
       return;
     }
 
-    if (chatPage == 1) {
+    if (_chatPage == 1) {
       _chatlist.clear();
     }
 
@@ -130,7 +132,8 @@ class _ChatPageState extends State<ChatPage>
                 user: User(userID: 1, avatar: null, displayName: ""),
                 messageContext: sonmesaj,
                 messageID: 1,
-                isMe: response["icerik"][i]["kullid"] == ARMOYU.appUser.userID
+                isMe: response["icerik"][i]["kullid"] ==
+                        ARMOYU.appUsers[ARMOYU.selectedUser].userID
                     ? true
                     : false,
               ),
@@ -149,7 +152,7 @@ class _ChatPageState extends State<ChatPage>
 
     _chatsearchprocess = false;
     _isFirstFetch = false;
-    chatPage++;
+    _chatPage++;
   }
 
   bool searchStatus = false;

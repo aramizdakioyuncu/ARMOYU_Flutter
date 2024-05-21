@@ -5,6 +5,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -37,6 +38,7 @@ class _MediaViewerPage extends State<MediaViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         backgroundColor: ARMOYU.appbarColor,
         actions: <Widget>[
@@ -110,7 +112,7 @@ class _MediaViewerPage extends State<MediaViewer> {
           ),
           Visibility(
             visible: (widget.media[widget.initialIndex].ownerID ==
-                        ARMOYU.appUser.userID) &&
+                        ARMOYU.appUsers[ARMOYU.selectedUser].userID) &&
                     !isRotationprocces
                 ? true
                 : false,
@@ -163,7 +165,7 @@ class _MediaViewerPage extends State<MediaViewer> {
             child: SizedBox(
               width: 20.0,
               height: 20.0,
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(),
             ),
           ),
           // onPageChanged: onPageChanged,

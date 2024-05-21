@@ -89,5 +89,16 @@
 	<string>Uygulama, sistem başlangıç zamanıyla ilgili bilgilere erişim sağlamak amacıyla NSPrivacyAccessedAPICategorySystemBootTime API&apos;sini kullanmaktadır.</string>
 	<key>NSPrivacyAccessedAPICategoryUserDefaults</key>
 	<string>Uygulama, kullanıcı tercihleri ve ayarlarını depolamak ve yönetmek için NSPrivacyAccessedAPICategoryUserDefaults API&apos;sine erişim talep etmektedir.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>armoyu</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.armoyu</string>
+		</dict>
+	</array>
 </dict>
 </plist>

@@ -11,6 +11,7 @@ class Group {
   String? groupType;
   String? groupURL;
   List<User>? groupUsers;
+  int? groupUsersCount;
 
   Group({
     this.groupID,
@@ -21,5 +22,6 @@ class Group {
     this.groupType,
     this.groupURL,
     this.groupUsers,
+    this.groupUsersCount,
   });
 }

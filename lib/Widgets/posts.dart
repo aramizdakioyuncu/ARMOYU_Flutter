@@ -20,6 +20,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
+import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
@@ -128,9 +129,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       log(response["aciklama"]);
       return;
     }
-    setState(() {
-      listCommentsLikes.clear();
-    });
+
+    listCommentsLikes.clear();
+
+    if (mounted) {
+      setState(() {});
+    }
 
     for (int i = 0; i < response["icerik"].length; i++) {
       setState(() {
@@ -205,7 +209,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           child: CircleAvatar(
                             backgroundColor: Colors.transparent,
                             foregroundImage: CachedNetworkImageProvider(
-                              ARMOYU.appUser.avatar!.mediaURL.minURL,
+                              ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
+                                  .mediaURL.minURL,
                             ),
                             radius: 20,
                           ),
@@ -288,11 +293,14 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       });
       return;
     }
-    setState(() {
-      widget.post.isLikeme = true;
-      widget.post.likesCount++;
-    });
+
+    widget.post.isLikeme = true;
+    widget.post.likesCount++;
     likeunlikeProcces = false;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void aa2postLike(widgetlike, postID) async {
@@ -311,10 +319,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
       });
       return;
     }
-    setState(() {
-      widget.post.isLikeme = false;
-      widget.post.likesCount--;
-    });
+
+    widget.post.isLikeme = false;
+    widget.post.likesCount--;
+    if (mounted) {
+      setState(() {});
+    }
 
     likeunlikeProcces = false;
   }
@@ -432,7 +442,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID == ARMOYU.appUser.userID,
+                    visible: widget.post.owner.userID ==
+                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -448,7 +459,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: Divider(),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID != ARMOYU.appUser.userID,
+                    visible: widget.post.owner.userID !=
+                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -462,7 +474,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID != ARMOYU.appUser.userID,
+                    visible: widget.post.owner.userID !=
+                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                     child: InkWell(
                       onTap: () async {
                         if (mounted) {
@@ -484,7 +497,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID == ARMOYU.appUser.userID,
+                    visible: widget.post.owner.userID ==
+                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                     child: InkWell(
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts();
@@ -579,7 +593,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(
-                        userID: widget.post.owner.userID,
+                        currentUser: User(
+                          userID: widget.post.owner.userID,
+                        ),
                         appbar: true,
                         scrollController: ScrollController(),
                       ),
@@ -822,10 +838,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   Widget _buildMediaContent(BuildContext context) {
     Widget mediaSablon(
       String mediaUrl, {
+      required int index,
       BoxFit? fit = BoxFit.cover,
       double? width = 100,
       double? height = 100,
       bool? isvideo = false,
+      bool islastmedia = false,
     }) {
       if (isvideo == true) {
         log(mediaUrl);
@@ -856,16 +874,51 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           ),
         );
       }
+      if (islastmedia) {
+        return Container(
+          width: width,
+          height: height,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.4),
+                BlendMode.dstATop,
+              ),
+              image: CachedNetworkImageProvider(
+                mediaUrl,
+                errorListener: (p0) => const Icon(Icons.error),
+              ),
+              fit: fit,
+            ),
+          ),
+          child: Center(
+              child: Text(
+            "+${index + 2 - 3}",
+            style: const TextStyle(fontSize: 50),
+          )),
+        );
+      } else {
+        return PinchZoom(
+          child: CachedNetworkImage(
+            imageUrl: mediaUrl,
+            fit: fit,
+            width: width,
+            height: height,
+            placeholder: (context, url) => const CupertinoActivityIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+        );
+      }
 
       //Görsel ise devam eder
-      return CachedNetworkImage(
-        imageUrl: mediaUrl,
-        fit: fit,
-        width: width,
-        height: height,
-        placeholder: (context, url) => const CupertinoActivityIndicator(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      );
+      // return CachedNetworkImage(
+      //   imageUrl: mediaUrl,
+      //   fit: fit,
+      //   width: width,
+      //   height: height,
+      //   placeholder: (context, url) => const CupertinoActivityIndicator(),
+      //   errorWidget: (context, url, error) => const Icon(Icons.error),
+      // );
     }
 
     Widget mediayerlesim = const Row();
@@ -885,7 +938,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         if (media[0] == "video") {
           mediarow1.clear();
           mediarow1.add(
-            mediaSablon(widget.post.media[i].mediaURL.normalURL, isvideo: true),
+            mediaSablon(
+              index: i,
+              widget.post.media[i].mediaURL.normalURL,
+              isvideo: true,
+            ),
           );
           break;
         }
@@ -930,10 +987,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             );
           },
           child: mediaSablon(
+            index: i,
             widget.post.media[i].mediaURL.normalURL,
             width: mediawidth,
             height: mediaheight,
             fit: mediadirection,
+            islastmedia: i == 3,
           ),
         );
 

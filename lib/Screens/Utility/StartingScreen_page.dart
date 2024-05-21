@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Functions/functions.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Utility/NoConnection_page.dart';
-import 'package:ARMOYU/Screens/pages.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:camera/camera.dart';
@@ -105,14 +107,26 @@ class _StartingScreenState extends State<StartingScreen> {
     }
     //Bellekteki kullanıcı adı ve şifreyi alıyoruz
     final prefs = await SharedPreferences.getInstance();
-    final username = prefs.getString('username');
-    final password = prefs.getString('password');
 
-    if (username != null) {
-      usernameController.text = username.toString();
+// Kullanıcı listesini SharedPreferences'den yükleme
+    List<String>? usersJson = prefs.getStringList('users');
+
+    String? username;
+    String? password;
+
+    if (usersJson != null) {
+      //Listeye Yükle
+      ARMOYU.appUsers = usersJson
+          .map((userJson) => User.fromJson(jsonDecode(userJson)))
+          .toList();
+      for (var element in usersJson) {
+        username = ARMOYU.appUsers[0].userName;
+        password = ARMOYU.appUsers[0].password;
+        log(element.toString());
+      }
     }
 
-    FunctionService f = FunctionService();
+    log(ARMOYU.appUsers.length.toString());
 
     //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
     if (username == null || password == null) {
@@ -126,9 +140,13 @@ class _StartingScreenState extends State<StartingScreen> {
       }
       return;
     }
+    FunctionService f = FunctionService();
 
-    Map<String, dynamic> response =
-        await f.login(username.toString(), password.toString(), true);
+    Map<String, dynamic> response = await f.login(
+      username.toString(),
+      password.toString(),
+      true,
+    );
 
     if (response["durum"] == 1) {
       log("Web Versiyon ${response["aciklamadetay"]["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
@@ -155,7 +173,7 @@ class _StartingScreenState extends State<StartingScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const Pages(),
+            builder: (context) => const AppPage(),
           ),
         );
       }

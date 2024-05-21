@@ -18,6 +18,7 @@ import 'package:ARMOYU/Widgets/detectabletext.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,31 +31,33 @@ import 'package:ARMOYU/Widgets/posts.dart';
 import 'package:skeletons/skeletons.dart';
 
 class ProfilePage extends StatefulWidget {
-  final int? userID;
-  final String? username;
+  final User? currentUser;
   final bool appbar;
   final ScrollController scrollController;
 
   const ProfilePage({
     super.key,
-    this.userID,
+    required this.currentUser,
     required this.appbar,
     required this.scrollController,
-    this.username,
   });
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 late TabController tabController;
+int _tabinitialIndex = 0;
 
 class _ProfilePageState extends State<ProfilePage>
     with AutomaticKeepAliveClientMixin<ProfilePage>, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
 
+  bool refreshprofilepageStatus = false;
+  bool refreshprofilepageArrow = false;
   User userProfile = User();
   bool isFriend = false;
+
   bool isbeFriend = false;
   List<String> listFriendTOP3 = [];
   String friendTextLine = "";
@@ -78,11 +81,47 @@ class _ProfilePageState extends State<ProfilePage>
   bool firstFetchGallery = true;
   bool firstFetchTaggedPost = true;
 
+  final ScrollController _scrollRefresh = ScrollController();
+
   @override
   void initState() {
     super.initState();
     test();
-    tabController = TabController(initialIndex: 0, length: 3, vsync: this);
+
+    tabController = TabController(
+      initialIndex: _tabinitialIndex,
+      length: 3,
+      vsync: this,
+    );
+
+    _scrollRefresh.addListener(() {
+      // log(_scrollRefresh.position.pixels.toString());
+
+      if (_scrollRefresh.position.pixels <= -50) {
+        refreshprofilepageArrow = false;
+
+        setstatefunction();
+
+        if (!refreshprofilepageStatus) {
+          _handleRefresh(myProfileRefresh: true);
+
+          refreshprofilepageStatus = true;
+          // setstatefunction();
+        }
+      }
+
+      if (_scrollRefresh.position.pixels < -10) {
+        if (!refreshprofilepageStatus) {
+          refreshprofilepageArrow = true;
+          setstatefunction();
+        }
+      }
+
+      if (_scrollRefresh.position.pixels == 0) {
+        refreshprofilepageArrow = false;
+        setstatefunction();
+      }
+    });
   }
 
   @override
@@ -456,15 +495,24 @@ class _ProfilePageState extends State<ProfilePage>
     setstatefunction();
   }
 
-  Future<void> test() async {
-    if (widget.userID == ARMOYU.appUser.userID) {
-      userProfile = ARMOYU.appUser;
-    } else {
-      Map<String, dynamic> response = {};
-      if (widget.userID == null && widget.username != null) {
+  Future<void> test({bool myprofilerefresh = false}) async {
+    if (widget.currentUser!.userID ==
+        ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
+      if (myprofilerefresh) {
         FunctionService f = FunctionService();
         Map<String, dynamic> response =
-            await f.lookProfilewithusername(widget.username!);
+            await f.lookProfile(widget.currentUser!.userID!);
+        userProfile = ARMOYUFunctions.userfetch(response["icerik"]);
+      } else {
+        userProfile = ARMOYU.appUsers[ARMOYU.selectedUser];
+      }
+    } else {
+      Map<String, dynamic> response = {};
+      if (widget.currentUser!.userID == null &&
+          widget.currentUser!.userName != null) {
+        FunctionService f = FunctionService();
+        Map<String, dynamic> response =
+            await f.lookProfilewithusername(widget.currentUser!.userName!);
 
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
@@ -490,6 +538,8 @@ class _ProfilePageState extends State<ProfilePage>
           isbeFriend = true;
         }
         listFriendTOP3.clear();
+        friendTextLine = "";
+
         for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
           if (i < 2) {
             if (i == 0) {
@@ -522,7 +572,7 @@ class _ProfilePageState extends State<ProfilePage>
         ///////
       } else {
         FunctionService f = FunctionService();
-        response = await f.lookProfile(widget.userID!);
+        response = await f.lookProfile(widget.currentUser!.userID!);
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
           return;
@@ -544,6 +594,7 @@ class _ProfilePageState extends State<ProfilePage>
         }
 
         listFriendTOP3.clear();
+        friendTextLine = "";
         for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
           if (i < 2) {
             if (i == 0) {
@@ -578,46 +629,55 @@ class _ProfilePageState extends State<ProfilePage>
 
       if (isbeFriend &&
           !isFriend &&
-          userProfile.userID != ARMOYU.appUser.userID) {
+          userProfile.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
         friendStatus = "Arkadaş Ol";
         friendStatuscolor = Colors.blue;
       } else if (!isbeFriend &&
           !isFriend &&
-          userProfile.userID != ARMOYU.appUser.userID &&
+          userProfile.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID &&
           userProfile.userID != -1) {
         friendStatus = "İstek Gönderildi";
         friendStatuscolor = Colors.black;
       } else if (!isbeFriend &&
           isFriend &&
-          userProfile.userID != ARMOYU.appUser.userID) {
+          userProfile.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
         friendStatus = "Mesaj Gönder";
         friendStatuscolor = Colors.blue;
       }
     }
 
     if (firstFetchPosts) {
-      await profileloadPosts(
-          postscounter, userProfile.userID!, widgetPosts, "");
+      profileloadPosts(postscounter, userProfile.userID!, widgetPosts, "");
       firstFetchPosts = false;
       setstatefunction();
     }
     if (firstFetchGallery) {
-      await gallery(gallerycounter, userProfile.userID!);
+      gallery(gallerycounter, userProfile.userID!);
 
       firstFetchGallery = false;
       setstatefunction();
     }
 
     if (firstFetchTaggedPost) {
-      await profileloadtaggedPosts(postscounterv2, userProfile.userID!,
+      profileloadtaggedPosts(postscounterv2, userProfile.userID!,
           widgetTaggedPosts, "etiketlenmis");
       firstFetchTaggedPost = false;
       setstatefunction();
     }
+
+    refreshprofilepageStatus = false;
+    setstatefunction();
   }
 
-  Future<void> _handleRefresh() async {
-    await test();
+  Future<void> _handleRefresh({bool myProfileRefresh = false}) async {
+    refreshprofilepageStatus = true;
+    setstatefunction();
+    log("--BAŞLADI---");
+
+    await test(myprofilerefresh: myProfileRefresh);
+    log("---BİTTİ--");
+    refreshprofilepageStatus = false;
+    setstatefunction();
   }
 
   Future<void> changeavatar() async {
@@ -631,10 +691,11 @@ class _ProfilePageState extends State<ProfilePage>
     Map<String, dynamic> response = await f.changeavatar(imagePath);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"]);
       return;
     }
 
-    ARMOYU.appUser.avatar = Media(
+    ARMOYU.appUsers[ARMOYU.selectedUser].avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: response["aciklamadetay"].toString(),
@@ -644,7 +705,7 @@ class _ProfilePageState extends State<ProfilePage>
     );
 
     setstatefunction();
-    _handleRefresh();
+    await _handleRefresh();
   }
 
   Future<void> changebanner() async {
@@ -660,7 +721,7 @@ class _ProfilePageState extends State<ProfilePage>
       log(response["aciklama"]);
       return;
     }
-    ARMOYU.appUser.banner = Media(
+    ARMOYU.appUsers[ARMOYU.selectedUser].banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: response["aciklamadetay"].toString(),
@@ -668,7 +729,7 @@ class _ProfilePageState extends State<ProfilePage>
         minURL: response["aciklamadetay"].toString(),
       ),
     );
-    _handleRefresh();
+    await _handleRefresh();
     setstatefunction();
   }
 
@@ -727,15 +788,22 @@ class _ProfilePageState extends State<ProfilePage>
       backgroundColor: ARMOYU.backgroundcolor,
       body: NestedScrollView(
         controller: widget.scrollController,
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              pinned:
-                  ARMOYU.appUser.userID != userProfile.userID ? true : false,
+              pinned: ARMOYU.appUsers[ARMOYU.selectedUser].userID !=
+                      userProfile.userID
+                  ? true
+                  : false,
               backgroundColor: ARMOYU.appbarColor,
               expandedHeight: ARMOYU.screenHeight * 0.25,
-              leading: userProfile.userID == ARMOYU.appUser.userID ||
-                      userProfile.userName == ARMOYU.appUser.userName
+              leading: userProfile.userID ==
+                          ARMOYU.appUsers[ARMOYU.selectedUser].userID ||
+                      userProfile.userName ==
+                          ARMOYU.appUsers[ARMOYU.selectedUser].userName
                   ? null
                   : IconButton(
                       onPressed: () {
@@ -745,14 +813,18 @@ class _ProfilePageState extends State<ProfilePage>
                       },
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                     ),
-              title: userProfile.userID == ARMOYU.appUser.userID ||
-                      userProfile.userName == ARMOYU.appUser.userName
+              title: userProfile.userID ==
+                          ARMOYU.appUsers[ARMOYU.selectedUser].userID ||
+                      userProfile.userName ==
+                          ARMOYU.appUsers[ARMOYU.selectedUser].userName
                   ? null
                   : userProfile.displayName == null
                       ? const SkeletonLine(
                           style: SkeletonLineStyle(width: 200),
                         )
-                      : Text(userProfile.displayName.toString()),
+                      : Text(
+                          userProfile.displayName.toString(),
+                        ),
               actions: <Widget>[
                 userProfile.userID == null
                     ? const SizedBox()
@@ -789,7 +861,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                         Visibility(
                                           visible: userProfile.userID ==
-                                              ARMOYU.appUser.userID,
+                                              ARMOYU
+                                                  .appUsers[ARMOYU.selectedUser]
+                                                  .userID,
                                           child: InkWell(
                                             onTap: () {
                                               Navigator.pop(context);
@@ -818,7 +892,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                         Visibility(
                                           visible: userProfile.userID !=
-                                              ARMOYU.appUser.userID,
+                                              ARMOYU
+                                                  .appUsers[ARMOYU.selectedUser]
+                                                  .userID,
                                           child: InkWell(
                                             onTap: () => userblockingfunction(),
                                             child: const ListTile(
@@ -834,7 +910,9 @@ class _ProfilePageState extends State<ProfilePage>
                                         ),
                                         Visibility(
                                           visible: userProfile.userID !=
-                                              ARMOYU.appUser.userID,
+                                              ARMOYU
+                                                  .appUsers[ARMOYU.selectedUser]
+                                                  .userID,
                                           child: InkWell(
                                             onTap: () {},
                                             child: const ListTile(
@@ -854,8 +932,8 @@ class _ProfilePageState extends State<ProfilePage>
                                               FunctionsProfile f =
                                                   FunctionsProfile();
                                               Map<String, dynamic> response =
-                                                  await f.friendremove(
-                                                      widget.userID!);
+                                                  await f.friendremove(widget
+                                                      .currentUser!.userID!);
                                               if (response["durum"] == 0) {
                                                 log(response["aciklama"]);
                                                 return;
@@ -879,8 +957,8 @@ class _ProfilePageState extends State<ProfilePage>
                                               FunctionsProfile f =
                                                   FunctionsProfile();
                                               Map<String, dynamic> response =
-                                                  await f.userdurting(
-                                                      widget.userID!);
+                                                  await f.userdurting(widget
+                                                      .currentUser!.userID!);
                                               if (response["durum"] == 0) {
                                                 log(response["aciklama"]);
                                                 return;
@@ -911,6 +989,9 @@ class _ProfilePageState extends State<ProfilePage>
               flexibleSpace: FlexibleSpaceBar(
                 background: GestureDetector(
                   onTap: () {
+                    if (userProfile.banner == null) {
+                      return;
+                    }
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => MediaViewer(
@@ -921,7 +1002,8 @@ class _ProfilePageState extends State<ProfilePage>
                     );
                   },
                   onLongPress: () {
-                    if (ARMOYU.appUser.userID != userProfile.userID) {
+                    if (ARMOYU.appUsers[ARMOYU.selectedUser].userID !=
+                        userProfile.userID) {
                       return;
                     }
                     showModalBottomSheet<void>(
@@ -952,7 +1034,9 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                                   Visibility(
-                                    visible: ARMOYU.appUser.userID ==
+                                    visible: ARMOYU
+                                            .appUsers[ARMOYU.selectedUser]
+                                            .userID ==
                                         userProfile.userID,
                                     child: InkWell(
                                       onTap: () async {
@@ -970,7 +1054,8 @@ class _ProfilePageState extends State<ProfilePage>
                                   ),
                                   Visibility(
                                     visible: userProfile.userID ==
-                                        ARMOYU.appUser.userID,
+                                        ARMOYU.appUsers[ARMOYU.selectedUser]
+                                            .userID,
                                     child: InkWell(
                                       onTap: () {},
                                       child: const ListTile(
@@ -993,9 +1078,48 @@ class _ProfilePageState extends State<ProfilePage>
                   },
                   child: userProfile.banner == null
                       ? null
-                      : CachedNetworkImage(
-                          imageUrl: userProfile.banner!.mediaURL.minURL,
-                          fit: BoxFit.cover,
+                      : Container(
+                          height: ARMOYU.screenHeight * 0.25,
+                          width: ARMOYU.screenWidth,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              colorFilter: refreshprofilepageStatus
+                                  ? ColorFilter.mode(
+                                      Colors.black.withOpacity(
+                                        0.8,
+                                      ),
+                                      BlendMode.darken,
+                                    )
+                                  : ColorFilter.mode(
+                                      Colors.black.withOpacity(
+                                        0.0,
+                                      ),
+                                      BlendMode.darken,
+                                    ),
+                              image: CachedNetworkImageProvider(
+                                userProfile.banner!.mediaURL.minURL,
+                              ),
+                            ),
+                          ),
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            controller: _scrollRefresh,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                    height: ARMOYU.screenHeight * 0.25 / 2),
+                                Visibility(
+                                  visible: refreshprofilepageStatus,
+                                  child: const CupertinoActivityIndicator(),
+                                ),
+                                Visibility(
+                                  visible: refreshprofilepageArrow,
+                                  child: const Icon(Icons.arrow_downward),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                 ),
               ),
@@ -1016,15 +1140,21 @@ class _ProfilePageState extends State<ProfilePage>
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => MediaViewer(
-                                      media: [userProfile.avatar!],
-                                      initialIndex: 0,
+                                  if (userProfile.avatar == null) {
+                                    return;
+                                  }
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => MediaViewer(
+                                        media: [userProfile.avatar!],
+                                        initialIndex: 0,
+                                      ),
                                     ),
-                                  ));
+                                  );
                                 },
                                 onLongPress: () {
-                                  if (ARMOYU.appUser.userID !=
+                                  if (ARMOYU.appUsers[ARMOYU.selectedUser]
+                                          .userID !=
                                       userProfile.userID) {
                                     return;
                                   }
@@ -1059,9 +1189,11 @@ class _ProfilePageState extends State<ProfilePage>
                                                   ),
                                                 ),
                                                 Visibility(
-                                                  visible:
-                                                      ARMOYU.appUser.userID ==
-                                                          userProfile.userID,
+                                                  visible: ARMOYU
+                                                          .appUsers[ARMOYU
+                                                              .selectedUser]
+                                                          .userID ==
+                                                      userProfile.userID,
                                                   child: InkWell(
                                                     onTap: () async {
                                                       await changeavatar();
@@ -1080,7 +1212,10 @@ class _ProfilePageState extends State<ProfilePage>
                                                 ),
                                                 Visibility(
                                                   visible: userProfile.userID ==
-                                                      ARMOYU.appUser.userID,
+                                                      ARMOYU
+                                                          .appUsers[ARMOYU
+                                                              .selectedUser]
+                                                          .userID,
                                                   child: InkWell(
                                                     onTap: () {},
                                                     child: const ListTile(
@@ -1280,7 +1415,10 @@ class _ProfilePageState extends State<ProfilePage>
                                               GestureDetector(
                                                 onTap: () {
                                                   if (userProfile.userID !=
-                                                      ARMOYU.appUser.userID) {
+                                                      ARMOYU
+                                                          .appUsers[ARMOYU
+                                                              .selectedUser]
+                                                          .userID) {
                                                     return;
                                                   }
 
@@ -1441,7 +1579,8 @@ class _ProfilePageState extends State<ProfilePage>
                       ),
                     ),
                     Visibility(
-                      visible: ARMOYU.appUser.userID != userProfile.userID &&
+                      visible: ARMOYU.appUsers[ARMOYU.selectedUser].userID !=
+                              userProfile.userID &&
                           listFriendTOP3.isNotEmpty,
                       child: Row(
                         children: [
@@ -1485,7 +1624,8 @@ class _ProfilePageState extends State<ProfilePage>
                           //Arkadaş ol
                           visible: isbeFriend &&
                               !isFriend &&
-                              userProfile.userID != ARMOYU.appUser.userID,
+                              userProfile.userID !=
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                           child: Expanded(
                             child: CustomButtons.friendbuttons(
                                 friendStatus, friendrequest, friendStatuscolor),
@@ -1495,7 +1635,8 @@ class _ProfilePageState extends State<ProfilePage>
                           //İstek Gönderildi
                           visible: !isbeFriend &&
                               !isFriend &&
-                              userProfile.userID != ARMOYU.appUser.userID &&
+                              userProfile.userID !=
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID &&
                               userProfile.userID != -1,
                           child: friendStatus == ""
                               ? Expanded(
@@ -1525,7 +1666,8 @@ class _ProfilePageState extends State<ProfilePage>
                           //Mesaj Gönder
                           visible: !isbeFriend &&
                               isFriend &&
-                              userProfile.userID != ARMOYU.appUser.userID,
+                              userProfile.userID !=
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                           child: Expanded(
                             child:
                                 Chat(user: userProfile, chatNotification: false)
@@ -1557,15 +1699,19 @@ class _ProfilePageState extends State<ProfilePage>
             ),
             SliverPersistentHeader(
               pinned: true,
-              delegate: Profileusersharedmedias(),
-            )
+              delegate:
+                  Profileusersharedmedias(setstatefunction: setstatefunction),
+            ),
           ];
         },
         body: TabBarView(
+          physics: const ClampingScrollPhysics(),
           controller: tabController,
           children: [
             firstFetchPosts
-                ? const Center(child: CupertinoActivityIndicator())
+                ? const Center(
+                    child: CupertinoActivityIndicator(),
+                  )
                 : widgetPosts.isEmpty
                     ? const Center(
                         child: Text("Boş"),
@@ -1588,18 +1734,15 @@ class _ProfilePageState extends State<ProfilePage>
                           }
                           return false;
                         },
-                        child: Column(
+                        child: ListView(
+                          padding: EdgeInsets.zero,
+                          physics: const ClampingScrollPhysics(),
+                          key: const PageStorageKey('Tab1'),
+                          shrinkWrap: true,
                           children: [
-                            Expanded(
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                physics: const ClampingScrollPhysics(),
-                                key: const PageStorageKey('Tab1'),
-                                itemCount: widgetPosts.length,
-                                itemBuilder: (context, index) {
-                                  return widgetPosts[index];
-                                },
-                              ),
+                            ...List.generate(
+                              widgetPosts.length,
+                              (index) => widgetPosts[index],
                             ),
                             Visibility(
                               visible: postsfetchproccess,
@@ -1633,27 +1776,30 @@ class _ProfilePageState extends State<ProfilePage>
                           }
                           return false;
                         },
-                        child: Column(
+                        child: ListView(
+                          padding: EdgeInsets.zero,
+                          physics: const ClampingScrollPhysics(),
+                          key: const PageStorageKey('Tab2'),
+                          shrinkWrap: true,
                           children: [
-                            Expanded(
-                              child: GridView.builder(
-                                padding: EdgeInsets.zero,
-                                physics: const ClampingScrollPhysics(),
-                                key: const PageStorageKey('Tab2'),
-                                itemCount: medialist.length,
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 4.0, // Yatayda boşluk
-                                  mainAxisSpacing: 4.0, // Dikeyde boşluk
+                            GridView(
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 4.0,
+                                mainAxisSpacing: 4.0,
+                              ),
+                              padding: EdgeInsets.zero,
+                              physics: const ClampingScrollPhysics(),
+                              children: List.generate(
+                                medialist.length,
+                                (index) => medialist[index].mediaGallery(
+                                  context: context,
+                                  index: index,
+                                  medialist: medialist,
+                                  setstatefunction: setstatefunction,
                                 ),
-                                itemBuilder: (context, index) {
-                                  return medialist[index].mediaGallery(
-                                      context: context,
-                                      index: index,
-                                      medialist: medialist,
-                                      setstatefunction: setstatefunction);
-                                },
                               ),
                             ),
                             Visibility(
@@ -1661,10 +1807,10 @@ class _ProfilePageState extends State<ProfilePage>
                               child: Container(
                                 height: 100,
                                 width: ARMOYU.screenWidth,
-                                color: ARMOYU.backgroundcolor,
+                                color: ARMOYU.appbarColor,
                                 child: const CupertinoActivityIndicator(),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),
@@ -1685,26 +1831,30 @@ class _ProfilePageState extends State<ProfilePage>
                               // Listenin sonuna ulaşıldı
                               log("------Paylaşım Etiketlenmiş------");
                               profileloadtaggedPosts(
-                                  postscounterv2,
-                                  userProfile.userID!,
-                                  widgetTaggedPosts,
-                                  "etiketlenmis");
+                                postscounterv2,
+                                userProfile.userID!,
+                                widgetTaggedPosts,
+                                "etiketlenmis",
+                              );
 
                               return true;
                             }
                           }
                           return false;
                         },
-                        child: ListView.builder(
+                        child: ListView(
                           padding: EdgeInsets.zero,
                           physics: const ClampingScrollPhysics(),
                           key: const PageStorageKey('Tab3'),
-                          itemCount: widgetTaggedPosts.length,
-                          itemBuilder: (context, index) {
-                            return widgetTaggedPosts[index];
-                          },
+                          shrinkWrap: true,
+                          children: [
+                            ...List.generate(
+                              widgetTaggedPosts.length,
+                              (index) => widgetTaggedPosts[index],
+                            ),
+                          ],
                         ),
-                      )
+                      ),
           ],
         ),
       ),
@@ -1713,9 +1863,15 @@ class _ProfilePageState extends State<ProfilePage>
 }
 
 class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
+  final Function setstatefunction;
+  Profileusersharedmedias({required this.setstatefunction});
+
   @override
   Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
     return Container(
       alignment: Alignment.center,
       color: ARMOYU.backgroundcolor,

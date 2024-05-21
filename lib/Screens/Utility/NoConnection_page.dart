@@ -40,8 +40,6 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
       final username = prefs.getString('username');
       final password = prefs.getString('password');
 
-      usernameController.text = username.toString();
-
       FunctionService f = FunctionService();
 
       //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
@@ -100,7 +98,9 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const Pages(),
+            builder: (context) => Pages(
+              currentUser: ARMOYU.appUsers[0],
+            ),
           ),
         );
       }

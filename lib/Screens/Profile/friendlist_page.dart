@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:ARMOYU/Widgets/userlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,10 +99,14 @@ class _FriendlistPageState extends State<FriendlistPage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-          title: Title(color: Colors.black, child: Text(widget.username))),
-      backgroundColor: Colors.grey.shade900,
+        backgroundColor: Colors.black,
+        title: CustomText.costum1(widget.username),
+      ),
+      backgroundColor: ARMOYU.backgroundcolor,
       body: widgetUserlist.isEmpty
-          ? const Center(child: CupertinoActivityIndicator())
+          ? const Center(
+              child: CupertinoActivityIndicator(),
+            )
           : ListView.builder(
               controller: scrollController,
               itemCount: widgetUserlist.length,

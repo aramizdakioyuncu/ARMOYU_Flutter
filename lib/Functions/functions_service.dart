@@ -3,7 +3,10 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/functions.dart';
+import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:ARMOYU/Services/Utility/onesignal.dart';
@@ -23,19 +26,70 @@ class FunctionService {
   }
 
 ///////////Fonksiyonlar Başlangıcı
+  ///
+  ///
+  ///
+  ///
+  Future<Map<String, dynamic>> adduserAccount(
+    String username,
+    String password,
+  ) async {
+    password = generateMd5(password);
+
+    Map<String, String> formData = {"param1": "value1"};
+    String link = "0/0/0/";
+
+    Map<String, dynamic> response = await apiService.request(link, formData,
+        username: username, password: password);
+
+    if (response["durum"] == 0 ||
+        response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+      return response;
+    }
+
+    Map<String, dynamic> oyuncubilgi = response["icerik"];
+
+    User userdetail = ARMOYUFunctions.userfetch(oyuncubilgi);
+
+    userdetail.password = password;
+    ARMOYU.appUsers.add(userdetail);
+
+    // Kullanıcı listesini SharedPreferences'e kaydetme
+    List<String> usersJson =
+        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('users', usersJson);
+    //
+    return response;
+  }
+
+  Future<User?> fetchUserInfo({required int userID}) async {
+    FunctionService f = FunctionService();
+    Map<String, dynamic> response = await f.lookProfile(userID);
+
+    if (response["durum"] == 0 ||
+        response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+      return User();
+    }
+
+    Map<String, dynamic> oyuncubilgi = response["icerik"];
+
+    User userdetail = ARMOYUFunctions.userfetch(oyuncubilgi);
+
+    return userdetail;
+  }
+
   Future<Map<String, dynamic>> login(
       String username, String password, bool system) async {
     if (!system) {
       password = generateMd5(password);
     }
 
-    ARMOYU.appUser.userName = username;
-    ARMOYU.appUser.password = password;
-
     Map<String, String> formData = {"param1": "value1"};
     String link = "0/0/0/";
 
-    Map<String, dynamic> response = await apiService.request(link, formData);
+    Map<String, dynamic> response = await apiService.request(link, formData,
+        username: username, password: password);
 
     if (response["durum"] == 0 ||
         response["aciklama"] == "Oyuncu bilgileri yanlış!") {
@@ -48,21 +102,31 @@ class FunctionService {
 
     Map<String, dynamic> oyuncubilgi = response["icerik"];
 
-    ARMOYU.appUser = ARMOYUFunctions.userfetch(oyuncubilgi);
-    ARMOYU.appUser.password = password;
+    User userdetail = ARMOYUFunctions.userfetch(oyuncubilgi);
+    userdetail.password = password;
+
+    //İlk defa giriş yapılıyorsa
+    if (ARMOYU.appUsers.isEmpty) {
+      ARMOYU.appUsers.add(userdetail);
+    }
 
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setString('username', username);
-    prefs.setString('password', password);
+// Kullanıcı listesini SharedPreferences'e kaydetme
+    List<String> usersJson =
+        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+    prefs.setStringList('users', usersJson);
+//
+
+    ARMOYU.appUsers[0] = userdetail;
 
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");
       OneSignalApi.setupOneSignal(
-        ARMOYU.appUser.userID!,
-        ARMOYU.appUser.userName!,
-        ARMOYU.appUser.userMail!,
-        ARMOYU.appUser.role.toString(),
+        userdetail.userID!,
+        userdetail.userName!,
+        userdetail.userMail!,
+        userdetail.role!.name.toString(),
       );
     }
 
@@ -101,12 +165,21 @@ class FunctionService {
   }
 
   Future<Map<String, dynamic>> logOut() async {
+    //Oturumunu Kapat
+    pagesViewList.removeAt(ARMOYU.selectedUser);
+    ARMOYU.appUsers.removeAt(ARMOYU.selectedUser);
+    //Oturumunu Kapat Bitiş
+
+    // ARMOYU.appUsers[ARMOYU.selectedUser].userID = null;
+    // ARMOYU.appUsers[ARMOYU.selectedUser].userName = "0";
+    // ARMOYU.appUsers[ARMOYU.selectedUser].password = "0";
+
+    // Kullanıcı listesini SharedPreferences'e kaydetme
+    List<String> usersJson =
+        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
     final prefs = await SharedPreferences.getInstance();
-    prefs.remove('username');
-    prefs.remove('password');
-    ARMOYU.appUser.userID = null;
-    ARMOYU.appUser.userName = "0";
-    ARMOYU.appUser.password = "0";
+    prefs.setStringList('users', usersJson);
+    //
     Map<String, dynamic> jsonData = {
       'durum': 1,
       'aciklama': "Başarılı bir şekilde çıkış yapıldı.",
@@ -173,6 +246,13 @@ class FunctionService {
     Map<String, String> formData = {};
     Map<String, dynamic> jsonData =
         await apiService.request("okullarim/0/0", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> myStations() async {
+    Map<String, String> formData = {};
+    Map<String, dynamic> jsonData =
+        await apiService.request("istasyonlarim/0/0", formData);
     return jsonData;
   }
 

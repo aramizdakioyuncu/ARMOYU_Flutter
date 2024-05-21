@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -65,7 +66,9 @@ class _WidgetPostComments extends State<WidgetPostComments> {
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(
                         appbar: true,
-                        userID: widget.comment.user.userID,
+                        currentUser: User(
+                          userID: widget.comment.user.userID,
+                        ),
                         scrollController: ScrollController(),
                       ),
                     ),
@@ -129,7 +132,8 @@ class _WidgetPostComments extends State<WidgetPostComments> {
               ),
             ),
             Visibility(
-              visible: ARMOYU.appUser.userID == widget.comment.user.userID,
+              visible: ARMOYU.appUsers[ARMOYU.selectedUser].userID ==
+                  widget.comment.user.userID,
               child: IconButton(
                 onPressed: () async {
                   FunctionsPosts funct = FunctionsPosts();

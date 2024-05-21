@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -83,7 +84,9 @@ class _UserListWidgetState extends State<UserListWidget> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProfilePage(
-                    userID: widget.userID,
+                    currentUser: User(
+                      userID: widget.userID,
+                    ),
                     appbar: true,
                     scrollController: ScrollController(),
                   ),
@@ -91,6 +94,7 @@ class _UserListWidgetState extends State<UserListWidget> {
               );
             },
             child: CircleAvatar(
+              backgroundColor: Colors.transparent,
               foregroundImage:
                   CachedNetworkImageProvider(widget.profileImageUrl),
               radius: 30,
@@ -108,7 +112,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
         Visibility(
-          visible: widget.isFriend && widget.userID != ARMOYU.appUser.userID,
+          visible: widget.isFriend &&
+              widget.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(
@@ -119,7 +124,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
         Visibility(
-          visible: !widget.isFriend && widget.userID != ARMOYU.appUser.userID,
+          visible: !widget.isFriend &&
+              widget.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(

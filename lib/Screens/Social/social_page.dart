@@ -21,9 +21,14 @@ import 'package:ARMOYU/Widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
 
 class SocialPage extends StatefulWidget {
+  final User? currentUser;
   final ScrollController homepageScrollController;
 
-  const SocialPage({super.key, required this.homepageScrollController});
+  const SocialPage({
+    super.key,
+    required this.currentUser,
+    required this.homepageScrollController,
+  });
 
   @override
   State<SocialPage> createState() => _SocialPageState();
@@ -40,18 +45,17 @@ class _SocialPageState extends State<SocialPage>
   late final ScrollController _scrollController =
       widget.homepageScrollController;
 
-  int userID = -1;
-  String userName = 'User Name';
-  String userEmail = 'user@email.com';
-  String useravatar = 'assets/images/armoyu128.png';
-  String userbanner = 'assets/images/test.jpg';
+  // int userID = -1;
+  // String userName = 'User Name';
+  // String userEmail = 'user@email.com';
+  // String useravatar = 'assets/images/armoyu128.png';
+  // String userbanner = 'assets/images/test.jpg';
 
   int postpage = 1;
   bool postpageproccess = false;
   bool isRefreshing = false;
 
   List<Widget> widgetPosts = [];
-
   List<StoryList> widgetStoriescard = [];
 
   Widget? widgetStories;
@@ -59,11 +63,11 @@ class _SocialPageState extends State<SocialPage>
   @override
   void initState() {
     super.initState();
-    userID = ARMOYU.appUser.userID!;
-    userName = ARMOYU.appUser.displayName!;
-    userEmail = ARMOYU.appUser.userMail!;
-    useravatar = ARMOYU.appUser.avatar!.mediaURL.minURL;
-    userbanner = ARMOYU.appUser.banner!.mediaURL.minURL;
+    // userID = widget.currentUser!.userID!;
+    // userName = widget.currentUser!.displayName!;
+    // userEmail = widget.currentUser!.userMail!;
+    // useravatar = widget.currentUser!.avatar!.mediaURL.minURL;
+    // userbanner = widget.currentUser!.banner!.mediaURL.minURL;
 
     loadSkeletonpost();
     // ScrollController'ı dinle
@@ -76,6 +80,12 @@ class _SocialPageState extends State<SocialPage>
     });
 
     loadPosts(postpage);
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   //Hikaye Fonksiyon
@@ -94,9 +104,10 @@ class _SocialPageState extends State<SocialPage>
     if (response["icerik"].length == 0) {
       widgetStoriescard.add(
         StoryList(
-          ownerID: ARMOYU.appUser.userID!,
+          ownerID: ARMOYU.appUsers[ARMOYU.selectedUser].userID!,
           ownerusername: "Hikayen",
-          owneravatar: ARMOYU.appUser.avatar!.mediaURL.minURL,
+          owneravatar:
+              ARMOYU.appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
           story: null,
           isView: true,
         ),
@@ -108,12 +119,13 @@ class _SocialPageState extends State<SocialPage>
 
       if (i == 0) {
         if (response["icerik"][i]["oyuncu_ID"].toString() !=
-            ARMOYU.appUser.userID.toString()) {
+            ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString()) {
           widgetStoriescard.add(
             StoryList(
-              ownerID: ARMOYU.appUser.userID!,
+              ownerID: ARMOYU.appUsers[ARMOYU.selectedUser].userID!,
               ownerusername: "Hikayen",
-              owneravatar: ARMOYU.appUser.avatar!.mediaURL.minURL,
+              owneravatar:
+                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
               story: null,
               isView: true,
             ),
@@ -314,11 +326,13 @@ class _SocialPageState extends State<SocialPage>
           );
 
           if (i / 3 == 1) {
-            widgetPosts.add(ARMOYUWidget(
-                    scrollController: ScrollController(),
-                    content: listPOPCard,
-                    firstFetch: listPOPCard.isEmpty)
-                .widgetPOPlist());
+            widgetPosts.add(
+              ARMOYUWidget(
+                      scrollController: ScrollController(),
+                      content: listPOPCard,
+                      firstFetch: listPOPCard.isEmpty)
+                  .widgetPOPlist(),
+            );
           }
           if (i / 7 == 1) {
             widgetPosts.add(
@@ -336,20 +350,21 @@ class _SocialPageState extends State<SocialPage>
   }
 
   Future<void> loadSkeletonpost() async {
-    setState(() {
-      widgetStories = const SkeletonStorycircle(count: 11);
-      widgetPosts.clear();
+    widgetStories =
+        SkeletonStorycircle(currentUser: widget.currentUser, count: 11);
 
-      widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts.add(const SkeletonCustomCards(
-          count: 5, icon: Icon(Icons.view_comfortable_sharp)));
-      widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts.add(const SkeletonSocailPosts());
-      widgetPosts.add(const SkeletonSocailPosts());
-    });
+    widgetPosts.clear();
+
+    widgetPosts.add(const SkeletonSocailPosts());
+    widgetPosts.add(const SkeletonSocailPosts());
+    widgetPosts.add(const SkeletonSocailPosts());
+    widgetPosts.add(const SkeletonCustomCards(
+        count: 5, icon: Icon(Icons.view_comfortable_sharp)));
+    widgetPosts.add(const SkeletonSocailPosts());
+    widgetPosts.add(const SkeletonSocailPosts());
+    widgetPosts.add(const SkeletonSocailPosts());
+    widgetPosts.add(const SkeletonSocailPosts());
+    setstatefunction();
   }
 
   Future<void> loadPosts(int page) async {
@@ -367,28 +382,27 @@ class _SocialPageState extends State<SocialPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
-      body: RefreshIndicator(
-        color: Colors.blue,
-        onRefresh: () async {
-          await _handleRefresh();
-        },
-        child: ListView(
-          controller: _scrollController,
-          children: [
-            SizedBox(child: widgetStories),
-            const SizedBox(
-              height: 1,
-            ),
-            ListView.builder(
-              physics: const ClampingScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: widgetPosts.length,
-              itemBuilder: (context, index) {
+      backgroundColor: ARMOYU.backgroundcolor,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await _handleRefresh();
+            },
+          ),
+          SliverToBoxAdapter(child: widgetStories),
+          const SliverToBoxAdapter(child: SizedBox(height: 1)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
                 return widgetPosts[index];
               },
+              childCount: widgetPosts.length,
             ),
-            Visibility(
+          ),
+          SliverToBoxAdapter(
+            child: Visibility(
               visible: postpageproccess,
               child: Container(
                 height: 100,
@@ -396,10 +410,11 @@ class _SocialPageState extends State<SocialPage>
                 child: const CupertinoActivityIndicator(),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "socailshare${widget.currentUser!.userID}",
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(

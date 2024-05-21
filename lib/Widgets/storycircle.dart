@@ -20,6 +20,17 @@ class WidgetStorycircle extends StatefulWidget {
 
 class _WidgetStorycircleState extends State<WidgetStorycircle> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: ARMOYU.backgroundcolor,
@@ -45,14 +56,16 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                   }
 
                   bool ishasstory = false;
-                  if (cardData.ownerID == ARMOYU.appUser.userID) {
+                  if (cardData.ownerID ==
+                      ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
                     if (cardData.story != null) {
                       storycolor = Colors.blue;
                       ishasstory = true;
                     }
                   }
                   Color circleColor = Colors.transparent;
-                  if (cardData.ownerID == ARMOYU.appUser.userID) {
+                  if (cardData.ownerID ==
+                      ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
                     circleColor = storycolor;
                   } else {
                     circleColor = otherstorycolor;
@@ -60,13 +73,16 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
 
                   return GestureDetector(
                     onTap: () {
-                      if (cardData.ownerID == ARMOYU.appUser.userID) {
+                      if (cardData.ownerID ==
+                          ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
                         if (ishasstory) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  StoryScreenPage(story: cardData.story!),
+                              builder: (context) => StoryScreenPage(
+                                storyList: widget.content,
+                                storyIndex: index,
+                              ),
                             ),
                           );
                           return;
@@ -81,10 +97,16 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                StoryScreenPage(story: cardData.story!),
+                            builder: (context) => StoryScreenPage(
+                              storyList: widget.content,
+                              storyIndex: index,
+                            ),
                           ),
                         );
+
+                        //Basılınca görüntülendi efekti ver
+                        widget.content[index].isView = true;
+                        setstatefunction();
                       }
                     },
                     child: Column(
@@ -95,8 +117,8 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: circleColor, // Kenarlık rengi
-                              width: 3.0, // Kenarlık kalınlığı
+                              color: circleColor,
+                              width: 3.0,
                             ),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -106,7 +128,8 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                               ),
                             ),
                           ),
-                          child: cardData.ownerID == ARMOYU.appUser.userID
+                          child: cardData.ownerID ==
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID
                               ? Align(
                                   alignment: Alignment.bottomRight,
                                   child: Container(
@@ -128,10 +151,12 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                         ),
                         const SizedBox(height: 2),
                         CustomText.costum1(
-                            cardData.ownerID == ARMOYU.appUser.userID
-                                ? "Hikayen"
-                                : cardData.ownerusername,
-                            size: 11),
+                          cardData.ownerID ==
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID
+                              ? "Hikayen"
+                              : cardData.ownerusername,
+                          size: 11,
+                        ),
                       ],
                     ),
                   );

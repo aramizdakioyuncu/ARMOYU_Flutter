@@ -159,7 +159,9 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
                             children: [
                               CircleAvatar(
                                 foregroundImage: CachedNetworkImageProvider(
-                                    ARMOYU.appUser.avatar!.mediaURL.minURL),
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
+                                      .mediaURL.minURL,
+                                ),
                                 radius: 16,
                               ),
                               const SizedBox(width: 10),

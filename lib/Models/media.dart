@@ -67,7 +67,7 @@ class Media {
         );
       },
       onLongPress: () {
-        if (ownerID != ARMOYU.appUser.userID) {
+        if (ownerID != ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
           return;
         }
         showModalBottomSheet<void>(

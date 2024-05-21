@@ -173,7 +173,8 @@ class _CameraScreenState extends State<CameraScreen> {
       if (cameras.isNotEmpty) {
         _cameraController = CameraController(
           cameras[_camScreen],
-          ResolutionPreset.medium,
+          ResolutionPreset.high,
+          enableAudio: true,
         );
         await _cameraController.initialize();
 
@@ -332,6 +333,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                     ),
                                   )
                                 : GestureDetector(
+                                    onDoubleTap: () => _changeCamera(),
                                     onScaleUpdate: (details) {
                                       double newScale;
                                       log(details.scale.toString());
@@ -455,8 +457,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
-                                        ARMOYU
-                                            .appUser.avatar!.mediaURL.normalURL,
+                                        ARMOYU.appUsers[ARMOYU.selectedUser]
+                                            .avatar!.mediaURL.normalURL,
                                       ),
                                       radius: 12,
                                     ),
@@ -468,8 +470,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
-                                        ARMOYU
-                                            .appUser.avatar!.mediaURL.normalURL,
+                                        ARMOYU.appUsers[ARMOYU.selectedUser]
+                                            .avatar!.mediaURL.normalURL,
                                       ),
                                       radius: 12,
                                     ),

@@ -1,13 +1,16 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
 class SkeletonStorycircle extends StatefulWidget {
+  final User? currentUser;
   final int count;
 
   const SkeletonStorycircle({
     super.key,
+    required this.currentUser,
     required this.count,
   });
 
@@ -47,7 +50,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                ARMOYU.appUser.avatar!.mediaURL.minURL,
+                                widget.currentUser!.avatar!.mediaURL.minURL,
                               ),
                             ),
                           )

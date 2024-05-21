@@ -5,6 +5,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/news.dart';
 import 'package:ARMOYU/Models/news.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/News/news_page.dart';
@@ -190,7 +191,9 @@ class _SearchPagePage extends State<SearchPage>
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ProfilePage(
-                          userID: response["icerik"][i]["ID"],
+                          currentUser: User(
+                            userID: response["icerik"][i]["ID"],
+                          ),
                           appbar: true,
                           scrollController: ScrollController(),
                         ),

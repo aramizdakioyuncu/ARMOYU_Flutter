@@ -45,9 +45,11 @@ class CustomText {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfilePage(
+                      currentUser: User(
+                        userName: user.userName,
+                      ),
                       scrollController: ScrollController(),
                       appbar: true,
-                      username: user.userName,
                     ),
                   ),
                 );
@@ -78,7 +80,9 @@ class CustomText {
                 builder: (context) => ProfilePage(
                   scrollController: ScrollController(),
                   appbar: true,
-                  username: user.userName,
+                  currentUser: User(
+                    userName: user.userName,
+                  ),
                 ),
               ),
             );

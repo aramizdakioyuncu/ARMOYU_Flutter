@@ -31,8 +31,9 @@ class Chat {
               const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
           leading: CircleAvatar(
             backgroundColor: Colors.transparent,
-            foregroundImage:
-                CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
+            foregroundImage: CachedNetworkImageProvider(
+              user.avatar!.mediaURL.minURL,
+            ),
           ),
           tileColor:
               chatNotification ? Colors.red.shade900 : ARMOYU.appbarColor,
@@ -64,8 +65,9 @@ class Chat {
         ListTile(
           leading: CircleAvatar(
             backgroundColor: Colors.transparent,
-            foregroundImage:
-                CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
+            foregroundImage: CachedNetworkImageProvider(
+              user.avatar!.mediaURL.minURL,
+            ),
           ),
           title: CustomText.costum1(user.displayName!),
           tileColor: ARMOYU.appbarColor,

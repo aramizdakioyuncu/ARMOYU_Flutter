@@ -15,11 +15,15 @@ import 'package:ARMOYU/Widgets/text.dart';
 
 import 'package:flutter/material.dart';
 
-final TextEditingController usernameController = TextEditingController();
-final TextEditingController passwordController = TextEditingController();
+final TextEditingController _usernameController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final bool accountAdd;
+  const LoginPage({
+    super.key,
+    this.accountAdd = false,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -31,6 +35,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.accountAdd) {
+      _usernameController.text = "";
+      _passwordController.text = "";
+    }
   }
 
   void setstatefunction() {
@@ -44,8 +53,9 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    String username = usernameController.text;
-    String password = passwordController.text;
+    String username = _usernameController.text;
+    String password = _passwordController.text;
+
     if (username == "" || password == "") {
       if (mounted) {
         ARMOYUWidget.stackbarNotification(
@@ -54,9 +64,30 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    setState(() {
-      loginProcess = true;
-    });
+    loginProcess = true;
+    setstatefunction();
+
+    if (widget.accountAdd) {
+      FunctionService f = FunctionService();
+      Map<String, dynamic> response =
+          await f.adduserAccount(username, password);
+
+      if (response["durum"] == 0 ||
+          response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+        String gelenyanit = response["aciklama"];
+        if (mounted) {
+          ARMOYUWidget.stackbarNotification(context, gelenyanit);
+        }
+        loginProcess = false;
+        setstatefunction();
+        return;
+      }
+
+      loginProcess = false;
+      setstatefunction();
+      Navigator.pop(context);
+      return;
+    }
 
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.login(username, password, false);
@@ -67,9 +98,8 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         ARMOYUWidget.stackbarNotification(context, gelenyanit);
       }
-      setState(() {
-        loginProcess = false;
-      });
+      loginProcess = false;
+      setstatefunction();
       return;
     }
 
@@ -81,14 +111,15 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => const Pages(),
+          builder: (context) => Pages(
+            currentUser: ARMOYU.appUsers[0],
+          ),
         ),
       );
     }
 
-    setState(() {
-      loginProcess = false;
-    });
+    loginProcess = false;
+    setstatefunction();
   }
 
   @override
@@ -113,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 16.0),
             CustomTextfields(setstate: setstatefunction).costum3(
               title: "Kullanıcı Adı / E-posta",
-              controller: usernameController,
+              controller: _usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
               type: TextInputType.emailAddress,
@@ -121,7 +152,7 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 16),
             CustomTextfields(setstate: setstatefunction).costum3(
               title: "Şifreniz",
-              controller: passwordController,
+              controller: _passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),

@@ -83,9 +83,12 @@ class _RestourantPage extends State<RestourantPage>
         });
       }
     }
-    setState(() {
-      fetchEquipmentProcess = false;
-    });
+
+    fetchEquipmentProcess = false;
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -137,6 +140,9 @@ class _RestourantPage extends State<RestourantPage>
                                       height: 60,
                                       fit: BoxFit.cover,
                                     ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
                                     Container(
                                       padding: const EdgeInsets.all(3),
                                       decoration: BoxDecoration(
@@ -145,6 +151,7 @@ class _RestourantPage extends State<RestourantPage>
                                       ),
                                       child: Text(
                                         widget.cafe.name,
+                                        textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500,
@@ -200,7 +207,7 @@ class _RestourantPage extends State<RestourantPage>
                                         .appbarColor, // ARMOYU.bacgroundcolor yerine Colors.white kullanıldı
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: InkWell(
+                                  child: GestureDetector(
                                     onTap: () {},
                                     child: Column(
                                       children: [

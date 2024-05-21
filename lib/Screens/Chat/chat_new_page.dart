@@ -15,21 +15,22 @@ class ChatNewPage extends StatefulWidget {
   State<ChatNewPage> createState() => _ChatNewPageState();
 }
 
-int chatnewpage = 1;
-bool _chatFriendsprocess = false;
-bool _isFirstFetch = true;
 List<Chat> _newchatList = [];
 
 List<Chat> _filteredItems = []; // Filtrelenmiş liste
 
-TextEditingController _newchatcontroller = TextEditingController();
-
 class _ChatNewPageState extends State<ChatNewPage>
     with AutomaticKeepAliveClientMixin<ChatNewPage> {
-  final ScrollController chatScrollController = ScrollController();
-
   @override
   bool get wantKeepAlive => true;
+
+  int _chatnewpage = 1;
+  bool _chatFriendsprocess = false;
+  bool _isFirstFetch = true;
+
+  final TextEditingController _newchatcontroller = TextEditingController();
+
+  final ScrollController chatScrollController = ScrollController();
 
   @override
   void initState() {
@@ -74,7 +75,7 @@ class _ChatNewPageState extends State<ChatNewPage>
       setState(() {});
     }
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getnewchatfriendlist(chatnewpage);
+    Map<String, dynamic> response = await f.getnewchatfriendlist(_chatnewpage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       _chatFriendsprocess = false;
@@ -82,7 +83,7 @@ class _ChatNewPageState extends State<ChatNewPage>
       return;
     }
 
-    if (chatnewpage == 1) {
+    if (_chatnewpage == 1) {
       _newchatList.clear();
     }
     if (response["icerik"].length == 0) {
@@ -123,7 +124,7 @@ class _ChatNewPageState extends State<ChatNewPage>
       }
     }
     _filteredItems = _newchatList;
-    chatnewpage++;
+    _chatnewpage++;
     _chatFriendsprocess = false;
   }
 

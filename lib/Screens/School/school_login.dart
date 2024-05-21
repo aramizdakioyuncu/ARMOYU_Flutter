@@ -158,141 +158,148 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Okul Seçim"),
-        backgroundColor: Colors.black,
+        backgroundColor: ARMOYU.backgroundcolor,
       ),
       body: RefreshIndicator(
         onRefresh: () => _handleRefresh(),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              CachedNetworkImage(
-                imageUrl: schoollogo,
-                height: 250,
-                fit: BoxFit.cover,
-                placeholder: (context, url) =>
-                    const CupertinoActivityIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
-              const SizedBox(height: 16),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () async {
-                  _showDialog(
-                    CupertinoPicker(
-                      magnification: 1.22,
-                      squeeze: 1.2,
-                      useMagnifier: true,
-                      itemExtent: _kItemExtent,
-                      scrollController: FixedExtentScrollController(
-                        initialItem: _selectedcupertinolist,
-                      ),
-                      onSelectedItemChanged: (int selectedItem) async {
-                        setState(() {
-                          _selectedcupertinolist = selectedItem;
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                CachedNetworkImage(
+                  imageUrl: schoollogo,
+                  height: 250,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const CupertinoActivityIndicator(),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+                const SizedBox(height: 16),
+                CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () async {
+                    _showDialog(
+                      CupertinoPicker(
+                        magnification: 1.22,
+                        squeeze: 1.2,
+                        useMagnifier: true,
+                        itemExtent: _kItemExtent,
+                        scrollController: FixedExtentScrollController(
+                          initialItem: _selectedcupertinolist,
+                        ),
+                        onSelectedItemChanged: (int selectedItem) async {
+                          setState(() {
+                            _selectedcupertinolist = selectedItem;
 
-                          try {
-                            schoollogo = _cupertinolist[_selectedcupertinolist]
-                                    ["logo"]
-                                .toString();
+                            try {
+                              schoollogo =
+                                  _cupertinolist[_selectedcupertinolist]["logo"]
+                                      .toString();
 
-                            Timer(const Duration(milliseconds: 700), () async {
-                              if (_selectedcupertinolist.toString() !=
-                                  selectedItem.toString()) {
+                              Timer(const Duration(milliseconds: 700),
+                                  () async {
+                                if (_selectedcupertinolist.toString() !=
+                                    selectedItem.toString()) {
+                                  // isProcces = false;
+                                  return;
+                                }
+
+                                getschoolclass(
+                                    _cupertinolist[_selectedcupertinolist]
+                                        ["ID"]!,
+                                    _cupertinolist2);
+
                                 // isProcces = false;
-                                return;
-                              }
-
-                              getschoolclass(
-                                  _cupertinolist[_selectedcupertinolist]["ID"]!,
-                                  _cupertinolist2);
-
-                              // isProcces = false;
-                            });
-                          } catch (e) {
-                            log(e.toString());
-                          }
-                        });
-                      },
-                      children: List<Widget>.generate(_cupertinolist.length,
-                          (int index) {
-                        return Center(
-                          child:
-                              Text(_cupertinolist[index]["value"].toString()),
-                        );
-                      }),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: ARMOYU.screenWidth - 10,
-                  padding: const EdgeInsets.all(16.0),
-                  color: ARMOYU.textbackColor,
-                  child: Text(
-                    _cupertinolist[_selectedcupertinolist]["value"].toString(),
-                    style: const TextStyle(
-                      fontSize: 22.0,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                onPressed: () async {
-                  _showDialog(
-                    CupertinoPicker(
-                      magnification: 1.22,
-                      squeeze: 1.2,
-                      useMagnifier: true,
-                      itemExtent: _kItemExtent,
-                      scrollController: FixedExtentScrollController(
-                        initialItem: _selectedcupertinolist2,
+                              });
+                            } catch (e) {
+                              log(e.toString());
+                            }
+                          });
+                        },
+                        children: List<Widget>.generate(_cupertinolist.length,
+                            (int index) {
+                          return Center(
+                            child:
+                                Text(_cupertinolist[index]["value"].toString()),
+                          );
+                        }),
                       ),
-                      onSelectedItemChanged: (int selectedItem) async {
-                        setState(() {
-                          _selectedcupertinolist2 = selectedItem;
-                        });
-                      },
-                      children: List<Widget>.generate(_cupertinolist2.length,
-                          (int index) {
-                        return Center(
-                            child: Text(
-                                _cupertinolist2[index]["value"].toString()));
-                      }),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: ARMOYU.screenWidth - 10,
-                  padding: const EdgeInsets.all(16.0),
-                  color: ARMOYU.textbackColor,
-                  child: Text(
-                    _cupertinolist2[_selectedcupertinolist2]["value"]
-                        .toString(),
-                    style: const TextStyle(
-                      fontSize: 22.0,
+                    );
+                  },
+                  child: Container(
+                    width: ARMOYU.screenWidth - 10,
+                    padding: const EdgeInsets.all(16.0),
+                    color: ARMOYU.textbackColor,
+                    child: Text(
+                      _cupertinolist[_selectedcupertinolist]["value"]
+                          .toString(),
+                      style: const TextStyle(
+                        fontSize: 22.0,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              CustomTextfields(setstate: setstatefunction).costum3(
-                title: "Parola",
-                controller: schoolpassword,
-                isPassword: true,
-                preicon: const Icon(Icons.security),
-                type: TextInputType.number,
-              ),
-              const SizedBox(height: 16),
-              CustomButtons.costum1(
-                text: "Katıl",
-                onPressed: loginschool,
-                loadingStatus: schoolProcess,
-              ),
-            ],
+                const SizedBox(height: 16),
+                CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () async {
+                    _showDialog(
+                      CupertinoPicker(
+                        magnification: 1.22,
+                        squeeze: 1.2,
+                        useMagnifier: true,
+                        itemExtent: _kItemExtent,
+                        scrollController: FixedExtentScrollController(
+                          initialItem: _selectedcupertinolist2,
+                        ),
+                        onSelectedItemChanged: (int selectedItem) async {
+                          setState(() {
+                            _selectedcupertinolist2 = selectedItem;
+                          });
+                        },
+                        children: List<Widget>.generate(_cupertinolist2.length,
+                            (int index) {
+                          return Center(
+                              child: Text(
+                                  _cupertinolist2[index]["value"].toString()));
+                        }),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: ARMOYU.screenWidth - 10,
+                    padding: const EdgeInsets.all(16.0),
+                    color: ARMOYU.textbackColor,
+                    child: Text(
+                      _cupertinolist2[_selectedcupertinolist2]["value"]
+                          .toString(),
+                      style: const TextStyle(
+                        fontSize: 22.0,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                CustomTextfields(setstate: setstatefunction).costum3(
+                  title: "Parola",
+                  controller: schoolpassword,
+                  isPassword: true,
+                  preicon: const Icon(Icons.security),
+                  type: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                CustomButtons.costum1(
+                  text: "Katıl",
+                  onPressed: loginschool,
+                  loadingStatus: schoolProcess,
+                ),
+              ],
+            ),
           ),
         ),
       ),

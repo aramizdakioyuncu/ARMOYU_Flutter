@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,9 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
             MaterialPageRoute(
               builder: (context) => ProfilePage(
                 appbar: false,
-                userID: widget.userID,
+                currentUser: User(
+                  userID: widget.userID,
+                ),
                 scrollController: ScrollController(),
               ),
             ),

@@ -155,7 +155,7 @@ class ARMOYUFunctions {
 
   static void selectFavTeam(context, {bool? force}) {
     if (force == null || force == false) {
-      if (ARMOYU.appUser.favTeam != null) {
+      if (ARMOYU.appUsers[ARMOYU.selectedUser].favTeam != null) {
         log("Favori Takım seçilmiş");
         return;
       }
@@ -258,10 +258,10 @@ class ARMOYUFunctions {
       return;
     }
     if (team != null) {
-      ARMOYU.appUser.favTeam =
+      ARMOYU.appUsers[ARMOYU.selectedUser].favTeam =
           Team(teamID: team.teamID, name: team.name, logo: team.logo);
     } else {
-      ARMOYU.appUser.favTeam = null;
+      ARMOYU.appUsers[ARMOYU.selectedUser].favTeam = null;
     }
   }
 
@@ -325,10 +325,11 @@ class ARMOYUFunctions {
         ),
       );
 
-      if (ARMOYU.appUser.country != null) {
-        if (country["country_ID"] == ARMOYU.appUser.country!.countryID) {
+      if (ARMOYU.appUsers[ARMOYU.selectedUser].country != null) {
+        if (country["country_ID"] ==
+            ARMOYU.appUsers[ARMOYU.selectedUser].country!.countryID) {
           fetchProvince(
-            ARMOYU.appUser.country!.countryID,
+            ARMOYU.appUsers[ARMOYU.selectedUser].country!.countryID,
             ARMOYU.countryList.length - 1,
             setstatefunction,
           );
@@ -386,28 +387,29 @@ class ARMOYUFunctions {
 
   static void profileEdit(BuildContext context, Function setstatefunction) {
     final TextEditingController firstName = TextEditingController();
-    firstName.text = ARMOYU.appUser.firstName.toString();
+    firstName.text = ARMOYU.appUsers[ARMOYU.selectedUser].firstName.toString();
     final TextEditingController lastName = TextEditingController();
-    lastName.text = ARMOYU.appUser.lastName.toString();
+    lastName.text = ARMOYU.appUsers[ARMOYU.selectedUser].lastName.toString();
 
     final TextEditingController email = TextEditingController();
-    email.text = ARMOYU.appUser.userMail.toString();
+    email.text = ARMOYU.appUsers[ARMOYU.selectedUser].userMail.toString();
 
     final TextEditingController birthday = TextEditingController();
-    birthday.text = ARMOYU.appUser.birthdayDate.toString();
+    birthday.text =
+        ARMOYU.appUsers[ARMOYU.selectedUser].birthdayDate.toString();
 
     String country = "Ülke Seçim";
     int? countryIndex = 0;
-    if (ARMOYU.appUser.country != null) {
-      country = ARMOYU.appUser.country!.name;
-      countryIndex = ARMOYU.appUser.country!.countryID;
+    if (ARMOYU.appUsers[ARMOYU.selectedUser].country != null) {
+      country = ARMOYU.appUsers[ARMOYU.selectedUser].country!.name;
+      countryIndex = ARMOYU.appUsers[ARMOYU.selectedUser].country!.countryID;
     }
 
     String province = "İl Seçim";
     int? provinceIndex = 0;
-    if (ARMOYU.appUser.province != null) {
-      province = ARMOYU.appUser.province!.name;
-      provinceIndex = ARMOYU.appUser.province!.provinceID;
+    if (ARMOYU.appUsers[ARMOYU.selectedUser].province != null) {
+      province = ARMOYU.appUsers[ARMOYU.selectedUser].province!.name;
+      provinceIndex = ARMOYU.appUsers[ARMOYU.selectedUser].province!.provinceID;
     }
 
     if (ARMOYU.countryList.isNotEmpty) {
@@ -423,7 +425,8 @@ class ARMOYUFunctions {
     }
 
     final TextEditingController phoneNumber = TextEditingController();
-    phoneNumber.text = formatString(ARMOYU.appUser.phoneNumber.toString());
+    phoneNumber.text = formatString(
+        ARMOYU.appUsers[ARMOYU.selectedUser].phoneNumber.toString());
 
     final TextEditingController passwordControl = TextEditingController();
     bool profileeditProcess = false;
@@ -443,7 +446,8 @@ class ARMOYUFunctions {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 45.0),
                           child: CachedNetworkImage(
-                            imageUrl: ARMOYU.appUser.banner!.mediaURL.normalURL,
+                            imageUrl: ARMOYU.appUsers[ARMOYU.selectedUser]
+                                .banner!.mediaURL.normalURL,
                             height: 200,
                             width: ARMOYU.screenWidth,
                             fit: BoxFit.cover,
@@ -457,7 +461,8 @@ class ARMOYUFunctions {
                               CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 foregroundImage: CachedNetworkImageProvider(
-                                  ARMOYU.appUser.avatar!.mediaURL.normalURL,
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
+                                      .mediaURL.normalURL,
                                 ),
                                 radius: 40,
                               ),
@@ -497,7 +502,9 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU.appUser.displayName,
+                                  placeholder: ARMOYU
+                                      .appUsers[ARMOYU.selectedUser]
+                                      .displayName,
                                   controller: firstName,
                                 ),
                               )
@@ -520,7 +527,9 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU.appUser.displayName,
+                                  placeholder: ARMOYU
+                                      .appUsers[ARMOYU.selectedUser]
+                                      .displayName,
                                   controller: lastName,
                                 ),
                               )
@@ -547,7 +556,8 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU.appUser.userMail,
+                                  placeholder: ARMOYU
+                                      .appUsers[ARMOYU.selectedUser].userMail,
                                   controller: email,
                                 ),
                               )
@@ -795,12 +805,16 @@ class ARMOYUFunctions {
                                     response["aciklama"].toString());
                                 return;
                               }
-                              ARMOYU.appUser.firstName = firstName.text;
-                              ARMOYU.appUser.lastName = lastName.text;
-                              ARMOYU.appUser.displayName =
+                              ARMOYU.appUsers[ARMOYU.selectedUser].firstName =
+                                  firstName.text;
+                              ARMOYU.appUsers[ARMOYU.selectedUser].lastName =
+                                  lastName.text;
+                              ARMOYU.appUsers[ARMOYU.selectedUser].displayName =
                                   "${firstName.text} ${lastName.text}";
-                              ARMOYU.appUser.userMail = email.text;
-                              ARMOYU.appUser.country = Country(
+                              ARMOYU.appUsers[ARMOYU.selectedUser].userMail =
+                                  email.text;
+                              ARMOYU.appUsers[ARMOYU.selectedUser].country =
+                                  Country(
                                 countryID: int.parse(countryID),
                                 name: ARMOYU.countryList[countryIndex!].name,
                                 countryCode: ARMOYU
@@ -808,7 +822,8 @@ class ARMOYUFunctions {
                                 phoneCode:
                                     ARMOYU.countryList[countryIndex!].phoneCode,
                               );
-                              ARMOYU.appUser.province = Province(
+                              ARMOYU.appUsers[ARMOYU.selectedUser].province =
+                                  Province(
                                 provinceID: int.parse(provinceID),
                                 name: ARMOYU.countryList[countryIndex!]
                                     .provinceList![provinceIndex!].name,
@@ -817,8 +832,10 @@ class ARMOYUFunctions {
                                 phoneCode: ARMOYU.countryList[countryIndex!]
                                     .provinceList![provinceIndex!].phoneCode,
                               );
-                              ARMOYU.appUser.phoneNumber = cleanedphoneNumber;
-                              ARMOYU.appUser.birthdayDate = birthday.text;
+                              ARMOYU.appUsers[ARMOYU.selectedUser].phoneNumber =
+                                  cleanedphoneNumber;
+                              ARMOYU.appUsers[ARMOYU.selectedUser]
+                                  .birthdayDate = birthday.text;
 
                               ARMOYUWidget.toastNotification(
                                   response["aciklama"].toString());

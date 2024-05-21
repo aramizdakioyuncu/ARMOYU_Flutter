@@ -13,13 +13,13 @@ class GalleryScreen extends StatefulWidget {
   State<GalleryScreen> createState() => _GalleryScreenState();
 }
 
-final List<Media> mediaGallery = [];
+final List<Media> _mediaGallery = [];
 int _gallerycounter = 0;
 bool _ismediaProcces = false;
 bool _mediaUploadProcess = false;
 
 bool _pageisactive = false;
-late TabController tabController;
+late TabController _tabController;
 List<Media> _mediaList = [];
 final ScrollController _galleryscrollcontroller = ScrollController();
 
@@ -48,18 +48,18 @@ class _GalleryScreenState extends State<GalleryScreen>
       }
     });
 
-    tabController = TabController(
+    _tabController = TabController(
       initialIndex: 0,
       length: 2,
       vsync: this,
     );
-    tabController.addListener(() {
-      if (tabController.indexIsChanging ||
-          tabController.index != tabController.previousIndex) {
-        if (tabController.index == 0) {
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging ||
+          _tabController.index != _tabController.previousIndex) {
+        if (_tabController.index == 0) {
           setstatefunction();
         }
-        if (tabController.index == 1) {
+        if (_tabController.index == 1) {
           setstatefunction();
         }
       }
@@ -114,8 +114,8 @@ class _GalleryScreenState extends State<GalleryScreen>
     }
     _ismediaProcces = true;
     FunctionsMedia f = FunctionsMedia();
-    Map<String, dynamic> response =
-        await f.fetch(ARMOYU.appUser.userID!, "", _gallerycounter + 1);
+    Map<String, dynamic> response = await f.fetch(
+        ARMOYU.appUsers[ARMOYU.selectedUser].userID!, "", _gallerycounter + 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -124,12 +124,12 @@ class _GalleryScreenState extends State<GalleryScreen>
     }
 
     if (reloadpage) {
-      mediaGallery.clear();
+      _mediaGallery.clear();
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
       Map<String, dynamic> mediaInfo = response["icerik"][i];
-      mediaGallery.add(
+      _mediaGallery.add(
         Media(
           mediaID: mediaInfo["media_ID"],
           ownerID: mediaInfo["media_ownerID"],
@@ -161,7 +161,7 @@ class _GalleryScreenState extends State<GalleryScreen>
           TabBar(
             unselectedLabelColor: Colors.grey,
             labelColor: Colors.white,
-            controller: tabController,
+            controller: _tabController,
             isScrollable: false,
             indicatorColor: Colors.blue,
             tabs: [
@@ -177,7 +177,7 @@ class _GalleryScreenState extends State<GalleryScreen>
           ),
           Expanded(
             child: TabBarView(
-              controller: tabController,
+              controller: _tabController,
               children: [
                 RefreshIndicator(
                   onRefresh: () async => galleryfetch(reloadpage: true),
@@ -209,13 +209,13 @@ class _GalleryScreenState extends State<GalleryScreen>
                         ),
                         GridView.builder(
                           controller: ScrollController(),
-                          itemCount: mediaGallery.length,
+                          itemCount: _mediaGallery.length,
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
-                            return mediaGallery[index].mediaGallery(
+                            return _mediaGallery[index].mediaGallery(
                                 context: context,
                                 index: index,
-                                medialist: mediaGallery,
+                                medialist: _mediaGallery,
                                 storyShare: true,
                                 setstatefunction: setstatefunction);
                           },

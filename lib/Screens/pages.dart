@@ -6,12 +6,17 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/app.dart';
 import 'package:ARMOYU/Functions/functions.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Screens/main_page.dart';
 import 'package:ARMOYU/Screens/Chat/chat_page.dart';
 
 class Pages extends StatefulWidget {
-  const Pages({super.key});
+  final User? currentUser;
+  const Pages({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<Pages> createState() => _PagesState();
@@ -24,6 +29,7 @@ class _PagesState extends State<Pages> {
   @override
   void initState() {
     super.initState();
+
     siteMessage();
     _timerFunction();
   }
@@ -43,7 +49,7 @@ class _PagesState extends State<Pages> {
       return;
     }
 
-    if (ARMOYU.appUser.userID == null) {
+    if (widget.currentUser == null) {
       someCondition = true;
       return;
     }
@@ -86,10 +92,10 @@ class _PagesState extends State<Pages> {
 
 // /////////////////////////////
 
-  PageController pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 0);
   void changePage(int page) {
     setState(() {
-      pageController.animateToPage(
+      _pageController.animateToPage(
         page,
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
@@ -108,11 +114,11 @@ class _PagesState extends State<Pages> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: PageView(
-          controller: pageController,
+          controller: _pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            MainPage(changePage: changePage),
-            ChatPage(changePage: changePage),
+            MainPage(currentUser: widget.currentUser, changePage: changePage),
+            ChatPage(currentUser: widget.currentUser, changePage: changePage),
           ],
         ),
       ),

@@ -252,7 +252,9 @@ class _PostDetailPage extends State<PostDetailPage>
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
                   foregroundImage: CachedNetworkImageProvider(
-                      ARMOYU.appUser.avatar!.mediaURL.minURL),
+                    ARMOYU
+                        .appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
+                  ),
                   radius: 20),
             ),
             Expanded(

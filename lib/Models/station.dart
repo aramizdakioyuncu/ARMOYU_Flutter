@@ -3,6 +3,7 @@ import 'package:ARMOYU/Models/media.dart';
 class Station {
   final int stationID;
   final String name;
+  final String type;
   final Media logo;
   final Media banner;
   List<StationEquipment> products = [];
@@ -10,6 +11,7 @@ class Station {
   Station({
     required this.stationID,
     required this.name,
+    required this.type,
     required this.logo,
     required this.banner,
   });

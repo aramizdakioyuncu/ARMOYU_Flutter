@@ -202,7 +202,7 @@ class _EventStatePage extends State<EventPage> {
 
     //Bireysel Katılımcılar
     for (var element in response["icerik"]["participant_players"]) {
-      if (element["player_ID"] == ARMOYU.appUser.userID) {
+      if (element["player_ID"] == ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
         didijoin = true;
         setstatefunction();
       }
@@ -466,8 +466,10 @@ class _EventStatePage extends State<EventPage> {
                                   MaterialPageRoute(
                                     builder: (context) => ProfilePage(
                                       appbar: false,
-                                      userID: widget
-                                          .event.eventorganizer[index].userID,
+                                      currentUser: User(
+                                        userID: widget
+                                            .event.eventorganizer[index].userID,
+                                      ),
                                       scrollController: ScrollController(),
                                     ),
                                   ),
@@ -576,6 +578,8 @@ class _EventStatePage extends State<EventPage> {
                                               },
                                               child: CircleAvatar(
                                                 radius: 50,
+                                                backgroundColor:
+                                                    Colors.transparent,
                                                 foregroundImage:
                                                     CachedNetworkImageProvider(
                                                   widget
@@ -700,11 +704,14 @@ class _EventStatePage extends State<EventPage> {
                                                                   (context) =>
                                                                       ProfilePage(
                                                                 appbar: false,
-                                                                userID: groupParticipant[
-                                                                        index]
-                                                                    .groupUsers![
-                                                                        index2]
-                                                                    .userID,
+                                                                currentUser:
+                                                                    User(
+                                                                  userID: groupParticipant[
+                                                                          index]
+                                                                      .groupUsers![
+                                                                          index2]
+                                                                      .userID,
+                                                                ),
                                                                 scrollController:
                                                                     ScrollController(),
                                                               ),
@@ -712,6 +719,9 @@ class _EventStatePage extends State<EventPage> {
                                                           );
                                                         },
                                                         child: CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors
+                                                                  .transparent,
                                                           foregroundImage:
                                                               CachedNetworkImageProvider(
                                                             widget
@@ -808,28 +818,55 @@ class _EventStatePage extends State<EventPage> {
                                                 builder: (context) =>
                                                     ProfilePage(
                                                   appbar: false,
-                                                  userID: widget
-                                                      .event
-                                                      .participantpeopleList![
-                                                          index]
-                                                      .userID,
+                                                  currentUser: User(
+                                                    userID: widget
+                                                        .event
+                                                        .participantpeopleList![
+                                                            index]
+                                                        .userID,
+                                                  ),
                                                   scrollController:
                                                       ScrollController(),
                                                 ),
                                               ),
                                             );
                                           },
-                                          child: CircleAvatar(
-                                            foregroundImage:
-                                                CachedNetworkImageProvider(
-                                              widget
-                                                  .event
-                                                  .participantpeopleList![index]
-                                                  .avatar!
-                                                  .mediaURL
-                                                  .minURL,
+                                          child: InkWell(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProfilePage(
+                                                    appbar: false,
+                                                    currentUser: User(
+                                                      userID: widget
+                                                          .event
+                                                          .participantpeopleList![
+                                                              index]
+                                                          .userID!,
+                                                    ),
+                                                    scrollController:
+                                                        ScrollController(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: CircleAvatar(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              foregroundImage:
+                                                  CachedNetworkImageProvider(
+                                                widget
+                                                    .event
+                                                    .participantpeopleList![
+                                                        index]
+                                                    .avatar!
+                                                    .mediaURL
+                                                    .minURL,
+                                              ),
+                                              radius: 12,
                                             ),
-                                            radius: 12,
                                           ),
                                         ),
                                         const SizedBox(width: 5),
@@ -871,7 +908,7 @@ class _EventStatePage extends State<EventPage> {
                           child: Column(
                             children: [
                               CustomText.costum1(
-                                "Etkinliğe zaten katıldınız vazgeçmek için en son süre etkinlikten 30 dakika öncedir.",
+                                "Etkinliğe zaten katıldınız.Vazgeçmek için en son süre etkinlikten 30 dakika öncedir.",
                                 align: TextAlign.center,
                               ),
                               const SizedBox(height: 10),

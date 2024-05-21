@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/group.dart';
 import 'package:ARMOYU/Models/ARMOYU/role.dart';
 import 'package:ARMOYU/Models/group.dart';
@@ -15,9 +16,11 @@ import 'package:skeletons/skeletons.dart';
 
 class GroupPage extends StatefulWidget {
   final int groupID;
+  final Group? group;
   const GroupPage({
     super.key,
     required this.groupID,
+    this.group,
   });
 
   @override
@@ -27,17 +30,21 @@ class GroupPage extends StatefulWidget {
 class _GroupPage extends State<GroupPage> {
   bool _groupProcces = false;
   bool _groupusersfetchProcces = false;
-  Group _group = Group(
-    groupUsers: [],
-  );
+  Group _group = Group(groupUsers: []);
   @override
   void initState() {
     super.initState();
 
-    _group.groupID = widget.groupID;
+    if (widget.group == null) {
+      _group.groupUsers = [];
+      fetchGroupInfo();
+    } else {
+      _group = widget.group!;
 
-    _group.groupUsers = [];
-    fetchGroupInfo();
+      if (widget.group!.groupUsers == null) {
+        fetchusersfunction();
+      }
+    }
   }
 
   void setstatefunction() {
@@ -82,7 +89,6 @@ class _GroupPage extends State<GroupPage> {
       ),
     );
     setstatefunction();
-
     fetchusersfunction();
     setstatefunction();
   }
@@ -103,7 +109,6 @@ class _GroupPage extends State<GroupPage> {
 
     _group.groupUsers = [];
     for (var users in response["icerik"]) {
-      log(users["player_displayname"]);
       _group.groupUsers!.add(
         User(
           userID: users["player_ID"],
@@ -132,216 +137,235 @@ class _GroupPage extends State<GroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            pinned: true,
-            floating: false,
-            leading: BackButton(onPressed: () {
-              Navigator.pop(context);
-            }),
-            backgroundColor: Colors.black,
-            expandedHeight: 160.0,
-            actions: const <Widget>[],
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.only(left: 30.0),
-              centerTitle: false,
-              title: Stack(
-                children: [
-                  Wrap(
-                    children: [
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Column(
-                          children: [
-                            _group.groupLogo == null
-                                ? const SkeletonAvatar(
-                                    style: SkeletonAvatarStyle(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(30),
-                                      ),
-                                    ),
-                                  )
-                                : CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundImage: CachedNetworkImageProvider(
-                                      _group.groupLogo!.mediaURL.minURL,
-                                    ),
-                                    radius: 24,
-                                  ),
-                            const SizedBox(height: 2),
-                            Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Container(
-                                width: 100,
-                                decoration: BoxDecoration(
-                                  color: Colors.black26,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                padding: const EdgeInsets.all(2),
-                                child: _group.groupName == null
-                                    ? const SkeletonLine(
-                                        style: SkeletonLineStyle(width: 100),
-                                      )
-                                    : Text(
-                                        _group.groupName.toString(),
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await fetchusersfunction();
+          setstatefunction();
+        },
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: true,
+              floating: false,
+              leading: BackButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
-              background: _group.groupBanner == null
-                  ? null
-                  : CachedNetworkImage(
-                      imageUrl: _group.groupBanner!.mediaURL.minURL,
-                      progressIndicatorBuilder: (context, url, progress) =>
-                          const CupertinoActivityIndicator(),
-                      fit: BoxFit.cover,
-                    ),
-            ),
-          ),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                const SizedBox(height: 16.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              backgroundColor: Colors.black,
+              expandedHeight: 160.0,
+              actions: const <Widget>[],
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.only(left: 30.0),
+                centerTitle: false,
+                title: Stack(
                   children: [
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.house),
-                          ],
+                    Wrap(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Column(
+                            children: [
+                              _group.groupLogo == null
+                                  ? const SkeletonAvatar(
+                                      style: SkeletonAvatarStyle(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(30),
+                                        ),
+                                      ),
+                                    )
+                                  : CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      foregroundImage:
+                                          CachedNetworkImageProvider(
+                                        _group.groupLogo!.mediaURL.minURL,
+                                      ),
+                                      radius: 24,
+                                    ),
+                              const SizedBox(height: 2),
+                              Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black26,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  padding: const EdgeInsets.all(2),
+                                  child: _group.groupName == null
+                                      ? const SkeletonLine(
+                                          style: SkeletonLineStyle(width: 100),
+                                        )
+                                      : Text(
+                                          _group.groupName.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.userPlus),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.chartBar),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.upload),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.plug),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.gear),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {},
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            FaIcon(FontAwesomeIcons.arrowRightFromBracket),
-                          ],
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
-                _group.groupUsers == null
-                    ? Column(
-                        children: [
-                          SkeletonListTile(),
-                          SkeletonListTile(),
-                          SkeletonListTile(),
-                        ],
-                      )
-                    : Column(
-                        children: List.generate(
-                          _group.groupUsers!.length,
-                          (index) {
-                            return ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfilePage(
-                                      appbar: false,
-                                      userID: _group.groupUsers![index].userID,
-                                      scrollController: ScrollController(),
-                                    ),
-                                  ),
-                                );
-                              },
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                foregroundImage: CachedNetworkImageProvider(
-                                    _group.groupUsers![index].avatar!.mediaURL
-                                        .normalURL),
-                              ),
-                              title: CustomText.costum1(
-                                _group.groupUsers![index].displayName
-                                    .toString(),
-                              ),
-                              subtitle: CustomText.costum1(
-                                _group.groupUsers![index].role!.name.toString(),
-                              ),
-                            );
-                          },
-                        ),
+                background: _group.groupBanner == null
+                    ? null
+                    : CachedNetworkImage(
+                        imageUrl: _group.groupBanner!.mediaURL.minURL,
+                        progressIndicatorBuilder: (context, url, progress) =>
+                            const CupertinoActivityIndicator(),
+                        fit: BoxFit.cover,
                       ),
-              ],
+              ),
             ),
-          )
-        ],
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  const SizedBox(height: 16.0),
+                  Visibility(
+                    visible: ARMOYU.appUsers[ARMOYU.selectedUser].myGroups!
+                        .any((mygroup) => mygroup.groupID == _group.groupID),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(FontAwesomeIcons.house),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(FontAwesomeIcons.userPlus),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.chartBar,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(FontAwesomeIcons.upload),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(FontAwesomeIcons.plug),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(FontAwesomeIcons.gear),
+                              ],
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(FontAwesomeIcons.arrowRightFromBracket),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _group.groupUsers == null
+                      ? Column(
+                          children: [
+                            SkeletonListTile(),
+                            SkeletonListTile(),
+                            SkeletonListTile(),
+                          ],
+                        )
+                      : Column(
+                          children: List.generate(
+                            _group.groupUsers!.length,
+                            (index) {
+                              return ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfilePage(
+                                        appbar: false,
+                                        currentUser: User(
+                                          userID:
+                                              _group.groupUsers![index].userID,
+                                        ),
+                                        scrollController: ScrollController(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  foregroundImage: CachedNetworkImageProvider(
+                                      _group.groupUsers![index].avatar!.mediaURL
+                                          .normalURL),
+                                ),
+                                title: CustomText.costum1(
+                                  _group.groupUsers![index].displayName
+                                      .toString(),
+                                ),
+                                subtitle: CustomText.costum1(
+                                  _group.groupUsers![index].role!.name
+                                      .toString(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,9 @@ class _CustomMenusNotificationbarsState
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ProfilePage(
-                          userID: widget.userID,
+                          currentUser: User(
+                            userID: widget.userID,
+                          ),
                           appbar: true,
                           scrollController: ScrollController(),
                         ),

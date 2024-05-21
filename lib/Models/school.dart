@@ -10,6 +10,7 @@ class School {
   Media? schoolBanner;
   String? schoolURL;
   List<User>? schoolUsers;
+  int? schoolUsersCount;
 
   School({
     this.schoolID,
@@ -19,5 +20,6 @@ class School {
     this.schoolBanner,
     this.schoolURL,
     this.schoolUsers,
+    this.schoolUsersCount,
   });
 }

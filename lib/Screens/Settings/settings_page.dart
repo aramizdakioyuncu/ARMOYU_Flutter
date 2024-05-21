@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Models/language.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/Account/accountsettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/aboutsettings.dart';
@@ -12,11 +11,12 @@ import 'package:ARMOYU/Screens/Settings/SettingsPage/datasavingsetting.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/devicepermissions.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/helpsettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/notificationsetttings.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:ARMOYU/Widgets/Settings/listtile.dart';
 import 'package:ARMOYU/Widgets/text.dart';
+import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -28,14 +28,12 @@ class SettingsPage extends StatefulWidget {
 TextEditingController _settingsController = TextEditingController();
 
 class _SettingsPage extends State<SettingsPage> {
-  List<Languange> languageList = [];
+  List<Map<int, String>> languageList = [];
 
-  final double _kItemExtent = 32.0;
   List<Map<String, String>> cupertinolist = [
     {'ID': '-1', 'value': 'Seç'}
   ];
-  int _selectedcupertinolist = 0;
-
+  String selectedLanguage = "Türkçe";
   List<WidgetSettings> listSettings = [];
   List<WidgetSettings> filteredlistSettings = [];
 
@@ -52,14 +50,27 @@ class _SettingsPage extends State<SettingsPage> {
 
       return;
     }
-    passwordController.text = "";
 
-    if (mounted) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-        (Route<dynamic> route) => false,
+    if (ARMOYU.appUsers.isEmpty) {
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+          (Route<dynamic> route) => false,
+        );
+      }
+    } else {
+      pagescontroller.animateToPage(
+        0,
+        duration: const Duration(
+          milliseconds: 300,
+        ),
+        curve: Curves.ease,
       );
+      ARMOYU.selectedUser = 0;
+      if (mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -67,9 +78,9 @@ class _SettingsPage extends State<SettingsPage> {
   void initState() {
     super.initState();
 
-    languageList.add(Languange(name: "Türkçe", binaryname: "TR"));
-    languageList.add(Languange(name: "İngilizce", binaryname: "EN"));
-    languageList.add(Languange(name: "Almanca", binaryname: "DE"));
+    languageList.add({1: "Türkçe"});
+    languageList.add({1: "İngilizce"});
+    languageList.add({1: "Almanca"});
 
     listSettings = [
       WidgetSettings(
@@ -105,30 +116,20 @@ class _SettingsPage extends State<SettingsPage> {
       WidgetSettings(
         listtileIcon: Icons.language,
         listtileTitle: "Diller",
-        tralingText: languageList[_selectedcupertinolist].name,
+        tralingText: selectedLanguage,
         onTap: () {
-          _showDialog(
-            CupertinoPicker(
-              magnification: 1.22,
-              squeeze: 1.2,
-              useMagnifier: true,
-              itemExtent: _kItemExtent,
-              scrollController: FixedExtentScrollController(
-                initialItem: _selectedcupertinolist,
-              ),
-              onSelectedItemChanged: (int selectedItem) async {
-                setState(() {
-                  _selectedcupertinolist = selectedItem;
-                });
-              },
-              children: List<Widget>.generate(languageList.length, (int index) {
-                return Center(
-                  child: CustomText.costum1(
-                    languageList[index].name.toString(),
-                  ),
-                );
-              }),
-            ),
+          WidgetUtility.cupertinoselector(
+            context: context,
+            title: "Dil Seçimi",
+            onChanged: (selectedIndex, selectedValue) {
+              log(selectedIndex.toString());
+              log(selectedValue);
+
+              listSettings[3].tralingText = selectedValue;
+              setstatefunction();
+            },
+            setstatefunction: setstatefunction,
+            list: languageList,
           );
         },
       ),
@@ -217,22 +218,8 @@ class _SettingsPage extends State<SettingsPage> {
     });
   }
 
-  void _showDialog(Widget child) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) => Container(
-        height: 216,
-        padding: const EdgeInsets.only(top: 6.0),
-        margin: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        color: CupertinoColors.systemBackground.resolveFrom(context),
-        child: SafeArea(
-          top: false,
-          child: child,
-        ),
-      ),
-    );
+  setstatefunction() {
+    setState(() {});
   }
 
   @override
@@ -254,13 +241,17 @@ class _SettingsPage extends State<SettingsPage> {
                     tileColor: ARMOYU.backgroundcolor,
                     leading: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      foregroundImage: CachedNetworkImageProvider(
-                          ARMOYU.appUser.avatar!.mediaURL.minURL),
+                      foregroundImage: CachedNetworkImageProvider(ARMOYU
+                          .appUsers[ARMOYU.selectedUser]
+                          .avatar!
+                          .mediaURL
+                          .minURL),
                       radius: 28,
                     ),
-                    title: CustomText.costum1(ARMOYU.appUser.displayName!),
+                    title: CustomText.costum1(
+                        ARMOYU.appUsers[ARMOYU.selectedUser].displayName!),
                     subtitle: CustomText.costum1(
-                        "Hatalı Giriş: ${ARMOYU.appUser.lastfaillogin}"),
+                        "Hatalı Giriş: ${ARMOYU.appUsers[ARMOYU.selectedUser].lastfaillogin}"),
                     onTap: () {
                       Navigator.push(
                         context,

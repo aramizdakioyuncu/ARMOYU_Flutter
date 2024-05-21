@@ -9,10 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
 class SchoolPage extends StatefulWidget {
-  final int schoolID; // Zorunlu olarak alınacak veri
+  final School? school;
+  final int schoolID;
 
   const SchoolPage({
     super.key,
+    this.school,
     required this.schoolID,
   });
   @override
@@ -31,8 +33,11 @@ class _ProfilePageState extends State<SchoolPage>
     super.initState();
 
     _school = School();
-
-    schoolinfofetch();
+    if (widget.school == null) {
+      schoolinfofetch();
+    } else {
+      _school = widget.school!;
+    }
   }
 
   @override
@@ -112,7 +117,8 @@ class _ProfilePageState extends State<SchoolPage>
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15)),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(15),

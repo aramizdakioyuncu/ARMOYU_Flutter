@@ -4,14 +4,18 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Functions/API_Functions/station.dart';
 import 'package:ARMOYU/Functions/functions.dart';
+import 'package:ARMOYU/Models/group.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/school.dart';
 import 'package:ARMOYU/Models/station.dart';
 import 'package:ARMOYU/Models/team.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Business/applications_page.dart';
 import 'package:ARMOYU/Screens/Events/eventlist_page.dart';
 import 'package:ARMOYU/Screens/Group/group_create.dart';
 import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/Invite/invite_page.dart';
+import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Restourant/restourant_page.dart';
@@ -21,6 +25,9 @@ import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
 import 'package:ARMOYU/Screens/Survey/surveylist_page.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
+import 'package:ARMOYU/Screens/pages.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +40,13 @@ import 'Social/social_page.dart';
 import 'Notification/notification_page.dart';
 
 class MainPage extends StatefulWidget {
+  final User? currentUser;
+
   final dynamic changePage;
 
   const MainPage({
     super.key,
+    required this.currentUser,
     required this.changePage,
   });
 
@@ -56,14 +66,18 @@ bool postpageproccess = false;
 bool isRefreshing = false;
 bool firstProcces = false;
 
-final PageController _mainpagecontroller = PageController(initialPage: 0);
-final PageController _socailpageController = PageController(initialPage: 1);
-
 final TextEditingController appbarSearchTextController =
     TextEditingController();
 
 class _MainPageState extends State<MainPage>
     with AutomaticKeepAliveClientMixin<MainPage> {
+  final PageController _mainpagecontroller = PageController(initialPage: 0);
+  final PageController _socailpageController = PageController(initialPage: 1);
+
+  List<Station> widgetStations = [];
+  List<Station> widgetFoodStation = [];
+  List<Station> widgetGameStation = [];
+
   @override
   bool get wantKeepAlive => true;
 
@@ -74,6 +88,7 @@ class _MainPageState extends State<MainPage>
       ScrollController(initialScrollOffset: 0);
   final ScrollController _profileScrollController =
       ScrollController(initialScrollOffset: 0);
+
   @override
   void initState() {
     super.initState();
@@ -85,41 +100,12 @@ class _MainPageState extends State<MainPage>
     //Takımları Çek opsiyonel
     ARMOYUFunctions.favteamfetch();
     //Grup Oluştur ekle
+  }
 
-    setState(() {
-      widgetmyGroups.add(
-        ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: const Icon(Icons.add, size: 30, color: Colors.blue),
-          ),
-          title: const Text("Grup Oluştur"),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const GroupCreatePage()));
-          },
-        ),
-      );
-      widgetmySchools.add(
-        ListTile(
-          leading: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: const Icon(Icons.add, size: 30, color: Colors.blue),
-          ),
-          title: const Text("Okula Katıl"),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SchoolLoginPage(),
-              ),
-            );
-          },
-        ),
-      );
-    });
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> favteamselect(Team team) async {
@@ -130,8 +116,11 @@ class _MainPageState extends State<MainPage>
       return;
     }
 
-    ARMOYU.appUser.favTeam =
-        Team(teamID: team.teamID, name: team.name, logo: team.logo);
+    widget.currentUser!.favTeam = Team(
+      teamID: team.teamID,
+      name: team.name,
+      logo: team.logo,
+    );
   }
 
   int _currentPage = 0;
@@ -236,10 +225,6 @@ class _MainPageState extends State<MainPage>
     });
   }
 
-  List<Widget> widgetmyGroups = [];
-  List<Widget> widgetmySchools = [];
-  List<Station> widgetFoodStation = [];
-
   bool loadGroupProcess = false;
   Future<void> loadMyGroups() async {
     if (loadGroupProcess) {
@@ -258,37 +243,35 @@ class _MainPageState extends State<MainPage>
       return;
     }
 
-    if (mounted) {
-      _drawermygroup = true;
-      setState(() {
-        for (dynamic element in response["icerik"]) {
-          widgetmyGroups.add(
-            ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: CachedNetworkImage(
-                  imageUrl: element["grupminnaklogo"],
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              title: Text(element["grupadi"]),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GroupPage(
-                      groupID: element["grupID"],
-                    ),
-                  ),
-                );
-              },
+    _drawermygroup = true;
+    widget.currentUser!.myGroups = [];
+    for (dynamic element in response["icerik"]) {
+      widget.currentUser!.myGroups!.add(
+        Group(
+          groupID: element['group_ID'],
+          groupName: element['group_name'],
+          groupUsersCount: element['group_usercount'],
+          groupLogo: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL: element['group_logo']['media_bigURL'],
+              normalURL: element['group_logo']['media_URL'],
+              minURL: element['group_logo']['media_minURL'],
             ),
-          );
-        }
-      });
+          ),
+          groupBanner: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL: element['group_banner']['media_bigURL'],
+              normalURL: element['group_banner']['media_URL'],
+              minURL: element['group_banner']['media_minURL'],
+            ),
+          ),
+        ),
+      );
     }
+
+    setstatefunction();
   }
 
   bool loadfoodStationProcess = false;
@@ -300,43 +283,51 @@ class _MainPageState extends State<MainPage>
     loadfoodStationProcess = true;
 
     FunctionsStation f = FunctionsStation();
-    Map<String, dynamic> response = await f.fetchfoodstation();
+    Map<String, dynamic> response = await f.fetchStations();
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       loadfoodStationProcess = false;
       return;
     }
-    widgetFoodStation.clear();
+    widgetStations.clear();
     for (dynamic element in response["icerik"]) {
-      if (mounted) {
-        setState(() {
-          widgetFoodStation.add(
-            Station(
-              stationID: element["station_ID"],
-              name: element["station_name"],
-              logo: Media(
-                mediaID: element["station_ID"],
-                mediaURL: MediaURL(
-                  bigURL: element["station_logo"],
-                  normalURL: element["station_logo"],
-                  minURL: element["station_logo"],
-                ),
-              ),
-              banner: Media(
-                mediaID: element["station_ID"],
-                mediaURL: MediaURL(
-                  bigURL: element["station_banner"],
-                  normalURL: element["station_banner"],
-                  minURL: element["station_banner"],
-                ),
-              ),
+      widgetStations.add(
+        Station(
+          stationID: element["station_ID"],
+          name: element["station_name"],
+          type: element["station_type"],
+          logo: Media(
+            mediaID: element["station_ID"],
+            mediaURL: MediaURL(
+              bigURL: element["station_logo"]["media_bigURL"],
+              normalURL: element["station_logo"]["media_URL"],
+              minURL: element["station_logo"]["media_minURL"],
             ),
-          );
-        });
-      }
+          ),
+          banner: Media(
+            mediaID: element["station_ID"],
+            mediaURL: MediaURL(
+              bigURL: element["station_banner"]["media_bigURL"],
+              normalURL: element["station_banner"]["media_URL"],
+              minURL: element["station_banner"]["media_minURL"],
+            ),
+          ),
+        ),
+      );
     }
+
+    widgetFoodStation = widgetStations.where((item) {
+      return item.type.toLowerCase().contains("yemek");
+    }).toList();
+
+    widgetGameStation = widgetStations.where((item) {
+      return item.type.toLowerCase().contains("cafe");
+    }).toList();
+
     _drawermyfood = true;
     loadfoodStationProcess = false;
+
+    setstatefunction();
   }
 
   bool loadmySchoolProcess = false;
@@ -359,38 +350,36 @@ class _MainPageState extends State<MainPage>
       return;
     }
 
-    if (mounted) {
-      _drawermyschool = true;
-      for (int i = 0; i < response["icerik"].length; i++) {
-        setState(() {
-          widgetmySchools.add(
-            ListTile(
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: CachedNetworkImage(
-                  imageUrl: response["icerik"][i]["okul_minnaklogo"],
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              title: Text(response["icerik"][i]["okul_adi"]),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SchoolPage(
-                      schoolID: response["icerik"][i]["okul_ID"],
-                    ),
-                  ),
-                );
-              },
+    _drawermyschool = true;
+
+    widget.currentUser!.mySchools = [];
+    for (int i = 0; i < response["icerik"].length; i++) {
+      widget.currentUser!.mySchools!.add(
+        School(
+          schoolID: response["icerik"][i]["school_ID"],
+          schoolName: response["icerik"][i]["school_name"],
+          schoolUsersCount: response["icerik"][i]["school_uyesayisi"],
+          schoolLogo: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL: response["icerik"][i]["school_logo"]["media_bigURL"],
+              normalURL: response["icerik"][i]["school_logo"]["media_URL"],
+              minURL: response["icerik"][i]["school_logo"]["media_minURL"],
             ),
-          );
-        });
-      }
-      loadmySchoolProcess = false;
+          ),
+          schoolBanner: Media(
+            mediaID: 0,
+            mediaURL: MediaURL(
+              bigURL: response["icerik"][i]["school_banner"]["media_bigURL"],
+              normalURL: response["icerik"][i]["school_banner"]["media_URL"],
+              minURL: response["icerik"][i]["school_banner"]["media_minURL"],
+            ),
+          ),
+        ),
+      );
     }
+    loadmySchoolProcess = false;
+    setstatefunction();
   }
 
   @override
@@ -428,11 +417,11 @@ class _MainPageState extends State<MainPage>
                           padding: const EdgeInsets.all(12.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50.0),
-                            child: ARMOYU.appUser.avatar == null
+                            child: widget.currentUser!.avatar == null
                                 ? const SkeletonAvatar()
                                 : CachedNetworkImage(
-                                    imageUrl:
-                                        ARMOYU.appUser.avatar!.mediaURL.minURL,
+                                    imageUrl: widget
+                                        .currentUser!.avatar!.mediaURL.minURL,
                                     width: 30,
                                     height: 30,
                                     fit: BoxFit.cover,
@@ -495,40 +484,46 @@ class _MainPageState extends State<MainPage>
                   child: Column(
                     children: [
                       UserAccountsDrawerHeader(
-                        accountName: ARMOYU.appUser.displayName == null
+                        accountName: widget.currentUser!.displayName == null
                             ? const SkeletonLine(
                                 style: SkeletonLineStyle(width: 20),
                               )
                             : Text(
-                                ARMOYU.appUser.displayName!,
+                                widget.currentUser!.displayName!,
                                 style: const TextStyle(color: Colors.white),
                               ),
-                        accountEmail: ARMOYU.appUser.userMail == null
+                        accountEmail: widget.currentUser!.userMail == null
                             ? const SkeletonLine(
                                 style: SkeletonLineStyle(width: 20),
                               )
-                            : Text(ARMOYU.appUser.userMail!,
-                                style: const TextStyle(color: Colors.white)),
+                            : Text(
+                                widget.currentUser!.userMail!,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
                         currentAccountPicture: GestureDetector(
                           onTap: () {
                             _changePage(3);
                             Navigator.of(context).pop();
                           },
-                          child: ARMOYU.appUser.avatar == null
+                          child: widget.currentUser!.avatar == null
                               ? const SkeletonAvatar()
                               : CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   foregroundImage: CachedNetworkImageProvider(
-                                      ARMOYU.appUser.avatar!.mediaURL.minURL),
+                                      widget.currentUser!.avatar!.mediaURL
+                                          .minURL),
                                 ),
                         ),
                         currentAccountPictureSize: const Size.square(70),
-                        decoration: ARMOYU.appUser.banner == null
+                        decoration: widget.currentUser!.banner == null
                             ? null
                             : BoxDecoration(
                                 image: DecorationImage(
                                   image: CachedNetworkImageProvider(
-                                      ARMOYU.appUser.banner!.mediaURL.minURL),
+                                    widget.currentUser!.banner!.mediaURL.minURL,
+                                  ),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -556,10 +551,12 @@ class _MainPageState extends State<MainPage>
                                 title: const Text("Haberler"),
                                 onTap: () {
                                   Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const NewslistPage()));
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NewslistPage(),
+                                    ),
+                                  );
                                 },
                               ),
                               ExpansionTile(
@@ -574,15 +571,77 @@ class _MainPageState extends State<MainPage>
                                     }
                                   }
                                 },
-                                children: widgetmyGroups.length == 1
-                                    ? [
-                                        widgetmyGroups[0],
-                                        const Padding(
+                                children: [
+                                  ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: const Icon(Icons.add,
+                                          size: 30, color: Colors.blue),
+                                    ),
+                                    title: const Text("Grup Oluştur"),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const GroupCreatePage(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  widget.currentUser!.myGroups == null
+                                      ? const Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: CupertinoActivityIndicator(),
                                         )
-                                      ]
-                                    : widgetmyGroups,
+                                      : widget.currentUser!.myGroups!.isEmpty
+                                          ? const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child:
+                                                  CupertinoActivityIndicator(),
+                                            )
+                                          : Container(),
+                                  ...List.generate(
+                                      widget.currentUser!.myGroups == null
+                                          ? 0
+                                          : widget.currentUser!.myGroups!
+                                              .length, (index) {
+                                    return ListTile(
+                                      leading: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl: widget
+                                              .currentUser!
+                                              .myGroups![index]
+                                              .groupLogo!
+                                              .mediaURL
+                                              .minURL,
+                                          width: 30,
+                                          height: 30,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        widget.currentUser!.myGroups![index]
+                                            .groupName!,
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => GroupPage(
+                                              group: widget.currentUser!
+                                                  .myGroups![index],
+                                              groupID: widget.currentUser!
+                                                  .myGroups![index].groupID!,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }),
+                                ],
                               ),
                               ExpansionTile(
                                 textColor: ARMOYU.textColor,
@@ -596,15 +655,77 @@ class _MainPageState extends State<MainPage>
                                     }
                                   }
                                 },
-                                children: widgetmySchools.length == 1
-                                    ? [
-                                        widgetmySchools[0],
-                                        const Padding(
+                                children: [
+                                  ListTile(
+                                    leading: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: const Icon(Icons.add,
+                                          size: 30, color: Colors.blue),
+                                    ),
+                                    title: const Text("Okula Katıl"),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SchoolLoginPage(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  widget.currentUser!.mySchools == null
+                                      ? const Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: CupertinoActivityIndicator(),
                                         )
-                                      ]
-                                    : widgetmySchools,
+                                      : widget.currentUser!.mySchools!.isEmpty
+                                          ? const Padding(
+                                              padding: EdgeInsets.all(8.0),
+                                              child:
+                                                  CupertinoActivityIndicator(),
+                                            )
+                                          : Container(),
+                                  ...List.generate(
+                                      widget.currentUser!.mySchools == null
+                                          ? 0
+                                          : widget.currentUser!.mySchools!
+                                              .length, (index) {
+                                    return ListTile(
+                                      leading: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                        child: CachedNetworkImage(
+                                          imageUrl: widget
+                                              .currentUser!
+                                              .mySchools![index]
+                                              .schoolLogo!
+                                              .mediaURL
+                                              .minURL,
+                                          width: 30,
+                                          height: 30,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      title: Text(
+                                        widget.currentUser!.mySchools![index]
+                                            .schoolName!,
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SchoolPage(
+                                              school: widget.currentUser!
+                                                  .mySchools![index],
+                                              schoolID: widget.currentUser!
+                                                  .mySchools![index].schoolID!,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  }),
+                                ],
                               ),
                               ExpansionTile(
                                 leading: Icon(Icons.local_drink,
@@ -617,7 +738,7 @@ class _MainPageState extends State<MainPage>
                                     }
                                   }
                                 },
-                                children: widgetFoodStation.isEmpty
+                                children: widgetStations.isEmpty
                                     ? [
                                         const Padding(
                                           padding: EdgeInsets.all(8.0),
@@ -641,7 +762,8 @@ class _MainPageState extends State<MainPage>
                                             ),
                                           ),
                                           title: Text(
-                                              widgetFoodStation[index].name),
+                                            widgetFoodStation[index].name,
+                                          ),
                                           onTap: () {
                                             Navigator.push(
                                               context,
@@ -650,6 +772,60 @@ class _MainPageState extends State<MainPage>
                                                     RestourantPage(
                                                   cafe:
                                                       widgetFoodStation[index],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      }),
+                              ),
+                              ExpansionTile(
+                                leading: Icon(
+                                  Icons.videogame_asset_rounded,
+                                  color: ARMOYU.textColor,
+                                ),
+                                title: const Text('Oyun'),
+                                onExpansionChanged: (value) async {
+                                  if (value) {
+                                    if (!_drawermyfood) {
+                                      await loadFoodStation();
+                                    }
+                                  }
+                                },
+                                children: widgetStations.isEmpty
+                                    ? [
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: CupertinoActivityIndicator(),
+                                        )
+                                      ]
+                                    : List.generate(widgetGameStation.length,
+                                        (index) {
+                                        return ListTile(
+                                          leading: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            child: CachedNetworkImage(
+                                              imageUrl: widgetGameStation[index]
+                                                  .logo
+                                                  .mediaURL
+                                                  .minURL,
+                                              width: 30,
+                                              height: 30,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            widgetGameStation[index].name,
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    RestourantPage(
+                                                  cafe:
+                                                      widgetGameStation[index],
                                                 ),
                                               ),
                                             );
@@ -789,6 +965,7 @@ class _MainPageState extends State<MainPage>
                         )
                       : Container(),
                   SocialPage(
+                    currentUser: widget.currentUser,
                     homepageScrollController: _homepageScrollController,
                   )
                 ],
@@ -802,10 +979,12 @@ class _MainPageState extends State<MainPage>
                 scrollController: _notificationScrollController,
               ),
               ProfilePage(
-                userID: ARMOYU.appUser.userID,
+                currentUser: User(
+                  userID: widget.currentUser!.userID,
+                ),
                 appbar: false,
                 scrollController: _profileScrollController,
-              ),
+              )
             ],
           ),
           bottomNavigationBar: Visibility(
@@ -839,12 +1018,105 @@ class _MainPageState extends State<MainPage>
                   label: 'Bildirimler',
                 ),
                 BottomNavigationBarItem(
-                  icon: Badge(
-                    isLabelVisible: false,
-                    label: const Text("1"),
-                    backgroundColor: ARMOYU.color,
-                    textColor: ARMOYU.appbarColor,
-                    child: const Icon(Icons.person),
+                  icon: GestureDetector(
+                    onLongPress: () {
+                      showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(10),
+                          ),
+                        ),
+                        isScrollControlled: true,
+                        backgroundColor: ARMOYU.backgroundcolor,
+                        context: context,
+                        builder: (BuildContext context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.3,
+                            child: Scaffold(
+                              backgroundColor: ARMOYU.backgroundcolor,
+                              body: SafeArea(
+                                child: Column(
+                                  children: [
+                                    ...List.generate(ARMOYU.appUsers.length,
+                                        (index) {
+                                      return ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundColor: Colors.transparent,
+                                          foregroundImage:
+                                              CachedNetworkImageProvider(
+                                            ARMOYU.appUsers[index].avatar!
+                                                .mediaURL.minURL,
+                                          ),
+                                        ),
+                                        title: CustomText.costum1(
+                                          ARMOYU.appUsers[index].displayName
+                                              .toString(),
+                                        ),
+                                        onTap: () async {
+                                          if (!pagesViewList.any((element) =>
+                                              element.currentUser!.userID ==
+                                              ARMOYU.appUsers[index].userID!)) {
+                                            pagesViewList.add(
+                                              Pages(
+                                                currentUser:
+                                                    ARMOYU.appUsers[index],
+                                              ),
+                                            );
+                                          }
+                                          pagescontroller.animateToPage(
+                                            index,
+                                            duration: const Duration(
+                                              milliseconds: 300,
+                                            ),
+                                            curve: Curves.ease,
+                                          );
+                                          ARMOYU.selectedUser = index;
+
+                                          setstatefunction();
+                                          if (mounted) {
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      );
+                                    }),
+                                    ListTile(
+                                      leading:
+                                          const Icon(Icons.person_add_rounded),
+                                      title: CustomText.costum1(
+                                        "Hesap Ekle",
+                                        color: Colors.blue,
+                                      ),
+                                      onTap: () async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const LoginPage(
+                                              accountAdd: true,
+                                            ),
+                                          ),
+                                        );
+
+                                        if (result != null) {
+                                          log(result.toString());
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Badge(
+                      isLabelVisible: false,
+                      label: const Text("1"),
+                      backgroundColor: ARMOYU.color,
+                      textColor: ARMOYU.appbarColor,
+                      child: const Icon(Icons.person),
+                    ),
                   ),
                   label: 'Profil',
                 ),

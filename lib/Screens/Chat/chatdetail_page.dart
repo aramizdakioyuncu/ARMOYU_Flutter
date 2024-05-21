@@ -29,11 +29,10 @@ class ChatDetailPage extends StatefulWidget {
   State<ChatDetailPage> createState() => _ChatDetailPage();
 }
 
-final TextEditingController _messageController = TextEditingController();
-final ScrollController _scrollController = ScrollController();
-
 class _ChatDetailPage extends State<ChatDetailPage>
     with AutomaticKeepAliveClientMixin {
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   @override
   bool get wantKeepAlive => true;
 
@@ -81,7 +80,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
     isolateListen = await Isolate.spawn(socketListenMessage, [
       receiveportListen!.sendPort,
-      ARMOYU.appUser,
+      ARMOYU.appUsers[ARMOYU.selectedUser],
       widget.chat.user.userID.toString()
     ]);
 
@@ -92,12 +91,12 @@ class _ChatDetailPage extends State<ChatDetailPage>
         Map<String, dynamic> responseData = jsonData;
 
         if (responseData["sender_id"].toString() ==
-            ARMOYU.appUser.userID.toString()) {
+            ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString()) {
           return;
         }
 
         if (responseData["receiver_id"].toString() ==
-            ARMOYU.appUser.userID.toString()) {
+            ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString()) {
           message = responseData["message"].toString();
         }
         if (mounted) {
@@ -127,9 +126,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
     });
 
     ARMOYU_Socket socket2 = ARMOYU_Socket(
-        ARMOYU.appUser.userID.toString(),
-        ARMOYU.appUser.userName!,
-        ARMOYU.appUser.password!,
+        ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString(),
+        ARMOYU.appUsers[ARMOYU.selectedUser].userName!,
+        ARMOYU.appUsers[ARMOYU.selectedUser].password!,
         widget.chat.user.userID.toString());
 
     receiveportSend!.listen(
@@ -273,7 +272,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProfilePage(
-                            userID: widget.chat.user.userID!,
+                            currentUser: User(userID: widget.chat.user.userID!),
                             appbar: true,
                             scrollController: ScrollController(),
                           ),
@@ -385,7 +384,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
                                 messageID: 0,
                                 isMe: true,
                                 messageContext: message,
-                                user: ARMOYU.appUser,
+                                user: ARMOYU.appUsers[ARMOYU.selectedUser],
                               ),
                             );
                           });
@@ -395,7 +394,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
                           messageID: 0,
                           isMe: true,
                           messageContext: message,
-                          user: ARMOYU.appUser,
+                          user: ARMOYU.appUsers[ARMOYU.selectedUser],
                         );
 
                         FunctionService f = FunctionService();

@@ -4,7 +4,6 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/loginregister.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -131,8 +130,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     if (response["durum"] == 1) {
-      usernameController.text = _usernameController.text;
-
       Map<String, dynamic> loginresponse =
           await f.login(username, password, true);
 
@@ -141,7 +138,9 @@ class _RegisterPageState extends State<RegisterPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const Pages(),
+              builder: (context) => Pages(
+                currentUser: ARMOYU.appUsers[0],
+              ),
             ),
           );
         }

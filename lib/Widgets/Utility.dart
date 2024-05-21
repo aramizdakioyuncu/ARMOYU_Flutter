@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -60,7 +61,9 @@ class WidgetUtility {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProfilePage(
-                        username: username.substring(1),
+                        currentUser: User(
+                          userName: username.substring(1),
+                        ),
                         appbar: true,
                         scrollController: ScrollController(),
                       ),

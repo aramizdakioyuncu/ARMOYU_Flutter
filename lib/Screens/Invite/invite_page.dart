@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +27,9 @@ List<Widget> invitelist = [];
 int invitePage = 1;
 bool inviteListProcces = false;
 
+final ScrollController _scrollController = ScrollController();
+bool shouldShowTitle = true;
+
 class _EventStatePage extends State<InvitePage>
     with AutomaticKeepAliveClientMixin<InvitePage> {
   @override
@@ -39,6 +44,22 @@ class _EventStatePage extends State<InvitePage>
     if (isfirstfetch) {
       invitepeoplelist();
     }
+
+    _scrollController.addListener(() {
+      if (_scrollController.offset > (ARMOYU.screenHeight * 0.25 / 2)) {
+        if (mounted) {
+          setState(() {
+            shouldShowTitle = false; // Başlık görünürlüğünü false yap
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            shouldShowTitle = true; // Başlık görünürlüğünü true yap
+          });
+        }
+      }
+    });
   }
 
   Future<void> sendmailURL(int userID) async {
@@ -89,7 +110,22 @@ class _EventStatePage extends State<InvitePage>
               minVerticalPadding: 5.0,
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                      appbar: false,
+                      scrollController: ScrollController(),
+                      currentUser: User(
+                        userName: response["icerik"][i]["oyuncu_username"],
+                      ),
+                    ),
+                  ),
+                );
+              },
               leading: CircleAvatar(
+                backgroundColor: Colors.transparent,
                 foregroundImage: CachedNetworkImageProvider(
                   response["icerik"][i]["oyuncu_avatar"],
                 ),
@@ -137,7 +173,8 @@ class _EventStatePage extends State<InvitePage>
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 10),
+                                                vertical: 10,
+                                              ),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   color: Colors.grey[900],
@@ -207,189 +244,224 @@ class _EventStatePage extends State<InvitePage>
         return;
       }
       setState(() {
-        ARMOYU.appUser.invitecode = response["aciklamadetay"];
+        ARMOYU.appUsers[ARMOYU.selectedUser].invitecode =
+            response["aciklamadetay"];
       });
     }
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: ARMOYU.backgroundcolor,
-        body: Column(
-          children: [
-            Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: CachedNetworkImageProvider(
-                      "https://img.freepik.com/premium-photo/abstract-background-modern-office-building-exterior-new-business-district_31965-133971.jpg"),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_sharp),
-                          color: Colors.white,
-                          onPressed: () {
-                            if (mounted) {
-                              Navigator.pop(context);
-                            }
-                          },
-                        ),
-                        const Spacer(),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.refresh,
-                            color: Colors.white,
-                          ),
-                          onPressed: () async {
-                            // await refreshInviteCode();
-                            invitePage = 1;
-                            await invitepeoplelist();
-                          },
-                        ),
-                      ],
-                    ),
-                    CircleAvatar(
-                      foregroundImage: CachedNetworkImageProvider(
-                          ARMOYU.appUser.avatar!.mediaURL.normalURL),
-                      radius: 40,
-                    ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        const Spacer(),
-                        ARMOYU.appUser.invitecode == null
-                            ? InkWell(
-                                onTap: () async {
-                                  refreshInviteCode();
-                                },
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.black87,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(4.0),
-                                    child: Row(
-                                      children: [
-                                        InkWell(child: Icon(Icons.refresh))
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : InkWell(
-                                onTap: () {
-                                  Clipboard.setData(
-                                    ClipboardData(
-                                      text:
-                                          ARMOYU.appUser.invitecode!.toString(),
-                                    ),
-                                  );
-                                  ARMOYUWidget.toastNotification(
-                                      "Kod koyalandı");
-                                },
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.black87,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          ARMOYU.appUser.invitecode.toString(),
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 26),
-                                        ),
-                                        const Icon(
-                                          Icons.copy,
-                                          color: Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        const Spacer(),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.check_circle_rounded,
-                          color: Colors.amber,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        const Text(
-                          "Normal Hesap : ",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          unauthroizedUserCount.toString(),
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.check_circle_rounded,
-                          color: Colors.green,
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        const Text(
-                          "Doğrulanmış Hesap : ",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Text(
-                          authroizedUserCount.toString(),
-                          style: const TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+    return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
+      body: CustomScrollView(
+        controller: _scrollController,
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
+        slivers: [
+          SliverAppBar(
+            leading: const BackButton(
+              color: Colors.white,
             ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: () async {
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ),
+                onPressed: () async {
+                  // await refreshInviteCode();
                   invitePage = 1;
                   await invitepeoplelist();
                 },
-                child: invitelist.isEmpty
-                    ? Center(
-                        child: !isfirstfetch && !inviteListProcces
-                            ? const Text("Henüz kimse davet edilmemiş")
-                            : const CupertinoActivityIndicator(),
-                      )
-                    : ListView.builder(
-                        itemCount: invitelist.length,
-                        itemBuilder: (context, index) {
-                          return invitelist[index];
-                        },
-                      ),
+              )
+            ],
+            pinned: true,
+            backgroundColor: ARMOYU.backgroundcolor,
+            expandedHeight: ARMOYU.screenHeight * 0.25,
+            flexibleSpace: FlexibleSpaceBar(
+              background: CachedNetworkImage(
+                imageUrl:
+                    "https://img.freepik.com/premium-photo/abstract-background-modern-office-building-exterior-new-business-district_31965-133971.jpg",
+                fit: BoxFit.cover,
               ),
-            )
-          ],
-        ),
+              centerTitle: false,
+              titlePadding: const EdgeInsets.only(left: 00.0),
+              title: Stack(
+                children: [
+                  Wrap(
+                    children: [
+                      Column(
+                        children: [
+                          Visibility(
+                            visible: shouldShowTitle,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                foregroundImage: CachedNetworkImageProvider(
+                                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
+                                      .mediaURL.normalURL,
+                                ),
+                                radius: 25,
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: shouldShowTitle,
+                            child: const SizedBox(height: 10),
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.black54,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  InkWell(
+                                    onTap: () async =>
+                                        await refreshInviteCode(),
+                                    child: const Icon(
+                                      color: Colors.white,
+                                      Icons.refresh,
+                                      size: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  InkWell(
+                                    onTap: () {
+                                      Clipboard.setData(
+                                        ClipboardData(
+                                          text: ARMOYU
+                                              .appUsers[ARMOYU.selectedUser]
+                                              .invitecode!
+                                              .toString(),
+                                        ),
+                                      );
+                                      ARMOYUWidget.toastNotification(
+                                          "Kod koyalandı");
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          ARMOYU.appUsers[ARMOYU.selectedUser]
+                                              .invitecode
+                                              .toString(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 2),
+                                        const Icon(
+                                          Icons.copy,
+                                          color: Colors.white,
+                                          size: 12,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: !shouldShowTitle,
+                            child: const SizedBox(height: 20),
+                          ),
+                          Visibility(
+                            visible: shouldShowTitle,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.check_circle_rounded,
+                                        color: Colors.amber,
+                                        size: 12,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      const Text(
+                                        "Normal Hesap : ",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Text(
+                                        unauthroizedUserCount.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.check_circle_rounded,
+                                        color: Colors.green,
+                                        size: 12,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      const Text(
+                                        "Doğrulanmış Hesap : ",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                      Text(
+                                        authroizedUserCount.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              invitePage = 1;
+              await invitepeoplelist();
+            },
+          ),
+          SliverToBoxAdapter(
+            child: invitelist.isEmpty
+                ? Center(
+                    child: !isfirstfetch && !inviteListProcces
+                        ? const Text("Henüz kimse davet edilmemiş")
+                        : const CupertinoActivityIndicator(),
+                  )
+                : Column(
+                    children: List.generate(
+                      invitelist.length,
+                      (index) => invitelist[index],
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }
