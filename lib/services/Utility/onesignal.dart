@@ -84,7 +84,7 @@ class OneSignalApi {
           AppCore.navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (context) => ProfilePage(
-                appbar: true,
+                ismyProfile: false,
                 currentUser: User(userID: int.parse(userID)),
                 scrollController: ScrollController(),
               ),

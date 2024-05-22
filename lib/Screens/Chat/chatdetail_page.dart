@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:isolate';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/Chat/chat_message.dart';
 import 'package:ARMOYU/Models/user.dart';
@@ -14,7 +15,6 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:skeletons/skeletons.dart';
 
 class ChatDetailPage extends StatefulWidget {
@@ -268,15 +268,10 @@ class _ChatDetailPage extends State<ChatDetailPage>
                   borderRadius: BorderRadius.circular(50.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      PageFunctions.pushProfilePage(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfilePage(
-                            currentUser: User(userID: widget.chat.user.userID!),
-                            appbar: true,
-                            scrollController: ScrollController(),
-                          ),
-                        ),
+                        User(userID: widget.chat.user.userID!),
+                        ScrollController(),
                       );
                     },
                     child: CachedNetworkImage(

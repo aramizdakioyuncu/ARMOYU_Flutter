@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -111,17 +111,12 @@ class _EventStatePage extends State<InvitePage>
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
               onTap: () {
-                Navigator.push(
+                PageFunctions.pushProfilePage(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      appbar: false,
-                      scrollController: ScrollController(),
-                      currentUser: User(
-                        userName: response["icerik"][i]["oyuncu_username"],
-                      ),
-                    ),
+                  User(
+                    userName: response["icerik"][i]["oyuncu_username"],
                   ),
+                  ScrollController(),
                 );
               },
               leading: CircleAvatar(

@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/Client_Functions/profile.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
@@ -24,7 +25,6 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 
 class TwitterPostWidget extends StatefulWidget {
   final Post post;
@@ -589,17 +589,12 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(
+                  PageFunctions.pushProfilePage(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        currentUser: User(
-                          userID: widget.post.owner.userID,
-                        ),
-                        appbar: true,
-                        scrollController: ScrollController(),
-                      ),
+                    User(
+                      userID: widget.post.owner.userID,
                     ),
+                    ScrollController(),
                   );
                 },
                 child: Row(

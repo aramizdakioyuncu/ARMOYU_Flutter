@@ -97,6 +97,7 @@ class _ProfilePageState extends State<SchoolPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       body: RefreshIndicator(
         onRefresh: () => _handleRefresh(),
         child: CustomScrollView(

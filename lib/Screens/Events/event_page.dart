@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/event.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/ARMOYU/dlc.dart';
 import 'package:ARMOYU/Models/ARMOYU/file.dart';
 import 'package:ARMOYU/Models/ARMOYU/role.dart';
@@ -11,7 +12,6 @@ import 'package:ARMOYU/Models/group.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Group/group_page.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -21,11 +21,15 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EventPage extends StatefulWidget {
+  final User? currentUser;
+
+  final Event event;
   const EventPage({
     super.key,
+    required this.currentUser,
     required this.event,
   });
-  final Event event;
+
   @override
   State<EventPage> createState() => _EventStatePage();
 }
@@ -461,18 +465,13 @@ class _EventStatePage extends State<EventPage> {
                           children: [
                             InkWell(
                               onTap: () {
-                                Navigator.push(
+                                PageFunctions.pushProfilePage(
                                   context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfilePage(
-                                      appbar: false,
-                                      currentUser: User(
-                                        userID: widget
-                                            .event.eventorganizer[index].userID,
-                                      ),
-                                      scrollController: ScrollController(),
-                                    ),
+                                  User(
+                                    userID: widget
+                                        .event.eventorganizer[index].userID,
                                   ),
+                                  ScrollController(),
                                 );
                               },
                               child: ClipOval(
@@ -567,6 +566,8 @@ class _EventStatePage extends State<EventPage> {
                                                   MaterialPageRoute(
                                                     builder: (content) =>
                                                         GroupPage(
+                                                      currentUser:
+                                                          widget.currentUser,
                                                       groupID: widget
                                                           .event
                                                           .participantgroupsList![
@@ -697,25 +698,17 @@ class _EventStatePage extends State<EventPage> {
                                                       const SizedBox(width: 5),
                                                       InkWell(
                                                         onTap: () {
-                                                          Navigator.push(
+                                                          PageFunctions
+                                                              .pushProfilePage(
                                                             context,
-                                                            MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      ProfilePage(
-                                                                appbar: false,
-                                                                currentUser:
-                                                                    User(
-                                                                  userID: groupParticipant[
-                                                                          index]
-                                                                      .groupUsers![
-                                                                          index2]
-                                                                      .userID,
-                                                                ),
-                                                                scrollController:
-                                                                    ScrollController(),
-                                                              ),
+                                                            User(
+                                                              userID: groupParticipant[
+                                                                      index]
+                                                                  .groupUsers![
+                                                                      index2]
+                                                                  .userID,
                                                             ),
+                                                            ScrollController(),
                                                           );
                                                         },
                                                         child: CircleAvatar(
@@ -796,90 +789,54 @@ class _EventStatePage extends State<EventPage> {
                               itemCount:
                                   widget.event.participantpeopleList!.length,
                               itemBuilder: (context, index) {
-                                return Container(
-                                  color: ARMOYU.appbarColor,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          width: 20,
-                                          child: CustomText.costum1(
-                                              (index + 1).toString(),
-                                              weight: FontWeight.bold),
+                                return ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
                                         ),
-                                        InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfilePage(
-                                                  appbar: false,
-                                                  currentUser: User(
-                                                    userID: widget
-                                                        .event
-                                                        .participantpeopleList![
-                                                            index]
-                                                        .userID,
-                                                  ),
-                                                  scrollController:
-                                                      ScrollController(),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProfilePage(
-                                                    appbar: false,
-                                                    currentUser: User(
-                                                      userID: widget
-                                                          .event
-                                                          .participantpeopleList![
-                                                              index]
-                                                          .userID!,
-                                                    ),
-                                                    scrollController:
-                                                        ScrollController(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              foregroundImage:
-                                                  CachedNetworkImageProvider(
-                                                widget
-                                                    .event
-                                                    .participantpeopleList![
-                                                        index]
-                                                    .avatar!
-                                                    .mediaURL
-                                                    .minURL,
-                                              ),
-                                              radius: 12,
-                                            ),
-                                          ),
+                                        child: CustomText.costum1(
+                                          "${index + 1}.",
+                                          weight: FontWeight.bold,
+                                          align: TextAlign.center,
+                                          size: 14,
                                         ),
-                                        const SizedBox(width: 5),
-                                        CustomText.costum1(
+                                      ),
+                                      CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        foregroundImage:
+                                            CachedNetworkImageProvider(
                                           widget
                                               .event
                                               .participantpeopleList![index]
-                                              .displayName
-                                              .toString(),
+                                              .avatar!
+                                              .mediaURL
+                                              .minURL,
                                         ),
-                                      ],
-                                    ),
+                                        radius: 14,
+                                      ),
+                                    ],
                                   ),
+                                  title: CustomText.costum1(
+                                    widget.event.participantpeopleList![index]
+                                        .displayName
+                                        .toString(),
+                                  ),
+                                  onTap: () {
+                                    PageFunctions.pushProfilePage(
+                                      context,
+                                      User(
+                                        userID: widget
+                                            .event
+                                            .participantpeopleList![index]
+                                            .userID,
+                                      ),
+                                      ScrollController(),
+                                    );
+                                  },
                                 );
                               },
                               separatorBuilder: (context, index) =>

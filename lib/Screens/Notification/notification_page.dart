@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Notification/friendrequest_page.dart';
 import 'package:ARMOYU/Screens/Notification/grouprequest_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -10,8 +11,14 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
 
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key, required this.scrollController});
+  final User? currentUser;
   final ScrollController scrollController;
+
+  const NotificationPage({
+    super.key,
+    required this.currentUser,
+    required this.scrollController,
+  });
 
   @override
   State<NotificationPage> createState() => _NotificationPage();
@@ -132,98 +139,105 @@ class _NotificationPage extends State<NotificationPage>
     super.build(context);
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
-      body: _firstProccess
-          ? const Center(
-              child: CupertinoActivityIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: _handleRefresh,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 15),
-                      leading: Icon(
-                        Icons.person_add_rounded,
-                        color: ARMOYU.color,
-                      ),
-                      tileColor: ARMOYU.appbarColor,
-                      title: CustomText.costum1("Arkadaşlık İstekleri"),
-                      subtitle: CustomText.costum1(
-                          "Arkadaşlık isteklerini gözden geçir"),
-                      trailing: Badge(
-                        isLabelVisible:
-                            ARMOYU.friendRequestCount == 0 ? false : true,
-                        label: Text(ARMOYU.friendRequestCount.toString()),
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        child: Icon(
-                          ARMOYU.friendRequestCount == 0
-                              ? Icons.notifications
-                              : Icons.notifications_active,
-                          color: Colors.white,
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await _handleRefresh();
+            },
+          ),
+          _firstProccess
+              ? const SliverToBoxAdapter(
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                )
+              : SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 15),
+                        leading: Icon(
+                          Icons.person_add_rounded,
+                          color: ARMOYU.color,
                         ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const NotificationFriendRequestPage(),
+                        tileColor: ARMOYU.appbarColor,
+                        title: CustomText.costum1("Arkadaşlık İstekleri"),
+                        subtitle: CustomText.costum1(
+                            "Arkadaşlık isteklerini gözden geçir"),
+                        trailing: Badge(
+                          isLabelVisible:
+                              ARMOYU.friendRequestCount == 0 ? false : true,
+                          label: Text(ARMOYU.friendRequestCount.toString()),
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          child: Icon(
+                            ARMOYU.friendRequestCount == 0
+                                ? Icons.notifications
+                                : Icons.notifications_active,
+                            color: Colors.white,
                           ),
-                        );
-                      },
-                    ),
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 15),
-                      leading: Icon(Icons.groups_2, color: ARMOYU.color),
-                      tileColor: ARMOYU.appbarColor,
-                      title: CustomText.costum1("Grup İstekleri"),
-                      subtitle: CustomText.costum1(
-                        "Grup isteklerini gözden geçir",
-                      ),
-                      trailing: Badge(
-                        isLabelVisible:
-                            ARMOYU.groupInviteCount == 0 ? false : true,
-                        label: Text(ARMOYU.groupInviteCount.toString()),
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                        child: Icon(
-                          ARMOYU.groupInviteCount == 0
-                              ? Icons.notifications
-                              : Icons.notifications_active,
-                          color: Colors.white,
                         ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const NotificationFriendRequestPage(),
+                            ),
+                          );
+                        },
                       ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const NotificationGroupRequestPage(),
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 15),
+                        leading: Icon(Icons.groups_2, color: ARMOYU.color),
+                        tileColor: ARMOYU.appbarColor,
+                        title: CustomText.costum1("Grup İstekleri"),
+                        subtitle: CustomText.costum1(
+                          "Grup isteklerini gözden geçir",
+                        ),
+                        trailing: Badge(
+                          isLabelVisible:
+                              ARMOYU.groupInviteCount == 0 ? false : true,
+                          label: Text(ARMOYU.groupInviteCount.toString()),
+                          backgroundColor: Colors.red,
+                          textColor: Colors.white,
+                          child: Icon(
+                            ARMOYU.groupInviteCount == 0
+                                ? Icons.notifications
+                                : Icons.notifications_active,
+                            color: Colors.white,
                           ),
-                        );
-                      },
-                    ),
-                    ...List.generate(
-                      widgetNotifications.length,
-                      (index) {
-                        return Column(
-                          children: [
-                            widgetNotifications[index],
-                            const SizedBox(height: 1)
-                          ],
-                        );
-                      },
-                    )
-                  ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const NotificationGroupRequestPage(),
+                            ),
+                          );
+                        },
+                      ),
+                      ...List.generate(
+                        widgetNotifications.length,
+                        (index) {
+                          return Column(
+                            children: [
+                              widgetNotifications[index],
+                              const SizedBox(height: 1)
+                            ],
+                          );
+                        },
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ),
+        ],
+      ),
     );
   }
 }

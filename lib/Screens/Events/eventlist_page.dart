@@ -9,7 +9,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EventlistPage extends StatefulWidget {
-  const EventlistPage({super.key});
+  final User? currentUser;
+
+  const EventlistPage({
+    super.key,
+    this.currentUser,
+  });
 
   @override
   State<EventlistPage> createState() => _EventlistPage();
@@ -121,7 +126,10 @@ class _EventlistPage extends State<EventlistPage>
                 itemCount: eventsList.length,
                 itemBuilder: (context, index) {
                   Event aa = eventsList[index];
-                  return aa.eventListWidget(context);
+                  return aa.eventListWidget(
+                    context,
+                    currentUser: widget.currentUser!,
+                  );
                 },
                 separatorBuilder: (context, index) {
                   return const SizedBox(height: 1);

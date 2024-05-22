@@ -47,7 +47,7 @@ class Event {
     required this.location,
   });
 
-  Widget eventListWidget(context) {
+  Widget eventListWidget(context, {required User currentUser}) {
     Color participantsColor = Colors.red;
     if (participantsCurrent / participantsLimit < 0.75) {
       participantsColor = Colors.orange;
@@ -68,7 +68,10 @@ class Event {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EventPage(event: this),
+                builder: (context) => EventPage(
+                  currentUser: currentUser,
+                  event: this,
+                ),
               ),
             );
           },

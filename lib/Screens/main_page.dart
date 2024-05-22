@@ -341,12 +341,12 @@ class _MainPageState extends State<MainPage>
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       loadmySchoolProcess = false;
+      await loadMySchools();
       return;
     }
 
     if (response["icerik"].length == 0) {
       loadmySchoolProcess = false;
-
       return;
     }
 
@@ -631,6 +631,7 @@ class _MainPageState extends State<MainPage>
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => GroupPage(
+                                              currentUser: widget.currentUser,
                                               group: widget.currentUser!
                                                   .myGroups![index],
                                               groupID: widget.currentUser!
@@ -673,18 +674,15 @@ class _MainPageState extends State<MainPage>
                                       );
                                     },
                                   ),
-                                  widget.currentUser!.mySchools == null
+                                  widget.currentUser!.mySchools == null ||
+                                          widget.currentUser!.mySchools!
+                                                  .isEmpty &&
+                                              loadmySchoolProcess
                                       ? const Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: CupertinoActivityIndicator(),
                                         )
-                                      : widget.currentUser!.mySchools!.isEmpty
-                                          ? const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child:
-                                                  CupertinoActivityIndicator(),
-                                            )
-                                          : Container(),
+                                      : Container(),
                                   ...List.generate(
                                       widget.currentUser!.mySchools == null
                                           ? 0
@@ -901,8 +899,9 @@ class _MainPageState extends State<MainPage>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SettingsPage(),
+                                      builder: (context) => SettingsPage(
+                                        currentUser: widget.currentUser,
+                                      ),
                                     ),
                                   );
                                 },
@@ -971,18 +970,20 @@ class _MainPageState extends State<MainPage>
                 ],
               ),
               SearchPage(
+                currentUser: widget.currentUser,
                 appbar: true,
                 searchController: appbarSearchTextController,
                 scrollController: _searchScrollController,
               ),
               NotificationPage(
+                currentUser: widget.currentUser,
                 scrollController: _notificationScrollController,
               ),
               ProfilePage(
+                ismyProfile: true,
                 currentUser: User(
                   userID: widget.currentUser!.userID,
                 ),
-                appbar: false,
                 scrollController: _profileScrollController,
               )
             ],
@@ -1063,14 +1064,51 @@ class _MainPageState extends State<MainPage>
                                               ),
                                             );
                                           }
+
+                                          log(pagesViewList.length.toString());
+
+                                          // pagescontroller.animateToPage(
+                                          //   index,
+                                          //   duration: const Duration(
+                                          //     milliseconds: 300,
+                                          //   ),
+                                          //   curve: Curves.ease,
+                                          // );
+                                          // int countPageIndex = 0;
+                                          // for (Pages element in pagesViewList) {
+                                          //   element.currentUser!.userID ==
+                                          //       ARMOYU.appUsers[index].userID;
+                                          //       countPageIndex++;
+                                          // }
+
+                                          int countPageIndex = pagesViewList
+                                              .indexWhere((element) =>
+                                                  element.currentUser!.userID ==
+                                                  ARMOYU
+                                                      .appUsers[index].userID);
                                           pagescontroller.animateToPage(
-                                            index,
+                                            countPageIndex,
                                             duration: const Duration(
                                               milliseconds: 300,
                                             ),
                                             curve: Curves.ease,
                                           );
-                                          ARMOYU.selectedUser = index;
+
+                                          // int countIndex = 0;
+                                          // for (User element
+                                          //     in ARMOYU.appUsers) {
+                                          //   element.userID ==
+                                          //       ARMOYU.appUsers[index].userID;
+                                          //   countIndex++;
+                                          // }
+                                          // ARMOYU.selectedUser = countIndex;
+
+                                          int countIndex = ARMOYU.appUsers
+                                              .indexWhere((element) =>
+                                                  element.userID ==
+                                                  ARMOYU
+                                                      .appUsers[index].userID);
+                                          ARMOYU.selectedUser = countIndex;
 
                                           setstatefunction();
                                           if (mounted) {

@@ -4,13 +4,13 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/news.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/news.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/News/news_list.dart';
 import 'package:ARMOYU/Screens/News/news_page.dart';
 
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Screens/School/school_page.dart';
 import 'package:ARMOYU/Widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -21,11 +21,13 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
 
 class SearchPage extends StatefulWidget {
+  final User? currentUser;
   final bool appbar;
   final TextEditingController searchController;
   final ScrollController scrollController;
   const SearchPage({
     super.key,
+    required this.currentUser,
     required this.appbar,
     required this.searchController,
     required this.scrollController,
@@ -188,22 +190,20 @@ class _SearchPagePage extends State<SearchPage>
                         : const Icon(Icons.groups),
                 onTap: () {
                   if (response["icerik"][i]["turu"] == "oyuncu") {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProfilePage(
-                          currentUser: User(
-                            userID: response["icerik"][i]["ID"],
-                          ),
-                          appbar: true,
-                          scrollController: ScrollController(),
-                        ),
+                    PageFunctions.pushProfilePage(
+                      context,
+                      User(
+                        userID: response["icerik"][i]["ID"],
                       ),
+                      ScrollController(),
                     );
                   } else if (response["icerik"][i]["turu"] == "gruplar") {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            GroupPage(groupID: response["icerik"][i]["ID"]),
+                        builder: (context) => GroupPage(
+                          currentUser: widget.currentUser,
+                          groupID: response["icerik"][i]["ID"],
+                        ),
                       ),
                     );
                   } else if (response["icerik"][i]["turu"] == "okullar") {
@@ -229,7 +229,7 @@ class _SearchPagePage extends State<SearchPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       body: widget.searchController.text != ""
           ? ListView.builder(
               controller: ScrollController(),

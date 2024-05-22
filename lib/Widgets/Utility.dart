@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -57,17 +57,12 @@ class WidgetUtility {
                   // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
                   log('Tapped on username: $username');
 
-                  Navigator.push(
+                  PageFunctions.pushProfilePage(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        currentUser: User(
-                          userName: username.substring(1),
-                        ),
-                        appbar: true,
-                        scrollController: ScrollController(),
-                      ),
+                    User(
+                      userName: username.substring(1),
                     ),
+                    ScrollController(),
                   );
                 },
             ));

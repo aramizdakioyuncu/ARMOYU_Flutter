@@ -6,7 +6,6 @@ import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:crypto/crypto.dart';
-import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:ARMOYU/Services/Utility/onesignal.dart';
@@ -26,10 +25,7 @@ class FunctionService {
   }
 
 ///////////Fonksiyonlar Başlangıcı
-  ///
-  ///
-  ///
-  ///
+
   Future<Map<String, dynamic>> adduserAccount(
     String username,
     String password,
@@ -164,15 +160,11 @@ class FunctionService {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> logOut() async {
+  Future<Map<String, dynamic>> logOut(int userID) async {
     //Oturumunu Kapat
     pagesViewList.removeAt(ARMOYU.selectedUser);
     ARMOYU.appUsers.removeAt(ARMOYU.selectedUser);
     //Oturumunu Kapat Bitiş
-
-    // ARMOYU.appUsers[ARMOYU.selectedUser].userID = null;
-    // ARMOYU.appUsers[ARMOYU.selectedUser].userName = "0";
-    // ARMOYU.appUsers[ARMOYU.selectedUser].password = "0";
 
     // Kullanıcı listesini SharedPreferences'e kaydetme
     List<String> usersJson =

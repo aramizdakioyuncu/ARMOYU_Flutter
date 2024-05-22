@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/Account/accountsettings.dart';
 import 'package:ARMOYU/Screens/Settings/SettingsPage/aboutsettings.dart';
@@ -19,7 +20,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final User? currentUser;
+  const SettingsPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SettingsPage> createState() => _SettingsPage();
@@ -42,7 +47,7 @@ class _SettingsPage extends State<SettingsPage> {
 
   Future<void> logoutfunction() async {
     FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.logOut();
+    Map<String, dynamic> response = await f.logOut(widget.currentUser!.userID!);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -60,6 +65,8 @@ class _SettingsPage extends State<SettingsPage> {
         );
       }
     } else {
+      ARMOYU.selectedUser = 0;
+
       pagescontroller.animateToPage(
         0,
         duration: const Duration(
@@ -67,7 +74,6 @@ class _SettingsPage extends State<SettingsPage> {
         ),
         curve: Curves.ease,
       );
-      ARMOYU.selectedUser = 0;
       if (mounted) {
         Navigator.pop(context);
       }

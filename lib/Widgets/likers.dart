@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -51,17 +51,12 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       leading: InkWell(
         onTap: () {
-          Navigator.push(
+          PageFunctions.pushProfilePage(
             context,
-            MaterialPageRoute(
-              builder: (context) => ProfilePage(
-                appbar: false,
-                currentUser: User(
-                  userID: widget.userID,
-                ),
-                scrollController: ScrollController(),
-              ),
+            User(
+              userID: widget.userID,
             ),
+            ScrollController(),
           );
         },
         child: CircleAvatar(

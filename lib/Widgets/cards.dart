@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -136,17 +136,12 @@ class _CustomCardsState extends State<CustomCards> {
           return InkWell(
             borderRadius: BorderRadius.circular(15),
             onTap: () {
-              Navigator.push(
+              PageFunctions.pushProfilePage(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(
-                    appbar: true,
-                    currentUser: User(
-                      userID: int.parse(cardData["userID"].toString()),
-                    ),
-                    scrollController: ScrollController(),
-                  ),
+                User(
+                  userID: int.parse(cardData["userID"].toString()),
                 ),
+                ScrollController(),
               );
             },
             child: Container(

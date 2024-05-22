@@ -3,8 +3,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -80,17 +80,12 @@ class _UserListWidgetState extends State<UserListWidget> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
           child: GestureDetector(
             onTap: () {
-              Navigator.push(
+              PageFunctions.pushProfilePage(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(
-                    currentUser: User(
-                      userID: widget.userID,
-                    ),
-                    appbar: true,
-                    scrollController: ScrollController(),
-                  ),
+                User(
+                  userID: widget.userID,
                 ),
+                ScrollController(),
               );
             },
             child: CircleAvatar(

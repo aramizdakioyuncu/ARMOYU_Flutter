@@ -138,6 +138,7 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Arkadaşlık İstekleri"),
         backgroundColor: ARMOYU.appbarColor,
@@ -151,7 +152,6 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
           )
         ],
       ),
-      backgroundColor: ARMOYU.bodyColor,
       body: widgetNotifications.isEmpty
           ? Center(
               child: !_firstFetchProcces && !_pageproccess

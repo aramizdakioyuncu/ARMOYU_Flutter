@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
+import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
 import 'package:ARMOYU/Models/user.dart';
-import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -61,17 +61,12 @@ class _WidgetPostComments extends State<WidgetPostComments> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
+                  PageFunctions.pushProfilePage(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        appbar: true,
-                        currentUser: User(
-                          userID: widget.comment.user.userID,
-                        ),
-                        scrollController: ScrollController(),
-                      ),
+                    User(
+                      userID: widget.comment.user.userID,
                     ),
+                    ScrollController(),
                   );
                 },
                 child: CircleAvatar(

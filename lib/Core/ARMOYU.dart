@@ -38,11 +38,8 @@ class ARMOYU {
 
   static List<CameraDescription>? cameras;
 
-  // static User appUser = User();
-
   static List<User> appUsers = [];
   static int selectedUser = 0;
-  // static User currentUser = appUsers[selectedUser];
 
   //Takım Seçme işlemleri
   static List<Team> favoriteteams = [];
@@ -62,13 +59,4 @@ class ARMOYU {
 
   static int friendRequestCount = 0;
   static int groupInviteCount = 0;
-
-  // //Gruplarım & Okullarım & İşyerlerim
-  // static List<Group> myGroups = [];
-  // static List<School> mySchools = [];
-  // static List<Station> myStations = [];
-
-  // //Arkadaşlarım
-  // static List<User> myFriends = [];
-  // static List<User> mycloseFriends = [];
 }

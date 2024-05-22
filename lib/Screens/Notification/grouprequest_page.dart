@@ -134,6 +134,7 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Grup İstekleri"),
         backgroundColor: ARMOYU.appbarColor,
@@ -147,7 +148,6 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
           )
         ],
       ),
-      backgroundColor: ARMOYU.bodyColor,
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
         child: widgetNotifications.isEmpty
