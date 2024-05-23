@@ -92,7 +92,7 @@ class _ChatPageState extends State<SurveyPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anket Sorusu"),
         backgroundColor: ARMOYU.appbarColor,

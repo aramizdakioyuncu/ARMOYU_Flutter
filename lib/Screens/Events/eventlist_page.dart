@@ -13,7 +13,7 @@ class EventlistPage extends StatefulWidget {
 
   const EventlistPage({
     super.key,
-    this.currentUser,
+    required this.currentUser,
   });
 
   @override

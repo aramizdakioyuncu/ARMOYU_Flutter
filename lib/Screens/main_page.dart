@@ -56,9 +56,6 @@ class MainPage extends StatefulWidget {
 
 bool _isBottomNavbarVisible = true;
 
-bool _drawermyschool = false;
-bool _drawermygroup = false;
-bool _drawermyfood = false;
 bool _appbarSearch = false;
 
 int postpage = 1;
@@ -77,6 +74,10 @@ class _MainPageState extends State<MainPage>
   List<Station> widgetStations = [];
   List<Station> widgetFoodStation = [];
   List<Station> widgetGameStation = [];
+
+  bool _drawermyschool = false;
+  bool _drawermygroup = false;
+  bool _drawermyfood = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -230,6 +231,7 @@ class _MainPageState extends State<MainPage>
     if (loadGroupProcess) {
       return;
     }
+
     loadGroupProcess = true;
     FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.myGroups();
@@ -239,6 +241,7 @@ class _MainPageState extends State<MainPage>
       return;
     }
     if (response["icerik"].length == 0) {
+      widget.currentUser!.myGroups = [];
       loadGroupProcess = false;
       return;
     }
@@ -250,7 +253,14 @@ class _MainPageState extends State<MainPage>
         Group(
           groupID: element['group_ID'],
           groupName: element['group_name'],
+          groupshortName: element['group_shortname'],
           groupUsersCount: element['group_usercount'],
+          joinStatus: element['group_joinstatus'] == 1 ? true : false,
+          description: element['group_description'],
+          groupSocial: GroupSocial(
+            discord: element['group_social']['group_discord'],
+            web: element['group_social']['group_website'],
+          ),
           groupLogo: Media(
             mediaID: 0,
             mediaURL: MediaURL(
@@ -840,8 +850,9 @@ class _MainPageState extends State<MainPage>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const EventlistPage(),
+                                      builder: (context) => EventlistPage(
+                                        currentUser: widget.currentUser,
+                                      ),
                                     ),
                                   );
                                 },

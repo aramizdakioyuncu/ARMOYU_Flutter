@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Core/api.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class OneSignalApi {
 
   static setupOneSignal(int ID, String username, String mail, String role) {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-    OneSignal.initialize("c741c6f1-e84e-41d7-85b1-a596ffcfb5bd");
+    OneSignal.initialize(API.oneSignalKey);
     OneSignal.consentRequired(false);
     OneSignal.Notifications.clearAll();
 

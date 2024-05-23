@@ -12,13 +12,13 @@ class SurveyListPage extends StatefulWidget {
   State<SurveyListPage> createState() => _ChatPageState();
 }
 
-int surveyCounter = 1;
-List<Survey> surveyList = [];
-bool firstfetching = true;
+int _surveyCounter = 1;
+List<Survey> _surveyList = [];
+bool _firstfetching = true;
 
 ScrollController _controller = ScrollController();
 
-bool surveyListProcces = false;
+bool _surveyListProcces = false;
 
 class _ChatPageState extends State<SurveyListPage>
     with AutomaticKeepAliveClientMixin<SurveyListPage> {
@@ -31,7 +31,7 @@ class _ChatPageState extends State<SurveyListPage>
   void initState() {
     super.initState();
 
-    if (surveyList.isEmpty) {
+    if (_surveyList.isEmpty) {
       fetchsurveys();
     }
 
@@ -51,57 +51,57 @@ class _ChatPageState extends State<SurveyListPage>
   }
 
   Future<void> fetchsurveys() async {
-    if (surveyListProcces) {
+    if (_surveyListProcces) {
       return;
     }
 
-    surveyListProcces = true;
+    _surveyListProcces = true;
     ClientFunctionSurvey function = ClientFunctionSurvey();
-    List<Survey>? response = await function.fetchsurvey(page: surveyCounter);
+    List<Survey>? response = await function.fetchsurvey(page: _surveyCounter);
 
     if (response == null) {
-      surveyListProcces = false;
+      _surveyListProcces = false;
       return;
     }
-    if (surveyCounter == 1) {
-      surveyList = response;
+    if (_surveyCounter == 1) {
+      _surveyList = response;
     } else {
-      surveyList += response;
+      _surveyList += response;
     }
-    surveyCounter++;
-    firstfetching = false;
+    _surveyCounter++;
+    _firstfetching = false;
     setstatefonction();
-    surveyListProcces = false;
+    _surveyListProcces = false;
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anketler"),
         backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async {
-              surveyCounter = 1;
-              surveyListProcces = false;
+              _surveyCounter = 1;
+              _surveyListProcces = false;
               await fetchsurveys();
             },
             icon: const Icon(Icons.refresh),
           )
         ],
       ),
-      body: firstfetching
+      body: _firstfetching
           ? const Center(child: CupertinoActivityIndicator())
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.separated(
                 controller: _controller,
-                itemCount: surveyList.length,
+                itemCount: _surveyList.length,
                 itemBuilder: (context, index) {
-                  return surveyList[index].surveyList(context);
+                  return _surveyList[index].surveyList(context);
                 },
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 10),

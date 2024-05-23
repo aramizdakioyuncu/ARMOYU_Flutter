@@ -7,7 +7,6 @@ import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class SurveyNewPage extends StatefulWidget {
   const SurveyNewPage({super.key});
@@ -18,32 +17,31 @@ class SurveyNewPage extends StatefulWidget {
 
 class _ChatPageState extends State<SurveyNewPage>
     with AutomaticKeepAliveClientMixin<SurveyNewPage> {
-  List<XFile> imagePath = [];
-  List<Media> media = [];
-  TextEditingController t1 = TextEditingController();
-  TextEditingController t2 = TextEditingController();
-  int answercounter = 3;
-  List<Map<int, Widget>> answerlist = [];
-  List<TextEditingController> controllers = [];
+  final List<Media> _media = [];
+  final TextEditingController _t1 = TextEditingController();
+  final TextEditingController _t2 = TextEditingController();
+  int _answercounter = 3;
+  List<Map<int, Widget>> _answerlist = [];
+  List<TextEditingController> _controllers = [];
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-    answerlist = [
+    _answerlist = [
       {
         1: CustomTextfields(setstate: setstatefunction)
-            .costum3(title: "1.Seçenek", controller: t1),
+            .costum3(title: "1.Seçenek", controller: _t1),
       },
       {
         2: CustomTextfields(setstate: setstatefunction)
-            .costum3(title: "2.Seçenek", controller: t2),
+            .costum3(title: "2.Seçenek", controller: _t2),
       }
     ];
-    controllers = [
-      t1,
-      t2,
+    _controllers = [
+      _t1,
+      _t2,
     ];
   }
 
@@ -56,17 +54,17 @@ class _ChatPageState extends State<SurveyNewPage>
   IconData anwserIcon = Icons.radio_button_checked;
 
   void addtextfield() {
-    final int countID = answercounter;
+    final int countID = _answercounter;
 
     final TextEditingController t = TextEditingController();
-    answerlist.add({
+    _answerlist.add({
       countID: CustomTextfields(setstate: setstatefunction).costum3(
         title: "Seçenek",
         controller: t,
         suffixiconbutton: IconButton(
           onPressed: () {
-            log(answercounter.toString());
-            answerlist.removeWhere((element) => element.keys.first == countID);
+            log(_answercounter.toString());
+            _answerlist.removeWhere((element) => element.keys.first == countID);
             setstatefunction();
           },
           icon: const Icon(
@@ -77,8 +75,8 @@ class _ChatPageState extends State<SurveyNewPage>
       ),
     });
 
-    controllers.add(t);
-    answercounter++;
+    _controllers.add(t);
+    _answercounter++;
     setstatefunction();
   }
 
@@ -91,7 +89,7 @@ class _ChatPageState extends State<SurveyNewPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.bodyColor,
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anket Oluştur"),
         backgroundColor: ARMOYU.appbarColor,
@@ -101,7 +99,7 @@ class _ChatPageState extends State<SurveyNewPage>
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Media.mediaList(media, setstatefunction),
+              Media.mediaList(_media, setstatefunction),
               const Text("Anket Sorusu"),
               CustomTextfields(setstate: setstatefunction).costum3(
                 controller: controllerSurveyQuestion,
@@ -188,13 +186,13 @@ class _ChatPageState extends State<SurveyNewPage>
                                       child: Icon(
                                         icon,
                                         size: 14,
-                                        color: ARMOYU.textbackColor,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     Text(
                                       value,
-                                      style: TextStyle(
-                                        color: ARMOYU.textbackColor,
+                                      style: const TextStyle(
+                                        color: Colors.white,
                                         fontSize: 14,
                                       ),
                                     ),
@@ -226,7 +224,7 @@ class _ChatPageState extends State<SurveyNewPage>
               const Text("Anket Cevapları"),
               Column(
                 children: List.generate(
-                  answerlist.length,
+                  _answerlist.length,
                   (index) {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -243,7 +241,7 @@ class _ChatPageState extends State<SurveyNewPage>
                         ),
                         SizedBox(
                           width: ARMOYU.screenWidth - 60,
-                          child: answerlist[index].values.last,
+                          child: _answerlist[index].values.last,
                         ),
                       ],
                     );
@@ -289,7 +287,7 @@ class _ChatPageState extends State<SurveyNewPage>
                   String newDate = "${words[2]}-${words[1]}-${words[0]}";
 
                   List<String> values = [];
-                  for (TextEditingController element in controllers) {
+                  for (TextEditingController element in _controllers) {
                     values.add(element.text);
                   }
                   Map<String, dynamic> response = await f.createSurvey(
