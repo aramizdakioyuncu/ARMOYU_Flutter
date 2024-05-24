@@ -809,10 +809,10 @@ packages:
     dependency: "direct main"
     description:
       name: onesignal_flutter
-      sha256: "3435b1b7d422932683f145f8110e68628c005ec7807d83123729392de684c36f"
+      sha256: f3940387d6c7033a9c341aa0548f24d98217fce9182f9ad80bf2554b9dd3dc1a
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.5"
+    version: "5.2.0"
   package_info_plus:
     dependency: "direct main"
     description:

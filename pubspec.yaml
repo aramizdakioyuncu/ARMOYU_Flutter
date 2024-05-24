@@ -45,7 +45,7 @@ dependencies:
   device_info_plus: ^10.0.1
   package_info_plus: ^4.2.0
   connectivity_plus: ^6.0.1
-  onesignal_flutter: ^5.1.5
+  onesignal_flutter: ^5.2.0
   detectable_text_field: ^3.0.2
   flutter_hooks: ^0.20.5
   carousel_slider: ^4.2.1

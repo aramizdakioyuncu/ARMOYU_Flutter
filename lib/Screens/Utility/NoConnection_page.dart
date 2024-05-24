@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
 import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
@@ -37,10 +39,25 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
       });
 
       final prefs = await SharedPreferences.getInstance();
-      final username = prefs.getString('username');
-      final password = prefs.getString('password');
 
-      FunctionService f = FunctionService();
+      // Kullanıcı listesini SharedPreferences'den yükleme
+      List<String>? usersJson = prefs.getStringList('users');
+
+      String? username;
+      String? password;
+
+      if (usersJson != null) {
+        //Listeye Yükle
+        ARMOYU.appUsers = usersJson
+            .map((userJson) => User.fromJson(jsonDecode(userJson)))
+            .toList();
+        for (var element in usersJson) {
+          username = ARMOYU.appUsers[0].userName;
+          password = ARMOYU.appUsers[0].password;
+          log(element.toString());
+        }
+      }
+      log(ARMOYU.appUsers.length.toString());
 
       //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
       if (username == null || password == null) {
@@ -59,6 +76,7 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         });
         return;
       }
+      FunctionService f = FunctionService();
 
       Map<String, dynamic> response =
           await f.login(username.toString(), password.toString(), true);
