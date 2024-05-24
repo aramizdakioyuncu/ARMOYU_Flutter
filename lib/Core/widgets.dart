@@ -1,5 +1,6 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
+import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -66,6 +67,39 @@ class ARMOYUWidget {
       backgroundColor: ARMOYU.bodyColor,
       textColor: ARMOYU.color,
       fontSize: 14.0,
+    );
+  }
+
+  static void showConfirmationDialog(BuildContext context,
+      {required Function accept, Function? decline}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: ARMOYU.backgroundcolor,
+          title: CustomText.costum1('Emin misiniz?'),
+          content: CustomText.costum1(
+              'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?'),
+          actions: <Widget>[
+            TextButton(
+              child: CustomText.costum1('İptal'),
+              onPressed: () {
+                if (decline != null) {
+                  decline();
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: CustomText.costum1('Onayla'),
+              onPressed: () {
+                accept();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

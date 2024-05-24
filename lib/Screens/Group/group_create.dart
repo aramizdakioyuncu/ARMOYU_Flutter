@@ -152,6 +152,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Grup Oluştur"),
         backgroundColor: Colors.black,

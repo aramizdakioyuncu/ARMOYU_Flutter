@@ -21,6 +21,13 @@ class FunctionsGroup {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> groupleave(int grupID) async {
+    Map<String, String> formData = {"grupID": "$grupID"};
+    Map<String, dynamic> jsonData =
+        await apiService.request("gruplar/ayril/0/", formData);
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> groupsettingsSave({
     required int grupID,
     required String groupName,

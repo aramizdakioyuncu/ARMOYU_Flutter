@@ -158,6 +158,22 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
   }
 
+  Future<void> removepost() async {
+    postVisible = false;
+    setstatefunction();
+
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response = await funct.remove(widget.post.postID);
+
+    ARMOYUWidget.toastNotification(response["aciklama"].toString());
+
+    if (response["durum"] == 0) {
+      postVisible = true;
+      setstatefunction();
+      return;
+    }
+  }
+
   void postcomments(int postID, List<Widget> listComments) {
     //Yorumları Çekmeye başla
     getcommentsfetch(postID, listComments);
@@ -396,6 +412,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
   void postfeedback() {
     showModalBottomSheet<void>(
+      backgroundColor: ARMOYU.backgroundcolor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(10),
@@ -500,29 +517,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     visible: widget.post.owner.userID ==
                         ARMOYU.appUsers[ARMOYU.selectedUser].userID,
                     child: InkWell(
-                      onTap: () async {
-                        FunctionsPosts funct = FunctionsPosts();
-                        Map<String, dynamic> response =
-                            await funct.remove(widget.post.postID);
-                        if (response["durum"] == 0) {
-                          log(response["aciklama"]);
-                          return;
-                        }
-                        if (response["durum"] == 1) {
-                          log(response["aciklama"]);
-                          setState(() {
-                            postVisible = false;
-                          });
-
-                          try {
-                            if (mounted) {
-                              Navigator.pop(context);
-                            }
-                          } catch (e) {
-                            log(e.toString());
-                          }
-                        }
-                      },
+                      onTap: () async => ARMOYUWidget.showConfirmationDialog(
+                        context,
+                        accept: removepost,
+                      ),
                       child: const ListTile(
                         textColor: Colors.red,
                         leading: Icon(

@@ -839,8 +839,9 @@ class ARMOYUFunctions {
 
                               ARMOYUWidget.toastNotification(
                                   response["aciklama"].toString());
-
-                              Navigator.pop(context);
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
                             },
                             loadingStatus: profileeditProcess,
                           ),

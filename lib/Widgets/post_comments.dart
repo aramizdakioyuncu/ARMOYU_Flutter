@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
@@ -34,6 +35,22 @@ class _WidgetPostComments extends State<WidgetPostComments> {
   void setstatefunction() {
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  Future<void> removeComment() async {
+    isvisiblecomment = false;
+    setstatefunction();
+
+    FunctionsPosts funct = FunctionsPosts();
+    Map<String, dynamic> response =
+        await funct.removecomment(widget.comment.commentID);
+    ARMOYUWidget.toastNotification(response["aciklama"].toString());
+
+    if (response["durum"] == 0) {
+      isvisiblecomment = true;
+      setstatefunction();
+      return;
     }
   }
 
@@ -130,19 +147,14 @@ class _WidgetPostComments extends State<WidgetPostComments> {
               visible: ARMOYU.appUsers[ARMOYU.selectedUser].userID ==
                   widget.comment.user.userID,
               child: IconButton(
-                onPressed: () async {
-                  FunctionsPosts funct = FunctionsPosts();
-                  Map<String, dynamic> response =
-                      await funct.removecomment(widget.comment.commentID);
-                  if (response["durum"] == 0) {
-                    log(response["aciklama"]);
-                    return;
-                  }
-                  setState(() {
-                    isvisiblecomment = false;
-                  });
-                },
-                icon: const Icon(Icons.delete, color: Colors.grey),
+                onPressed: () async => ARMOYUWidget.showConfirmationDialog(
+                  context,
+                  accept: removeComment,
+                ),
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.grey,
+                ),
               ),
             ),
           ],

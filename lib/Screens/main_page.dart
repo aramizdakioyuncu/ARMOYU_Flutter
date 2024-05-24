@@ -101,6 +101,9 @@ class _MainPageState extends State<MainPage>
     //Takımları Çek opsiyonel
     ARMOYUFunctions.favteamfetch();
     //Grup Oluştur ekle
+
+    //Grupları Çek
+    loadMyGroups();
   }
 
   void setstatefunction() {
@@ -251,33 +254,51 @@ class _MainPageState extends State<MainPage>
     for (dynamic element in response["icerik"]) {
       widget.currentUser!.myGroups!.add(
         Group(
-          groupID: element['group_ID'],
-          groupName: element['group_name'],
-          groupshortName: element['group_shortname'],
-          groupUsersCount: element['group_usercount'],
-          joinStatus: element['group_joinstatus'] == 1 ? true : false,
-          description: element['group_description'],
-          groupSocial: GroupSocial(
-            discord: element['group_social']['group_discord'],
-            web: element['group_social']['group_website'],
-          ),
-          groupLogo: Media(
-            mediaID: 0,
-            mediaURL: MediaURL(
-              bigURL: element['group_logo']['media_bigURL'],
-              normalURL: element['group_logo']['media_URL'],
-              minURL: element['group_logo']['media_minURL'],
+            groupID: element['group_ID'],
+            groupName: element['group_name'],
+            groupshortName: element['group_shortname'],
+            groupUsersCount: element['group_usercount'],
+            joinStatus: element['group_joinstatus'] == 1 ? true : false,
+            description: element['group_description'],
+            groupSocial: GroupSocial(
+              discord: element['group_social']['group_discord'],
+              web: element['group_social']['group_website'],
             ),
-          ),
-          groupBanner: Media(
-            mediaID: 0,
-            mediaURL: MediaURL(
-              bigURL: element['group_banner']['media_bigURL'],
-              normalURL: element['group_banner']['media_URL'],
-              minURL: element['group_banner']['media_minURL'],
+            groupLogo: Media(
+              mediaID: 0,
+              mediaURL: MediaURL(
+                bigURL: element['group_logo']['media_bigURL'],
+                normalURL: element['group_logo']['media_URL'],
+                minURL: element['group_logo']['media_minURL'],
+              ),
             ),
-          ),
-        ),
+            groupBanner: Media(
+              mediaID: 0,
+              mediaURL: MediaURL(
+                bigURL: element['group_banner']['media_bigURL'],
+                normalURL: element['group_banner']['media_URL'],
+                minURL: element['group_banner']['media_minURL'],
+              ),
+            ),
+            myRole: GroupRoles(
+              owner: element['group_myRole']['owner'] == 1 ? true : false,
+              userInvite:
+                  element['group_myRole']['user_invite'] == 1 ? true : false,
+              userKick:
+                  element['group_myRole']['user_kick'] == 1 ? true : false,
+              userRole:
+                  element['group_myRole']['user_role'] == 1 ? true : false,
+              groupSettings:
+                  element['group_myRole']['group_settings'] == 1 ? true : false,
+              groupFiles:
+                  element['group_myRole']['group_files'] == 1 ? true : false,
+              groupEvents:
+                  element['group_myRole']['group_events'] == 1 ? true : false,
+              groupRole:
+                  element['group_myRole']['group_role'] == 1 ? true : false,
+              groupSurvey:
+                  element['group_myRole']['group_survey'] == 1 ? true : false,
+            )),
       );
     }
 

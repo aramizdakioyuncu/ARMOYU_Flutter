@@ -43,6 +43,8 @@ class _GroupPage extends State<GroupPage> {
   bool _groupusersfetchProcces = false;
   Group _group = Group(groupUsers: []);
 
+  bool _ismyGroup = false;
+
   final TextEditingController _groupname = TextEditingController();
   final TextEditingController _groupshortname = TextEditingController();
   final TextEditingController _groupdescription = TextEditingController();
@@ -59,6 +61,10 @@ class _GroupPage extends State<GroupPage> {
   bool _changegrouplogoStatus = false;
   bool _changegroupbannerStatus = false;
   bool _inviteuserStatus = false;
+  int _selectedmenuItem = 0;
+
+  final Color _selectedColor = Colors.yellow;
+  final Color _nonselectedColor = Colors.white;
 
   Timer? searchTimer;
 
@@ -68,9 +74,13 @@ class _GroupPage extends State<GroupPage> {
 
     _searchuser.addListener(_onSearchTextChanged);
 
+    startingfunction();
+  }
+
+  Future<void> startingfunction() async {
     if (widget.group == null) {
       _group.groupUsers = [];
-      fetchGroupInfo();
+      await fetchGroupInfo();
     } else {
       _group = widget.group!;
       _groupname.text = _group.groupName!;
@@ -82,6 +92,16 @@ class _GroupPage extends State<GroupPage> {
       if (widget.group!.groupUsers == null) {
         fetchusersfunction();
       }
+    }
+
+    if (widget.currentUser!.myGroups == null) {
+      _ismyGroup = false;
+      return;
+    }
+
+    if (widget.currentUser!.myGroups!
+        .any((mygroup) => mygroup.groupID == _group.groupID)) {
+      _ismyGroup = true;
     }
   }
 
@@ -135,17 +155,18 @@ class _GroupPage extends State<GroupPage> {
       _groupProcces = false;
       return;
     }
+
     _group = Group(
       groupID: response["icerik"]["group_ID"],
       groupName: response["icerik"]["group_name"],
       groupshortName: response["icerik"]["group_shortname"],
       groupURL: response["icerik"]["group_URL"],
       groupType: "",
-      joinStatus: response['group_joinstatus'] == 1 ? true : false,
-      description: response["group_description"],
+      joinStatus: response["icerik"]['group_joinstatus'] == 1 ? true : false,
+      description: response["icerik"]["group_description"],
       groupSocial: GroupSocial(
-        discord: response['group_social']['group_discord'],
-        web: response['group_social']['group_website'],
+        discord: response["icerik"]['group_social']['group_discord'].toString(),
+        web: response["icerik"]['group_social']['group_website'] ?? "",
       ),
       groupBanner: Media(
         mediaID: response["icerik"]["group_banner"]["media_ID"],
@@ -175,6 +196,11 @@ class _GroupPage extends State<GroupPage> {
     setstatefunction();
 
     fetchusersfunction();
+  }
+
+  void selectmenuItem(int selectedItem) {
+    _pageviewController.jumpToPage(selectedItem);
+    _selectedmenuItem = selectedItem;
   }
 
   Future<void> fetchusersfunction() async {
@@ -496,6 +522,24 @@ class _GroupPage extends State<GroupPage> {
     });
   }
 
+  Future<void> leavegroup() async {
+    FunctionsGroup f = FunctionsGroup();
+    Map<String, dynamic> response = await f.groupleave(_group.groupID!);
+    if (response["durum"] == 0) {
+      ARMOYUWidget.toastNotification(response["aciklama"].toString());
+      return;
+    }
+
+    widget.currentUser!.myGroups!
+        .removeWhere((element) => element.groupID == _group.groupID);
+
+    setstatefunction();
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -597,103 +641,191 @@ class _GroupPage extends State<GroupPage> {
               ),
               SliverToBoxAdapter(
                 child: Visibility(
-                  visible: widget.currentUser!.myGroups != null
-                      ? widget.currentUser!.myGroups!
-                          .any((mygroup) => mygroup.groupID == _group.groupID)
-                      : false,
+                  visible: _ismyGroup,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(0);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(FontAwesomeIcons.house),
-                            ],
+                      Visibility(
+                        visible: true,
+                        child: GestureDetector(
+                          onTap: () {
+                            selectmenuItem(0);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.house,
+                                  color: _selectedmenuItem == 0
+                                      ? _selectedColor
+                                      : _nonselectedColor,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(1);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(FontAwesomeIcons.userPlus),
-                            ],
+                      Visibility(
+                        visible: widget.currentUser!.myGroups == null
+                            ? false
+                            : widget.currentUser!.myGroups!.any((mygroup) =>
+                                    mygroup.groupID == _group.groupID)
+                                ? widget.currentUser!.myGroups!
+                                    .firstWhere((mygroup) =>
+                                        mygroup.groupID == _group.groupID)
+                                    .myRole!
+                                    .userInvite
+                                : false,
+                        child: GestureDetector(
+                          onTap: () {
+                            selectmenuItem(1);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.userPlus,
+                                  color: _selectedmenuItem == 1
+                                      ? _selectedColor
+                                      : _nonselectedColor,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(2);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.chartBar,
-                              ),
-                            ],
+                      Visibility(
+                        visible: widget.currentUser!.myGroups == null
+                            ? false
+                            : widget.currentUser!.myGroups!.any((mygroup) =>
+                                    mygroup.groupID == _group.groupID)
+                                ? widget.currentUser!.myGroups!
+                                    .firstWhere((mygroup) =>
+                                        mygroup.groupID == _group.groupID)
+                                    .myRole!
+                                    .groupSettings
+                                : false,
+                        child: GestureDetector(
+                          onTap: () {
+                            selectmenuItem(2);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.gear,
+                                  color: _selectedmenuItem == 2
+                                      ? _selectedColor
+                                      : _nonselectedColor,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(2);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(FontAwesomeIcons.upload),
-                            ],
+                      Visibility(
+                        visible: widget.currentUser!.myGroups == null
+                            ? false
+                            : widget.currentUser!.myGroups!.any((mygroup) =>
+                                    mygroup.groupID == _group.groupID)
+                                ? widget.currentUser!.myGroups!
+                                    .firstWhere((mygroup) =>
+                                        mygroup.groupID == _group.groupID)
+                                    .myRole!
+                                    .groupSurvey
+                                : false,
+                        child: GestureDetector(
+                          onTap: () {
+                            selectmenuItem(2);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.chartBar,
+                                  color: _selectedmenuItem == 3
+                                      ? _selectedColor
+                                      : _nonselectedColor,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(2);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(FontAwesomeIcons.plug),
-                            ],
+                      Visibility(
+                        visible: widget.currentUser!.myGroups == null
+                            ? false
+                            : widget.currentUser!.myGroups!.any((mygroup) =>
+                                    mygroup.groupID == _group.groupID)
+                                ? widget.currentUser!.myGroups!
+                                    .firstWhere((mygroup) =>
+                                        mygroup.groupID == _group.groupID)
+                                    .myRole!
+                                    .groupFiles
+                                : false,
+                        child: GestureDetector(
+                          onTap: () {
+                            selectmenuItem(2);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.upload,
+                                  color: _selectedmenuItem == 4
+                                      ? _selectedColor
+                                      : _nonselectedColor,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(2);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(FontAwesomeIcons.gear),
-                            ],
+                      Visibility(
+                        visible: false,
+                        child: GestureDetector(
+                          onTap: () {
+                            selectmenuItem(2);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.plug,
+                                  color: _selectedmenuItem == 5
+                                      ? _selectedColor
+                                      : _nonselectedColor,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _pageviewController.jumpToPage(2);
-                        },
-                        child: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              FaIcon(FontAwesomeIcons.arrowRightFromBracket),
-                            ],
+                      Visibility(
+                        visible: true,
+                        child: GestureDetector(
+                          onTap: () async {
+                            ARMOYUWidget.showConfirmationDialog(
+                              context,
+                              accept: leavegroup,
+                            );
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                FaIcon(
+                                  FontAwesomeIcons.arrowRightFromBracket,
+                                  color: Colors.grey,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -758,6 +890,41 @@ class _GroupPage extends State<GroupPage> {
                                       );
                                     },
                                     onLongPress: () {
+                                      if (widget.currentUser!.myGroups ==
+                                          null) {
+                                        return;
+                                      }
+
+                                      if (!widget.currentUser!.myGroups!.any(
+                                          (mygroup) =>
+                                              mygroup.groupID ==
+                                              _group.groupID)) {
+                                        return;
+                                      }
+
+                                      if ((widget.currentUser!.myGroups == null
+                                                  ? false
+                                                  : widget.currentUser!
+                                                          .myGroups!
+                                                          .any((mygroup) =>
+                                                              mygroup
+                                                                  .groupID ==
+                                                              _group.groupID)
+                                                      ? widget.currentUser!
+                                                          .myGroups!
+                                                          .firstWhere(
+                                                              (mygroup) =>
+                                                                  mygroup
+                                                                      .groupID ==
+                                                                  _group
+                                                                      .groupID)
+                                                          .myRole!
+                                                          .userKick
+                                                      : false)
+                                              .toString() ==
+                                          "false") {
+                                        return;
+                                      }
                                       //
                                       showModalBottomSheet<void>(
                                         backgroundColor: ARMOYU.backgroundcolor,
@@ -878,6 +1045,7 @@ class _GroupPage extends State<GroupPage> {
                           child: CustomButtons.costum1(
                             text: "Davet Et",
                             onPressed: inviteuserfunction,
+                            enabled: _selectedUsers.isNotEmpty ? true : false,
                             loadingStatus: _inviteuserStatus,
                           ),
                         ),
@@ -997,12 +1165,14 @@ class _GroupPage extends State<GroupPage> {
                       children: [
                         CustomText.costum1("Alım Durumu"),
                         const Spacer(),
-                        Switch(
-                          value: _group.joinStatus!,
-                          onChanged: (value) {
-                            _group.joinStatus = value;
-                          },
-                        ),
+                        _group.joinStatus == null
+                            ? Container()
+                            : Switch(
+                                value: _group.joinStatus!,
+                                onChanged: (value) {
+                                  _group.joinStatus = value;
+                                },
+                              ),
                       ],
                     ),
                     const SizedBox(height: 20),

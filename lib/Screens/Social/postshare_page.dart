@@ -100,6 +100,7 @@ class _PostSharePageState extends State<PostSharePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         backgroundColor: ARMOYU.appbarColor,
         title: const Text("Paylaşım Yap"),

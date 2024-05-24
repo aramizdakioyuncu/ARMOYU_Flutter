@@ -933,6 +933,9 @@ class _ProfilePageState extends State<ProfilePage>
                                                       .currentUser!.userID!);
                                               if (response["durum"] == 0) {
                                                 log(response["aciklama"]);
+                                                ARMOYUWidget.toastNotification(
+                                                    response["aciklama"]
+                                                        .toString());
                                                 return;
                                               }
                                             },

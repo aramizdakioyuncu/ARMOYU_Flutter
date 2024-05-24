@@ -1,10 +1,10 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
 
 import 'package:ARMOYU/Functions/API_Functions/group.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -45,6 +45,17 @@ class CustomMenusNotificationbars extends StatefulWidget {
 
 class _CustomMenusNotificationbarsState
     extends State<CustomMenusNotificationbars> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -96,73 +107,97 @@ class _CustomMenusNotificationbarsState
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CustomButtons.costum1(
-                                text: "Kabul ET",
-                                onPressed: () async {
-                                  if (widget.category == "arkadaslik") {
-                                    if (widget.categorydetail == "istek") {
-                                      FunctionsProfile f = FunctionsProfile();
-                                      Map<String, dynamic> response =
-                                          await f.friendrequestanswer(
-                                              widget.userID, 1);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                        return;
-                                      }
+                              text: "Kabul ET",
+                              onPressed: () async {
+                                if (widget.category == "arkadaslik") {
+                                  widget.natificationisVisible = false;
+                                  ARMOYU.friendRequestCount--;
+                                  setstatefunction();
 
-                                      ARMOYU.friendRequestCount--;
-                                      setState(() {
-                                        widget.natificationisVisible = false;
-                                      });
-                                    }
-                                  } else if (widget.category == "gruplar") {
-                                    if (widget.categorydetail == "davet") {
-                                      FunctionsGroup f = FunctionsGroup();
-                                      Map<String, dynamic> response =
-                                          await f.grouprequestanswer(
-                                              widget.categorydetailID, 1);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                        return;
-                                      }
-                                      ARMOYU.groupInviteCount--;
+                                  if (widget.categorydetail == "istek") {
+                                    FunctionsProfile f = FunctionsProfile();
+                                    Map<String, dynamic> response = await f
+                                        .friendrequestanswer(widget.userID, 1);
+                                    if (response["durum"] == 0) {
+                                      ARMOYUWidget.toastNotification(
+                                          response["aciklama"].toString());
+                                      widget.natificationisVisible = true;
+                                      ARMOYU.friendRequestCount++;
 
-                                      setState(() {
-                                        widget.natificationisVisible = false;
-                                      });
+                                      setstatefunction();
+                                      return;
                                     }
                                   }
-                                },
-                                loadingStatus: false),
+                                } else if (widget.category == "gruplar") {
+                                  if (widget.categorydetail == "davet") {
+                                    ARMOYU.groupInviteCount--;
+                                    widget.natificationisVisible = false;
+                                    setstatefunction();
+
+                                    FunctionsGroup f = FunctionsGroup();
+                                    Map<String, dynamic> response =
+                                        await f.grouprequestanswer(
+                                            widget.categorydetailID, 1);
+                                    if (response["durum"] == 0) {
+                                      ARMOYUWidget.toastNotification(
+                                          response["aciklama"].toString());
+                                      ARMOYU.groupInviteCount++;
+                                      widget.natificationisVisible = true;
+                                      setstatefunction();
+
+                                      return;
+                                    }
+                                  }
+                                }
+                              },
+                              loadingStatus: false,
+                            ),
                             const SizedBox(width: 16),
                             CustomButtons.costum1(
-                                text: "Reddet",
-                                onPressed: () async {
-                                  if (widget.category == "arkadaslik") {
-                                    if (widget.categorydetail == "istek") {
-                                      FunctionsProfile f = FunctionsProfile();
-                                      Map<String, dynamic> response =
-                                          await f.friendrequestanswer(
-                                              widget.userID, 0);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                      }
-                                    }
-                                  } else if (widget.category == "gruplar") {
-                                    if (widget.categorydetail == "davet") {
-                                      FunctionsGroup f = FunctionsGroup();
-                                      Map<String, dynamic> response =
-                                          await f.grouprequestanswer(
-                                              widget.categorydetailID, 0);
-                                      if (response["durum"] == 0) {
-                                        log(response["aciklama"]);
-                                      }
+                              text: "Reddet",
+                              onPressed: () async {
+                                if (widget.category == "arkadaslik") {
+                                  if (widget.categorydetail == "istek") {
+                                    ARMOYU.friendRequestCount--;
+                                    widget.natificationisVisible = false;
+                                    setstatefunction();
+
+                                    FunctionsProfile f = FunctionsProfile();
+                                    Map<String, dynamic> response = await f
+                                        .friendrequestanswer(widget.userID, 0);
+                                    if (response["durum"] == 0) {
+                                      ARMOYUWidget.toastNotification(
+                                          response["aciklama"].toString());
+                                      ARMOYU.friendRequestCount++;
+                                      widget.natificationisVisible = true;
+
+                                      setstatefunction();
+                                      return;
                                     }
                                   }
-                                  setState(() {
+                                } else if (widget.category == "gruplar") {
+                                  if (widget.categorydetail == "davet") {
+                                    ARMOYU.groupInviteCount--;
                                     widget.natificationisVisible = false;
-                                  });
-                                },
-                                loadingStatus: false),
+                                    setstatefunction();
+                                    FunctionsGroup f = FunctionsGroup();
+                                    Map<String, dynamic> response =
+                                        await f.grouprequestanswer(
+                                            widget.categorydetailID, 0);
+                                    if (response["durum"] == 0) {
+                                      ARMOYUWidget.toastNotification(
+                                          response["aciklama"].toString());
+                                      ARMOYU.groupInviteCount++;
+                                      widget.natificationisVisible = true;
+
+                                      setstatefunction();
+                                      return;
+                                    }
+                                  }
+                                }
+                              },
+                              loadingStatus: false,
+                            ),
                           ],
                         ),
                       ),
