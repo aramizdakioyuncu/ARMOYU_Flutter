@@ -97,8 +97,23 @@ class FunctionsPosts {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> detailfetch(int postID) async {
-    Map<String, String> formData = {"postID": "$postID"};
+  Future<Map<String, dynamic>> getPosts(int page) async {
+    Map<String, String> formData = {"limit": "20"};
+    Map<String, dynamic> jsonData =
+        await _apiService.request("sosyal/liste/$page/", formData);
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> detailfetch({
+    int? postID,
+    String? category,
+    int? categoryDetail,
+  }) async {
+    Map<String, String> formData = {
+      "postID": "$postID",
+      "category": "$category",
+      "categorydetail": "$categoryDetail",
+    };
     Map<String, dynamic> jsonData =
         await _apiService.request("sosyal/liste/", formData);
     return jsonData;

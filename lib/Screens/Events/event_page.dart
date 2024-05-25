@@ -37,7 +37,7 @@ class EventPage extends StatefulWidget {
 class _EventStatePage extends State<EventPage> {
   bool didijoin = false;
 
-  bool rulesacception = false;
+  bool _rulesacception = false;
 
   List<User> userParticipant = [];
   List<Group> groupParticipant = [];
@@ -236,7 +236,7 @@ class _EventStatePage extends State<EventPage> {
   }
 
   Future<void> joinevent() async {
-    if (!rulesacception) {
+    if (!_rulesacception) {
       String gelenyanit = "Kuralları kabul etmediniz!";
       ARMOYUWidget.stackbarNotification(context, gelenyanit);
       return;
@@ -887,9 +887,9 @@ class _EventStatePage extends State<EventPage> {
                               Row(
                                 children: [
                                   Checkbox(
-                                    value: rulesacception,
+                                    value: _rulesacception,
                                     onChanged: (value) {
-                                      rulesacception = !rulesacception;
+                                      _rulesacception = !_rulesacception;
                                       setstatefunction();
                                     },
                                   ),
@@ -902,6 +902,7 @@ class _EventStatePage extends State<EventPage> {
                               CustomButtons.costum1(
                                 text: "KATIL",
                                 onPressed: joinevent,
+                                enabled: _rulesacception,
                                 loadingStatus: joineventProccess,
                               ),
                             ],

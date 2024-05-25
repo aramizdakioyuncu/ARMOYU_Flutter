@@ -9,17 +9,20 @@ import 'package:ARMOYU/Models/user.dart';
 
 import 'package:ARMOYU/Widgets/post_comments.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
 
 class PostDetailPage extends StatefulWidget {
-  final int postID;
+  final int? postID;
+  final int? commentID;
 
   const PostDetailPage({
     super.key,
-    required this.postID,
+    this.postID,
+    this.commentID,
   });
 
   @override
@@ -30,11 +33,20 @@ class _PostDetailPage extends State<PostDetailPage>
     with AutomaticKeepAliveClientMixin<PostDetailPage> {
   @override
   bool get wantKeepAlive => true;
+
+  int? _postID;
   @override
   void initState() {
     super.initState();
+
+    log(widget.commentID.toString());
     postdetailfetch();
-    getcommentsfetch(widget.postID, listComments);
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   double commentheight = 0;
@@ -42,10 +54,12 @@ class _PostDetailPage extends State<PostDetailPage>
 
   List<Widget> listComments = [];
   Future<void> getcommentsfetch(int postID, List<Widget> listComments) async {
-    setState(() {
-      listComments.clear();
-      listComments.add(const CircularProgressIndicator());
-    });
+    listComments.clear();
+    listComments.add(
+      const CupertinoActivityIndicator(),
+    );
+
+    setstatefunction();
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
@@ -112,7 +126,11 @@ class _PostDetailPage extends State<PostDetailPage>
   Widget asa = const Text("");
   Future<void> postdetailfetch() async {
     FunctionsPosts funct = FunctionsPosts();
-    Map<String, dynamic> response = await funct.detailfetch(widget.postID);
+    Map<String, dynamic> response = await funct.detailfetch(
+      postID: widget.postID,
+      category: "yorum",
+      categoryDetail: widget.commentID,
+    );
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -121,6 +139,10 @@ class _PostDetailPage extends State<PostDetailPage>
     List<Media> media = [];
     List<Comment> comments = [];
     List<Like> likers = [];
+
+    _postID = response["icerik"][0]["paylasimID"];
+
+    getcommentsfetch(response["icerik"][0]["paylasimID"], listComments);
 
     if (response["icerik"][0]["paylasimfoto"].length != 0) {
       for (int j = 0; j < response["icerik"][0]["paylasimfoto"].length; j++) {
@@ -193,9 +215,9 @@ class _PostDetailPage extends State<PostDetailPage>
       postDate: response["icerik"][0]["paylasimzamangecen"],
       sharedDevice: response["icerik"][0]["paylasimnereden"],
       likesCount: response["icerik"][0]["begenisay"],
-      isLikeme: response["icerik"][0]["benbegendim"],
+      isLikeme: response["icerik"][0]["benbegendim"] == 1 ? true : false,
       commentsCount: response["icerik"][0]["yorumsay"],
-      iscommentMe: response["icerik"][0]["benyorumladim"],
+      iscommentMe: response["icerik"][0]["benyorumladim"] == 1 ? true : false,
       media: media,
       owner: User(
         userID: response["icerik"][0]["sahipID"],
@@ -223,6 +245,7 @@ class _PostDetailPage extends State<PostDetailPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text('Paylaşım', style: TextStyle(fontSize: 18)),
+        backgroundColor: ARMOYU.appbarColor,
         toolbarHeight: 40,
       ),
       body: Column(children: [
@@ -235,7 +258,6 @@ class _PostDetailPage extends State<PostDetailPage>
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListView.builder(
-                    // controller: _scrollController,
                     itemCount: listComments.length,
                     itemBuilder: (context, index) {
                       return listComments[index];
@@ -251,11 +273,11 @@ class _PostDetailPage extends State<PostDetailPage>
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                  foregroundImage: CachedNetworkImageProvider(
-                    ARMOYU
-                        .appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
-                  ),
-                  radius: 20),
+                foregroundImage: CachedNetworkImageProvider(
+                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
+                ),
+                radius: 20,
+              ),
             ),
             Expanded(
               child: Container(
@@ -288,12 +310,12 @@ class _PostDetailPage extends State<PostDetailPage>
                   log(controllerMessage.text);
                   FunctionsPosts funct = FunctionsPosts();
                   Map<String, dynamic> response = await funct.createcomment(
-                      widget.postID, controllerMessage.text);
+                      _postID!, controllerMessage.text);
                   if (response["durum"] == 0) {
                     log(response["aciklama"]);
                     return;
                   }
-                  getcommentsfetch(widget.postID, listComments);
+                  getcommentsfetch(_postID!, listComments);
 
                   controllerMessage.text = "";
                 },

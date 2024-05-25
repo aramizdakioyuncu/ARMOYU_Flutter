@@ -260,17 +260,19 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           padding: const EdgeInsets.all(5.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              log(controllerMessage.text);
                               FunctionsPosts funct = FunctionsPosts();
                               Map<String, dynamic> response =
                                   await funct.createcomment(widget.post.postID,
                                       controllerMessage.text);
                               if (response["durum"] == 0) {
-                                log(response["aciklama"]);
+                                ARMOYUWidget.toastNotification(
+                                    response["aciklama"].toString());
                                 return;
                               }
                               getcommentsfetch(
-                                  widget.post.postID, listComments);
+                                widget.post.postID,
+                                listComments,
+                              );
                               controllerMessage.text = "";
                             },
                             child: const Icon(

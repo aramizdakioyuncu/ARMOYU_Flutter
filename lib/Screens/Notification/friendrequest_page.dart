@@ -1,14 +1,18 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
 
 class NotificationFriendRequestPage extends StatefulWidget {
+  final User? currentUser;
+
   const NotificationFriendRequestPage({
     super.key,
+    required this.currentUser,
   });
 
   @override
@@ -110,6 +114,7 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
         setState(() {
           widgetNotifications.add(
             CustomMenusNotificationbars(
+              currentUser: widget.currentUser,
               avatar: response["icerik"][i]["bildirimgonderenavatar"],
               userID: response["icerik"][i]["bildirimgonderenID"],
               category: response["icerik"][i]["bildirimamac"],

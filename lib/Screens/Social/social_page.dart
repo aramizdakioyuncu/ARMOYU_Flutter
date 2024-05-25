@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
 import 'package:ARMOYU/Models/Social/like.dart';
@@ -11,7 +12,6 @@ import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Social/postshare_page.dart';
-import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/Widgets/Skeletons/storycircle_skeleton.dart';
 import 'package:ARMOYU/Widgets/storycircle.dart';
@@ -45,12 +45,6 @@ class _SocialPageState extends State<SocialPage>
   late final ScrollController _scrollController =
       widget.homepageScrollController;
 
-  // int userID = -1;
-  // String userName = 'User Name';
-  // String userEmail = 'user@email.com';
-  // String useravatar = 'assets/images/armoyu128.png';
-  // String userbanner = 'assets/images/test.jpg';
-
   int postpage = 1;
   bool postpageproccess = false;
   bool isRefreshing = false;
@@ -63,11 +57,6 @@ class _SocialPageState extends State<SocialPage>
   @override
   void initState() {
     super.initState();
-    // userID = widget.currentUser!.userID!;
-    // userName = widget.currentUser!.displayName!;
-    // userEmail = widget.currentUser!.userMail!;
-    // useravatar = widget.currentUser!.avatar!.mediaURL.minURL;
-    // userbanner = widget.currentUser!.banner!.mediaURL.minURL;
 
     loadSkeletonpost();
     // ScrollController'ı dinle
@@ -197,7 +186,7 @@ class _SocialPageState extends State<SocialPage>
   }
 
   Future<void> loadPostsv2(int page) async {
-    FunctionService f = FunctionService();
+    FunctionsPosts f = FunctionsPosts();
 
     Map<String, dynamic> response = await f.getPosts(page);
     if (response["durum"] == 0) {
@@ -328,19 +317,19 @@ class _SocialPageState extends State<SocialPage>
           if (i / 3 == 1) {
             widgetPosts.add(
               ARMOYUWidget(
-                      scrollController: ScrollController(),
-                      content: listPOPCard,
-                      firstFetch: listPOPCard.isEmpty)
-                  .widgetPOPlist(),
+                scrollController: ScrollController(),
+                content: listPOPCard,
+                firstFetch: listPOPCard.isEmpty,
+              ).widgetPOPlist(),
             );
           }
           if (i / 7 == 1) {
             widgetPosts.add(
               ARMOYUWidget(
-                      scrollController: ScrollController(),
-                      content: listTPCard,
-                      firstFetch: listTPCard.isEmpty)
-                  .widgetTPlist(),
+                scrollController: ScrollController(),
+                content: listTPCard,
+                firstFetch: listTPCard.isEmpty,
+              ).widgetTPlist(),
             );
           }
         });
@@ -418,7 +407,9 @@ class _SocialPageState extends State<SocialPage>
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const PostSharePage(),
+              builder: (context) => PostSharePage(
+                currentUser: widget.currentUser,
+              ),
             ),
           );
         },

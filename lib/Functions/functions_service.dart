@@ -248,13 +248,6 @@ class FunctionService {
     return jsonData;
   }
 
-  Future<Map<String, dynamic>> getPosts(int page) async {
-    Map<String, String> formData = {"limit": "20"};
-    Map<String, dynamic> jsonData =
-        await apiService.request("sosyal/liste/$page/", formData);
-    return jsonData;
-  }
-
   Future<Map<String, dynamic>> getprofilePosts(
       int page, int userID, String category) async {
     Map<String, String> formData = {

@@ -561,7 +561,7 @@ class _GroupPage extends State<GroupPage> {
                   },
                 ),
                 backgroundColor: Colors.black,
-                expandedHeight: 160.0,
+                expandedHeight: ARMOYU.screenHeight * 0.25,
                 actions: const <Widget>[],
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding: const EdgeInsets.only(left: 30.0),

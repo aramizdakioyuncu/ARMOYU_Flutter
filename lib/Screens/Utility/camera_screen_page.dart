@@ -4,6 +4,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/Camera/camfilter.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,9 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class CameraScreen extends StatefulWidget {
+  final User? currentUser;
   final bool canPop;
   const CameraScreen({
     super.key,
+    required this.currentUser,
     required this.canPop,
   });
 
@@ -457,8 +460,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
-                                        ARMOYU.appUsers[ARMOYU.selectedUser]
-                                            .avatar!.mediaURL.normalURL,
+                                        widget.currentUser!.avatar!.mediaURL
+                                            .normalURL,
                                       ),
                                       radius: 12,
                                     ),
@@ -470,8 +473,8 @@ class _CameraScreenState extends State<CameraScreen> {
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
-                                        ARMOYU.appUsers[ARMOYU.selectedUser]
-                                            .avatar!.mediaURL.normalURL,
+                                        widget.currentUser!.avatar!.mediaURL
+                                            .normalURL,
                                       ),
                                       radius: 12,
                                     ),

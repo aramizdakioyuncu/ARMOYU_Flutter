@@ -247,17 +247,14 @@ class _SettingsPage extends State<SettingsPage> {
                     tileColor: ARMOYU.backgroundcolor,
                     leading: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      foregroundImage: CachedNetworkImageProvider(ARMOYU
-                          .appUsers[ARMOYU.selectedUser]
-                          .avatar!
-                          .mediaURL
-                          .minURL),
+                      foregroundImage: CachedNetworkImageProvider(
+                        widget.currentUser!.avatar!.mediaURL.minURL,
+                      ),
                       radius: 28,
                     ),
-                    title: CustomText.costum1(
-                        ARMOYU.appUsers[ARMOYU.selectedUser].displayName!),
+                    title: CustomText.costum1(widget.currentUser!.displayName!),
                     subtitle: CustomText.costum1(
-                        "Hatalı Giriş: ${ARMOYU.appUsers[ARMOYU.selectedUser].lastfaillogin}"),
+                        "Hatalı Giriş: ${widget.currentUser!.lastfaillogin}"),
                     onTap: () {
                       Navigator.push(
                         context,

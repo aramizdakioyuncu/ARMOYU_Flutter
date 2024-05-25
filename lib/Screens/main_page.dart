@@ -56,18 +56,17 @@ class MainPage extends StatefulWidget {
 
 bool _isBottomNavbarVisible = true;
 
-bool _appbarSearch = false;
-
 int postpage = 1;
 bool postpageproccess = false;
 bool isRefreshing = false;
 bool firstProcces = false;
 
-final TextEditingController appbarSearchTextController =
-    TextEditingController();
-
 class _MainPageState extends State<MainPage>
     with AutomaticKeepAliveClientMixin<MainPage> {
+  final TextEditingController _appbarSearchTextController =
+      TextEditingController();
+  bool _appbarSearch = false;
+
   final PageController _mainpagecontroller = PageController(initialPage: 0);
   final PageController _socailpageController = PageController(initialPage: 1);
 
@@ -472,7 +471,7 @@ class _MainPageState extends State<MainPage>
                             10.0), // Köşe yuvarlama eklemek
                       ),
                       child: TextField(
-                        controller: appbarSearchTextController,
+                        controller: _appbarSearchTextController,
                         style: TextStyle(
                           color: ARMOYU.textColor,
                           fontSize: 14,
@@ -991,7 +990,8 @@ class _MainPageState extends State<MainPage>
                 },
                 children: [
                   ARMOYU.cameras!.isNotEmpty
-                      ? const CameraScreen(
+                      ? CameraScreen(
+                          currentUser: widget.currentUser,
                           canPop: false,
                         )
                       : Container(),
@@ -1004,7 +1004,7 @@ class _MainPageState extends State<MainPage>
               SearchPage(
                 currentUser: widget.currentUser,
                 appbar: true,
-                searchController: appbarSearchTextController,
+                searchController: _appbarSearchTextController,
                 scrollController: _searchScrollController,
               ),
               NotificationPage(

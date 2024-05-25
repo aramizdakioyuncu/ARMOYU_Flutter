@@ -114,6 +114,7 @@ class _NotificationPage extends State<NotificationPage>
       }
       widgetNotifications.add(
         CustomMenusNotificationbars(
+          currentUser: widget.currentUser,
           avatar: response["icerik"][i]["bildirimgonderenavatar"],
           userID: response["icerik"][i]["bildirimgonderenID"],
           category: response["icerik"][i]["bildirimamac"],
@@ -185,7 +186,9 @@ class _NotificationPage extends State<NotificationPage>
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  const NotificationFriendRequestPage(),
+                                  NotificationFriendRequestPage(
+                                currentUser: widget.currentUser,
+                              ),
                             ),
                           );
                         },
@@ -217,7 +220,9 @@ class _NotificationPage extends State<NotificationPage>
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  const NotificationGroupRequestPage(),
+                                  NotificationGroupRequestPage(
+                                currentUser: widget.currentUser,
+                              ),
                             ),
                           );
                         },

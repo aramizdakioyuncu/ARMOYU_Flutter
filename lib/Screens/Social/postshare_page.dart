@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
@@ -13,7 +14,11 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class PostSharePage extends StatefulWidget {
-  const PostSharePage({super.key});
+  final User? currentUser;
+  const PostSharePage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<PostSharePage> createState() => _PostSharePageState();
@@ -202,7 +207,8 @@ class _PostSharePageState extends State<PostSharePage>
                           final List<Media> photo = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const CameraScreen(
+                              builder: (context) => CameraScreen(
+                                currentUser: widget.currentUser,
                                 canPop: true,
                               ),
                             ),
