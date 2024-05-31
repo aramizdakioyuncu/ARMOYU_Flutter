@@ -149,7 +149,7 @@ class _NotificationPage extends State<NotificationPage>
             },
           ),
           _firstProccess
-              ? const SliverToBoxAdapter(
+              ? const SliverFillRemaining(
                   child: Center(
                     child: CupertinoActivityIndicator(),
                   ),

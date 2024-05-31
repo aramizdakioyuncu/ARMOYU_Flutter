@@ -116,26 +116,33 @@ class _EventlistPage extends State<EventlistPage>
         title: const Text('Etkinlikler'),
         backgroundColor: ARMOYU.appbarColor,
       ),
-      body: eventsList.isEmpty
-          ? const Center(child: CupertinoActivityIndicator())
-          : RefreshIndicator(
-              key: _refreshIndicatorKey,
-              onRefresh: geteventslist,
-              child: ListView.separated(
-                physics: const ClampingScrollPhysics(),
-                itemCount: eventsList.length,
-                itemBuilder: (context, index) {
-                  Event aa = eventsList[index];
-                  return aa.eventListWidget(
-                    context,
-                    currentUser: widget.currentUser!,
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 1);
-                },
-              ),
-            ),
+      body: CustomScrollView(
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await geteventslist();
+            },
+          ),
+          eventsList.isEmpty
+              ? const SliverFillRemaining(
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      Event aa = eventsList[index];
+                      return aa.eventListWidget(
+                        context,
+                        currentUser: widget.currentUser!,
+                      );
+                    },
+                    childCount: eventsList.length,
+                  ),
+                ),
+        ],
+      ),
     );
   }
 }

@@ -95,13 +95,15 @@ class _NewslistStatePage extends State<NewslistPage>
     super.build(context);
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ARMOYU.bodyColor,
+        backgroundColor: ARMOYU.backgroundcolor,
         appBar: AppBar(
           title: const Text('Haberler'),
           backgroundColor: ARMOYU.appbarColor,
         ),
         body: newsList.isEmpty
-            ? const Center(child: CupertinoActivityIndicator())
+            ? const Center(
+                child: CupertinoActivityIndicator(),
+              )
             : RefreshIndicator(
                 key: _refreshIndicatorKey,
                 onRefresh: getnewslist,

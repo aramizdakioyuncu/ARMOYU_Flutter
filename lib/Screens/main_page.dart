@@ -430,7 +430,7 @@ class _MainPageState extends State<MainPage>
         top: false,
         bottom: false,
         child: Scaffold(
-          // backgroundColor: ARMOYU.backgroundcolor,
+          backgroundColor: ARMOYU.backgroundcolor,
           appBar: !_isBottomNavbarVisible
               ? null
               : AppBar(
@@ -975,7 +975,7 @@ class _MainPageState extends State<MainPage>
             children: [
               PageView(
                 controller: _socailpageController,
-                physics: _socailpageController.initialPage == 0 ? null : null,
+                // physics: const ClampingScrollPhysics(),
                 onPageChanged: (value) {
                   log(_socailpageController.initialPage.toString());
                   if (value == 0) {

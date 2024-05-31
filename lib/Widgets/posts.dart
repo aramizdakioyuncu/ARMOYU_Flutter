@@ -833,7 +833,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   Widget _buildMediaContent(BuildContext context) {
     Widget mediaSablon(
       String mediaUrl, {
-      required int index,
+      required int indexlength,
       BoxFit? fit = BoxFit.cover,
       double? width = 100,
       double? height = 100,
@@ -869,7 +869,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           ),
         );
       }
-      if (islastmedia) {
+      if (islastmedia && indexlength > 4) {
         return Container(
           width: width,
           height: height,
@@ -888,7 +888,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           ),
           child: Center(
               child: Text(
-            "+${index + 2 - 3}",
+            "+${indexlength - 4}",
             style: const TextStyle(fontSize: 50),
           )),
         );
@@ -904,16 +904,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           ),
         );
       }
-
-      //Görsel ise devam eder
-      // return CachedNetworkImage(
-      //   imageUrl: mediaUrl,
-      //   fit: fit,
-      //   width: width,
-      //   height: height,
-      //   placeholder: (context, url) => const CupertinoActivityIndicator(),
-      //   errorWidget: (context, url, error) => const Icon(Icons.error),
-      // );
     }
 
     Widget mediayerlesim = const Row();
@@ -934,7 +924,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
           mediarow1.clear();
           mediarow1.add(
             mediaSablon(
-              index: i,
+              indexlength: widget.post.media.length,
               widget.post.media[i].mediaURL.normalURL,
               isvideo: true,
             ),
@@ -982,7 +972,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             );
           },
           child: mediaSablon(
-            index: i,
+            indexlength: widget.post.media.length,
             widget.post.media[i].mediaURL.normalURL,
             width: mediawidth,
             height: mediaheight,
