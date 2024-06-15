@@ -23,8 +23,6 @@ class EventlistPage extends StatefulWidget {
 List<Event> eventsList = [];
 bool isfirstfetch = true;
 bool eventlistProecces = false;
-final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-    GlobalKey<RefreshIndicatorState>();
 
 class _EventlistPage extends State<EventlistPage>
     with AutomaticKeepAliveClientMixin<EventlistPage> {

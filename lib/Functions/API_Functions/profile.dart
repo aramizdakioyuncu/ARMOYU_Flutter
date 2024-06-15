@@ -74,6 +74,26 @@ class FunctionsProfile {
     return jsonData;
   }
 
+  Future<Map<String, dynamic>> defaultavatar() async {
+    Map<String, String> formData = {"": ""};
+
+    Map<String, dynamic> jsonData = await apiService.request(
+      "avatar-varsayilan/0/0/",
+      formData,
+    );
+    return jsonData;
+  }
+
+  Future<Map<String, dynamic>> defaultbanner() async {
+    Map<String, String> formData = {"": ""};
+
+    Map<String, dynamic> jsonData = await apiService.request(
+      "banner-varsayilan/0/0/",
+      formData,
+    );
+    return jsonData;
+  }
+
   Future<Map<String, dynamic>> changeavatar(List<XFile> files) async {
     List<MultipartFile> photosCollection = [];
     for (var file in files) {

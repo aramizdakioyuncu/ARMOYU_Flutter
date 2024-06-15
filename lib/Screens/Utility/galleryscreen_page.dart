@@ -2,9 +2,11 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Screens/Utility/assetthumbnail.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class GalleryScreen extends StatefulWidget {
   const GalleryScreen({super.key});
@@ -32,6 +34,9 @@ class _GalleryScreenState extends State<GalleryScreen>
 
   @override
   void initState() {
+    //Cihaz Galerisini çek
+    _fetchAssets();
+
     super.initState();
 
     if (!_pageisactive) {
@@ -148,10 +153,21 @@ class _GalleryScreenState extends State<GalleryScreen>
     setstatefunction();
   }
 
+  List<AssetEntity> assets = [];
+
+  void _fetchAssets() async {
+    assets = await PhotoManager.getAssetListRange(
+      start: 0,
+      end: 10000,
+    );
+    setstatefunction();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         backgroundColor: ARMOYU.appbarColor,
         title: const Text('Hikaye Gönder'),
@@ -213,11 +229,12 @@ class _GalleryScreenState extends State<GalleryScreen>
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
                             return _mediaGallery[index].mediaGallery(
-                                context: context,
-                                index: index,
-                                medialist: _mediaGallery,
-                                storyShare: true,
-                                setstatefunction: setstatefunction);
+                              context: context,
+                              index: index,
+                              medialist: _mediaGallery,
+                              storyShare: true,
+                              setstatefunction: setstatefunction,
+                            );
                           },
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -230,7 +247,19 @@ class _GalleryScreenState extends State<GalleryScreen>
                     ),
                   ),
                 ),
-                const Text("data"),
+                GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3, // Her satırda 3 görsel
+                    crossAxisSpacing: 5.0, // Yatayda boşluk
+                    mainAxisSpacing: 5.0, // Dikeyde boşluk
+                  ),
+                  itemCount: assets.length,
+                  itemBuilder: (_, index) {
+                    return AssetThumbnail(
+                      asset: assets[index],
+                    );
+                  },
+                ),
               ],
             ),
           ),

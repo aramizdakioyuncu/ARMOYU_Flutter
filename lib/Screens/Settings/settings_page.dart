@@ -348,7 +348,20 @@ class _SettingsPage extends State<SettingsPage> {
                           "Hesap Ekle",
                           color: Colors.blue,
                         ),
-                        onTap: () {},
+                        onTap: () async {
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(
+                                accountAdd: true,
+                              ),
+                            ),
+                          );
+
+                          if (result != null) {
+                            log(result.toString());
+                          }
+                        },
                       ),
                       ListTile(
                         tileColor: ARMOYU.backgroundcolor,

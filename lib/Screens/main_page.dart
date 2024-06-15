@@ -800,6 +800,8 @@ class _MainPageState extends State<MainPage>
                                                     RestourantPage(
                                                   cafe:
                                                       widgetFoodStation[index],
+                                                  currentUser:
+                                                      widget.currentUser!,
                                                 ),
                                               ),
                                             );
@@ -854,6 +856,8 @@ class _MainPageState extends State<MainPage>
                                                     RestourantPage(
                                                   cafe:
                                                       widgetGameStation[index],
+                                                  currentUser:
+                                                      widget.currentUser!,
                                                 ),
                                               ),
                                             );

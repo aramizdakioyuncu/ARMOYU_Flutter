@@ -21,6 +21,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
@@ -673,11 +674,63 @@ class _ProfilePageState extends State<ProfilePage>
     setstatefunction();
   }
 
+  Future<void> defaultavatar() async {
+    Navigator.pop(context);
+
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response = await f.defaultavatar();
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"]);
+      return;
+    }
+
+    ARMOYU.appUsers[ARMOYU.selectedUser].avatar = Media(
+      mediaID: 1000000,
+      mediaURL: MediaURL(
+        bigURL: response["aciklamadetay"].toString(),
+        normalURL: response["aciklamadetay"].toString(),
+        minURL: response["aciklamadetay"].toString(),
+      ),
+    );
+
+    setstatefunction();
+  }
+
+  Future<void> defaultbanner() async {
+    Navigator.pop(context);
+
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response = await f.defaultbanner();
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"]);
+      return;
+    }
+
+    ARMOYU.appUsers[ARMOYU.selectedUser].banner = Media(
+      mediaID: 1000000,
+      mediaURL: MediaURL(
+        bigURL: response["aciklamadetay"].toString(),
+        normalURL: response["aciklamadetay"].toString(),
+        minURL: response["aciklamadetay"].toString(),
+      ),
+    );
+
+    setstatefunction();
+  }
+
   Future<void> changeavatar() async {
-    XFile? selectedImage = await AppCore.pickImage();
+    Navigator.pop(context);
+
+    XFile? selectedImage = await AppCore.pickImage(
+      willbeCrop: true,
+      cropsquare: CropAspectRatioPreset.square,
+    );
     if (selectedImage == null) {
       return;
     }
+
     FunctionsProfile f = FunctionsProfile();
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
@@ -702,10 +755,16 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Future<void> changebanner() async {
-    XFile? selectedImage = await AppCore.pickImage();
+    Navigator.pop(context);
+
+    XFile? selectedImage = await AppCore.pickImage(
+      willbeCrop: true,
+      cropsquare: CropAspectRatioPreset.ratio16x9,
+    );
     if (selectedImage == null) {
       return;
     }
+
     FunctionsProfile f = FunctionsProfile();
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
@@ -1023,7 +1082,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   Visibility(
                                     visible: widget.ismyProfile,
                                     child: InkWell(
-                                      onTap: () {},
+                                      onTap: () async => await defaultbanner(),
                                       child: const ListTile(
                                         textColor: Colors.red,
                                         leading: Icon(
@@ -1155,9 +1214,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                 Visibility(
                                                   visible: widget.ismyProfile,
                                                   child: InkWell(
-                                                    onTap: () async {
-                                                      await changeavatar();
-                                                    },
+                                                    onTap: () async =>
+                                                        await changeavatar(),
                                                     child: const ListTile(
                                                       leading: Icon(
                                                           Icons.camera_alt),
@@ -1170,7 +1228,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                 Visibility(
                                                   visible: widget.ismyProfile,
                                                   child: InkWell(
-                                                    onTap: () {},
+                                                    onTap: () async =>
+                                                        await defaultavatar(),
                                                     child: const ListTile(
                                                       textColor: Colors.red,
                                                       leading: Icon(
@@ -1179,7 +1238,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                         color: Colors.red,
                                                       ),
                                                       title: Text(
-                                                          "Varsayılana dönder."),
+                                                        "Varsayılana dönder.",
+                                                      ),
                                                     ),
                                                   ),
                                                 ),

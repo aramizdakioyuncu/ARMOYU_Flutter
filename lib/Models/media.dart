@@ -99,7 +99,8 @@ class Media {
                         InkWell(
                           onTap: () async {
                             Navigator.pop(context);
-
+                            medialist.removeAt(index);
+                            setstatefunction();
                             FunctionsMedia funct = FunctionsMedia();
                             Map<String, dynamic> response =
                                 await funct.delete(mediaID);
@@ -110,11 +111,6 @@ class Media {
                                   response["aciklama"].toString());
                               return;
                             }
-
-                            ARMOYUWidget.toastNotification("Medya silindi");
-
-                            medialist.removeAt(index);
-                            setstatefunction();
                           },
                           child: const ListTile(
                             leading: Icon(

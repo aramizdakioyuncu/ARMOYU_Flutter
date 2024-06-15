@@ -4,17 +4,21 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/station.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/station.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class RestourantPage extends StatefulWidget {
   final Station cafe;
+  final User currentUser;
 
   const RestourantPage({
     super.key,
     required this.cafe,
+    required this.currentUser,
   });
   @override
   State<RestourantPage> createState() => _RestourantPage();
@@ -95,6 +99,7 @@ class _RestourantPage extends State<RestourantPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
       body: RefreshIndicator(
         onRefresh: () async {
           await fetchequipmentlist();
@@ -188,60 +193,151 @@ class _RestourantPage extends State<RestourantPage>
                           child: Text("Boş"),
                         ),
                       )
-                    : SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Her satırda 2 görsel
-                          crossAxisSpacing: 5.0, // Yatayda boşluk
-                          mainAxisSpacing: 5.0, // Dikeyde boşluk
-                        ),
-                        delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int index) {
-                            return GestureDetector(
-                              onTap: () {},
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                    : SliverPadding(
+                        padding: const EdgeInsets.all(10.0),
+                        sliver: SliverGrid(
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, // Her satırda 2 görsel
+                            crossAxisSpacing: 5.0, // Yatayda boşluk
+                            mainAxisSpacing: 5.0, // Dikeyde boşluk
+                            childAspectRatio: 0.7,
+                          ),
+                          delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  void _showQRCodePopup(BuildContext context) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: SizedBox(
+                                            height: 400,
+                                            width: 200,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                QrImageView(
+                                                  data:
+                                                      'https://aramizdakioyuncu.com/',
+                                                  version: QrVersions.auto,
+                                                  size: 200,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  eyeStyle: const QrEyeStyle(
+                                                    eyeShape: QrEyeShape.square,
+                                                    color: Colors.white,
+                                                  ),
+                                                  dataModuleStyle:
+                                                      const QrDataModuleStyle(
+                                                    dataModuleShape:
+                                                        QrDataModuleShape
+                                                            .square,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 20),
+                                                CustomText.costum1(
+                                                  "Sipariş vermek için kasaya okutunuz",
+                                                  align: TextAlign.left,
+                                                  size: 18,
+                                                ),
+                                                const SizedBox(height: 20),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: CustomText.costum1(
+                                                    "Ürün: ${widget.cafe.products[index].name}",
+                                                    weight: FontWeight.bold,
+                                                    size: 16,
+                                                  ),
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: CustomText.costum1(
+                                                    "Fiyat: ${widget.cafe.products[index].price}",
+                                                    weight: FontWeight.bold,
+                                                    size: 18,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('Kapat'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+
+                                  _showQRCodePopup(context);
+                                },
                                 child: Container(
+                                  height: 400,
                                   decoration: BoxDecoration(
-                                    color: ARMOYU
-                                        .appbarColor, // ARMOYU.bacgroundcolor yerine Colors.white kullanıldı
-                                    borderRadius: BorderRadius.circular(10),
+                                    color: ARMOYU.bodyColor,
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                  child: GestureDetector(
-                                    onTap: () {},
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 125,
-                                          child: Image.network(
-                                            widget.cafe.products[index].logo
-                                                .mediaURL.minURL,
-                                            fit: BoxFit.cover,
-                                          ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 180,
+                                        width: double.maxFinite,
+                                        child: Image.network(
+                                          widget.cafe.products[index].logo
+                                              .mediaURL.minURL,
+                                          fit: BoxFit.cover,
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 4, horizontal: 5),
-                                          child: Column(
-                                            children: [
-                                              CustomText.costum1(widget
-                                                  .cafe.products[index].name),
-                                              CustomText.costum1(
-                                                  "${widget.cafe.products[index].price} TL"),
-                                            ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Column(
+                                        children: [
+                                          CustomText.costum1(
+                                            widget.cafe.products[index].name,
+                                            weight: FontWeight.bold,
+                                            size: 24,
                                           ),
-                                        ),
-                                      ],
-                                    ),
+                                          const SizedBox(height: 10),
+                                          CustomText.costum1(
+                                              "${widget.cafe.products[index].price} TL",
+                                              weight: FontWeight.bold,
+                                              color: Colors.orange,
+                                              size: 20,
+                                              align: TextAlign.left),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                    ],
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          childCount: widget.cafe.products.length,
+                              );
+                            },
+                            childCount: widget.cafe.products.length,
+                          ),
                         ),
                       ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: "socailshare${widget.currentUser.userID}",
+        onPressed: () {},
+        backgroundColor: ARMOYU.buttonColor,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
         ),
       ),
     );

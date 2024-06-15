@@ -333,8 +333,8 @@ class _EventStatePage extends State<EventPage> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: const SizedBox(
+          const SliverToBoxAdapter(
+            child: SizedBox(
               height: 50,
             ),
           ),
