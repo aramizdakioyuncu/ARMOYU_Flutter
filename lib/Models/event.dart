@@ -7,55 +7,55 @@ import 'package:flutter/material.dart';
 
 class Event {
   int eventID;
-  String name;
-  int status;
-  String eventType;
-  String eventDate;
-  String gameImage;
+  String? name;
+  int? status;
+  String? eventType;
+  String? eventDate;
+  String? gameImage;
   String? image;
   String? detailImage;
-  String banner;
-  List<User> eventorganizer;
-  String eventPlace;
-  String description;
-  String rules;
-  int participantsLimit;
-  int participantsCurrent;
-  int participantsgroupplayerlimit;
-  String location;
+  String? banner;
+  List<User>? eventorganizer;
+  String? eventPlace;
+  String? description;
+  String? rules;
+  int? participantsLimit;
+  int? participantsCurrent;
+  int? participantsgroupplayerlimit;
+  String? location;
 
   List<Group>? participantgroupsList;
   List<User>? participantpeopleList;
 
   Event({
     required this.eventID,
-    required this.status,
-    required this.name,
-    required this.eventType,
-    required this.eventDate,
-    required this.gameImage,
-    required this.image,
-    required this.detailImage,
-    required this.banner,
-    required this.eventorganizer,
-    required this.eventPlace,
-    required this.description,
-    required this.rules,
-    required this.participantsLimit,
-    required this.participantsCurrent,
-    required this.participantsgroupplayerlimit,
-    required this.location,
+    this.status,
+    this.name,
+    this.eventType,
+    this.eventDate,
+    this.gameImage,
+    this.image,
+    this.detailImage,
+    this.banner,
+    this.eventorganizer,
+    this.eventPlace,
+    this.description,
+    this.rules,
+    this.participantsLimit,
+    this.participantsCurrent,
+    this.participantsgroupplayerlimit,
+    this.location,
   });
 
   Widget eventListWidget(context, {required User currentUser}) {
     Color participantsColor = Colors.red;
-    if (participantsCurrent / participantsLimit < 0.75) {
+    if (participantsCurrent! / participantsLimit! < 0.75) {
       participantsColor = Colors.orange;
     }
-    if (participantsCurrent / participantsLimit < 0.50) {
+    if (participantsCurrent! / participantsLimit! < 0.50) {
       participantsColor = Colors.yellow;
     }
-    if (participantsCurrent / participantsLimit < 0.25) {
+    if (participantsCurrent! / participantsLimit! < 0.25) {
       participantsColor = Colors.green;
     }
 
@@ -86,9 +86,9 @@ class Event {
                     height: ARMOYU.screenWidth / 3,
                     child: Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: banner.isNotEmpty
+                      child: banner!.isNotEmpty
                           ? CachedNetworkImage(
-                              imageUrl: banner,
+                              imageUrl: banner!,
                               fit: BoxFit.contain,
                             )
                           : const Icon(
@@ -117,7 +117,7 @@ class Event {
                                 child: SizedBox(
                                   width: ARMOYU.screenWidth / 2,
                                   child: Text(
-                                    name,
+                                    name!,
                                     style: const TextStyle(fontSize: 14),
                                   ),
                                 ),
@@ -133,8 +133,8 @@ class Event {
                                       color: participantsColor,
                                       value: participantsLimit == 0
                                           ? 0
-                                          : participantsCurrent /
-                                              participantsLimit,
+                                          : participantsCurrent! /
+                                              participantsLimit!,
                                     ),
                                   ),
                                   const SizedBox(width: 10),
@@ -149,7 +149,7 @@ class Event {
                                   const Icon(Icons.date_range, size: 12),
                                   const SizedBox(width: 5),
                                   Text(
-                                    eventDate,
+                                    eventDate.toString(),
                                     style: const TextStyle(
                                         color: Colors.grey, fontSize: 12),
                                   ),

@@ -13,7 +13,7 @@ class Chat {
   ChatMessage? lastmessage;
   List<ChatMessage> messages = [];
   final String? chatType;
-  final bool chatNotification;
+  bool chatNotification;
 
   Chat({
     this.chatID,
@@ -44,36 +44,6 @@ class Chat {
           trailing: chatType == "ozel"
               ? const Icon(Icons.person)
               : const Icon(Icons.people_alt),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (pagecontext) => ChatDetailPage(
-                  chat: this,
-                ),
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 1)
-      ],
-    );
-  }
-
-  Widget listtilenewchat(context) {
-    return Column(
-      children: [
-        ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            foregroundImage: CachedNetworkImageProvider(
-              user.avatar!.mediaURL.minURL,
-            ),
-          ),
-          title: CustomText.costum1(user.displayName!),
-          tileColor: ARMOYU.appbarColor,
-          subtitle:
-              lastmessage == null ? null : Text(lastmessage!.messageContext),
-          trailing: Text(user.lastloginv2.toString()),
           onTap: () {
             Navigator.of(context).push(
               MaterialPageRoute(

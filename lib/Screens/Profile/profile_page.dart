@@ -82,6 +82,8 @@ class _ProfilePageState extends State<ProfilePage>
   bool firstFetchGallery = true;
   bool firstFetchTaggedPost = true;
 
+  bool _changeavatarStatus = false;
+  bool _changebannerStatus = false;
   final ScrollController _scrollRefresh = ScrollController();
 
   @override
@@ -723,6 +725,11 @@ class _ProfilePageState extends State<ProfilePage>
   Future<void> changeavatar() async {
     Navigator.pop(context);
 
+    if (_changeavatarStatus) {
+      ARMOYUWidget.toastNotification("Lütfen görselin yüklenmesini bekleyin!");
+      return;
+    }
+
     XFile? selectedImage = await AppCore.pickImage(
       willbeCrop: true,
       cropsquare: CropAspectRatioPreset.square,
@@ -731,6 +738,9 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
 
+    _changeavatarStatus = true;
+    setstatefunction();
+
     FunctionsProfile f = FunctionsProfile();
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
@@ -738,6 +748,8 @@ class _ProfilePageState extends State<ProfilePage>
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
+      _changeavatarStatus = false;
+      setstatefunction();
       return;
     }
 
@@ -749,7 +761,7 @@ class _ProfilePageState extends State<ProfilePage>
         minURL: response["aciklamadetay"].toString(),
       ),
     );
-
+    _changeavatarStatus = false;
     setstatefunction();
     await _handleRefresh();
   }
@@ -757,6 +769,11 @@ class _ProfilePageState extends State<ProfilePage>
   Future<void> changebanner() async {
     Navigator.pop(context);
 
+    if (_changebannerStatus) {
+      ARMOYUWidget.toastNotification(
+          "Lütfen arkaplan görselinin yüklenmesini bekleyin!");
+      return;
+    }
     XFile? selectedImage = await AppCore.pickImage(
       willbeCrop: true,
       cropsquare: CropAspectRatioPreset.ratio16x9,
@@ -765,12 +782,19 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
 
+    _changebannerStatus = true;
+    setstatefunction();
+
     FunctionsProfile f = FunctionsProfile();
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
     Map<String, dynamic> response = await f.changebanner(imagePath);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"]);
+
+      _changebannerStatus = false;
+      setstatefunction();
       return;
     }
     ARMOYU.appUsers[ARMOYU.selectedUser].banner = Media(
@@ -781,8 +805,10 @@ class _ProfilePageState extends State<ProfilePage>
         minURL: response["aciklamadetay"].toString(),
       ),
     );
-    await _handleRefresh();
+
+    _changebannerStatus = false;
     setstatefunction();
+    await _handleRefresh();
   }
 
   Future<void> friendrequest() async {
@@ -963,8 +989,8 @@ class _ProfilePageState extends State<ProfilePage>
                                               FunctionsProfile f =
                                                   FunctionsProfile();
                                               Map<String, dynamic> response =
-                                                  await f.friendremove(widget
-                                                      .currentUser!.userID!);
+                                                  await f.friendremove(
+                                                      userProfile.userID!);
                                               if (response["durum"] == 0) {
                                                 log(response["aciklama"]);
                                                 return;
@@ -988,8 +1014,8 @@ class _ProfilePageState extends State<ProfilePage>
                                               FunctionsProfile f =
                                                   FunctionsProfile();
                                               Map<String, dynamic> response =
-                                                  await f.userdurting(widget
-                                                      .currentUser!.userID!);
+                                                  await f.userdurting(
+                                                      userProfile.userID!);
                                               if (response["durum"] == 0) {
                                                 log(response["aciklama"]);
                                                 ARMOYUWidget.toastNotification(
@@ -1107,43 +1133,62 @@ class _ProfilePageState extends State<ProfilePage>
                           height: ARMOYU.screenHeight * 0.25,
                           width: ARMOYU.screenWidth,
                           decoration: BoxDecoration(
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              colorFilter: refreshprofilepageStatus
-                                  ? ColorFilter.mode(
-                                      Colors.black.withOpacity(
-                                        0.8,
-                                      ),
-                                      BlendMode.darken,
-                                    )
-                                  : ColorFilter.mode(
-                                      Colors.black.withOpacity(
-                                        0.0,
-                                      ),
-                                      BlendMode.darken,
+                            image: _changebannerStatus
+                                ? null
+                                : DecorationImage(
+                                    fit: BoxFit.cover,
+                                    colorFilter: refreshprofilepageStatus
+                                        ? ColorFilter.mode(
+                                            Colors.black.withOpacity(
+                                              0.8,
+                                            ),
+                                            BlendMode.darken,
+                                          )
+                                        : ColorFilter.mode(
+                                            Colors.black.withOpacity(
+                                              0.0,
+                                            ),
+                                            BlendMode.darken,
+                                          ),
+                                    image: CachedNetworkImageProvider(
+                                      userProfile.banner!.mediaURL.minURL,
                                     ),
-                              image: CachedNetworkImageProvider(
-                                userProfile.banner!.mediaURL.minURL,
-                              ),
-                            ),
+                                  ),
                           ),
-                          child: SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(),
-                            controller: _scrollRefresh,
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                    height: ARMOYU.screenHeight * 0.25 / 2),
-                                Visibility(
-                                  visible: refreshprofilepageStatus,
-                                  child: const CupertinoActivityIndicator(),
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: ARMOYU.screenHeight * 0.25,
+                                width: ARMOYU.screenWidth,
+                                child: _changebannerStatus
+                                    ? const CupertinoActivityIndicator()
+                                    : null,
+                              ),
+                              Visibility(
+                                visible: !_changebannerStatus,
+                                child: SingleChildScrollView(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  controller: _scrollRefresh,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                          height:
+                                              ARMOYU.screenHeight * 0.25 / 2),
+                                      Visibility(
+                                        visible: refreshprofilepageStatus,
+                                        child:
+                                            const CupertinoActivityIndicator(),
+                                      ),
+                                      Visibility(
+                                        visible: refreshprofilepageArrow,
+                                        child: const Icon(Icons.arrow_downward),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Visibility(
-                                  visible: refreshprofilepageArrow,
-                                  child: const Icon(Icons.arrow_downward),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                 ),
@@ -1256,8 +1301,8 @@ class _ProfilePageState extends State<ProfilePage>
                                         style: SkeletonAvatarStyle(
                                           borderRadius:
                                               BorderRadius.circular(50),
-                                          width: 80,
-                                          height: 80,
+                                          width: 100,
+                                          height: 100,
                                         ),
                                       )
                                     : Column(
@@ -1275,48 +1320,64 @@ class _ProfilePageState extends State<ProfilePage>
                                                   ),
                                                   width: 4,
                                                 ),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.cover,
-                                                  filterQuality:
-                                                      FilterQuality.high,
-                                                  image:
-                                                      CachedNetworkImageProvider(
-                                                    userProfile.avatar!.mediaURL
-                                                        .minURL,
-                                                  ),
-                                                ),
+                                                image: _changeavatarStatus
+                                                    ? null
+                                                    : DecorationImage(
+                                                        fit: BoxFit.cover,
+                                                        filterQuality:
+                                                            FilterQuality.high,
+                                                        image:
+                                                            CachedNetworkImageProvider(
+                                                          userProfile.avatar!
+                                                              .mediaURL.minURL,
+                                                        ),
+                                                      ),
                                               ),
-                                              child: Align(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                child: Container(
-                                                  height: 26,
-                                                  width: 26,
-                                                  decoration: BoxDecoration(
-                                                    color: Color(
-                                                      int.parse(
-                                                          "0xFF${userProfile.levelColor}"),
-                                                    ),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                      Radius.elliptical(
-                                                        100,
-                                                        100,
+                                              child: Stack(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 100,
+                                                    width: 100,
+                                                    child: _changeavatarStatus
+                                                        ? const CupertinoActivityIndicator()
+                                                        : null,
+                                                  ),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.bottomCenter,
+                                                    child: Container(
+                                                      height: 26,
+                                                      width: 26,
+                                                      decoration: BoxDecoration(
+                                                        color: Color(
+                                                          int.parse(
+                                                              "0xFF${userProfile.levelColor}"),
+                                                        ),
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                          Radius.elliptical(
+                                                            100,
+                                                            100,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      child: Align(
+                                                        alignment:
+                                                            Alignment.center,
+                                                        child: Text(
+                                                          userProfile.level
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                  child: Align(
-                                                    alignment: Alignment.center,
-                                                    child: Text(
-                                                      userProfile.level
-                                                          .toString(),
-                                                      style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -1374,9 +1435,7 @@ class _ProfilePageState extends State<ProfilePage>
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     FriendlistPage(
-                                                  username:
-                                                      userProfile.userName!,
-                                                  userid: userProfile.userID!,
+                                                  currentUser: userProfile,
                                                 ),
                                               ),
                                             );
@@ -1397,7 +1456,8 @@ class _ProfilePageState extends State<ProfilePage>
                                                         weight:
                                                             FontWeight.bold),
                                                     CustomText.costum1(
-                                                        "Arkadaş"),
+                                                      "Arkadaş",
+                                                    ),
                                                   ],
                                                 ),
                                         ),

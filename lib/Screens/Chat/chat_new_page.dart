@@ -1,23 +1,30 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
-import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'package:ARMOYU/Models/Chat/chat.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
+import 'package:ARMOYU/Widgets/text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ChatNewPage extends StatefulWidget {
-  const ChatNewPage({super.key});
+  final User currentUser;
 
+  const ChatNewPage({
+    super.key,
+    required this.currentUser,
+  });
   @override
   State<ChatNewPage> createState() => _ChatNewPageState();
 }
 
 List<Chat> _newchatList = [];
 
-List<Chat> _filteredItems = []; // Filtrelenmiş liste
+List<User> _filteredItems = []; // Filtrelenmiş liste
 
 class _ChatNewPageState extends State<ChatNewPage>
     with AutomaticKeepAliveClientMixin<ChatNewPage> {
@@ -50,13 +57,20 @@ class _ChatNewPageState extends State<ChatNewPage>
     _newchatcontroller.addListener(() {
       String newText = _newchatcontroller.text.toLowerCase();
       // Filtreleme işlemi
-      _filteredItems = _newchatList.where((item) {
-        return item.user.displayName!.toLowerCase().contains(newText);
+      _filteredItems = widget.currentUser.myFriends!.where((item) {
+        return item.displayName!.toLowerCase().contains(newText);
+        // return item.user.displayName!.toLowerCase().contains(newText);
       }).toList();
       if (mounted) {
         setState(() {});
       }
     });
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -74,8 +88,9 @@ class _ChatNewPageState extends State<ChatNewPage>
     if (mounted) {
       setState(() {});
     }
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getnewchatfriendlist(_chatnewpage);
+    FunctionsProfile f = FunctionsProfile();
+    Map<String, dynamic> response =
+        await f.friendlist(widget.currentUser.userID!, _chatnewpage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       _chatFriendsprocess = false;
@@ -85,6 +100,7 @@ class _ChatNewPageState extends State<ChatNewPage>
 
     if (_chatnewpage == 1) {
       _newchatList.clear();
+      widget.currentUser.myFriends = [];
     }
     if (response["icerik"].length == 0) {
       log("Sohbet Arkadaşlarım Sayfa Sonu");
@@ -92,38 +108,36 @@ class _ChatNewPageState extends State<ChatNewPage>
       _chatFriendsprocess = true;
       _isFirstFetch = false;
 
-      if (mounted) {
-        setState(() {});
-      }
+      setstatefunction();
       return;
     }
     for (int i = 0; i < response["icerik"].length; i++) {
-      if (mounted) {
-        setState(() {
-          _newchatList.add(
-            Chat(
-              chatID: 1,
-              chatType: "ozel",
-              chatNotification: false,
-              user: User(
-                  userID: response["icerik"][i]["kullid"],
-                  displayName: response["icerik"][i]["adisoyadi"],
-                  lastlogin: response["icerik"][i]["songiris"],
-                  lastloginv2: response["icerik"][i]["songiris"],
-                  avatar: Media(
-                    mediaID: response["icerik"][i]["kullid"],
-                    mediaURL: MediaURL(
-                      bigURL: response["icerik"][i]["avatar"],
-                      normalURL: response["icerik"][i]["avatar"],
-                      minURL: response["icerik"][i]["avatar"],
-                    ),
-                  )),
+      widget.currentUser.myFriends!.add(
+        User(
+          userID: response["icerik"][i]["oyuncuID"],
+          userName: response["icerik"][i]["oyuncukullaniciad"],
+          displayName: response["icerik"][i]["oyuncuad"],
+          status: response["icerik"][i]["oyuncudurum"] == 1 ? true : false,
+          level: response["icerik"][i]["oyunculevel"],
+          lastlogin: response["icerik"][i]["songiris"],
+          lastloginv2: response["icerik"][i]["songiris"],
+          ismyFriend:
+              response["icerik"][i]["oyuncuarkadasdurum"] == 1 ? true : false,
+          avatar: Media(
+            mediaID: response["icerik"][i]["oyuncuID"],
+            mediaURL: MediaURL(
+              bigURL: response["icerik"][i]["oyuncuavatar"],
+              normalURL: response["icerik"][i]["oyuncufakavatar"],
+              minURL: response["icerik"][i]["oyuncuminnakavatar"],
             ),
-          );
-        });
-      }
+          ),
+        ),
+      );
     }
-    _filteredItems = _newchatList;
+
+    setstatefunction();
+
+    _filteredItems = widget.currentUser.myFriends!;
     _chatnewpage++;
     _chatFriendsprocess = false;
   }
@@ -177,7 +191,37 @@ class _ChatNewPageState extends State<ChatNewPage>
                     itemCount: _filteredItems.length,
                     controller: chatScrollController,
                     itemBuilder: (context, index) {
-                      return _filteredItems[index].listtilenewchat(context);
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              foregroundImage: CachedNetworkImageProvider(
+                                _filteredItems[index].avatar!.mediaURL.minURL,
+                              ),
+                            ),
+                            title: CustomText.costum1(
+                                _filteredItems[index].displayName!),
+                            tileColor: ARMOYU.appbarColor,
+                            trailing: Text(
+                                _filteredItems[index].lastloginv2.toString()),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (pagecontext) => ChatDetailPage(
+                                    chat: Chat(
+                                      user: _filteredItems[index],
+                                      chatNotification: false,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 1)
+                        ],
+                      );
+                      // return _filteredItems[index].listtilenewchat(context,);
                     },
                   ),
           ),

@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
-import 'package:ARMOYU/Screens/Utility/assetthumbnail.dart';
+import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,11 @@ late TabController _tabController;
 List<Media> _mediaList = [];
 final ScrollController _galleryscrollcontroller = ScrollController();
 
+bool _fetchFirstDeviceGalleryStatus = false;
+List<AssetEntity> _assets = [];
+List<Media> _memorymedia = [];
+List<Media> _thumbnailmemorymedia = [];
+
 class _GalleryScreenState extends State<GalleryScreen>
     with
         AutomaticKeepAliveClientMixin<GalleryScreen>,
@@ -35,7 +40,9 @@ class _GalleryScreenState extends State<GalleryScreen>
   @override
   void initState() {
     //Cihaz Galerisini çek
-    _fetchAssets();
+    if (!_fetchFirstDeviceGalleryStatus) {
+      _fetchAssets();
+    }
 
     super.initState();
 
@@ -153,13 +160,56 @@ class _GalleryScreenState extends State<GalleryScreen>
     setstatefunction();
   }
 
-  List<AssetEntity> assets = [];
-
   void _fetchAssets() async {
-    assets = await PhotoManager.getAssetListRange(
+    if (_fetchFirstDeviceGalleryStatus) {
+      return;
+    }
+    _fetchFirstDeviceGalleryStatus = true;
+    _assets = await PhotoManager.getAssetListRange(
       start: 0,
-      end: 10000,
+      end: 300,
     );
+
+    for (AssetEntity element in _assets) {
+      // Original
+      final bytes = await element.thumbnailDataWithOption(
+        const ThumbnailOption(
+          size: ThumbnailSize(600, 600),
+          quality: 95,
+        ),
+      );
+
+      //Thumbnail
+      final thumbnailbytes = await element.thumbnailDataWithOption(
+        const ThumbnailOption(
+          size: ThumbnailSize(150, 150),
+          quality: 80,
+        ),
+      );
+      _memorymedia.add(
+        Media(
+          mediaID: element.typeInt,
+          mediaBytes: bytes,
+          mediaURL: MediaURL(
+            bigURL: "bigURL",
+            normalURL: "normalURL",
+            minURL: "minURL",
+          ),
+        ),
+      );
+
+      _thumbnailmemorymedia.add(
+        Media(
+          mediaID: element.typeInt,
+          mediaBytes: thumbnailbytes,
+          mediaURL: MediaURL(
+            bigURL: "bigURL",
+            normalURL: "normalURL",
+            minURL: "minURL",
+          ),
+        ),
+      );
+    }
     setstatefunction();
   }
 
@@ -253,10 +303,25 @@ class _GalleryScreenState extends State<GalleryScreen>
                     crossAxisSpacing: 5.0, // Yatayda boşluk
                     mainAxisSpacing: 5.0, // Dikeyde boşluk
                   ),
-                  itemCount: assets.length,
-                  itemBuilder: (_, index) {
-                    return AssetThumbnail(
-                      asset: assets[index],
+                  itemCount: _thumbnailmemorymedia.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MediaViewer(
+                              isMemory: true,
+                              media: _memorymedia,
+                              initialIndex: index,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Image.memory(
+                        _thumbnailmemorymedia[index].mediaBytes!,
+                        fit: BoxFit.cover,
+                      ),
                     );
                   },
                 ),

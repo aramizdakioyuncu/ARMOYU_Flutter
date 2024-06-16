@@ -4,8 +4,15 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Core/api.dart';
+import 'package:ARMOYU/Models/Chat/chat.dart';
+import 'package:ARMOYU/Models/event.dart';
+import 'package:ARMOYU/Models/group.dart';
 import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Screens/Chat/chatdetail_page.dart';
+import 'package:ARMOYU/Screens/Events/event_page.dart';
+import 'package:ARMOYU/Screens/Group/group_page.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
+import 'package:ARMOYU/Screens/Social/postdetail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -49,7 +56,7 @@ class OneSignalApi {
 
   // Diğer OneSignal API işlemleri için gerekli metotları ekleyebilirsiniz
 
-  static setupOneSignal(int ID, String username, String mail, String role) {
+  static setupOneSignal({required User currentUser}) {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
     OneSignal.initialize(API.oneSignalKey);
     OneSignal.consentRequired(false);
@@ -57,9 +64,13 @@ class OneSignalApi {
 
     OneSignal.Notifications.requestPermission(true);
 
-    OneSignal.login(username);
+    OneSignal.login(currentUser.userName!);
     OneSignal.User.setLanguage("tr");
-    Map<String, dynamic> tags = {"ID": ID, "Role": role, "username": username};
+    Map<String, dynamic> tags = {
+      "ID": currentUser.userID,
+      "Role": currentUser.role!.name.toString(),
+      "username": currentUser.userName,
+    };
     OneSignal.User.addTags(tags);
 
     OneSignal.Location.setShared(true);
@@ -72,10 +83,28 @@ class OneSignalApi {
 
         log(event.notification.additionalData.toString());
 
+        log("Kategori: ${responseData["category"]}");
+        String avatar = "";
+        String displayname = "";
+        String userID = "";
         if (responseData["category"].toString() == "chat") {
-          String avatar = "";
-          String displayname = "";
-          String userID = "";
+          for (Map<String, dynamic> element in responseData["content"]) {
+            avatar = element["avatar"];
+            displayname = element["displayname"];
+            userID = element["userID"];
+          }
+
+          AppCore.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (context) => ChatDetailPage(
+                chat: Chat(
+                  user: User(userID: int.parse(userID)),
+                  chatNotification: false,
+                ),
+              ),
+            ),
+          );
+        } else if (responseData["category"].toString() == "profile") {
           for (Map<String, dynamic> element in responseData["content"]) {
             avatar = element["avatar"];
             displayname = element["displayname"];
@@ -88,6 +117,53 @@ class OneSignalApi {
                 ismyProfile: false,
                 currentUser: User(userID: int.parse(userID)),
                 scrollController: ScrollController(),
+              ),
+            ),
+          );
+        } else if (responseData["category"].toString() == "group") {
+          for (Map<String, dynamic> element in responseData["content"]) {
+            avatar = element["avatar"];
+            displayname = element["displayname"];
+            userID = element["userID"];
+          }
+
+          AppCore.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (context) => GroupPage(
+                groupID: 1,
+                group: Group(),
+                currentUser: User(userID: int.parse(userID)),
+              ),
+            ),
+          );
+        } else if (responseData["category"].toString() == "post") {
+          for (Map<String, dynamic> element in responseData["content"]) {
+            avatar = element["avatar"];
+            displayname = element["displayname"];
+            userID = element["userID"];
+          }
+
+          AppCore.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (context) => const PostDetailPage(
+                postID: 11,
+              ),
+            ),
+          );
+        } else if (responseData["category"].toString() == "event") {
+          for (Map<String, dynamic> element in responseData["content"]) {
+            avatar = element["avatar"];
+            displayname = element["displayname"];
+            userID = element["userID"];
+          }
+
+          AppCore.navigatorKey.currentState?.push(
+            MaterialPageRoute(
+              builder: (context) => EventPage(
+                event: Event(
+                  eventID: 1,
+                ),
+                currentUser: User(userID: int.parse(userID)),
               ),
             ),
           );

@@ -15,7 +15,10 @@ class Post {
   User owner;
   List<Media> media;
   List<Comment> firstthreecomment;
+  List<Comment>? comments;
   List<Like> firstthreelike;
+  List<Like>? likers;
+
   String? location;
 
   Post({
@@ -30,7 +33,9 @@ class Post {
     required this.owner,
     required this.media,
     required this.firstthreecomment,
+    this.comments,
     required this.firstthreelike,
+    this.likers,
     required this.location,
   });
 }

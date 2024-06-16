@@ -119,10 +119,7 @@ class FunctionService {
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");
       OneSignalApi.setupOneSignal(
-        userdetail.userID!,
-        userdetail.userName!,
-        userdetail.userMail!,
-        userdetail.role!.name.toString(),
+        currentUser: userdetail,
       );
     }
 

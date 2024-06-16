@@ -56,7 +56,7 @@ class _EventStatePage extends State<EventPage> {
   void initState() {
     super.initState();
 
-    List<String> datetime = widget.event.eventDate.split(' ');
+    List<String> datetime = widget.event.eventDate!.split(' ');
     date = datetime[0];
     time = datetime[1];
 
@@ -323,7 +323,7 @@ class _EventStatePage extends State<EventPage> {
                 fit: widget.event.image != null ? BoxFit.cover : BoxFit.contain,
                 imageUrl: widget.event.image != null
                     ? widget.event.image.toString()
-                    : widget.event.gameImage,
+                    : widget.event.gameImage!,
                 placeholder: (context, url) => const SizedBox(
                   height: 40,
                   width: 40,
@@ -466,7 +466,7 @@ class _EventStatePage extends State<EventPage> {
                     scrollDirection: Axis.horizontal,
                     separatorBuilder: (context, index) =>
                         const SizedBox(width: 20),
-                    itemCount: widget.event.eventorganizer.length,
+                    itemCount: widget.event.eventorganizer!.length,
                     itemBuilder: (context, index) {
                       return Container(
                         alignment: Alignment.center,
@@ -481,15 +481,19 @@ class _EventStatePage extends State<EventPage> {
                                     context,
                                     User(
                                       userID: widget
-                                          .event.eventorganizer[index].userID,
+                                          .event.eventorganizer![index].userID,
                                     ),
                                     ScrollController(),
                                   );
                                 },
                                 child: ClipOval(
                                   child: CachedNetworkImage(
-                                    imageUrl: widget.event.eventorganizer[index]
-                                        .avatar!.mediaURL.minURL,
+                                    imageUrl: widget
+                                        .event
+                                        .eventorganizer![index]
+                                        .avatar!
+                                        .mediaURL
+                                        .minURL,
                                     fit: BoxFit.cover,
                                     height: ARMOYU.screenWidth / 5,
                                     width: ARMOYU.screenWidth / 5,
@@ -498,7 +502,7 @@ class _EventStatePage extends State<EventPage> {
                               ),
                               const SizedBox(height: 5),
                               CustomText.costum1(widget
-                                  .event.eventorganizer[index].displayName!),
+                                  .event.eventorganizer![index].displayName!),
                               CustomText.costum1("Yetkili"),
                             ],
                           ),
@@ -517,7 +521,7 @@ class _EventStatePage extends State<EventPage> {
                         weight: FontWeight.bold,
                       ),
                       const SizedBox(height: 10),
-                      CustomText.costum1(widget.event.rules),
+                      CustomText.costum1(widget.event.rules.toString()),
                       const SizedBox(height: 10),
                       CustomText.costum1(
                         "Açıklama",
@@ -525,7 +529,7 @@ class _EventStatePage extends State<EventPage> {
                         weight: FontWeight.bold,
                       ),
                       const SizedBox(height: 10),
-                      CustomText.costum1(widget.event.description),
+                      CustomText.costum1(widget.event.description.toString()),
                       const SizedBox(height: 10),
                     ],
                   ),

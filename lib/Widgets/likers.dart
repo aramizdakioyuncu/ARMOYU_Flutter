@@ -6,24 +6,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class LikersListWidget extends StatefulWidget {
-  final int userID;
-  final String profileImageUrl;
-  final String username;
-  final String displayname;
-  final int postID;
-  final String comment;
-  final int commentID;
+  final User user;
+  final String date;
   int islike;
 
   LikersListWidget({
     super.key,
-    required this.userID,
-    required this.profileImageUrl,
-    required this.username,
-    required this.displayname,
-    required this.postID,
-    required this.comment,
-    required this.commentID,
+    required this.user,
+    required this.date,
     required this.islike,
   });
 
@@ -54,23 +44,30 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
           PageFunctions.pushProfilePage(
             context,
             User(
-              userID: widget.userID,
+              userID: widget.user.userID,
             ),
             ScrollController(),
           );
         },
         child: CircleAvatar(
           backgroundColor: Colors.transparent,
-          foregroundImage: CachedNetworkImageProvider(widget.profileImageUrl),
+          foregroundImage: CachedNetworkImageProvider(
+            widget.user.avatar!.mediaURL.minURL,
+          ),
           radius: 20,
         ),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.displayname),
-          Text(widget.comment,
-              style: TextStyle(fontSize: 13, color: Colors.grey.shade400)),
+          Text(widget.user.displayName!),
+          Text(
+            widget.date,
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade400,
+            ),
+          ),
         ],
       ),
     );

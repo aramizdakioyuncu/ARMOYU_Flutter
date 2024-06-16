@@ -2,19 +2,19 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/profile.dart';
+import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:ARMOYU/Widgets/userlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FriendlistPage extends StatefulWidget {
-  final int userid; // Zorunlu olarak alınacak veri
-  final String username; // Zorunlu olarak alınacak veri
+  final User currentUser; // Zorunlu olarak alınacak veri
 
   const FriendlistPage({
     super.key,
-    required this.userid,
-    required this.username,
+    required this.currentUser,
   });
   @override
   State<FriendlistPage> createState() => _FriendlistPageState();
@@ -26,7 +26,6 @@ class _FriendlistPageState extends State<FriendlistPage>
         TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
-  List<Widget> widgetUserlist = [];
 
   final ScrollController scrollController = ScrollController();
   int pagecounter = 1;
@@ -34,6 +33,7 @@ class _FriendlistPageState extends State<FriendlistPage>
   @override
   void initState() {
     super.initState();
+    log(widget.currentUser.userName.toString());
 
     fetchfriend(pagecounter);
 
@@ -43,6 +43,12 @@ class _FriendlistPageState extends State<FriendlistPage>
         fetchfriend(pagecounter);
       }
     });
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -58,18 +64,22 @@ class _FriendlistPageState extends State<FriendlistPage>
 
     proccessStatus = true;
     FunctionsProfile f = FunctionsProfile();
-    Map<String, dynamic> response = await f.friendlist(widget.userid, page);
+    Map<String, dynamic> response =
+        await f.friendlist(widget.currentUser.userID!, page);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
     }
+    widget.currentUser.myFriends = [];
 
     for (int i = 0; i < response["icerik"].length; i++) {
       int userID = response["icerik"][i]["oyuncuID"];
       String displayname = response["icerik"][i]["oyuncuad"];
       String userlogin = response["icerik"][i]["oyuncukullaniciad"];
-      String avatar = response["icerik"][i]["oyuncuminnakavatar"];
+      String avatar = response["icerik"][i]["oyuncuavatar"];
+      String normalavatar = response["icerik"][i]["oyuncufakavatar"];
+      String minavatar = response["icerik"][i]["oyuncuminnakavatar"];
       int isFriend = response["icerik"][i]["oyuncuarkadasdurum"];
 
       bool isFriendStatus = true;
@@ -77,17 +87,21 @@ class _FriendlistPageState extends State<FriendlistPage>
         isFriendStatus = false;
       }
 
-      if (mounted) {
-        setState(() {
-          widgetUserlist.add(UserListWidget(
-            userID: userID,
-            displayname: displayname,
-            profileImageUrl: avatar,
-            username: userlogin,
-            isFriend: isFriendStatus,
-          ));
-        });
-      }
+      widget.currentUser.myFriends!.add(User(
+        userID: userID,
+        displayName: displayname,
+        avatar: Media(
+          mediaID: userID,
+          mediaURL: MediaURL(
+            bigURL: avatar,
+            normalURL: normalavatar,
+            minURL: minavatar,
+          ),
+        ),
+        userName: userlogin,
+        ismyFriend: isFriendStatus,
+      ));
+      setstatefunction();
     }
 
     pagecounter++;
@@ -100,18 +114,27 @@ class _FriendlistPageState extends State<FriendlistPage>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: CustomText.costum1(widget.username),
+        title: CustomText.costum1(widget.currentUser.userName.toString()),
       ),
       backgroundColor: ARMOYU.backgroundcolor,
-      body: widgetUserlist.isEmpty
+      body: widget.currentUser.myFriends == null
           ? const Center(
               child: CupertinoActivityIndicator(),
             )
           : ListView.builder(
               controller: scrollController,
-              itemCount: widgetUserlist.length,
+              itemCount: widget.currentUser.myFriends!.length,
               itemBuilder: (context, index) {
-                return widgetUserlist[index];
+                return UserListWidget(
+                  userID: widget.currentUser.myFriends![index].userID!,
+                  displayname:
+                      widget.currentUser.myFriends![index].displayName!,
+                  profileImageUrl: widget
+                      .currentUser.myFriends![index].avatar!.mediaURL.minURL,
+                  username: widget.currentUser.myFriends![index].userName!,
+                  isFriend: widget.currentUser.myFriends![index].ismyFriend!,
+                );
+                // return widgetUserlist[index];
               },
             ),
     );

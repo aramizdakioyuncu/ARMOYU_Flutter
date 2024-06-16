@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Core/widgets.dart';
@@ -15,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 class Media {
   int mediaID;
   XFile? mediaXFile;
+  Uint8List? mediaBytes;
   int? ownerID;
   String? ownerusername;
   String? owneravatar;
@@ -26,6 +28,7 @@ class Media {
   Media({
     required this.mediaID,
     this.mediaXFile,
+    this.mediaBytes,
     this.ownerID,
     this.ownerusername,
     this.owneravatar,

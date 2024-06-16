@@ -41,6 +41,7 @@ class User {
   String? xp;
 
   int? friendsCount = 0;
+
   int? postsCount = 0;
   int? awardsCount = 0;
 
@@ -49,6 +50,7 @@ class User {
   Team? favTeam;
 
   bool? status;
+  bool? ismyFriend;
 
   // //Arkadaşlarım
   List<User>? myFriends = [];
@@ -88,6 +90,7 @@ class User {
     this.awardsCount,
     this.favTeam,
     this.status,
+    this.ismyFriend,
     this.phoneNumber,
     this.birthdayDate,
     this.myFriends,
@@ -109,6 +112,13 @@ class User {
       xp: json['xp'],
       levelColor: json['levelcolor'],
       userMail: json['usermail'],
+      role: json['role'] == null
+          ? null
+          : Role(
+              roleID: json['role']['roleID'],
+              color: json['role']['color'],
+              name: json['role']['name'],
+            ),
       friendsCount: json['friendscount'],
       postsCount: json['postscount'],
       awardsCount: json['awardscount'],
@@ -143,21 +153,32 @@ class User {
       'xp': xp,
       'levelcolor': levelColor,
       'usermail': userMail,
+      'role': role != null
+          ? {
+              'roleID': role!.roleID,
+              'color': role!.color,
+              'name': role!.name,
+            }
+          : null,
       'friendscount': friendsCount,
       'postscount': postsCount,
       'awardscount': awardsCount,
-      'avatar': {
-        'media_ID': avatar!.mediaID,
-        'media_bigURL': avatar!.mediaURL.bigURL,
-        'media_normalURL': avatar!.mediaURL.normalURL,
-        'media_minURL': avatar!.mediaURL.minURL,
-      },
-      'banner': {
-        'media_ID': banner!.mediaID,
-        'media_bigURL': banner!.mediaURL.bigURL,
-        'media_normalURL': banner!.mediaURL.normalURL,
-        'media_minURL': banner!.mediaURL.minURL,
-      },
+      'avatar': avatar != null
+          ? {
+              'media_ID': avatar!.mediaID,
+              'media_bigURL': avatar!.mediaURL.bigURL,
+              'media_normalURL': avatar!.mediaURL.normalURL,
+              'media_minURL': avatar!.mediaURL.minURL,
+            }
+          : null,
+      'banner': banner != null
+          ? {
+              'media_ID': banner!.mediaID,
+              'media_bigURL': banner!.mediaURL.bigURL,
+              'media_normalURL': banner!.mediaURL.normalURL,
+              'media_minURL': banner!.mediaURL.minURL,
+            }
+          : null,
     };
   }
 

@@ -103,7 +103,7 @@ class _CustomMenusNotificationbarsState
                     MaterialPageRoute(
                       builder: (context) => GroupPage(
                         currentUser: widget.currentUser,
-                        groupID: widget.userID,
+                        groupID: widget.categorydetailID,
                       ),
                     ),
                   );

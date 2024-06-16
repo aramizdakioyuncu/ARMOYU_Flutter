@@ -979,7 +979,7 @@ class _MainPageState extends State<MainPage>
             children: [
               PageView(
                 controller: _socailpageController,
-                // physics: const ClampingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 onPageChanged: (value) {
                   log(_socailpageController.initialPage.toString());
                   if (value == 0) {

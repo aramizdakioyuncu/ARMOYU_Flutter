@@ -441,49 +441,6 @@ class ARMOYUFunctions {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Stack(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 45.0),
-                          child: CachedNetworkImage(
-                            imageUrl: ARMOYU.appUsers[ARMOYU.selectedUser]
-                                .banner!.mediaURL.normalURL,
-                            height: 200,
-                            width: ARMOYU.screenWidth,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Positioned(
-                          left: 10,
-                          bottom: 0,
-                          child: Stack(
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                foregroundImage: CachedNetworkImageProvider(
-                                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
-                                      .mediaURL.normalURL,
-                                ),
-                                radius: 40,
-                              ),
-                              Positioned(
-                                left: 25,
-                                top: 25,
-                                child: InkWell(
-                                  onTap: () {
-                                    log("asd");
-                                  },
-                                  child: const Icon(
-                                    Icons.add_a_photo,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
                     Column(
                       children: [
                         Padding(

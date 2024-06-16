@@ -122,9 +122,9 @@ class _ChatPageState extends State<ChatPage>
                 avatar: Media(
                   mediaID: response["icerik"][i]["kullid"],
                   mediaURL: MediaURL(
-                    bigURL: response["icerik"][i]["foto"],
-                    normalURL: response["icerik"][i]["foto"],
-                    minURL: response["icerik"][i]["foto"],
+                    bigURL: response["icerik"][i]["chatImage"]["media_bigURL"],
+                    normalURL: response["icerik"][i]["chatImage"]["media_URL"],
+                    minURL: response["icerik"][i]["chatImage"]["media_minURL"],
                   ),
                 ),
               ),
@@ -230,7 +230,9 @@ class _ChatPageState extends State<ChatPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ChatNewPage(),
+              builder: (context) => ChatNewPage(
+                currentUser: widget.currentUser!,
+              ),
             ),
           );
         },

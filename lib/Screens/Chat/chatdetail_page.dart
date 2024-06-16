@@ -48,7 +48,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
   @override
   void initState() {
     super.initState();
-
+    widget.chat.chatNotification = false;
     if (widget.chat.messages.isEmpty) {
       getchat().then((_) {
         isolatestart();
@@ -316,8 +316,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
         body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: CachedNetworkImageProvider(
-                  'https://i.pinimg.com/originals/f7/ae/e8/f7aee8753832af613b63e51d5f07011a.jpg'), // Resim dosyasının yolu
+              image: AssetImage("assets/images/chat_wallpaper.jpg"),
               fit: BoxFit.cover,
               repeat: ImageRepeat.noRepeat,
             ),

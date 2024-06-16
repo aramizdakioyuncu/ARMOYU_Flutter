@@ -8,7 +8,6 @@ import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/user.dart';
 
 import 'package:ARMOYU/Widgets/post_comments.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +33,6 @@ class _PostDetailPage extends State<PostDetailPage>
   @override
   bool get wantKeepAlive => true;
 
-  int? _postID;
   @override
   void initState() {
     super.initState();
@@ -139,8 +137,6 @@ class _PostDetailPage extends State<PostDetailPage>
     List<Media> media = [];
     List<Comment> comments = [];
     List<Like> likers = [];
-
-    _postID = response["icerik"][0]["paylasimID"];
 
     getcommentsfetch(response["icerik"][0]["paylasimID"], listComments);
 
@@ -248,86 +244,11 @@ class _PostDetailPage extends State<PostDetailPage>
         backgroundColor: ARMOYU.appbarColor,
         toolbarHeight: 40,
       ),
-      body: Column(children: [
-        Expanded(
-          child: ListView(
-            children: [
-              asa,
-              SizedBox(
-                height: commentheight,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListView.builder(
-                    itemCount: listComments.length,
-                    itemBuilder: (context, index) {
-                      return listComments[index];
-                    },
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-        Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                foregroundImage: CachedNetworkImageProvider(
-                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
-                ),
-                radius: 20,
-              ),
-            ),
-            Expanded(
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(5),
-                height: 50,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.only(left: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade800,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: TextField(
-                      controller: controllerMessage,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                      decoration: const InputDecoration(
-                        hintText: 'Mesaj yaz',
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(5.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  log(controllerMessage.text);
-                  FunctionsPosts funct = FunctionsPosts();
-                  Map<String, dynamic> response = await funct.createcomment(
-                      _postID!, controllerMessage.text);
-                  if (response["durum"] == 0) {
-                    log(response["aciklama"]);
-                    return;
-                  }
-                  getcommentsfetch(_postID!, listComments);
-
-                  controllerMessage.text = "";
-                },
-                child: const Icon(
-                  Icons.send,
-                  size: 16,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ]),
+      body: Column(
+        children: [
+          asa,
+        ],
+      ),
     );
   }
 }

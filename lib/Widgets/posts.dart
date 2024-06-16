@@ -7,6 +7,7 @@ import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/Client_Functions/profile.dart';
 import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/Social/comment.dart';
+import 'package:ARMOYU/Models/Social/like.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/user.dart';
@@ -45,117 +46,131 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
   bool likeunlikeProcces = false;
   bool postVisible = true;
 
-//Comment Buton
+  //Comment Button
   Icon postcommentIcon = const Icon(Icons.comment_outlined);
   Color postcommentColor = Colors.grey;
 
-//Repost Buton
+  //Repost Button
   Icon postrepostIcon = const Icon(Icons.cyclone_outlined);
   Color postrepostColor = Colors.grey;
 
-  Future<void> getcommentsfetch(int postID, List<Widget> listComments) async {
-    if (listComments.isEmpty) {
-      setState(() {
-        listComments.clear();
-        listComments.add(const SkeletonComments());
-        listComments.add(const SkeletonComments());
-        listComments.add(const SkeletonComments());
-      });
+  bool _fetchCommentStatus = false;
+  bool _fetchlikersStatus = false;
+
+  Future<void> getcommentsfetch(int postID, {bool fetchRestart = false}) async {
+    //Eğer önceden yüklenmişse tekrar yüklemeye çalışma
+    if (!fetchRestart && widget.post.comments != null) {
+      return;
     }
 
+    if (_fetchCommentStatus) {
+      return;
+    }
+    _fetchCommentStatus = true;
+    setstatefunction();
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+      _fetchCommentStatus = false;
+      setstatefunction();
+
       return;
     }
-    if (mounted) {
-      setState(() {
-        listComments.clear();
-      });
-    }
 
+    //Yorumları Temizle
+    widget.post.comments = [];
+
+    //Veriler çek
     for (int i = 0; i < response["icerik"].length; i++) {
-      if (mounted) {
-        setState(() {
-          String displayname =
-              response["icerik"][i]["yorumcuadsoyad"].toString();
-          String avatar =
-              response["icerik"][i]["yorumcuminnakavatar"].toString();
-          String text = response["icerik"][i]["yorumcuicerik"].toString();
-          int islike = response["icerik"][i]["benbegendim"];
-          int yorumID = response["icerik"][i]["yorumID"];
-          int userID = response["icerik"][i]["yorumcuid"];
-          int postID = response["icerik"][i]["paylasimID"];
-          int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
-          listComments.add(
-            WidgetPostComments(
-              comment: Comment(
-                commentID: yorumID,
-                content: text,
-                didIlike: islike == 1 ? true : false,
-                likeCount: commentlikescount,
-                postID: postID,
-                user: User(
-                  userID: userID,
-                  displayName: displayname,
-                  avatar: Media(
-                    mediaID: userID,
-                    mediaURL: MediaURL(
-                      bigURL: avatar,
-                      normalURL: avatar,
-                      minURL: avatar,
-                    ),
-                  ),
-                ),
-                date: "",
-              ),
+      String displayname = response["icerik"][i]["yorumcuadsoyad"].toString();
+      String avatar = response["icerik"][i]["yorumcuminnakavatar"].toString();
+      String text = response["icerik"][i]["yorumcuicerik"].toString();
+      int islike = response["icerik"][i]["benbegendim"];
+      int yorumID = response["icerik"][i]["yorumID"];
+      int userID = response["icerik"][i]["yorumcuid"];
+      int postID = response["icerik"][i]["paylasimID"];
+      int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
+
+      Comment comment = Comment(
+        commentID: yorumID,
+        content: text,
+        didIlike: islike == 1 ? true : false,
+        likeCount: commentlikescount,
+        postID: postID,
+        user: User(
+          userID: userID,
+          displayName: displayname,
+          avatar: Media(
+            mediaID: userID,
+            mediaURL: MediaURL(
+              bigURL: avatar,
+              normalURL: avatar,
+              minURL: avatar,
             ),
-          );
-        });
-      }
+          ),
+        ),
+        date: "",
+      );
+
+      //Post yorumlarına ekler
+      widget.post.comments!.add(comment);
+      _fetchCommentStatus = false;
+      setstatefunction();
     }
   }
 
-  Future<void> getcommentslikes(
-      int postID, List<Widget> listCommentsLikes) async {
+  Future<void> getcommentslikes(int postID, {bool fetchRestart = false}) async {
+    if (!fetchRestart && widget.post.likers != null) {
+      return;
+    }
+
+    if (_fetchlikersStatus) {
+      return;
+    }
+    _fetchlikersStatus = true;
+    setstatefunction();
+
     FunctionsPosts funct = FunctionsPosts();
     Map<String, dynamic> response = await funct.postlikeslist(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
-      return;
-    }
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+      _fetchlikersStatus = false;
+      setstatefunction();
       return;
     }
 
-    listCommentsLikes.clear();
-
-    if (mounted) {
-      setState(() {});
-    }
+    //Beğenenleri Temizle
+    widget.post.likers = [];
+    setstatefunction();
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      setState(() {
-        String displayname = response["icerik"][i]["begenenadi"].toString();
-        String avatar = response["icerik"][i]["begenenavatar"].toString();
-        String text = response["icerik"][i]["begenmezaman"].toString();
-        int userID = response["icerik"][i]["begenenID"];
-        listCommentsLikes.add(
-          LikersListWidget(
-            comment: text,
-            commentID: 1,
-            displayname: displayname,
+      String displayname = response["icerik"][i]["begenenadi"].toString();
+      String avatar = response["icerik"][i]["begenenavatar"].toString();
+      String date = response["icerik"][i]["begenmezaman"].toString();
+      int userID = response["icerik"][i]["begenenID"];
+
+      widget.post.likers!.add(
+        Like(
+          likeID: 1,
+          user: User(
             userID: userID,
-            profileImageUrl: avatar,
-            islike: 1,
-            postID: 12,
-            username: text,
+            displayName: displayname,
+            avatar: Media(
+              mediaID: userID,
+              mediaURL: MediaURL(
+                bigURL: avatar,
+                normalURL: avatar,
+                minURL: avatar,
+              ),
+            ),
           ),
-        );
-      });
+          date: date,
+        ),
+      );
     }
+    _fetchlikersStatus = false;
+    setstatefunction();
   }
 
   Future<void> removepost() async {
@@ -174,9 +189,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
   }
 
-  void postcomments(int postID, List<Widget> listComments) {
+  void postcomments(int postID) {
     //Yorumları Çekmeye başla
-    getcommentsfetch(postID, listComments);
+    getcommentsfetch(postID);
+
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
@@ -190,9 +206,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         return FractionallySizedBox(
           heightFactor: 0.8,
           child: RefreshIndicator(
-            onRefresh: () async {
-              getcommentsfetch(postID, listComments);
-            },
+            onRefresh: () async => await getcommentsfetch(
+              postID,
+              fetchRestart: true,
+            ),
             child: Scaffold(
               body: SafeArea(
                 child: Column(
@@ -206,15 +223,29 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           alignment: Alignment.center,
-                          child: listComments.isEmpty
-                              ? CustomText.costum1(
-                                  "Yorum yok ilk yorumu sen yaz.")
-                              : ListView.builder(
-                                  itemCount: listComments.length,
-                                  itemBuilder: (context, index) {
-                                    return listComments[index];
-                                  },
-                                ),
+                          child: _fetchCommentStatus &&
+                                  widget.post.comments == null
+                              ? const Column(
+                                  children: [
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                  ],
+                                )
+                              : widget.post.comments!.isEmpty
+                                  ? CustomText.costum1(
+                                      "Yorum yok ilk yorumu sen yaz.")
+                                  : ListView.builder(
+                                      itemCount: widget.post.comments!.length,
+                                      itemBuilder: (context, index) {
+                                        return WidgetPostComments(
+                                          comment: widget.post.comments![index],
+                                        );
+                                      },
+                                    ),
                         ),
                       ),
                     ),
@@ -269,9 +300,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                                     response["aciklama"].toString());
                                 return;
                               }
-                              getcommentsfetch(
+                              await getcommentsfetch(
                                 widget.post.postID,
-                                listComments,
+                                fetchRestart: true,
                               );
                               controllerMessage.text = "";
                             },
@@ -360,9 +391,9 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     return !isLiked;
   }
 
-  void postcommentlikeslist(List<Widget> listCommentsLikes) {
+  void postcommentlikeslist() {
     //Yorumları Çekmeye başla
-    getcommentslikes(widget.post.postID, listCommentsLikes);
+    getcommentslikes(widget.post.postID);
 
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -377,9 +408,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
         return FractionallySizedBox(
           heightFactor: 0.8,
           child: RefreshIndicator(
-            onRefresh: () async {
-              getcommentslikes(widget.post.postID, listCommentsLikes);
-            },
+            onRefresh: () => getcommentslikes(
+              widget.post.postID,
+              fetchRestart: true,
+            ),
             child: Scaffold(
               backgroundColor: Colors.transparent,
               body: SafeArea(
@@ -392,12 +424,32 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ListView.builder(
-                          // controller: _scrollController,
-                          itemCount: listCommentsLikes.length,
-                          itemBuilder: (context, index) {
-                            return listCommentsLikes[index];
-                          },
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: _fetchlikersStatus &&
+                                  widget.post.likers == null
+                              ? const Column(
+                                  children: [
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                    SkeletonComments(),
+                                  ],
+                                )
+                              : widget.post.likers!.isEmpty
+                                  ? CustomText.costum1("Beğeni Yok")
+                                  : ListView.builder(
+                                      itemCount: widget.post.likers!.length,
+                                      itemBuilder: (context, index) {
+                                        return LikersListWidget(
+                                          date: widget.post.likers![index].date,
+                                          islike: 1,
+                                          user: widget.post.likers![index].user,
+                                        );
+                                      },
+                                    ),
                         ),
                       ),
                     ),
@@ -543,8 +595,6 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     );
   }
 
-  List<Widget> listCommentsLikes = [];
-  List<Widget> listComments = [];
   @override
   void initState() {
     super.initState();
@@ -704,7 +754,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   InkWell(
                     onLongPress: () {
                       if (widget.isPostdetail == false) {
-                        postcommentlikeslist(listCommentsLikes);
+                        postcommentlikeslist();
                       }
                     },
                     child: LikeButton(
@@ -726,9 +776,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     iconSize: 25,
                     icon: postcommentIcon,
                     color: postcommentColor,
-                    onPressed: () {
-                      postcomments(widget.post.postID, listComments);
-                    },
+                    onPressed: () => postcomments(widget.post.postID),
                   ),
                   const SizedBox(width: 5),
                   Text(
@@ -784,9 +832,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           left: widget.post.firstthreelike.length * 10 + 15,
                           child: widget.post.firstthreelike.isNotEmpty
                               ? GestureDetector(
-                                  onTap: () {
-                                    postcommentlikeslist(listCommentsLikes);
-                                  },
+                                  onTap: () => postcommentlikeslist(),
                                   child: WidgetUtility.specialText(
                                     context,
                                     "@${widget.post.firstthreelike[0].user.userName.toString()} ${widget.post.likesCount - 1 > 0 ? "ve ${widget.post.likesCount - 1} kişi" : ""} beğendi",
@@ -811,9 +857,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
-                        onTap: () {
-                          postcomments(widget.post.postID, listComments);
-                        },
+                        onTap: () => postcomments(widget.post.postID),
                         child: CustomText.costum1(
                           "${widget.post.commentsCount} yorumun tamamını gör",
                           color: ARMOYU.textColor.withOpacity(0.8),

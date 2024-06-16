@@ -14,11 +14,13 @@ class MediaViewer extends StatefulWidget {
   final List<Media> media; // Gezdirilecek fotoğrafların ID listesi
   final int initialIndex; // Başlangıçtaki fotoğrafin indexi
   final bool? isFile; // Yerel mi
+  final bool? isMemory;
   const MediaViewer({
     super.key,
     required this.media,
     required this.initialIndex,
     this.isFile = false,
+    this.isMemory = false,
   });
   @override
   State<MediaViewer> createState() => _MediaViewerPage();
@@ -147,6 +149,10 @@ class _MediaViewerPage extends State<MediaViewer> {
                 File(
                   widget.media[index].mediaURL.bigURL,
                 ),
+              );
+            } else if (widget.isMemory!) {
+              imageProvider = MemoryImage(
+                widget.media[index].mediaBytes!,
               );
             } else {
               imageProvider = CachedNetworkImageProvider(
