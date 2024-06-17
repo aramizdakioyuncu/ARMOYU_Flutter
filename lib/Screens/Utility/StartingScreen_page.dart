@@ -119,14 +119,34 @@ class _StartingScreenState extends State<StartingScreen> {
       ARMOYU.appUsers = usersJson
           .map((userJson) => User.fromJson(jsonDecode(userJson)))
           .toList();
-      for (var element in usersJson) {
-        username = ARMOYU.appUsers[0].userName;
-        password = ARMOYU.appUsers[0].password;
-        log(element.toString());
+
+      username = ARMOYU.appUsers[0].userName;
+      password = ARMOYU.appUsers[0].password;
+
+      // for (var element in usersJson) {
+      //   // log(element.toString());
+      // }
+
+      log("Açık Kullanıcı Hesabı : ${usersJson.length}");
+
+      int sirasay = 0;
+      for (User userInfo in ARMOYU.appUsers) {
+        sirasay++;
+
+        log("$sirasay. Ad: ${userInfo.displayName}");
+        if (userInfo.myFriends == null) {
+          continue;
+        }
+        log("->Arkadaş sayısı: ${userInfo.myFriends!.length.toString()}");
+        int sirasay2 = 0;
+
+        for (User friendslist in userInfo.myFriends!) {
+          sirasay2++;
+
+          log("-->$sirasay2. Ad: ${friendslist.displayName} Son Giriş: ${friendslist.lastloginv2}");
+        }
       }
     }
-
-    log(ARMOYU.appUsers.length.toString());
 
     //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
     if (username == null || password == null) {
@@ -169,11 +189,14 @@ class _StartingScreenState extends State<StartingScreen> {
         return;
       }
 
+      ARMOYU.appUsers.length;
       if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const AppPage(),
+            builder: (context) => AppPage(
+              currentUser: ARMOYU.appUsers[0],
+            ),
           ),
         );
       }

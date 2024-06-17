@@ -114,7 +114,8 @@ class FunctionService {
     prefs.setStringList('users', usersJson);
 //
 
-    ARMOYU.appUsers[0] = userdetail;
+    // ARMOYU.appUsers[0] = userdetail;
+    userdetail.updateUser(targetUser: ARMOYU.appUsers[0]);
 
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");

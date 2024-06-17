@@ -5,8 +5,11 @@ import 'package:ARMOYU/Screens/pages.dart';
 import 'package:flutter/material.dart';
 
 class AppPage extends StatefulWidget {
+  final User currentUser;
+
   const AppPage({
     super.key,
+    required this.currentUser,
   });
 
   @override
@@ -24,7 +27,11 @@ class _MainPageState extends State<AppPage>
   void initState() {
     super.initState();
 
-    pagesViewList.add(Pages(currentUser: ARMOYU.appUsers[0]));
+    pagesViewList.add(
+      Pages(
+        currentUser: widget.currentUser,
+      ),
+    );
   }
 
   void setstatefunction() {

@@ -222,149 +222,176 @@ class _ChatDetailPage extends State<ChatDetailPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return SafeArea(
-      top: false,
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: ARMOYU.backgroundcolor,
+      appBar: AppBar(
         backgroundColor: ARMOYU.backgroundcolor,
-        appBar: AppBar(
-          backgroundColor: ARMOYU.backgroundcolor,
-          automaticallyImplyLeading: false,
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomText.costum1(
-                widget.chat.user.displayName!,
-                size: 17,
-                weight: FontWeight.bold,
-              ),
-              Row(
-                children: [
-                  widget.chat.user.lastloginv2 == null
-                      ? const SkeletonLine(
-                          style: SkeletonLineStyle(width: 20),
-                        )
-                      : Text(
-                          widget.chat.user.lastloginv2 == null
-                              ? ""
-                              : widget.chat.user.lastloginv2.toString(),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: widget.chat.user.lastloginv2.toString() ==
-                                    "Çevrimiçi"
-                                ? Colors.green
-                                : Colors.red,
-                          ),
+        automaticallyImplyLeading: false,
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText.costum1(
+              widget.chat.user.displayName!,
+              size: 17,
+              weight: FontWeight.bold,
+            ),
+            Row(
+              children: [
+                widget.chat.user.lastloginv2 == null
+                    ? const SkeletonLine(
+                        style: SkeletonLineStyle(width: 20),
+                      )
+                    : Text(
+                        widget.chat.user.lastloginv2 == null
+                            ? ""
+                            : widget.chat.user.lastloginv2.toString(),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: widget.chat.user.lastloginv2.toString() ==
+                                  "Çevrimiçi"
+                              ? Colors.green
+                              : Colors.red,
                         ),
-                ],
+                      ),
+              ],
+            ),
+          ],
+        ),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return Container(
+              padding: const EdgeInsets.all(12.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(50.0),
+                child: GestureDetector(
+                  onTap: () {
+                    PageFunctions.pushProfilePage(
+                      context,
+                      User(userID: widget.chat.user.userID!),
+                      ScrollController(),
+                    );
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: widget.chat.user.avatar!.mediaURL.minURL,
+                    width: 30,
+                    height: 30,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ],
-          ),
-          leading: Builder(
-            builder: (BuildContext context) {
-              return Container(
-                padding: const EdgeInsets.all(12.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(50.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      PageFunctions.pushProfilePage(
-                        context,
-                        User(userID: widget.chat.user.userID!),
-                        ScrollController(),
-                      );
-                    },
-                    child: CachedNetworkImage(
-                      imageUrl: widget.chat.user.avatar!.mediaURL.minURL,
-                      width: 30,
-                      height: 30,
-                      fit: BoxFit.cover,
-                    ),
+            );
+          },
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.call),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatCallPage(
+                    user: widget.chat.user,
                   ),
                 ),
               );
             },
           ),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.call),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ChatCallPage(
-                      user: widget.chat.user,
-                    ),
-                  ),
-                );
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: () {
-                getchat();
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-        body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/chat_wallpaper.jpg"),
-              fit: BoxFit.cover,
-              repeat: ImageRepeat.noRepeat,
-            ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              getchat();
+            },
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  reverse: true,
-                  controller: _scrollController,
-                  itemCount: widget.chat.messages.length,
-                  itemBuilder: (context, index) {
-                    return widget
-                        .chat.messages[widget.chat.messages.length - 1 - index]
-                        .messageBumble(context);
-                  },
-                ),
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/chat_wallpaper.jpg"),
+            fit: BoxFit.cover,
+            repeat: ImageRepeat.noRepeat,
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                reverse: true,
+                controller: _scrollController,
+                itemCount: widget.chat.messages.length,
+                itemBuilder: (context, index) {
+                  return widget
+                      .chat.messages[widget.chat.messages.length - 1 - index]
+                      .messageBumble(context);
+                },
               ),
-              Row(
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              color: ARMOYU.appbottomColor,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(5),
-                      height: 50,
-                      child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 5),
-                          decoration: BoxDecoration(
-                            color: ARMOYU.textbackColor,
-                            borderRadius: BorderRadius.circular(10.0),
+                  Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(5.0),
+                        child: IconButton(
+                          icon: const Icon(Icons.attach_file_sharp),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStatePropertyAll(
+                              ARMOYU.bodyColor,
+                            ),
                           ),
-                          child: TextField(
-                            controller: _messageController,
-                            style: TextStyle(
-                                color: ARMOYU.textColor, fontSize: 16),
-                            decoration: const InputDecoration(
-                              hintText: 'Mesaj yaz',
-                              border: InputBorder.none,
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: ARMOYU.textbackColor,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: TextField(
+                              controller: _messageController,
+                              minLines: 1,
+                              maxLines: 5,
+                              cursorColor: Colors.blue,
+                              style: TextStyle(
+                                color: ARMOYU.textColor,
+                                fontSize: 18,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: 'Mesaj yaz',
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        const SizedBox(height: 4)
+                      ],
                     ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(5.0),
-                    child: ElevatedButton(
+                    child: IconButton(
                       onPressed: () async {
                         if (_messageController.text == "") {
                           return;
@@ -401,16 +428,22 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
                         receiveportSend!.sendPort.send(message);
                       },
-                      child: const Icon(
+                      icon: const Icon(
                         Icons.send,
                         size: 16,
+                        color: Colors.white,
+                      ),
+                      style: const ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                          Colors.blue,
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -6,7 +6,6 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -88,21 +87,6 @@ class _ChaCallPageState extends State<ChatCallPage>
       },
       child: Scaffold(
         backgroundColor: ARMOYU.backgroundcolor,
-        // appBar: AppBar(
-        //   backgroundColor: ARMOYU.appbarColor,
-        //   title: const Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Icon(Icons.security, size: 10),
-        //       SizedBox(width: 5),
-        //       Text(
-        //         "Uçtan uca şifrelenmiş ses",
-        //         style: TextStyle(fontSize: 12),
-        //       ),
-        //     ],
-        //   ),
-        //   automaticallyImplyLeading: false,
-        // ),
         body: Stack(
           children: [
             Container(

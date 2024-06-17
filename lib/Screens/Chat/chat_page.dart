@@ -225,7 +225,7 @@ class _ChatPageState extends State<ChatPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: "NewChatButton",
+        heroTag: "NewChatButton${widget.currentUser!.userID}",
         onPressed: () {
           Navigator.push(
             context,

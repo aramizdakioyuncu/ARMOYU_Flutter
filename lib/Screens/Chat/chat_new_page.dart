@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -10,6 +11,7 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatNewPage extends StatefulWidget {
   final User currentUser;
@@ -37,18 +39,26 @@ class _ChatNewPageState extends State<ChatNewPage>
 
   final TextEditingController _newchatcontroller = TextEditingController();
 
-  final ScrollController chatScrollController = ScrollController();
+  final ScrollController _chatScrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     if (_isFirstFetch) {
-      getchatfriendlist();
+      if (widget.currentUser.myFriends != null) {
+        if (widget.currentUser.myFriends!.isNotEmpty) {
+          _filteredItems = widget.currentUser.myFriends!;
+        } else {
+          getchatfriendlist();
+        }
+      } else {
+        getchatfriendlist();
+      }
     }
 
-    chatScrollController.addListener(() {
-      if (chatScrollController.position.pixels >=
-          chatScrollController.position.maxScrollExtent * 0.5) {
+    _chatScrollController.addListener(() {
+      if (_chatScrollController.position.pixels >=
+          _chatScrollController.position.maxScrollExtent * 0.5) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
         getchatfriendlist();
       }
@@ -79,27 +89,43 @@ class _ChatNewPageState extends State<ChatNewPage>
     super.dispose();
   }
 
-  Future<void> getchatfriendlist() async {
+  Future<void> getchatfriendlist({
+    bool fecthRestart = false,
+  }) async {
+    if (fecthRestart) {
+      _chatnewpage = 1;
+      _chatFriendsprocess = false;
+    }
+
     if (_chatFriendsprocess) {
       return;
     }
+
     _chatFriendsprocess = true;
     _isFirstFetch = false;
-    if (mounted) {
-      setState(() {});
+    setstatefunction();
+
+    if (!fecthRestart && widget.currentUser.myFriends != null) {
+      int pageCount = (widget.currentUser.myFriends!.length / 50).ceil();
+      log(pageCount.toString());
+
+      _chatnewpage = pageCount;
+      _chatnewpage++;
     }
+
     FunctionsProfile f = FunctionsProfile();
     Map<String, dynamic> response =
         await f.friendlist(widget.currentUser.userID!, _chatnewpage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       _chatFriendsprocess = false;
-      getchatfriendlist();
+      await getchatfriendlist();
       return;
     }
 
     if (_chatnewpage == 1) {
       _newchatList.clear();
+
       widget.currentUser.myFriends = [];
     }
     if (response["icerik"].length == 0) {
@@ -137,6 +163,14 @@ class _ChatNewPageState extends State<ChatNewPage>
 
     setstatefunction();
 
+    // Kullanıcı listesini SharedPreferences'e kaydetme
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> usersJson =
+        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+    prefs.setStringList('users', usersJson);
+//
+
     _filteredItems = widget.currentUser.myFriends!;
     _chatnewpage++;
     _chatFriendsprocess = false;
@@ -151,80 +185,79 @@ class _ChatNewPageState extends State<ChatNewPage>
         backgroundColor: ARMOYU.appbarColor,
         title: const Text("Yeni Sohbet"),
       ),
-      body: Column(
-        children: [
-          Container(
-            color: ARMOYU.appbarColor,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 45,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  color: ARMOYU.bodyColor,
-                ),
-                child: TextField(
-                  controller: _newchatcontroller,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 20,
-                    ),
-                    hintText: 'Ara',
+      body: CustomScrollView(
+        controller: _chatScrollController,
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () async => await getchatfriendlist(fecthRestart: true),
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              color: ARMOYU.appbarColor,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  height: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    color: ARMOYU.bodyColor,
                   ),
-                  style: TextStyle(
-                    color: ARMOYU.color,
+                  child: TextField(
+                    controller: _newchatcontroller,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        size: 20,
+                      ),
+                      hintText: 'Ara',
+                    ),
+                    style: TextStyle(
+                      color: ARMOYU.color,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          Expanded(
-            child: _filteredItems.isEmpty
-                ? Center(
-                    child: !_isFirstFetch && !_chatFriendsprocess
-                        ? const Text("Arkadaş listesi boş")
-                        : const CupertinoActivityIndicator(),
-                  )
-                : ListView.builder(
-                    itemCount: _filteredItems.length,
-                    controller: chatScrollController,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              foregroundImage: CachedNetworkImageProvider(
-                                _filteredItems[index].avatar!.mediaURL.minURL,
+          if (_filteredItems.isNotEmpty)
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          foregroundImage: CachedNetworkImageProvider(
+                            _filteredItems[index].avatar!.mediaURL.minURL,
+                          ),
+                        ),
+                        title: CustomText.costum1(
+                            _filteredItems[index].displayName!),
+                        tileColor: ARMOYU.appbarColor,
+                        trailing:
+                            Text(_filteredItems[index].lastloginv2.toString()),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (pagecontext) => ChatDetailPage(
+                                chat: Chat(
+                                  user: _filteredItems[index],
+                                  chatNotification: false,
+                                ),
                               ),
                             ),
-                            title: CustomText.costum1(
-                                _filteredItems[index].displayName!),
-                            tileColor: ARMOYU.appbarColor,
-                            trailing: Text(
-                                _filteredItems[index].lastloginv2.toString()),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (pagecontext) => ChatDetailPage(
-                                    chat: Chat(
-                                      user: _filteredItems[index],
-                                      chatNotification: false,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 1)
-                        ],
-                      );
-                      // return _filteredItems[index].listtilenewchat(context,);
-                    },
-                  ),
-          ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 1),
+                    ],
+                  );
+                },
+                childCount: _filteredItems.length,
+              ),
+            ),
         ],
       ),
     );

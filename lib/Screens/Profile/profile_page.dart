@@ -679,11 +679,19 @@ class _ProfilePageState extends State<ProfilePage>
   Future<void> defaultavatar() async {
     Navigator.pop(context);
 
+    if (_changeavatarStatus) {
+      return;
+    }
+
+    _changeavatarStatus = true;
+    setstatefunction();
     FunctionsProfile f = FunctionsProfile();
     Map<String, dynamic> response = await f.defaultavatar();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
+      _changeavatarStatus = false;
+      setstatefunction();
       return;
     }
 
@@ -696,17 +704,35 @@ class _ProfilePageState extends State<ProfilePage>
       ),
     );
 
+    userProfile.avatar = Media(
+      mediaID: 1000000,
+      mediaURL: MediaURL(
+        bigURL: response["aciklamadetay"].toString(),
+        normalURL: response["aciklamadetay"].toString(),
+        minURL: response["aciklamadetay"].toString(),
+      ),
+    );
+
+    _changeavatarStatus = false;
     setstatefunction();
   }
 
   Future<void> defaultbanner() async {
     Navigator.pop(context);
 
+    if (_changebannerStatus) {
+      return;
+    }
+
+    _changebannerStatus = true;
+    setstatefunction();
     FunctionsProfile f = FunctionsProfile();
     Map<String, dynamic> response = await f.defaultbanner();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
+      _changebannerStatus = false;
+      setstatefunction();
       return;
     }
 
@@ -719,6 +745,16 @@ class _ProfilePageState extends State<ProfilePage>
       ),
     );
 
+    userProfile.banner = Media(
+      mediaID: 1000000,
+      mediaURL: MediaURL(
+        bigURL: response["aciklamadetay"].toString(),
+        normalURL: response["aciklamadetay"].toString(),
+        minURL: response["aciklamadetay"].toString(),
+      ),
+    );
+
+    _changebannerStatus = false;
     setstatefunction();
   }
 
@@ -1155,40 +1191,45 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                           ),
-                          child: Stack(
-                            children: [
-                              SizedBox(
-                                height: ARMOYU.screenHeight * 0.25,
-                                width: ARMOYU.screenWidth,
-                                child: _changebannerStatus
-                                    ? const CupertinoActivityIndicator()
-                                    : null,
-                              ),
-                              Visibility(
-                                visible: !_changebannerStatus,
-                                child: SingleChildScrollView(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  controller: _scrollRefresh,
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                          height:
-                                              ARMOYU.screenHeight * 0.25 / 2),
-                                      Visibility(
-                                        visible: refreshprofilepageStatus,
-                                        child:
-                                            const CupertinoActivityIndicator(),
-                                      ),
-                                      Visibility(
-                                        visible: refreshprofilepageArrow,
-                                        child: const Icon(Icons.arrow_downward),
-                                      ),
-                                    ],
+                          child: Visibility(
+                            // visible: !_changebannerStatus,
+                            child: SingleChildScrollView(
+                              physics: const AlwaysScrollableScrollPhysics(),
+                              controller: _scrollRefresh,
+                              child: Stack(
+                                children: [
+                                  SizedBox(
+                                    height: ARMOYU.screenHeight * 0.25,
+                                    width: ARMOYU.screenWidth,
+                                    child: _changebannerStatus
+                                        ? const CupertinoActivityIndicator()
+                                        : null,
                                   ),
-                                ),
+                                  SizedBox(
+                                    height: ARMOYU.screenHeight * 0.25,
+                                    width: ARMOYU.screenWidth,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Visibility(
+                                          visible: refreshprofilepageStatus,
+                                          child:
+                                              const CupertinoActivityIndicator(),
+                                        ),
+                                        Visibility(
+                                          visible: refreshprofilepageArrow,
+                                          child:
+                                              const Icon(Icons.arrow_downward),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
                 ),

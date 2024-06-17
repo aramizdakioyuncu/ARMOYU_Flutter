@@ -464,11 +464,10 @@ class _MainPageState extends State<MainPage>
                   title: Visibility(
                     visible: _appbarSearch,
                     child: Container(
-                      height: 40,
+                      height: 50,
                       decoration: BoxDecoration(
                         color: ARMOYU.bodyColor,
-                        borderRadius: BorderRadius.circular(
-                            10.0), // Köşe yuvarlama eklemek
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: TextField(
                         controller: _appbarSearchTextController,

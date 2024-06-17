@@ -35,7 +35,7 @@ class FunctionsProfile {
     Map<String, String> formData = {
       "oyuncubakid": "$userID",
       "sayfa": "$page",
-      "limit": "30"
+      "limit": "50"
     };
     Map<String, dynamic> jsonData =
         await apiService.request("arkadaslarim/0/", formData);

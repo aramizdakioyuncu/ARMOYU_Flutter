@@ -122,22 +122,32 @@ class User {
       friendsCount: json['friendscount'],
       postsCount: json['postscount'],
       awardsCount: json['awardscount'],
-      avatar: Media(
-        mediaID: json['avatar']['media_ID'],
-        mediaURL: MediaURL(
-          bigURL: json['avatar']['media_bigURL'],
-          normalURL: json['avatar']['media_normalURL'],
-          minURL: json['avatar']['media_minURL'],
-        ),
-      ),
-      banner: Media(
-        mediaID: json['banner']['media_ID'],
-        mediaURL: MediaURL(
-          bigURL: json['banner']['media_bigURL'],
-          normalURL: json['banner']['media_normalURL'],
-          minURL: json['banner']['media_minURL'],
-        ),
-      ),
+      avatar: json['avatar'] == null
+          ? null
+          : Media(
+              mediaID: json['avatar']['media_ID'],
+              mediaURL: MediaURL(
+                bigURL: json['avatar']['media_bigURL'],
+                normalURL: json['avatar']['media_normalURL'],
+                minURL: json['avatar']['media_minURL'],
+              ),
+            ),
+      banner: json['banner'] == null
+          ? null
+          : Media(
+              mediaID: json['banner']['media_ID'],
+              mediaURL: MediaURL(
+                bigURL: json['banner']['media_bigURL'],
+                normalURL: json['banner']['media_normalURL'],
+                minURL: json['banner']['media_minURL'],
+              ),
+            ),
+      myFriends: json['myfriends'] != null
+          ? List<User>.from(
+              json['myfriends'].map((friendJson) => User.fromJson(friendJson)))
+          : null,
+      lastlogin: json['lastlogin'],
+      lastloginv2: json['lastloginv2'],
     );
   }
 
@@ -179,7 +189,87 @@ class User {
               'media_minURL': banner!.mediaURL.minURL,
             }
           : null,
+      'myfriends': myFriends != null
+          ? myFriends!.map((friend) => friend.toJson()).toList()
+          : null,
+      'lastlogin': lastlogin,
+      'lastloginv2': lastloginv2,
     };
+  }
+
+  void updateUser({required User targetUser}) {
+    if (userID != null) targetUser.userID = userID;
+    if (userName != null) targetUser.userName = userName;
+    if (firstName != null) {
+      targetUser.firstName = firstName;
+    }
+    if (lastName != null) targetUser.lastName = lastName;
+    if (password != null) targetUser.password = password;
+    if (displayName != null) {
+      targetUser.displayName = displayName;
+    }
+    if (avatar != null) targetUser.avatar = avatar;
+    if (banner != null) targetUser.banner = banner;
+    if (userMail != null) targetUser.userMail = userMail;
+    if (country != null) targetUser.country = country;
+    if (province != null) targetUser.province = province;
+    if (registerDate != null) {
+      targetUser.registerDate = registerDate;
+    }
+    if (job != null) targetUser.job = job;
+    if (role != null) targetUser.role = role;
+    if (aboutme != null) targetUser.aboutme = aboutme;
+    if (burc != null) targetUser.burc = burc;
+    if (invitecode != null) {
+      targetUser.invitecode = invitecode;
+    }
+    if (lastlogin != null) {
+      targetUser.lastlogin = lastlogin;
+    }
+    if (lastloginv2 != null) {
+      targetUser.lastloginv2 = lastloginv2;
+    }
+    if (lastfaillogin != null) {
+      targetUser.lastfaillogin = lastfaillogin;
+    }
+    if (level != null) targetUser.level = level;
+    if (levelColor != null) {
+      targetUser.levelColor = levelColor;
+    }
+    if (xp != null) targetUser.xp = xp;
+    if (friendsCount != null) {
+      targetUser.friendsCount = friendsCount;
+    }
+    if (postsCount != null) {
+      targetUser.postsCount = postsCount;
+    }
+    if (awardsCount != null) {
+      targetUser.awardsCount = awardsCount;
+    }
+    if (phoneNumber != null) {
+      targetUser.phoneNumber = phoneNumber;
+    }
+    if (birthdayDate != null) {
+      targetUser.birthdayDate = birthdayDate;
+    }
+    if (favTeam != null) targetUser.favTeam = favTeam;
+    if (status != null) targetUser.status = status;
+    if (ismyFriend != null) {
+      targetUser.ismyFriend = ismyFriend;
+    }
+    if (myFriends != null) {
+      targetUser.myFriends = myFriends;
+    }
+    if (mycloseFriends != null) {
+      targetUser.mycloseFriends = mycloseFriends;
+    }
+    if (myGroups != null) targetUser.myGroups = myGroups;
+    if (mySchools != null) {
+      targetUser.mySchools = mySchools;
+    }
+    if (myStations != null) {
+      targetUser.myStations = myStations;
+    }
   }
 
   Widget storyViewUserList({bool isLiked = false}) {

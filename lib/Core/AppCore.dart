@@ -65,8 +65,6 @@ class AppCore {
       aspectRatio: (ratioX != null && ratioY != null)
           ? CropAspectRatio(ratioX: ratioX, ratioY: ratioY)
           : null,
-      maxWidth: 500,
-      maxHeight: 500,
     );
 
     if (croppedFile != null) {
