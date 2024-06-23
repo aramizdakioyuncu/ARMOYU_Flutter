@@ -1,10 +1,15 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SettingsAccountStatusPage extends StatefulWidget {
-  const SettingsAccountStatusPage({super.key});
+  final User currentUser;
+  const SettingsAccountStatusPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SettingsAccountStatusPage> createState() =>
@@ -35,16 +40,14 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.transparent,
-                    foregroundImage: CachedNetworkImageProvider(ARMOYU
-                        .appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL),
+                    foregroundImage: CachedNetworkImageProvider(
+                        widget.currentUser.avatar!.mediaURL.minURL),
                     radius: 60,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: CustomText.costum1(
-                        ARMOYU.appUsers[ARMOYU.selectedUser].displayName!,
-                        weight: FontWeight.bold,
-                        size: 22),
+                    child: CustomText.costum1(widget.currentUser.displayName!,
+                        weight: FontWeight.bold, size: 22),
                   ),
                   RichText(
                     textAlign:

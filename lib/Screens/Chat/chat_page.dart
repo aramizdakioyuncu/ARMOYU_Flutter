@@ -12,7 +12,7 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 
 class ChatPage extends StatefulWidget {
   final Function changePage;
-  final User? currentUser;
+  final User currentUser;
   const ChatPage({
     super.key,
     required this.currentUser,
@@ -28,7 +28,6 @@ class _ChatPageState extends State<ChatPage>
   int _chatPage = 1;
   bool _chatsearchprocess = false;
   bool _isFirstFetch = true;
-  final List<Chat> _chatlist = [];
   List<Chat> _filteredItems = [];
   final TextEditingController _chatcontroller = TextEditingController();
 
@@ -48,7 +47,7 @@ class _ChatPageState extends State<ChatPage>
     _chatcontroller.addListener(() {
       String newText = _chatcontroller.text.toLowerCase();
       // Filtreleme işlemi
-      _filteredItems = _chatlist.where((item) {
+      _filteredItems = widget.currentUser.chatlist!.where((item) {
         return item.user.displayName!.toLowerCase().contains(newText);
       }).toList();
       if (mounted) {
@@ -65,29 +64,54 @@ class _ChatPageState extends State<ChatPage>
     });
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   Future<void> _handleRefresh() async {
     setState(() {
-      getchat();
+      getchat(fetchRestart: true);
     });
   }
 
-  Future<void> getchat() async {
+  Future<void> getchat({bool fetchRestart = false}) async {
     if (_chatsearchprocess) {
       return;
     }
-    _chatsearchprocess = true;
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.getchats(_chatPage);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      _chatsearchprocess = false;
-      _isFirstFetch = false;
-      getchat();
-      return;
+
+    if (fetchRestart) {
+      _chatPage = 1;
+      widget.currentUser.chatlist = [];
     }
 
-    if (_chatPage == 1) {
-      _chatlist.clear();
+    if (_chatPage == 1 && !fetchRestart) {
+      if (widget.currentUser.chatlist != null) {
+        _filteredItems = widget.currentUser.chatlist!;
+
+        int pageCount =
+            (widget.currentUser.widgetStoriescard!.length / 30).ceil();
+        log(pageCount.toString());
+
+        _chatPage = pageCount;
+        _chatPage++;
+      } else {
+        widget.currentUser.chatlist = [];
+      }
+    }
+
+    _chatsearchprocess = true;
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
+    Map<String, dynamic> response = await f.getchats(_chatPage);
+    if (response["durum"] == 0) {
+      _chatsearchprocess = false;
+      _isFirstFetch = false;
+
+      //10 saniye sonra Tekrar çekmeyi dene
+      await Future.delayed(const Duration(seconds: 10));
+      await getchat();
+      return;
     }
 
     if (response["icerik"].length == 0) {
@@ -105,50 +129,46 @@ class _ChatPageState extends State<ChatPage>
       if (sonmesaj == "null") {
         sonmesaj = "";
       }
-      if (mounted) {
-        setState(() {
-          bool notification = false;
-          if (response["icerik"][i]["bildirim"] == 1) {
-            notification = true;
-          }
-          _chatlist.add(
-            Chat(
-              chatID: 1,
-              user: User(
-                userID: response["icerik"][i]["kullid"],
-                displayName: response["icerik"][i]["adisoyadi"],
-                lastlogin: response["icerik"][i]["songiris"],
-                lastloginv2: response["icerik"][i]["songiris"],
-                avatar: Media(
-                  mediaID: response["icerik"][i]["kullid"],
-                  mediaURL: MediaURL(
-                    bigURL: response["icerik"][i]["chatImage"]["media_bigURL"],
-                    normalURL: response["icerik"][i]["chatImage"]["media_URL"],
-                    minURL: response["icerik"][i]["chatImage"]["media_minURL"],
-                  ),
-                ),
-              ),
-              lastmessage: ChatMessage(
-                user: User(userID: 1, avatar: null, displayName: ""),
-                messageContext: sonmesaj,
-                messageID: 1,
-                isMe: response["icerik"][i]["kullid"] ==
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userID
-                    ? true
-                    : false,
-              ),
-              chatType: response["icerik"][i]["sohbetturu"],
-              chatNotification: notification,
-            ),
-          );
-        });
+      bool notification = false;
+      if (response["icerik"][i]["bildirim"] == 1) {
+        notification = true;
       }
+
+      widget.currentUser.chatlist!.add(
+        Chat(
+          chatID: 1,
+          user: User(
+            userID: response["icerik"][i]["kullid"],
+            displayName: response["icerik"][i]["adisoyadi"],
+            lastlogin: response["icerik"][i]["songiris"],
+            lastloginv2: response["icerik"][i]["songiris"],
+            avatar: Media(
+              mediaID: response["icerik"][i]["kullid"],
+              mediaURL: MediaURL(
+                bigURL: response["icerik"][i]["chatImage"]["media_bigURL"],
+                normalURL: response["icerik"][i]["chatImage"]["media_URL"],
+                minURL: response["icerik"][i]["chatImage"]["media_minURL"],
+              ),
+            ),
+          ),
+          lastmessage: ChatMessage(
+            user: User(userID: 1, avatar: null, displayName: ""),
+            messageContext: sonmesaj,
+            messageID: 1,
+            isMe: response["icerik"][i]["kullid"] == widget.currentUser.userID
+                ? true
+                : false,
+          ),
+          chatType: response["icerik"][i]["sohbetturu"],
+          chatNotification: notification,
+        ),
+      );
+      setstatefunction();
     }
-    if (mounted) {
-      setState(() {
-        _filteredItems = _chatlist;
-      });
-    }
+
+    _filteredItems = widget.currentUser.chatlist!;
+
+    setstatefunction();
 
     _chatsearchprocess = false;
     _isFirstFetch = false;
@@ -219,19 +239,20 @@ class _ChatPageState extends State<ChatPage>
                   controller: chatScrollController,
                   itemCount: _filteredItems.length,
                   itemBuilder: (BuildContext context, index) {
-                    return _filteredItems[index].listtilechat(context);
+                    return _filteredItems[index]
+                        .listtilechat(context, currentUser: widget.currentUser);
                   },
                 ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: "NewChatButton${widget.currentUser!.userID}",
+        heroTag: "NewChatButton${widget.currentUser.userID}",
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ChatNewPage(
-                currentUser: widget.currentUser!,
+                currentUser: widget.currentUser,
               ),
             ),
           );

@@ -1,7 +1,13 @@
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsNews {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsNews({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> fetch(int page) async {
     Map<String, String> formData = {"sayfa": "$page", "limit": "10"};

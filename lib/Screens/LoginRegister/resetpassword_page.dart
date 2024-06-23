@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 
 import 'package:flutter/material.dart';
@@ -102,7 +103,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
     resetpasswordProcess = true;
     setstatefunction();
 
-    FunctionService f = FunctionService();
+    FunctionService f =
+        FunctionService(currentUser: User(userName: "", password: ""));
     Map<String, dynamic> response = await f.forgotpassword(
         _usernameController.text, _emailController.text, type); //sa
 
@@ -154,7 +156,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       return;
     }
 
-    FunctionService f = FunctionService();
+    FunctionService f =
+        FunctionService(currentUser: User(userName: "", password: ""));
     Map<String, dynamic> response = await f.forgotpassworddone(
         // yeniformat,
         _usernameController.text,

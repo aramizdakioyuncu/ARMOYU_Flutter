@@ -28,11 +28,13 @@ import 'package:video_player/video_player.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 
 class TwitterPostWidget extends StatefulWidget {
+  final User currentUser;
   final Post post;
   final bool? isPostdetail = false;
 
   const TwitterPostWidget({
     super.key,
+    required this.currentUser,
     required this.post,
   });
 
@@ -68,7 +70,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
     _fetchCommentStatus = true;
     setstatefunction();
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -131,7 +133,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     _fetchlikersStatus = true;
     setstatefunction();
 
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.postlikeslist(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -177,7 +179,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     postVisible = false;
     setstatefunction();
 
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.remove(widget.post.postID);
 
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
@@ -242,6 +244,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                                       itemCount: widget.post.comments!.length,
                                       itemBuilder: (context, index) {
                                         return WidgetPostComments(
+                                          currentUser: widget.currentUser,
                                           comment: widget.post.comments![index],
                                         );
                                       },
@@ -256,8 +259,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           child: CircleAvatar(
                             backgroundColor: Colors.transparent,
                             foregroundImage: CachedNetworkImageProvider(
-                              ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
-                                  .mediaURL.minURL,
+                              widget.currentUser.avatar!.mediaURL.minURL,
                             ),
                             radius: 20,
                           ),
@@ -291,7 +293,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                           padding: const EdgeInsets.all(5.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              FunctionsPosts funct = FunctionsPosts();
+                              FunctionsPosts funct = FunctionsPosts(
+                                  currentUser: widget.currentUser);
                               Map<String, dynamic> response =
                                   await funct.createcomment(widget.post.postID,
                                       controllerMessage.text);
@@ -332,7 +335,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
 
     likeunlikeProcces = true;
 
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.like(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -358,7 +361,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
     }
     likeunlikeProcces = true;
 
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.unlike(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -444,6 +447,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                                       itemCount: widget.post.likers!.length,
                                       itemBuilder: (context, index) {
                                         return LikersListWidget(
+                                          currentUser: widget.currentUser,
                                           date: widget.post.likers![index].date,
                                           islike: 1,
                                           user: widget.post.likers![index].user,
@@ -495,7 +499,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   Visibility(
                     child: InkWell(
                       onTap: () async {
-                        FunctionsPosts funct = FunctionsPosts();
+                        FunctionsPosts funct =
+                            FunctionsPosts(currentUser: widget.currentUser);
                         Map<String, dynamic> response =
                             await funct.remove(widget.post.postID);
                         if (response["durum"] == 0) {
@@ -513,8 +518,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID ==
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+                    visible:
+                        widget.post.owner.userID == widget.currentUser.userID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -530,8 +535,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     child: Divider(),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID !=
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+                    visible:
+                        widget.post.owner.userID != widget.currentUser.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -545,17 +550,21 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID !=
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+                    visible:
+                        widget.post.owner.userID != widget.currentUser.userID,
                     child: InkWell(
                       onTap: () async {
                         if (mounted) {
                           Navigator.pop(context);
                         }
-
+                        ClientFunctionsProfile function =
+                            ClientFunctionsProfile(
+                                currentUser: widget.currentUser);
                         ARMOYUWidget.toastNotification(
-                            await ClientFunctionsProfile.userblock(
-                                widget.post.owner.userID!));
+                          await function.userblock(
+                            widget.post.owner.userID!,
+                          ),
+                        );
                       },
                       child: const ListTile(
                         textColor: Colors.red,
@@ -568,8 +577,8 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     ),
                   ),
                   Visibility(
-                    visible: widget.post.owner.userID ==
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+                    visible:
+                        widget.post.owner.userID == widget.currentUser.userID,
                     child: InkWell(
                       onTap: () async => ARMOYUWidget.showConfirmationDialog(
                         context,
@@ -639,7 +648,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: InkWell(
                 onTap: () {
-                  PageFunctions.pushProfilePage(
+                  PageFunctions functions =
+                      PageFunctions(currentUser: widget.currentUser);
+
+                  functions.pushProfilePage(
                     context,
                     User(
                       userID: widget.post.owner.userID,
@@ -731,7 +743,10 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                     SizedBox(
                       width: double.infinity,
                       child: WidgetUtility.specialText(
-                          context, widget.post.content),
+                        context,
+                        currentUser: widget.currentUser,
+                        widget.post.content,
+                      ),
                     ),
                   ],
                 ),
@@ -835,6 +850,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                                   onTap: () => postcommentlikeslist(),
                                   child: WidgetUtility.specialText(
                                     context,
+                                    currentUser: widget.currentUser,
                                     "@${widget.post.firstthreelike[0].user.userName.toString()} ${widget.post.likesCount - 1 > 0 ? "ve ${widget.post.likesCount - 1} kişi" : ""} beğendi",
                                     // fontWeight: FontWeight.bold,
                                   ),
@@ -848,8 +864,11 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
                   Column(
                     children: List.generate(
                         widget.post.firstthreecomment.length, (index) {
-                      return widget.post.firstthreecomment[index]
-                          .commentlist(context, setstatefunction);
+                      return widget.post.firstthreecomment[index].commentlist(
+                        context,
+                        setstatefunction,
+                        currentUser: widget.currentUser,
+                      );
                     }),
                   ),
                   Visibility(
@@ -1009,6 +1028,7 @@ class _TwitterPostWidgetState extends State<TwitterPostWidget> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => MediaViewer(
+                  currentUser: widget.currentUser,
                   media: widget.post.media,
                   initialIndex: i,
                 ),

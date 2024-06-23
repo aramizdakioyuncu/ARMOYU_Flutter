@@ -1,7 +1,13 @@
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsLoginRegister {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsLoginRegister({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> inviteCodeTest(String code) async {
     Map<String, String> formData = {"davetkodu": code};

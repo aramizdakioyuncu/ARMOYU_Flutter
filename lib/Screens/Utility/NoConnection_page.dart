@@ -5,7 +5,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
-import 'package:ARMOYU/Screens/pages.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 
@@ -65,7 +65,9 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const LoginPage(),
+              builder: (context) => LoginPage(
+                currentUser: User(userName: "", password: ""),
+              ),
             ),
           );
         }
@@ -76,7 +78,8 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
         });
         return;
       }
-      FunctionService f = FunctionService();
+      FunctionService f =
+          FunctionService(currentUser: User(userName: "", password: ""));
 
       Map<String, dynamic> response =
           await f.login(username.toString(), password.toString(), true);
@@ -90,7 +93,9 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const LoginPage(),
+                builder: (context) => LoginPage(
+                  currentUser: User(userName: "", password: ""),
+                ),
               ),
             );
           }
@@ -112,12 +117,24 @@ class _InternetCheckPageState extends State<NoConnectionPage> {
 
       log("Oturum açılıyor");
 
+      // if (mounted) {
+      //   Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //       builder: (context) => Pages(
+      //         currentUser: ARMOYU.appUsers[0],
+      //       ),
+      //     ),
+      //   );
+      // }
+
+      User newUser = ARMOYU.appUsers.first;
       if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Pages(
-              currentUser: ARMOYU.appUsers[0],
+            builder: (context) => AppPage(
+              userID: newUser.userID!,
             ),
           ),
         );

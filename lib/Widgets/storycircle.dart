@@ -1,5 +1,6 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/Story/storylist.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/galleryscreen_page.dart';
 import 'package:ARMOYU/Screens/Story/storyscreen_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -7,10 +8,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class WidgetStorycircle extends StatefulWidget {
+  final User currentUser;
   final List<StoryList> content;
 
   const WidgetStorycircle({
     super.key,
+    required this.currentUser,
     required this.content,
   });
 
@@ -56,16 +59,14 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                   }
 
                   bool ishasstory = false;
-                  if (cardData.ownerID ==
-                      ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
+                  if (cardData.owner.userID == widget.currentUser.userID) {
                     if (cardData.story != null) {
                       storycolor = Colors.blue;
                       ishasstory = true;
                     }
                   }
                   Color circleColor = Colors.transparent;
-                  if (cardData.ownerID ==
-                      ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
+                  if (cardData.owner.userID == widget.currentUser.userID) {
                     circleColor = storycolor;
                   } else {
                     circleColor = otherstorycolor;
@@ -73,13 +74,13 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
 
                   return GestureDetector(
                     onTap: () {
-                      if (cardData.ownerID ==
-                          ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
+                      if (cardData.owner.userID == widget.currentUser.userID) {
                         if (ishasstory) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => StoryScreenPage(
+                                currentUser: widget.currentUser,
                                 storyList: widget.content,
                                 storyIndex: index,
                               ),
@@ -90,7 +91,9 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const GalleryScreen(),
+                            builder: (context) => GalleryScreen(
+                              currentUser: widget.currentUser,
+                            ),
                           ),
                         );
                       } else {
@@ -98,6 +101,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => StoryScreenPage(
+                              currentUser: widget.currentUser,
                               storyList: widget.content,
                               storyIndex: index,
                             ),
@@ -124,37 +128,36 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                cardData.owneravatar,
+                                cardData.owner.avatar!.mediaURL.minURL,
                               ),
                             ),
                           ),
-                          child: cardData.ownerID ==
-                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID
-                              ? Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: Container(
-                                    height: 24,
-                                    width: 24,
-                                    decoration: BoxDecoration(
-                                      color: ARMOYU.backgroundcolor,
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.elliptical(100, 100),
+                          child:
+                              cardData.owner.userID == widget.currentUser.userID
+                                  ? Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Container(
+                                        height: 24,
+                                        width: 24,
+                                        decoration: BoxDecoration(
+                                          color: ARMOYU.backgroundcolor,
+                                          borderRadius: const BorderRadius.all(
+                                            Radius.elliptical(100, 100),
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.add,
+                                          color: Colors.blue,
+                                        ),
                                       ),
-                                    ),
-                                    child: const Icon(
-                                      Icons.add,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                )
-                              : null,
+                                    )
+                                  : null,
                         ),
                         const SizedBox(height: 2),
                         CustomText.costum1(
-                          cardData.ownerID ==
-                                  ARMOYU.appUsers[ARMOYU.selectedUser].userID
+                          cardData.owner.userID == widget.currentUser.userID
                               ? "Hikayen"
-                              : cardData.ownerusername,
+                              : cardData.owner.userName!,
                           size: 11,
                         ),
                       ],

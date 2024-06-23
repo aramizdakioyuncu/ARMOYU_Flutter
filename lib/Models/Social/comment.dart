@@ -25,15 +25,43 @@ class Comment {
     required this.didIlike,
     required this.date,
   });
+
+  // Comment nesnesinden JSON'a dönüşüm
+  Map<String, dynamic> toJson() {
+    return {
+      'commentID': commentID,
+      'postID': postID,
+      'user': user.toJson(),
+      'date': date,
+      'content': content,
+      'likeCount': likeCount,
+      'didIlike': didIlike,
+    };
+  }
+
+  // JSON'dan Comment nesnesine dönüşüm
+  factory Comment.fromJson(Map<String, dynamic> json) {
+    return Comment(
+      commentID: json['commentID'],
+      postID: json['postID'],
+      user: User.fromJson(json['user']),
+      date: json['date'],
+      content: json['content'],
+      likeCount: json['likeCount'],
+      didIlike: json['didIlike'],
+    );
+  }
+
   bool likeunlikeProcces = false;
   final GlobalKey<LikeButtonState> _likeButtonKey =
       GlobalKey<LikeButtonState>();
-  Future<void> likefunction(Function setstatefunction) async {
+  Future<void> likefunction(Function setstatefunction,
+      {required User currentUser}) async {
     if (likeunlikeProcces) {
       return;
     }
     likeunlikeProcces = true;
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
     Map<String, dynamic> response;
     response = await funct.commentlike(commentID);
     if (response["durum"] == 0) {
@@ -48,13 +76,14 @@ class Comment {
     setstatefunction();
   }
 
-  Future<void> dislikefunction(Function setstatefunction) async {
+  Future<void> dislikefunction(Function setstatefunction,
+      {required User currentUser}) async {
     if (likeunlikeProcces) {
       return;
     }
     likeunlikeProcces = true;
 
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
     Map<String, dynamic> response;
     response = await funct.commentdislike(commentID);
     if (response["durum"] == 0) {
@@ -70,20 +99,22 @@ class Comment {
     setstatefunction();
   }
 
-  Future<bool> postLike(bool isLiked, setstatefunction) async {
+  Future<bool> postLike(bool isLiked, setstatefunction,
+      {required User currentUser}) async {
     if (likeunlikeProcces) {
       return isLiked;
     }
 
     if (isLiked) {
-      dislikefunction(setstatefunction);
+      dislikefunction(setstatefunction, currentUser: currentUser);
     } else {
-      likefunction(setstatefunction);
+      likefunction(setstatefunction, currentUser: currentUser);
     }
     return !isLiked;
   }
 
-  Widget commentlist(BuildContext context, Function setstatefunction) {
+  Widget commentlist(BuildContext context, Function setstatefunction,
+      {required User currentUser}) {
     return GestureDetector(
       onDoubleTap: () {
         _likeButtonKey.currentState?.onTap();
@@ -98,6 +129,7 @@ class Comment {
                 children: [
                   CustomText.usercomments(
                     context,
+                    currentUser: currentUser,
                     text: content,
                     user: user,
                   ),
@@ -110,8 +142,9 @@ class Comment {
                 key: _likeButtonKey,
                 isLiked: didIlike,
                 likeCount: likeCount,
-                onTap: (isLiked) async =>
-                    await postLike(isLiked, setstatefunction),
+                onTap: (isLiked) async => await postLike(
+                    isLiked, setstatefunction,
+                    currentUser: currentUser),
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     isLiked ? Icons.favorite : Icons.favorite_outline,

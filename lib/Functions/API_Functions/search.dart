@@ -1,7 +1,13 @@
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsSearchEngine {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsSearchEngine({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> hashtag(String hashtag, int page) async {
     Map<String, String> formData = {

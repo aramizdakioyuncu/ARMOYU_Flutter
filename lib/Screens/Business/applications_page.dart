@@ -2,13 +2,18 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/joinus.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Business/joinus_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BusinessApplicationsPage extends StatefulWidget {
-  const BusinessApplicationsPage({super.key});
+  final User currentUser;
+  const BusinessApplicationsPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<BusinessApplicationsPage> createState() => _SettingsPage();
@@ -44,7 +49,7 @@ class _SettingsPage extends State<BusinessApplicationsPage> {
     }
     _requestProccess = true;
     setstatefunction();
-    FunctionsJoinUs f = FunctionsJoinUs();
+    FunctionsJoinUs f = FunctionsJoinUs(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.applicationList(_page);
 
     if (response["durum"] == 0) {
@@ -110,7 +115,7 @@ class _SettingsPage extends State<BusinessApplicationsPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const JoinUsPage(),
+            builder: (context) => JoinUsPage(currentUser: widget.currentUser),
           ));
         },
         backgroundColor: ARMOYU.buttonColor,

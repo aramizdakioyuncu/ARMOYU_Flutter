@@ -20,10 +20,8 @@ import 'package:ARMOYU/Functions/API_Functions/profile.dart';
 import 'detectabletext.dart';
 
 class CustomMenusNotificationbars extends StatefulWidget {
-  final User? currentUser;
-  final int userID;
-  final String displayname;
-  final String avatar;
+  final User currentUser;
+  final User user;
   final String text;
   final String date;
   final String category;
@@ -34,10 +32,8 @@ class CustomMenusNotificationbars extends StatefulWidget {
 
   CustomMenusNotificationbars({
     super.key,
+    required this.user,
     required this.currentUser,
-    required this.userID,
-    required this.displayname,
-    required this.avatar,
     required this.text,
     required this.date,
     required this.category,
@@ -84,6 +80,7 @@ class _CustomMenusNotificationbarsState
                     context,
                     MaterialPageRoute(
                       builder: (context) => PostDetailPage(
+                        currentUser: widget.currentUser,
                         postID: widget.categorydetailID,
                       ),
                     ),
@@ -93,6 +90,7 @@ class _CustomMenusNotificationbarsState
                     context,
                     MaterialPageRoute(
                       builder: (context) => PostDetailPage(
+                        currentUser: widget.currentUser,
                         commentID: widget.categorydetailID,
                       ),
                     ),
@@ -113,8 +111,9 @@ class _CustomMenusNotificationbarsState
                       context,
                       MaterialPageRoute(
                         builder: (context) => ProfilePage(
+                          currentUser: widget.currentUser,
+                          profileUser: User(userID: widget.user.userID),
                           ismyProfile: false,
-                          currentUser: User(userID: widget.userID),
                           scrollController: ScrollController(),
                         ),
                       ),
@@ -127,18 +126,20 @@ class _CustomMenusNotificationbarsState
                 children: [
                   InkWell(
                     onTap: () {
-                      PageFunctions.pushProfilePage(
+                      PageFunctions functions =
+                          PageFunctions(currentUser: widget.currentUser);
+                      functions.pushProfilePage(
                         context,
                         User(
-                          userID: widget.userID,
+                          userID: widget.user.userID,
                         ),
                         ScrollController(),
                       );
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      foregroundImage:
-                          CachedNetworkImageProvider(widget.avatar),
+                      foregroundImage: CachedNetworkImageProvider(
+                          widget.user.avatar!.mediaURL.minURL),
                       radius: 25,
                     ),
                   ),
@@ -150,7 +151,7 @@ class _CustomMenusNotificationbarsState
                         Row(
                           children: [
                             CustomText.costum1(
-                              widget.displayname,
+                              widget.user.displayName!,
                               weight: FontWeight.bold,
                             ),
                             const Spacer(),
@@ -173,10 +174,11 @@ class _CustomMenusNotificationbarsState
                                     setstatefunction();
 
                                     if (widget.categorydetail == "istek") {
-                                      FunctionsProfile f = FunctionsProfile();
+                                      FunctionsProfile f = FunctionsProfile(
+                                          currentUser: widget.currentUser);
                                       Map<String, dynamic> response =
                                           await f.friendrequestanswer(
-                                              widget.userID, 1);
+                                              widget.user.userID!, 1);
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
@@ -193,7 +195,8 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
-                                      FunctionsGroup f = FunctionsGroup();
+                                      FunctionsGroup f = FunctionsGroup(
+                                          currentUser: widget.currentUser);
                                       Map<String, dynamic> response =
                                           await f.grouprequestanswer(
                                               widget.categorydetailID, 1);
@@ -221,10 +224,11 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
-                                      FunctionsProfile f = FunctionsProfile();
+                                      FunctionsProfile f = FunctionsProfile(
+                                          currentUser: widget.currentUser);
                                       Map<String, dynamic> response =
                                           await f.friendrequestanswer(
-                                              widget.userID, 0);
+                                              widget.user.userID!, 0);
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
@@ -240,7 +244,8 @@ class _CustomMenusNotificationbarsState
                                       ARMOYU.groupInviteCount--;
                                       widget.natificationisVisible = false;
                                       setstatefunction();
-                                      FunctionsGroup f = FunctionsGroup();
+                                      FunctionsGroup f = FunctionsGroup(
+                                          currentUser: widget.currentUser);
                                       Map<String, dynamic> response =
                                           await f.grouprequestanswer(
                                               widget.categorydetailID, 0);

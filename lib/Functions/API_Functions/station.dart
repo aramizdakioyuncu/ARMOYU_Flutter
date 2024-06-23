@@ -1,7 +1,13 @@
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsStation {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsStation({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> fetchStations() async {
     Map<String, String> formData = {};

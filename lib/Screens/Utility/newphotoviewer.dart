@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class MediaViewer extends StatefulWidget {
+  final User currentUser;
   final List<Media> media; // Gezdirilecek fotoğrafların ID listesi
   final int initialIndex; // Başlangıçtaki fotoğrafin indexi
   final bool? isFile; // Yerel mi
@@ -21,6 +23,7 @@ class MediaViewer extends StatefulWidget {
     required this.initialIndex,
     this.isFile = false,
     this.isMemory = false,
+    required this.currentUser,
   });
   @override
   State<MediaViewer> createState() => _MediaViewerPage();
@@ -92,7 +95,8 @@ class _MediaViewerPage extends State<MediaViewer> {
                       return;
                     }
                     isRotationprocces = true;
-                    FunctionsMedia f = FunctionsMedia();
+                    FunctionsMedia f =
+                        FunctionsMedia(currentUser: widget.currentUser);
                     Map<String, dynamic> response = await f.rotation(
                         widget.media[widget.initialIndex].mediaID,
                         360 - (rotateangle % 360));
@@ -114,7 +118,7 @@ class _MediaViewerPage extends State<MediaViewer> {
           ),
           Visibility(
             visible: (widget.media[widget.initialIndex].ownerID ==
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userID) &&
+                        widget.currentUser.userID) &&
                     !isRotationprocces
                 ? true
                 : false,

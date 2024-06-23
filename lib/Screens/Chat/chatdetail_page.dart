@@ -19,10 +19,12 @@ import 'package:skeletons/skeletons.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final Chat chat;
+  final User currentUser;
 
   const ChatDetailPage({
     super.key,
     required this.chat,
+    required this.currentUser,
   });
 
   @override
@@ -49,12 +51,20 @@ class _ChatDetailPage extends State<ChatDetailPage>
   void initState() {
     super.initState();
     widget.chat.chatNotification = false;
-    if (widget.chat.messages.isEmpty) {
+
+    widget.chat.messages ??= [];
+    if (widget.chat.messages!.isEmpty) {
       getchat().then((_) {
         isolatestart();
       });
     } else {
       isolatestart();
+    }
+  }
+
+  void setstatefunction() {
+    if (mounted) {
+      setState(() {});
     }
   }
 
@@ -80,7 +90,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
     isolateListen = await Isolate.spawn(socketListenMessage, [
       receiveportListen!.sendPort,
-      ARMOYU.appUsers[ARMOYU.selectedUser],
+      widget.currentUser,
       widget.chat.user.userID.toString()
     ]);
 
@@ -91,34 +101,33 @@ class _ChatDetailPage extends State<ChatDetailPage>
         Map<String, dynamic> responseData = jsonData;
 
         if (responseData["sender_id"].toString() ==
-            ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString()) {
+            widget.currentUser.userID.toString()) {
           return;
         }
 
         if (responseData["receiver_id"].toString() ==
-            ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString()) {
+            widget.currentUser.userID.toString()) {
           message = responseData["message"].toString();
         }
-        if (mounted) {
-          setState(() {
-            widget.chat.messages.add(
-              ChatMessage(
-                messageID: 0,
-                isMe: false,
-                messageContext: message,
-                user: widget.chat.user,
-              ),
-            );
+        widget.chat.messages!.add(
+          ChatMessage(
+            messageID: 0,
+            isMe: false,
+            messageContext: message,
+            user: widget.chat.user,
+          ),
+        );
 
-            //SonMesajı güncelle
-            widget.chat.lastmessage = ChatMessage(
-              messageID: 0,
-              isMe: false,
-              messageContext: message,
-              user: widget.chat.user,
-            );
-          });
-        }
+        //SonMesajı güncelle
+        widget.chat.lastmessage = ChatMessage(
+          messageID: 0,
+          isMe: false,
+          messageContext: message,
+          user: widget.chat.user,
+        );
+
+        setstatefunction();
+
         log(message);
       } catch (e) {
         log("json hatası");
@@ -126,9 +135,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
     });
 
     ARMOYU_Socket socket2 = ARMOYU_Socket(
-        ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString(),
-        ARMOYU.appUsers[ARMOYU.selectedUser].userName!,
-        ARMOYU.appUsers[ARMOYU.selectedUser].password!,
+        widget.currentUser.userID.toString(),
+        widget.currentUser.userName!,
+        widget.currentUser.password!,
         widget.chat.user.userID.toString());
 
     receiveportSend!.listen(
@@ -164,7 +173,7 @@ class _ChatDetailPage extends State<ChatDetailPage>
   }
 
   Future<void> getchat() async {
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.getdeailchats(widget.chat.user.userID!);
     if (response["durum"] == 0) {
@@ -180,12 +189,12 @@ class _ChatDetailPage extends State<ChatDetailPage>
 
     bool ismee = true;
     if (mounted) {
-      widget.chat.messages.clear();
+      widget.chat.messages!.clear();
     }
 
     log(response["icerik"].length.toString());
 
-    log(widget.chat.messages.length.toString());
+    log(widget.chat.messages!.length.toString());
     for (dynamic element in response["icerik"]) {
       try {
         if (element["sohbetkim"] == "ben") {
@@ -194,18 +203,15 @@ class _ChatDetailPage extends State<ChatDetailPage>
           ismee = false;
         }
 
-        if (mounted) {
-          setState(() {
-            widget.chat.messages.add(
-              ChatMessage(
-                messageID: 0,
-                isMe: ismee,
-                messageContext: element["mesajicerik"],
-                user: widget.chat.user,
-              ),
-            );
-          });
-        }
+        widget.chat.messages!.add(
+          ChatMessage(
+            messageID: 0,
+            isMe: ismee,
+            messageContext: element["mesajicerik"],
+            user: widget.chat.user,
+          ),
+        );
+        setstatefunction();
         //SonMesajı güncelle
         widget.chat.lastmessage = ChatMessage(
           messageID: 0,
@@ -266,7 +272,9 @@ class _ChatDetailPage extends State<ChatDetailPage>
                 borderRadius: BorderRadius.circular(50.0),
                 child: GestureDetector(
                   onTap: () {
-                    PageFunctions.pushProfilePage(
+                    PageFunctions functions =
+                        PageFunctions(currentUser: widget.currentUser);
+                    functions.pushProfilePage(
                       context,
                       User(userID: widget.chat.user.userID!),
                       ScrollController(),
@@ -325,16 +333,18 @@ class _ChatDetailPage extends State<ChatDetailPage>
               child: ListView.builder(
                 reverse: true,
                 controller: _scrollController,
-                itemCount: widget.chat.messages.length,
+                itemCount: widget.chat.messages == null
+                    ? 0
+                    : widget.chat.messages!.length,
                 itemBuilder: (context, index) {
                   return widget
-                      .chat.messages[widget.chat.messages.length - 1 - index]
+                      .chat.messages![widget.chat.messages!.length - 1 - index]
                       .messageBumble(context);
                 },
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
               color: ARMOYU.appbottomColor,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -398,27 +408,27 @@ class _ChatDetailPage extends State<ChatDetailPage>
                         }
                         String message = _messageController.text;
                         _messageController.text = "";
-                        if (mounted) {
-                          setState(() {
-                            widget.chat.messages.add(
-                              ChatMessage(
-                                messageID: 0,
-                                isMe: true,
-                                messageContext: message,
-                                user: ARMOYU.appUsers[ARMOYU.selectedUser],
-                              ),
-                            );
-                          });
-                        }
+                        widget.chat.messages!.add(
+                          ChatMessage(
+                            messageID: 0,
+                            isMe: true,
+                            messageContext: message,
+                            user: widget.currentUser,
+                          ),
+                        );
+
                         //SonMesajı güncelle
                         widget.chat.lastmessage = ChatMessage(
                           messageID: 0,
                           isMe: true,
                           messageContext: message,
-                          user: ARMOYU.appUsers[ARMOYU.selectedUser],
+                          user: widget.currentUser,
                         );
 
-                        FunctionService f = FunctionService();
+                        setstatefunction();
+
+                        FunctionService f =
+                            FunctionService(currentUser: widget.currentUser);
                         Map<String, dynamic> response = await f.sendchatmessage(
                             widget.chat.user.userID!, message, "ozel");
                         if (response["durum"] == 0) {

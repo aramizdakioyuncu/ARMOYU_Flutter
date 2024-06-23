@@ -39,7 +39,7 @@ class ARMOYU {
   static List<CameraDescription>? cameras;
 
   static List<User> appUsers = [];
-  static int selectedUser = 0;
+  // static int selectedUser = 0;
 
   //Takım Seçme işlemleri
   static List<Team> favoriteteams = [];

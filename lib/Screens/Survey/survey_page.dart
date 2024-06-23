@@ -4,6 +4,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/survey.dart';
 import 'package:ARMOYU/Functions/Client_Functions/survey.dart';
 import 'package:ARMOYU/Models/Survey/survey.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
@@ -12,9 +13,11 @@ import 'package:flutter/material.dart';
 
 class SurveyPage extends StatefulWidget {
   final Survey survey;
+  final User currentUser;
   const SurveyPage({
     super.key,
     required this.survey,
+    required this.currentUser,
   });
 
   @override
@@ -35,7 +38,7 @@ class _ChatPageState extends State<SurveyPage>
     }
 
     answerSurveyProccess = true;
-    FunctionsSurvey f = FunctionsSurvey();
+    FunctionsSurvey f = FunctionsSurvey(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.answerSurvey(
         widget.survey.surveyID, int.parse(_selectedOption.toString()));
 
@@ -51,7 +54,8 @@ class _ChatPageState extends State<SurveyPage>
   }
 
   Future<void> refreshSurvey() async {
-    ClientFunctionSurvey f = ClientFunctionSurvey();
+    ClientFunctionSurvey f =
+        ClientFunctionSurvey(currentUser: widget.currentUser);
     List<Survey>? response =
         await f.fetchsurvey(surveyID: widget.survey.surveyID);
 
@@ -66,7 +70,7 @@ class _ChatPageState extends State<SurveyPage>
   }
 
   Future<void> deleteSurvey() async {
-    FunctionsSurvey f = FunctionsSurvey();
+    FunctionsSurvey f = FunctionsSurvey(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.deleteSurvey(widget.survey.surveyID);
 
@@ -102,8 +106,8 @@ class _ChatPageState extends State<SurveyPage>
             icon: const Icon(Icons.refresh),
           ),
           Visibility(
-            visible: widget.survey.surveyOwner.userID ==
-                ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+            visible:
+                widget.survey.surveyOwner.userID == widget.currentUser.userID,
             child: IconButton(
               onPressed: () async => await deleteSurvey(),
               icon: const Icon(
@@ -130,6 +134,7 @@ class _ChatPageState extends State<SurveyPage>
                         context,
                         MaterialPageRoute(
                           builder: (context) => MediaViewer(
+                            currentUser: widget.currentUser,
                             media: widget.survey.surveyQuestion.questionImages!,
                             initialIndex: index,
                           ),
@@ -158,6 +163,7 @@ class _ChatPageState extends State<SurveyPage>
                           padding: const EdgeInsets.only(left: 8.0),
                           child: WidgetUtility.specialText(
                             context,
+                            currentUser: widget.currentUser,
                             widget.survey.surveyQuestion.questionValue,
                             textAlign: TextAlign.center,
                             fontWeight: FontWeight.bold,

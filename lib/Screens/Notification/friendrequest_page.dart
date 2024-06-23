@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
 
 class NotificationFriendRequestPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
 
   const NotificationFriendRequestPage({
     super.key,
@@ -22,7 +23,7 @@ class NotificationFriendRequestPage extends StatefulWidget {
 bool _pageproccess = false;
 int _page = 1;
 bool _firstFetchProcces = true;
-List<Widget> widgetNotifications = [];
+List<CustomMenusNotificationbars> widgetNotifications = [];
 
 final ScrollController _scrollController = ScrollController();
 
@@ -46,6 +47,12 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
     });
   }
 
+  void setstatefunction() {
+    if (mounted) {
+      setstatefunction();
+    }
+  }
+
   Future<void> _loadMoreData() async {
     if (!_pageproccess) {
       await loadnoifications();
@@ -67,7 +74,7 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
       _pageproccess = true;
     });
 
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.getnotifications("arkadaslik", "istek", _page);
 
@@ -110,24 +117,32 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
           noticiationbuttons = true;
         }
       }
-      if (mounted) {
-        setState(() {
-          widgetNotifications.add(
-            CustomMenusNotificationbars(
-              currentUser: widget.currentUser,
-              avatar: response["icerik"][i]["bildirimgonderenavatar"],
-              userID: response["icerik"][i]["bildirimgonderenID"],
-              category: response["icerik"][i]["bildirimamac"],
-              categorydetail: response["icerik"][i]["bildirimkategori"],
-              categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
-              date: response["icerik"][i]["bildirimzaman"],
-              displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
-              enableButtons: noticiationbuttons,
-              text: response["icerik"][i]["bildirimicerik"],
+
+      widgetNotifications.add(
+        CustomMenusNotificationbars(
+          currentUser: widget.currentUser,
+          user: User(
+            userID: response["icerik"][i]["bildirimgonderenID"],
+            displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
+            avatar: Media(
+              mediaID: response["icerik"][i]["bildirimgonderenID"],
+              mediaURL: MediaURL(
+                bigURL: response["icerik"][i]["bildirimgonderenavatar"],
+                normalURL: response["icerik"][i]["bildirimgonderenavatar"],
+                minURL: response["icerik"][i]["bildirimgonderenavatar"],
+              ),
             ),
-          );
-        });
-      }
+          ),
+          category: response["icerik"][i]["bildirimamac"],
+          categorydetail: response["icerik"][i]["bildirimkategori"],
+          categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
+          date: response["icerik"][i]["bildirimzaman"],
+          enableButtons: noticiationbuttons,
+          text: response["icerik"][i]["bildirimicerik"],
+        ),
+      );
+
+      setstatefunction();
     }
 
     _firstFetchProcces = false;
@@ -157,28 +172,36 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
           )
         ],
       ),
-      body: widgetNotifications.isEmpty
-          ? Center(
-              child: !_firstFetchProcces && !_pageproccess
-                  ? const Text("Arkadaşlık istek kutusu boş")
-                  : const CupertinoActivityIndicator(),
-            )
-          : RefreshIndicator(
-              onRefresh: _handleRefresh,
-              child: ListView.builder(
-                controller: _scrollController,
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemCount: widgetNotifications.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      widgetNotifications[index],
-                      const SizedBox(height: 1)
-                    ],
-                  );
-                },
-              ),
-            ),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        controller: _scrollController,
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: _handleRefresh,
+          ),
+          widgetNotifications.isEmpty
+              ? SliverFillRemaining(
+                  child: Center(
+                    child: !_firstFetchProcces && !_pageproccess
+                        ? const Text("Arkadaşlık istek kutusu boş")
+                        : const CupertinoActivityIndicator(),
+                  ),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: widgetNotifications.length,
+                    (context, index) {
+                      return Column(
+                        children: [
+                          widgetNotifications[index],
+                          const SizedBox(height: 1)
+                        ],
+                      );
+                    },
+                  ),
+                )
+        ],
+      ),
     );
   }
 }

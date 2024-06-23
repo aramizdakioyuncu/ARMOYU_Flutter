@@ -9,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EventlistPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
 
   const EventlistPage({
     super.key,
@@ -45,7 +45,7 @@ class _EventlistPage extends State<EventlistPage>
 
     eventlistProecces = true;
 
-    FunctionsEvent f = FunctionsEvent();
+    FunctionsEvent f = FunctionsEvent(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetch();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -133,7 +133,7 @@ class _EventlistPage extends State<EventlistPage>
                       Event aa = eventsList[index];
                       return aa.eventListWidget(
                         context,
-                        currentUser: widget.currentUser!,
+                        currentUser: widget.currentUser,
                       );
                     },
                     childCount: eventsList.length,

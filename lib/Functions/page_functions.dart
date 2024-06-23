@@ -1,18 +1,21 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class PageFunctions {
-  static pushProfilePage(
-      BuildContext context, User currentUser, ScrollController scrollController,
+  final User currentUser;
+  PageFunctions({
+    required this.currentUser,
+  });
+
+  void pushProfilePage(
+      BuildContext context, User userProfile, ScrollController scrollController,
       {bool ismyProfile = false}) {
     if (!ismyProfile &&
-        (currentUser.userID == ARMOYU.appUsers[ARMOYU.selectedUser].userID ||
-            currentUser.userName ==
-                ARMOYU.appUsers[ARMOYU.selectedUser].userName)) {
+        (userProfile.userID == currentUser.userID ||
+            userProfile.userName == currentUser.userName)) {
       log("Kendi Profiline girmezsin!");
       return;
     }
@@ -21,6 +24,7 @@ class PageFunctions {
       MaterialPageRoute(
         builder: (context) => ProfilePage(
           currentUser: currentUser,
+          profileUser: userProfile,
           ismyProfile: ismyProfile,
           scrollController: scrollController,
         ),

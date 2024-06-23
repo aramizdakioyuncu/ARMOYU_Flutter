@@ -10,4 +10,21 @@ class Like {
     required this.user,
     required this.date,
   });
+  // Like nesnesinden JSON'a dönüşüm
+  Map<String, dynamic> toJson() {
+    return {
+      'likeID': likeID,
+      'user': user.toJson(),
+      'date': date,
+    };
+  }
+
+  // JSON'dan Comment nesnesine dönüşüm
+  factory Like.fromJson(Map<String, dynamic> json) {
+    return Like(
+      likeID: json['likeID'],
+      user: User.fromJson(json['user']),
+      date: json['date'],
+    );
+  }
 }

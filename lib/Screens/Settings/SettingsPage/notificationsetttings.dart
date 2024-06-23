@@ -3,13 +3,18 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/notification.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
 class SettingsNotificationPage extends StatefulWidget {
-  const SettingsNotificationPage({super.key});
+  final User currentUser;
+  const SettingsNotificationPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SettingsNotificationPage> createState() => _SettingsNotificationPage();
@@ -61,7 +66,8 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
     _firstfetchnotifi = true;
     setstatefunction();
 
-    FunctionsNotification f = FunctionsNotification();
+    FunctionsNotification f =
+        FunctionsNotification(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.listNotificationSettings();
 
     if (response["durum"] == 0) {
@@ -108,7 +114,8 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
     settingsNotification.add("aramalar=${_notifiCalling! ? 1 : 0}");
     settingsNotification.add("bahsetmeler=${_notifiMention! ? 1 : 0}");
 
-    FunctionsNotification f = FunctionsNotification();
+    FunctionsNotification f =
+        FunctionsNotification(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.updateNotificationSettings(settingsNotification);
 

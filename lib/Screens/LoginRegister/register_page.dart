@@ -4,7 +4,8 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/loginregister.dart';
 import 'package:ARMOYU/Functions/functions_service.dart';
-import 'package:ARMOYU/Screens/pages.dart';
+import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,8 @@ class _RegisterPageState extends State<RegisterPage> {
       inviteCodeProcces = true;
     });
 
-    FunctionsLoginRegister f = FunctionsLoginRegister();
+    FunctionsLoginRegister f =
+        FunctionsLoginRegister(currentUser: User(userName: "", password: ""));
     Map<String, dynamic> response = await f.inviteCodeTest(code);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -114,7 +116,8 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    FunctionService f = FunctionService();
+    FunctionService f =
+        FunctionService(currentUser: User(userName: "", password: ""));
     Map<String, dynamic> response = await f.register(
         username, name, lastname, email, password, rpassword, inviteCode);
 
@@ -134,16 +137,29 @@ class _RegisterPageState extends State<RegisterPage> {
           await f.login(username, password, true);
 
       if (loginresponse["aciklama"] == "Başarılı.") {
+        // if (mounted) {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //       builder: (context) => Pages(
+        //         currentUser: ARMOYU.appUsers[0],
+        //       ),
+        //     ),
+        //   );
+        // }
+
+        User newUser = ARMOYU.appUsers.first;
         if (mounted) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => Pages(
-                currentUser: ARMOYU.appUsers[0],
+              builder: (context) => AppPage(
+                userID: newUser.userID!,
               ),
             ),
           );
         }
+
         return;
       }
 

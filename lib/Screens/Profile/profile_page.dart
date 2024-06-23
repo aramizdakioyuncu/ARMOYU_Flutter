@@ -32,13 +32,15 @@ import 'package:ARMOYU/Widgets/posts.dart';
 import 'package:skeletons/skeletons.dart';
 
 class ProfilePage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
+  final User profileUser;
   final bool ismyProfile;
   final ScrollController scrollController;
 
   const ProfilePage({
     super.key,
     required this.currentUser,
+    required this.profileUser,
     required this.ismyProfile,
     required this.scrollController,
   });
@@ -145,7 +147,7 @@ class _ProfilePageState extends State<ProfilePage>
       Navigator.pop(context);
     }
 
-    FunctionsBlocking f = FunctionsBlocking();
+    FunctionsBlocking f = FunctionsBlocking(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.add(userProfile.userID!);
 
     ARMOYUWidget.toastNotification(response["aciklama"]);
@@ -167,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage>
     }
     postsfetchproccess = true;
     setstatefunction();
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
@@ -291,7 +293,12 @@ class _ProfilePageState extends State<ProfilePage>
           firstthreelike: likers,
           location: response["icerik"][i]["paylasimkonum"]);
 
-      list.add(TwitterPostWidget(post: post));
+      list.add(
+        TwitterPostWidget(
+          currentUser: widget.currentUser,
+          post: post,
+        ),
+      );
 
       setstatefunction();
     }
@@ -316,7 +323,7 @@ class _ProfilePageState extends State<ProfilePage>
       setstatefunction();
     }
 
-    FunctionsMedia f = FunctionsMedia();
+    FunctionsMedia f = FunctionsMedia(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetch(userID, "-1", page);
 
     if (response["durum"] == 0) {
@@ -364,7 +371,7 @@ class _ProfilePageState extends State<ProfilePage>
     postsfetchProccessv2 = true;
     setstatefunction();
 
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
@@ -489,6 +496,7 @@ class _ProfilePageState extends State<ProfilePage>
 
       list.add(
         TwitterPostWidget(
+          currentUser: widget.currentUser,
           post: post,
         ),
       );
@@ -502,20 +510,24 @@ class _ProfilePageState extends State<ProfilePage>
   Future<void> test({bool myprofilerefresh = false}) async {
     if (widget.ismyProfile) {
       if (myprofilerefresh) {
-        FunctionService f = FunctionService();
+        FunctionService f = FunctionService(currentUser: widget.currentUser);
+        log("1--1");
+
         Map<String, dynamic> response =
-            await f.lookProfile(widget.currentUser!.userID!);
+            await f.lookProfile(widget.currentUser.userID!);
         userProfile = ARMOYUFunctions.userfetch(response["icerik"]);
       } else {
-        userProfile = ARMOYU.appUsers[ARMOYU.selectedUser];
+        userProfile = widget.currentUser;
       }
     } else {
       Map<String, dynamic> response = {};
-      if (widget.currentUser!.userID == null &&
-          widget.currentUser!.userName != null) {
-        FunctionService f = FunctionService();
+      if (widget.currentUser.userID == null &&
+          widget.currentUser.userName != null) {
+        log("->>kullanıcıadına  göre oyuncu bul!");
+
+        FunctionService f = FunctionService(currentUser: widget.currentUser);
         Map<String, dynamic> response =
-            await f.lookProfilewithusername(widget.currentUser!.userName!);
+            await f.lookProfilewithusername(widget.profileUser.userName!);
 
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
@@ -574,8 +586,9 @@ class _ProfilePageState extends State<ProfilePage>
         }
         ///////
       } else {
-        FunctionService f = FunctionService();
-        response = await f.lookProfile(widget.currentUser!.userID!);
+        log("->>ID ye göre oyuncu bul!");
+        FunctionService f = FunctionService(currentUser: widget.currentUser);
+        response = await f.lookProfile(widget.profileUser.userID!);
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
           return;
@@ -685,7 +698,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     _changeavatarStatus = true;
     setstatefunction();
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.defaultavatar();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -695,7 +708,7 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
 
-    ARMOYU.appUsers[ARMOYU.selectedUser].avatar = Media(
+    widget.currentUser.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: response["aciklamadetay"].toString(),
@@ -726,7 +739,7 @@ class _ProfilePageState extends State<ProfilePage>
 
     _changebannerStatus = true;
     setstatefunction();
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.defaultbanner();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -736,7 +749,7 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
 
-    ARMOYU.appUsers[ARMOYU.selectedUser].banner = Media(
+    widget.currentUser.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: response["aciklamadetay"].toString(),
@@ -777,7 +790,7 @@ class _ProfilePageState extends State<ProfilePage>
     _changeavatarStatus = true;
     setstatefunction();
 
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
     Map<String, dynamic> response = await f.changeavatar(imagePath);
@@ -789,7 +802,7 @@ class _ProfilePageState extends State<ProfilePage>
       return;
     }
 
-    ARMOYU.appUsers[ARMOYU.selectedUser].avatar = Media(
+    widget.currentUser.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: response["aciklamadetay"].toString(),
@@ -821,7 +834,7 @@ class _ProfilePageState extends State<ProfilePage>
     _changebannerStatus = true;
     setstatefunction();
 
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
     Map<String, dynamic> response = await f.changebanner(imagePath);
@@ -833,7 +846,7 @@ class _ProfilePageState extends State<ProfilePage>
       setstatefunction();
       return;
     }
-    ARMOYU.appUsers[ARMOYU.selectedUser].banner = Media(
+    widget.currentUser.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: response["aciklamadetay"].toString(),
@@ -848,7 +861,7 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   Future<void> friendrequest() async {
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.friendrequest(userProfile.userID!);
 
     if (response["durum"] == 0) {
@@ -969,7 +982,11 @@ class _ProfilePageState extends State<ProfilePage>
                                           child: InkWell(
                                             onTap: () {
                                               Navigator.pop(context);
-                                              ARMOYUFunctions.profileEdit(
+                                              ARMOYUFunctions functions =
+                                                  ARMOYUFunctions(
+                                                      currentUser:
+                                                          widget.currentUser);
+                                              functions.profileEdit(
                                                 context,
                                                 setstatefunction,
                                               );
@@ -1023,7 +1040,9 @@ class _ProfilePageState extends State<ProfilePage>
                                           child: InkWell(
                                             onTap: () async {
                                               FunctionsProfile f =
-                                                  FunctionsProfile();
+                                                  FunctionsProfile(
+                                                      currentUser:
+                                                          widget.currentUser);
                                               Map<String, dynamic> response =
                                                   await f.friendremove(
                                                       userProfile.userID!);
@@ -1048,7 +1067,9 @@ class _ProfilePageState extends State<ProfilePage>
                                           child: InkWell(
                                             onTap: () async {
                                               FunctionsProfile f =
-                                                  FunctionsProfile();
+                                                  FunctionsProfile(
+                                                      currentUser:
+                                                          widget.currentUser);
                                               Map<String, dynamic> response =
                                                   await f.userdurting(
                                                       userProfile.userID!);
@@ -1091,6 +1112,7 @@ class _ProfilePageState extends State<ProfilePage>
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => MediaViewer(
+                          currentUser: widget.currentUser,
                           media: [userProfile.banner!],
                           initialIndex: 0,
                         ),
@@ -1191,44 +1213,39 @@ class _ProfilePageState extends State<ProfilePage>
                                     ),
                                   ),
                           ),
-                          child: Visibility(
-                            // visible: !_changebannerStatus,
-                            child: SingleChildScrollView(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              controller: _scrollRefresh,
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                    height: ARMOYU.screenHeight * 0.25,
-                                    width: ARMOYU.screenWidth,
-                                    child: _changebannerStatus
-                                        ? const CupertinoActivityIndicator()
-                                        : null,
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            controller: _scrollRefresh,
+                            child: Stack(
+                              children: [
+                                SizedBox(
+                                  height: ARMOYU.screenHeight * 0.25,
+                                  width: ARMOYU.screenWidth,
+                                  child: _changebannerStatus
+                                      ? const CupertinoActivityIndicator()
+                                      : null,
+                                ),
+                                SizedBox(
+                                  height: ARMOYU.screenHeight * 0.25,
+                                  width: ARMOYU.screenWidth,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Visibility(
+                                        visible: refreshprofilepageStatus,
+                                        child:
+                                            const CupertinoActivityIndicator(),
+                                      ),
+                                      Visibility(
+                                        visible: refreshprofilepageArrow,
+                                        child: const Icon(Icons.arrow_downward),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    height: ARMOYU.screenHeight * 0.25,
-                                    width: ARMOYU.screenWidth,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Visibility(
-                                          visible: refreshprofilepageStatus,
-                                          child:
-                                              const CupertinoActivityIndicator(),
-                                        ),
-                                        Visibility(
-                                          visible: refreshprofilepageArrow,
-                                          child:
-                                              const Icon(Icons.arrow_downward),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -1257,6 +1274,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) => MediaViewer(
+                                        currentUser: widget.currentUser,
                                         media: [userProfile.avatar!],
                                         initialIndex: 0,
                                       ),
@@ -1531,8 +1549,11 @@ class _ProfilePageState extends State<ProfilePage>
                                                   if (!widget.ismyProfile) {
                                                     return;
                                                   }
-
-                                                  ARMOYUFunctions.selectFavTeam(
+                                                  ARMOYUFunctions functions =
+                                                      ARMOYUFunctions(
+                                                          currentUser: widget
+                                                              .currentUser);
+                                                  functions.selectFavTeam(
                                                     context,
                                                     force: true,
                                                   );
@@ -1725,6 +1746,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 const SizedBox(height: 20),
                                 WidgetUtility.specialText(
                                   context,
+                                  currentUser: widget.currentUser,
                                   friendTextLine,
                                 )
                               ],
@@ -1785,7 +1807,8 @@ class _ProfilePageState extends State<ProfilePage>
                           child: Expanded(
                             child:
                                 Chat(user: userProfile, chatNotification: false)
-                                    .profilesendMessage(context),
+                                    .profilesendMessage(context,
+                                        currentUser: widget.currentUser),
                           ),
                         )
                       ],
@@ -1909,6 +1932,7 @@ class _ProfilePageState extends State<ProfilePage>
                               children: List.generate(
                                 medialist.length,
                                 (index) => medialist[index].mediaGallery(
+                                  currentUser: widget.currentUser,
                                   context: context,
                                   index: index,
                                   medialist: medialist,

@@ -2,13 +2,18 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/blocking.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsBlockeduserPage extends StatefulWidget {
-  const SettingsBlockeduserPage({super.key});
+  final User currentUser;
+  const SettingsBlockeduserPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SettingsBlockeduserPage> createState() =>
@@ -31,7 +36,7 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
   }
 
   Future<void> removeblock(int userID, int index) async {
-    FunctionsBlocking f = FunctionsBlocking();
+    FunctionsBlocking f = FunctionsBlocking(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.remove(userID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -47,7 +52,7 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
       return;
     }
     _blockedProcces = true;
-    FunctionsBlocking f = FunctionsBlocking();
+    FunctionsBlocking f = FunctionsBlocking(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.list();
     if (response["durum"] == 0) {
       log(response["aciklama"]);

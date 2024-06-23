@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/news.dart';
 import 'package:ARMOYU/Models/news.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +11,8 @@ import 'package:html/parser.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NewsPage extends StatefulWidget {
-  const NewsPage({
-    super.key,
-    required this.news,
-  });
+  final User currentUser;
+  const NewsPage({super.key, required this.news, required this.currentUser});
   final News news;
   @override
   State<NewsPage> createState() => _EventStatePage();
@@ -39,7 +38,7 @@ class _EventStatePage extends State<NewsPage>
       return;
     }
     newsfetchProcess = true;
-    FunctionsNews f = FunctionsNews();
+    FunctionsNews f = FunctionsNews(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetchnews(newsID);
 
     if (response["durum"] == 0) {

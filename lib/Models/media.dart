@@ -5,6 +5,7 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Story/storypublish_page.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -38,9 +39,44 @@ class Media {
     this.mediaDirection,
   });
 
+  // Media nesnesinden JSON'a dönüşüm
+  Map<String, dynamic> toJson() {
+    return {
+      'mediaID': mediaID,
+      'mediaXFile': mediaXFile?.path,
+      'mediaBytes': mediaBytes?.toList(),
+      'ownerID': ownerID,
+      'ownerusername': ownerusername,
+      'owneravatar': owneravatar,
+      'mediaTime': mediaTime,
+      'mediaType': mediaType,
+      'mediaURL': mediaURL.toJson(),
+      'mediaDirection': mediaDirection,
+    };
+  }
+
+  // JSON'dan Post nesnesine dönüşüm
+  factory Media.fromJson(Map<String, dynamic> json) {
+    return Media(
+      mediaID: json['mediaID'],
+      mediaXFile: json['mediaXFile'] != null ? XFile(json['mediaXFile']) : null,
+      mediaBytes: json['mediaBytes'] != null
+          ? Uint8List.fromList(List<int>.from(json['mediaBytes']))
+          : null,
+      ownerID: json['ownerID'],
+      ownerusername: json['ownerusername'],
+      owneravatar: json['owneravatar'],
+      mediaTime: json['mediaTime'],
+      mediaType: json['mediaType'],
+      mediaURL: MediaURL.fromJson(json['mediaURL']),
+      mediaDirection: json['mediaDirection'],
+    );
+  }
+
   Widget mediaGallery({
     required context,
     required index,
+    required User currentUser,
     required List<Media> medialist,
     bool storyShare = false,
     required Function setstatefunction,
@@ -52,6 +88,7 @@ class Media {
             context,
             MaterialPageRoute(
               builder: (context) => StoryPublishPage(
+                currentUser: currentUser,
                 imageID: 1,
                 imageURL: medialist[index].mediaURL.bigURL,
               ),
@@ -63,6 +100,7 @@ class Media {
           context,
           MaterialPageRoute(
             builder: (context) => MediaViewer(
+              currentUser: currentUser,
               media: medialist,
               initialIndex: index,
             ),
@@ -70,7 +108,7 @@ class Media {
         );
       },
       onLongPress: () {
-        if (ownerID != ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
+        if (ownerID != currentUser.userID) {
           return;
         }
         showModalBottomSheet<void>(
@@ -104,7 +142,8 @@ class Media {
                             Navigator.pop(context);
                             medialist.removeAt(index);
                             setstatefunction();
-                            FunctionsMedia funct = FunctionsMedia();
+                            FunctionsMedia funct =
+                                FunctionsMedia(currentUser: currentUser);
                             Map<String, dynamic> response =
                                 await funct.delete(mediaID);
 
@@ -146,7 +185,7 @@ class Media {
   }
 
   static Widget mediaList(List<Media> list, Function setState,
-      {bool big = false}) {
+      {required User currentUser, bool big = false}) {
     double imgheight = 100;
     double imgwidgth = 100;
     double closeSize = 16;
@@ -204,6 +243,7 @@ class Media {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => MediaViewer(
+                      currentUser: currentUser,
                       media: list,
                       initialIndex: index,
                       isFile: true,
@@ -269,4 +309,20 @@ class MediaURL {
     required this.normalURL,
     required this.minURL,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'bigURL': bigURL,
+      'normalURL': normalURL,
+      'minURL': minURL,
+    };
+  }
+
+  factory MediaURL.fromJson(Map<String, dynamic> json) {
+    return MediaURL(
+      bigURL: json['bigURL'],
+      normalURL: json['normalURL'],
+      minURL: json['minURL'],
+    );
+  }
 }

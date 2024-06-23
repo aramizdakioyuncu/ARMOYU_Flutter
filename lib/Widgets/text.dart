@@ -27,8 +27,12 @@ class CustomText {
     );
   }
 
-  static Widget usercomments(BuildContext context,
-      {required String text, required User user}) {
+  static Widget usercomments(
+    BuildContext context, {
+    required String text,
+    required User user,
+    required User currentUser,
+  }) {
     final textSpans = <InlineSpan>[];
     textSpans.add(
       TextSpan(
@@ -41,7 +45,9 @@ class CustomText {
             ),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                PageFunctions.pushProfilePage(
+                PageFunctions functions =
+                    PageFunctions(currentUser: currentUser);
+                functions.pushProfilePage(
                   context,
                   User(
                     userName: user.userName,
@@ -69,7 +75,9 @@ class CustomText {
       WidgetSpan(
         child: InkWell(
           onTap: () {
-            PageFunctions.pushProfilePage(
+            PageFunctions functions = PageFunctions(currentUser: currentUser);
+
+            functions.pushProfilePage(
               context,
               User(
                 userName: user.userName,

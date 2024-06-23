@@ -1,10 +1,16 @@
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsStory {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
 
-  Future<Map<String, dynamic>> stories() async {
-    Map<String, String> formData = {"sayfa": "1"};
+  FunctionsStory({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
+
+  Future<Map<String, dynamic>> stories(int page) async {
+    Map<String, String> formData = {"sayfa": "$page", "limit": "20"};
     Map<String, dynamic> jsonData =
         await apiService.request("hikaye/0/0/", formData);
     return jsonData;

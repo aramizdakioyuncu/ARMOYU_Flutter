@@ -8,13 +8,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class WidgetUtility {
-  static Widget specialText(
-    BuildContext context,
-    String text, {
-    TextAlign textAlign = TextAlign.start,
-    FontWeight fontWeight = FontWeight.normal,
-    Color color = Colors.red,
-  }) {
+  static Widget specialText(BuildContext context, String text,
+      {TextAlign textAlign = TextAlign.start,
+      FontWeight fontWeight = FontWeight.normal,
+      Color color = Colors.red,
+      required User currentUser}) {
     if (color == Colors.red) {
       color = ARMOYU.textColor;
     }
@@ -56,8 +54,10 @@ class WidgetUtility {
                 ..onTap = () {
                   // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
                   log('Tapped on username: $username');
+                  PageFunctions functions =
+                      PageFunctions(currentUser: currentUser);
 
-                  PageFunctions.pushProfilePage(
+                  functions.pushProfilePage(
                     context,
                     User(
                       userName: username.substring(1),

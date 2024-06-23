@@ -12,8 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class InvitePage extends StatefulWidget {
+  final User currentUser;
   const InvitePage({
     super.key,
+    required this.currentUser,
   });
   @override
   State<InvitePage> createState() => _EventStatePage();
@@ -63,7 +65,7 @@ class _EventStatePage extends State<InvitePage>
   }
 
   Future<void> sendmailURL(int userID) async {
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.sendauthmailURL(userID);
     log(response["durum"].toString());
     if (response["durum"] == 0) {
@@ -87,7 +89,7 @@ class _EventStatePage extends State<InvitePage>
     if (invitePage == 1) {
       invitelist.clear();
     }
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.invitelist(invitePage);
 
     if (response["durum"] == 0) {
@@ -111,7 +113,9 @@ class _EventStatePage extends State<InvitePage>
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
               onTap: () {
-                PageFunctions.pushProfilePage(
+                PageFunctions functions =
+                    PageFunctions(currentUser: widget.currentUser);
+                functions.pushProfilePage(
                   context,
                   User(
                     userName: response["icerik"][i]["oyuncu_username"],
@@ -231,7 +235,7 @@ class _EventStatePage extends State<InvitePage>
     super.build(context);
 
     Future<void> refreshInviteCode() async {
-      FunctionsProfile f = FunctionsProfile();
+      FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
       Map<String, dynamic> response = await f.invitecoderefresh();
 
       if (response["durum"] == 0) {
@@ -239,8 +243,7 @@ class _EventStatePage extends State<InvitePage>
         return;
       }
       setState(() {
-        ARMOYU.appUsers[ARMOYU.selectedUser].invitecode =
-            response["aciklamadetay"];
+        widget.currentUser.invitecode = response["aciklamadetay"];
       });
     }
 
@@ -293,8 +296,7 @@ class _EventStatePage extends State<InvitePage>
                               child: CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 foregroundImage: CachedNetworkImageProvider(
-                                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
-                                      .mediaURL.normalURL,
+                                  widget.currentUser.avatar!.mediaURL.normalURL,
                                 ),
                                 radius: 25,
                               ),
@@ -329,9 +331,7 @@ class _EventStatePage extends State<InvitePage>
                                     onTap: () {
                                       Clipboard.setData(
                                         ClipboardData(
-                                          text: ARMOYU
-                                              .appUsers[ARMOYU.selectedUser]
-                                              .invitecode!
+                                          text: widget.currentUser.invitecode!
                                               .toString(),
                                         ),
                                       );
@@ -341,8 +341,7 @@ class _EventStatePage extends State<InvitePage>
                                     child: Row(
                                       children: [
                                         Text(
-                                          ARMOYU.appUsers[ARMOYU.selectedUser]
-                                              .invitecode
+                                          widget.currentUser.invitecode
                                               .toString(),
                                           style: const TextStyle(
                                             color: Colors.white,

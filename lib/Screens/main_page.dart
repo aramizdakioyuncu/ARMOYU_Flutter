@@ -25,8 +25,6 @@ import 'package:ARMOYU/Screens/Search/search_page.dart';
 import 'package:ARMOYU/Screens/Settings/settings_page.dart';
 import 'package:ARMOYU/Screens/Survey/surveylist_page.dart';
 import 'package:ARMOYU/Screens/Utility/camera_screen_page.dart';
-import 'package:ARMOYU/Screens/app_page.dart';
-import 'package:ARMOYU/Screens/pages.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,14 +38,15 @@ import 'Social/social_page.dart';
 import 'Notification/notification_page.dart';
 
 class MainPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
 
   final dynamic changePage;
-
+  final Function changeProfileFunction;
   const MainPage({
     super.key,
     required this.currentUser,
     required this.changePage,
+    required this.changeProfileFunction,
   });
 
   @override
@@ -98,7 +97,9 @@ class _MainPageState extends State<MainPage>
     }
 
     //Takımları Çek opsiyonel
-    ARMOYUFunctions.favteamfetch();
+    ARMOYUFunctions functions =
+        ARMOYUFunctions(currentUser: widget.currentUser);
+    functions.favteamfetch();
     //Grup Oluştur ekle
 
     //Grupları Çek
@@ -112,14 +113,14 @@ class _MainPageState extends State<MainPage>
   }
 
   Future<void> favteamselect(Team team) async {
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.selectfavteam(team.teamID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       return;
     }
 
-    widget.currentUser!.favTeam = Team(
+    widget.currentUser.favTeam = Team(
       teamID: team.teamID,
       name: team.name,
       logo: team.logo,
@@ -235,7 +236,7 @@ class _MainPageState extends State<MainPage>
     }
 
     loadGroupProcess = true;
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.myGroups();
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -243,15 +244,15 @@ class _MainPageState extends State<MainPage>
       return;
     }
     if (response["icerik"].length == 0) {
-      widget.currentUser!.myGroups = [];
+      widget.currentUser.myGroups = [];
       loadGroupProcess = false;
       return;
     }
 
     _drawermygroup = true;
-    widget.currentUser!.myGroups = [];
+    widget.currentUser.myGroups = [];
     for (dynamic element in response["icerik"]) {
-      widget.currentUser!.myGroups!.add(
+      widget.currentUser.myGroups!.add(
         Group(
             groupID: element['group_ID'],
             groupName: element['group_name'],
@@ -312,7 +313,7 @@ class _MainPageState extends State<MainPage>
     }
     loadfoodStationProcess = true;
 
-    FunctionsStation f = FunctionsStation();
+    FunctionsStation f = FunctionsStation(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetchStations();
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -366,11 +367,12 @@ class _MainPageState extends State<MainPage>
       return;
     }
     loadmySchoolProcess = true;
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.mySchools();
     if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
       loadmySchoolProcess = false;
+      //10 saniye sonra Tekrar çekmeyi dene
+      await Future.delayed(const Duration(seconds: 10));
       await loadMySchools();
       return;
     }
@@ -382,9 +384,9 @@ class _MainPageState extends State<MainPage>
 
     _drawermyschool = true;
 
-    widget.currentUser!.mySchools = [];
+    widget.currentUser.mySchools = [];
     for (int i = 0; i < response["icerik"].length; i++) {
-      widget.currentUser!.mySchools!.add(
+      widget.currentUser.mySchools!.add(
         School(
           schoolID: response["icerik"][i]["school_ID"],
           schoolName: response["icerik"][i]["school_name"],
@@ -447,11 +449,11 @@ class _MainPageState extends State<MainPage>
                           padding: const EdgeInsets.all(12.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50.0),
-                            child: widget.currentUser!.avatar == null
+                            child: widget.currentUser.avatar == null
                                 ? const SkeletonAvatar()
                                 : CachedNetworkImage(
                                     imageUrl: widget
-                                        .currentUser!.avatar!.mediaURL.minURL,
+                                        .currentUser.avatar!.mediaURL.minURL,
                                     width: 30,
                                     height: 30,
                                     fit: BoxFit.cover,
@@ -513,20 +515,20 @@ class _MainPageState extends State<MainPage>
                   child: Column(
                     children: [
                       UserAccountsDrawerHeader(
-                        accountName: widget.currentUser!.displayName == null
+                        accountName: widget.currentUser.displayName == null
                             ? const SkeletonLine(
                                 style: SkeletonLineStyle(width: 20),
                               )
                             : Text(
-                                widget.currentUser!.displayName!,
+                                widget.currentUser.displayName!,
                                 style: const TextStyle(color: Colors.white),
                               ),
-                        accountEmail: widget.currentUser!.userMail == null
+                        accountEmail: widget.currentUser.userMail == null
                             ? const SkeletonLine(
                                 style: SkeletonLineStyle(width: 20),
                               )
                             : Text(
-                                widget.currentUser!.userMail!,
+                                widget.currentUser.userMail!,
                                 style: const TextStyle(
                                   color: Colors.white,
                                 ),
@@ -536,22 +538,22 @@ class _MainPageState extends State<MainPage>
                             _changePage(3);
                             Navigator.of(context).pop();
                           },
-                          child: widget.currentUser!.avatar == null
+                          child: widget.currentUser.avatar == null
                               ? const SkeletonAvatar()
                               : CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   foregroundImage: CachedNetworkImageProvider(
-                                      widget.currentUser!.avatar!.mediaURL
-                                          .minURL),
+                                      widget
+                                          .currentUser.avatar!.mediaURL.minURL),
                                 ),
                         ),
                         currentAccountPictureSize: const Size.square(70),
-                        decoration: widget.currentUser!.banner == null
+                        decoration: widget.currentUser.banner == null
                             ? null
                             : BoxDecoration(
                                 image: DecorationImage(
                                   image: CachedNetworkImageProvider(
-                                    widget.currentUser!.banner!.mediaURL.minURL,
+                                    widget.currentUser.banner!.mediaURL.minURL,
                                   ),
                                   fit: BoxFit.cover,
                                 ),
@@ -582,8 +584,9 @@ class _MainPageState extends State<MainPage>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const NewslistPage(),
+                                      builder: (context) => NewslistPage(
+                                        currentUser: widget.currentUser,
+                                      ),
                                     ),
                                   );
                                 },
@@ -612,18 +615,19 @@ class _MainPageState extends State<MainPage>
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              const GroupCreatePage(),
+                                          builder: (context) => GroupCreatePage(
+                                            currentUser: widget.currentUser,
+                                          ),
                                         ),
                                       );
                                     },
                                   ),
-                                  widget.currentUser!.myGroups == null
+                                  widget.currentUser.myGroups == null
                                       ? const Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: CupertinoActivityIndicator(),
                                         )
-                                      : widget.currentUser!.myGroups!.isEmpty
+                                      : widget.currentUser.myGroups!.isEmpty
                                           ? const Padding(
                                               padding: EdgeInsets.all(8.0),
                                               child:
@@ -631,17 +635,17 @@ class _MainPageState extends State<MainPage>
                                             )
                                           : Container(),
                                   ...List.generate(
-                                      widget.currentUser!.myGroups == null
+                                      widget.currentUser.myGroups == null
                                           ? 0
-                                          : widget.currentUser!.myGroups!
-                                              .length, (index) {
+                                          : widget.currentUser.myGroups!.length,
+                                      (index) {
                                     return ListTile(
                                       leading: ClipRRect(
                                         borderRadius:
                                             BorderRadius.circular(10.0),
                                         child: CachedNetworkImage(
                                           imageUrl: widget
-                                              .currentUser!
+                                              .currentUser
                                               .myGroups![index]
                                               .groupLogo!
                                               .mediaURL
@@ -652,7 +656,7 @@ class _MainPageState extends State<MainPage>
                                         ),
                                       ),
                                       title: Text(
-                                        widget.currentUser!.myGroups![index]
+                                        widget.currentUser.myGroups![index]
                                             .groupName!,
                                       ),
                                       onTap: () {
@@ -661,9 +665,9 @@ class _MainPageState extends State<MainPage>
                                           MaterialPageRoute(
                                             builder: (context) => GroupPage(
                                               currentUser: widget.currentUser,
-                                              group: widget.currentUser!
-                                                  .myGroups![index],
-                                              groupID: widget.currentUser!
+                                              group: widget
+                                                  .currentUser.myGroups![index],
+                                              groupID: widget.currentUser
                                                   .myGroups![index].groupID!,
                                             ),
                                           ),
@@ -697,14 +701,14 @@ class _MainPageState extends State<MainPage>
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              const SchoolLoginPage(),
+                                          builder: (context) => SchoolLoginPage(
+                                              currentUser: widget.currentUser),
                                         ),
                                       );
                                     },
                                   ),
-                                  widget.currentUser!.mySchools == null ||
-                                          widget.currentUser!.mySchools!
+                                  widget.currentUser.mySchools == null ||
+                                          widget.currentUser.mySchools!
                                                   .isEmpty &&
                                               loadmySchoolProcess
                                       ? const Padding(
@@ -713,9 +717,9 @@ class _MainPageState extends State<MainPage>
                                         )
                                       : Container(),
                                   ...List.generate(
-                                      widget.currentUser!.mySchools == null
+                                      widget.currentUser.mySchools == null
                                           ? 0
-                                          : widget.currentUser!.mySchools!
+                                          : widget.currentUser.mySchools!
                                               .length, (index) {
                                     return ListTile(
                                       leading: ClipRRect(
@@ -723,7 +727,7 @@ class _MainPageState extends State<MainPage>
                                             BorderRadius.circular(10.0),
                                         child: CachedNetworkImage(
                                           imageUrl: widget
-                                              .currentUser!
+                                              .currentUser
                                               .mySchools![index]
                                               .schoolLogo!
                                               .mediaURL
@@ -734,7 +738,7 @@ class _MainPageState extends State<MainPage>
                                         ),
                                       ),
                                       title: Text(
-                                        widget.currentUser!.mySchools![index]
+                                        widget.currentUser.mySchools![index]
                                             .schoolName!,
                                       ),
                                       onTap: () {
@@ -742,9 +746,10 @@ class _MainPageState extends State<MainPage>
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => SchoolPage(
-                                              school: widget.currentUser!
+                                              currentUser: widget.currentUser,
+                                              school: widget.currentUser
                                                   .mySchools![index],
-                                              schoolID: widget.currentUser!
+                                              schoolID: widget.currentUser
                                                   .mySchools![index].schoolID!,
                                             ),
                                           ),
@@ -800,7 +805,7 @@ class _MainPageState extends State<MainPage>
                                                   cafe:
                                                       widgetFoodStation[index],
                                                   currentUser:
-                                                      widget.currentUser!,
+                                                      widget.currentUser,
                                                 ),
                                               ),
                                             );
@@ -856,7 +861,7 @@ class _MainPageState extends State<MainPage>
                                                   cafe:
                                                       widgetGameStation[index],
                                                   currentUser:
-                                                      widget.currentUser!,
+                                                      widget.currentUser,
                                                 ),
                                               ),
                                             );
@@ -889,8 +894,8 @@ class _MainPageState extends State<MainPage>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          const SurveyListPage(),
+                                      builder: (context) => SurveyListPage(
+                                          currentUser: widget.currentUser),
                                     ),
                                   );
                                 },
@@ -904,7 +909,9 @@ class _MainPageState extends State<MainPage>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const InvitePage(),
+                                      builder: (context) => InvitePage(
+                                        currentUser: widget.currentUser,
+                                      ),
                                     ),
                                   );
                                 },
@@ -919,7 +926,9 @@ class _MainPageState extends State<MainPage>
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const BusinessApplicationsPage(),
+                                          BusinessApplicationsPage(
+                                        currentUser: widget.currentUser,
+                                      ),
                                     ),
                                   );
                                 },
@@ -973,7 +982,9 @@ class _MainPageState extends State<MainPage>
             physics: const NeverScrollableScrollPhysics(),
             controller: _mainpagecontroller,
             onPageChanged: (int page) {
-              ARMOYUFunctions.selectFavTeam(context);
+              ARMOYUFunctions functions =
+                  ARMOYUFunctions(currentUser: widget.currentUser);
+              functions.selectFavTeam(context);
             },
             children: [
               PageView(
@@ -1015,10 +1026,9 @@ class _MainPageState extends State<MainPage>
                 scrollController: _notificationScrollController,
               ),
               ProfilePage(
+                currentUser: widget.currentUser,
+                profileUser: widget.currentUser,
                 ismyProfile: true,
-                currentUser: User(
-                  userID: widget.currentUser!.userID,
-                ),
                 scrollController: _profileScrollController,
               )
             ],
@@ -1088,68 +1098,9 @@ class _MainPageState extends State<MainPage>
                                           ARMOYU.appUsers[index].displayName
                                               .toString(),
                                         ),
-                                        onTap: () async {
-                                          if (!pagesViewList.any((element) =>
-                                              element.currentUser!.userID ==
-                                              ARMOYU.appUsers[index].userID!)) {
-                                            pagesViewList.add(
-                                              Pages(
-                                                currentUser:
-                                                    ARMOYU.appUsers[index],
-                                              ),
-                                            );
-                                          }
-
-                                          log(pagesViewList.length.toString());
-
-                                          // pagescontroller.animateToPage(
-                                          //   index,
-                                          //   duration: const Duration(
-                                          //     milliseconds: 300,
-                                          //   ),
-                                          //   curve: Curves.ease,
-                                          // );
-                                          // int countPageIndex = 0;
-                                          // for (Pages element in pagesViewList) {
-                                          //   element.currentUser!.userID ==
-                                          //       ARMOYU.appUsers[index].userID;
-                                          //       countPageIndex++;
-                                          // }
-
-                                          int countPageIndex = pagesViewList
-                                              .indexWhere((element) =>
-                                                  element.currentUser!.userID ==
-                                                  ARMOYU
-                                                      .appUsers[index].userID);
-                                          pagescontroller.animateToPage(
-                                            countPageIndex,
-                                            duration: const Duration(
-                                              milliseconds: 300,
-                                            ),
-                                            curve: Curves.ease,
-                                          );
-
-                                          // int countIndex = 0;
-                                          // for (User element
-                                          //     in ARMOYU.appUsers) {
-                                          //   element.userID ==
-                                          //       ARMOYU.appUsers[index].userID;
-                                          //   countIndex++;
-                                          // }
-                                          // ARMOYU.selectedUser = countIndex;
-
-                                          int countIndex = ARMOYU.appUsers
-                                              .indexWhere((element) =>
-                                                  element.userID ==
-                                                  ARMOYU
-                                                      .appUsers[index].userID);
-                                          ARMOYU.selectedUser = countIndex;
-
-                                          setstatefunction();
-                                          if (mounted) {
-                                            Navigator.pop(context);
-                                          }
-                                        },
+                                        onTap: () =>
+                                            widget.changeProfileFunction(
+                                                ARMOYU.appUsers[index]),
                                       );
                                     }),
                                     ListTile(
@@ -1163,8 +1114,8 @@ class _MainPageState extends State<MainPage>
                                         final result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginPage(
+                                            builder: (context) => LoginPage(
+                                              currentUser: widget.currentUser,
                                               accountAdd: true,
                                             ),
                                           ),

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Functions/page_functions.dart';
@@ -11,10 +10,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class WidgetPostComments extends StatefulWidget {
+  final User currentUser;
   final Comment comment;
 
   const WidgetPostComments({
     super.key,
+    required this.currentUser,
     required this.comment,
   });
 
@@ -38,17 +39,47 @@ class _WidgetPostComments extends State<WidgetPostComments> {
     }
   }
 
-  Future<void> removeComment() async {
+  Future<void> removeComment({required User currentUser}) async {
     isvisiblecomment = false;
     setstatefunction();
 
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
     Map<String, dynamic> response =
         await funct.removecomment(widget.comment.commentID);
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
 
     if (response["durum"] == 0) {
       isvisiblecomment = true;
+      setstatefunction();
+      return;
+    }
+  }
+
+  Future<void> likeunlikefunction({required User currentUser}) async {
+    bool currentstatus = widget.comment.didIlike;
+    if (currentstatus) {
+      widget.comment.didIlike = false;
+      widget.comment.likeCount--;
+    } else {
+      widget.comment.didIlike = true;
+      widget.comment.likeCount++;
+    }
+    setstatefunction();
+    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
+    Map<String, dynamic> response;
+    if (!widget.comment.didIlike) {
+      response = await funct.commentdislike(widget.comment.commentID);
+    } else {
+      response = await funct.commentlike(widget.comment.commentID);
+    }
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      if (currentstatus) {
+        widget.comment.likeCount--;
+      } else {
+        widget.comment.likeCount++;
+      }
+      widget.comment.didIlike = !widget.comment.didIlike;
       setstatefunction();
       return;
     }
@@ -78,7 +109,9 @@ class _WidgetPostComments extends State<WidgetPostComments> {
             children: [
               InkWell(
                 onTap: () {
-                  PageFunctions.pushProfilePage(
+                  PageFunctions functions =
+                      PageFunctions(currentUser: widget.currentUser);
+                  functions.pushProfilePage(
                     context,
                     User(
                       userID: widget.comment.user.userID,
@@ -104,34 +137,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
           children: [
             GestureDetector(
               onTap: () async {
-                bool currentstatus = widget.comment.didIlike;
-                if (currentstatus) {
-                  widget.comment.didIlike = false;
-                  widget.comment.likeCount--;
-                } else {
-                  widget.comment.didIlike = true;
-                  widget.comment.likeCount++;
-                }
-                setstatefunction();
-                FunctionsPosts funct = FunctionsPosts();
-                Map<String, dynamic> response;
-                if (!widget.comment.didIlike) {
-                  response =
-                      await funct.commentdislike(widget.comment.commentID);
-                } else {
-                  response = await funct.commentlike(widget.comment.commentID);
-                }
-                if (response["durum"] == 0) {
-                  log(response["aciklama"]);
-                  if (currentstatus) {
-                    widget.comment.likeCount--;
-                  } else {
-                    widget.comment.likeCount++;
-                  }
-                  widget.comment.didIlike = !widget.comment.didIlike;
-                  setstatefunction();
-                  return;
-                }
+                await likeunlikefunction(currentUser: widget.currentUser);
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -144,8 +150,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
               ),
             ),
             Visibility(
-              visible: ARMOYU.appUsers[ARMOYU.selectedUser].userID ==
-                  widget.comment.user.userID,
+              visible: widget.currentUser.userID == widget.comment.user.userID,
               child: IconButton(
                 onPressed: () async => ARMOYUWidget.showConfirmationDialog(
                   context,

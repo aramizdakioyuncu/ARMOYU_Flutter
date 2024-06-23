@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
 
 class NotificationGroupRequestPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   const NotificationGroupRequestPage({
     super.key,
     required this.currentUser,
@@ -21,7 +22,7 @@ class NotificationGroupRequestPage extends StatefulWidget {
 bool postpageproccess = false;
 int postpage = 1;
 bool firstFetchProcces = true;
-List<Widget> widgetNotifications = [];
+List<CustomMenusNotificationbars> widgetNotifications = [];
 
 final ScrollController _scrollController = ScrollController();
 
@@ -69,7 +70,7 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
     if (page == 1) {
       widgetNotifications.clear();
     }
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.getnotifications("gruplar", "davet", page);
 
@@ -110,13 +111,22 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
           widgetNotifications.add(
             CustomMenusNotificationbars(
               currentUser: widget.currentUser,
-              avatar: response["icerik"][i]["bildirimgonderenavatar"],
-              userID: response["icerik"][i]["bildirimgonderenID"],
+              user: User(
+                userID: response["icerik"][i]["bildirimgonderenID"],
+                displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
+                avatar: Media(
+                  mediaID: response["icerik"][i]["bildirimgonderenID"],
+                  mediaURL: MediaURL(
+                    bigURL: response["icerik"][i]["bildirimgonderenavatar"],
+                    normalURL: response["icerik"][i]["bildirimgonderenavatar"],
+                    minURL: response["icerik"][i]["bildirimgonderenavatar"],
+                  ),
+                ),
+              ),
               category: response["icerik"][i]["bildirimamac"],
               categorydetail: response["icerik"][i]["bildirimkategori"],
               categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
               date: response["icerik"][i]["bildirimzaman"],
-              displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
               enableButtons: noticiationbuttons,
               text: response["icerik"][i]["bildirimicerik"],
             ),

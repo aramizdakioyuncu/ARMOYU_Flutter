@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/joinus.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
@@ -10,7 +11,12 @@ import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:flutter/material.dart';
 
 class JoinUsPage extends StatefulWidget {
-  const JoinUsPage({super.key});
+  final User currentUser;
+
+  const JoinUsPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<JoinUsPage> createState() => _SettingsPage();
@@ -73,7 +79,7 @@ class _SettingsPage extends State<JoinUsPage> {
     requestProccess = true;
     setstatefunction();
 
-    FunctionsJoinUs f = FunctionsJoinUs();
+    FunctionsJoinUs f = FunctionsJoinUs(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.requestjoindepartment(
         _positionID!,
         _whyjointheteamController.text,
@@ -96,7 +102,7 @@ class _SettingsPage extends State<JoinUsPage> {
   }
 
   Future<void> fetchdepartmentInfo() async {
-    FunctionsJoinUs f = FunctionsJoinUs();
+    FunctionsJoinUs f = FunctionsJoinUs(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetchdepartment();
 
     if (response["durum"] == 0) {

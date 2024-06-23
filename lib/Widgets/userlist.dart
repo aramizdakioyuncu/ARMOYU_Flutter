@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 
-import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/page_functions.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/material.dart';
 import '../Functions/API_Functions/profile.dart';
 
 class UserListWidget extends StatefulWidget {
+  final User currentUser;
   final int userID;
   final String profileImageUrl;
   final String username;
@@ -21,6 +21,7 @@ class UserListWidget extends StatefulWidget {
 
   UserListWidget({
     super.key,
+    required this.currentUser,
     required this.userID,
     required this.profileImageUrl,
     required this.username,
@@ -41,7 +42,7 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   Future<void> friendrequest() async {
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.friendrequest(widget.userID);
 
     if (response["durum"] == 0) {
@@ -57,7 +58,7 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   Future<void> removefriend() async {
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.friendremove(widget.userID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -80,7 +81,10 @@ class _UserListWidgetState extends State<UserListWidget> {
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
           child: GestureDetector(
             onTap: () {
-              PageFunctions.pushProfilePage(
+              PageFunctions functions =
+                  PageFunctions(currentUser: widget.currentUser);
+
+              functions.pushProfilePage(
                 context,
                 User(
                   userID: widget.userID,
@@ -107,8 +111,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
         Visibility(
-          visible: widget.isFriend &&
-              widget.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+          visible:
+              widget.isFriend && widget.userID != widget.currentUser.userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(
@@ -119,8 +123,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           ),
         ),
         Visibility(
-          visible: !widget.isFriend &&
-              widget.userID != ARMOYU.appUsers[ARMOYU.selectedUser].userID,
+          visible:
+              !widget.isFriend && widget.userID != widget.currentUser.userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(

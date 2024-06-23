@@ -18,4 +18,32 @@ class Story {
     required this.isLike,
     required this.isView,
   });
+
+  // Story nesnesinden JSON'a dönüşüm
+  Map<String, dynamic> toJson() {
+    return {
+      'storyID': storyID,
+      'ownerID': ownerID,
+      'ownerusername': ownerusername,
+      'owneravatar': owneravatar,
+      'time': time,
+      'media': media,
+      'isLike': isLike,
+      'isView': isView,
+    };
+  }
+
+  // JSON'dan Story nesnesine dönüşüm
+  factory Story.fromJson(Map<String, dynamic> json) {
+    return Story(
+      storyID: json['storyID'],
+      ownerID: json['ownerID'],
+      ownerusername: json['ownerusername'],
+      owneravatar: json['owneravatar'],
+      time: json['time'],
+      media: json['media'],
+      isLike: json['isLike'],
+      isView: json['isView'],
+    );
+  }
 }

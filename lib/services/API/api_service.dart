@@ -2,10 +2,16 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/API.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
 class ApiService {
+  final User user;
+  ApiService({
+    required this.user,
+  });
+
   final String apiKey = API.apiKEY; // KEY
   final String host = API.apiHOST; // IP
   final String port = API.apiPORT; // Port numarası
@@ -21,9 +27,9 @@ class ApiService {
     String usernameURL = "";
     String passwordURL = "";
 
-    if (ARMOYU.appUsers.isNotEmpty) {
-      usernameURL = ARMOYU.appUsers[ARMOYU.selectedUser].userName!;
-      passwordURL = ARMOYU.appUsers[ARMOYU.selectedUser].password!;
+    if (user.userMail != null && user.password != null) {
+      usernameURL = user.userName!;
+      passwordURL = user.password!;
     }
 
     if (username != null) {

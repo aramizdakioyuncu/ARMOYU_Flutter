@@ -1,8 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer';
+
 import 'package:ARMOYU/Core/widgets.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/LoginRegister/register_page.dart';
-import 'package:ARMOYU/Screens/pages.dart';
+import 'package:ARMOYU/Screens/app_page.dart';
 import 'package:ARMOYU/Screens/LoginRegister/resetpassword_page.dart';
 import 'package:ARMOYU/Screens/Utility/text_page.dart';
 
@@ -20,9 +23,14 @@ final TextEditingController _passwordController = TextEditingController();
 
 class LoginPage extends StatefulWidget {
   final bool accountAdd;
+  final User? logOut;
+  final User currentUser;
+
   const LoginPage({
     super.key,
     this.accountAdd = false,
+    this.logOut,
+    required this.currentUser,
   });
 
   @override
@@ -36,9 +44,24 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
 
+    if (widget.logOut != null) {
+      sda();
+    }
+
     if (widget.accountAdd) {
       _usernameController.text = "";
       _passwordController.text = "";
+    }
+  }
+
+  Future<void> sda() async {
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
+    Map<String, dynamic> response = await f.logOut(widget.logOut!.userID!);
+
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"].toString());
+      return;
     }
   }
 
@@ -68,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
     setstatefunction();
 
     if (widget.accountAdd) {
-      FunctionService f = FunctionService();
+      FunctionService f = FunctionService(currentUser: widget.currentUser);
       Map<String, dynamic> response =
           await f.adduserAccount(username, password);
 
@@ -89,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.login(username, password, false);
 
     if (response["durum"] == 0 ||
@@ -103,20 +126,22 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
+    User newUser = User.fromJson(response["icerik"]);
 
     if (mounted) {
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Pages(
-            currentUser: ARMOYU.appUsers[0],
+          builder: (context) => AppPage(
+            // currentUser: widget.currentUser,
+            userID: newUser.userID!,
           ),
         ),
       );
     }
+
+    _usernameController.text = "";
+    _passwordController.text = "";
 
     loginProcess = false;
     setstatefunction();
@@ -216,7 +241,8 @@ class _LoginPageState extends State<LoginPage> {
                       InkWell(
                         onTap: () async {
                           if (ARMOYU.securityDetail == "0") {
-                            FunctionService f = FunctionService();
+                            FunctionService f = FunctionService(
+                                currentUser: widget.currentUser);
                             Map<String, dynamic> response =
                                 await f.getappdetail();
 
@@ -253,7 +279,8 @@ class _LoginPageState extends State<LoginPage> {
                 InkWell(
                   onTap: () async {
                     if (ARMOYU.securityDetail == "0") {
-                      FunctionService f = FunctionService();
+                      FunctionService f =
+                          FunctionService(currentUser: widget.currentUser);
                       Map<String, dynamic> response = await f.getappdetail();
 
                       if (response["durum"] == 0) {

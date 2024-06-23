@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class CameraScreen extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   final bool canPop;
   const CameraScreen({
     super.key,
@@ -281,7 +281,7 @@ class _CameraScreenState extends State<CameraScreen> {
     _savemediaProcess = true;
 
     setstatefunction();
-    FunctionsMedia f = FunctionsMedia();
+    FunctionsMedia f = FunctionsMedia(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.upload(category: "-1", files: [_camfilter[_filterpage].media!]);
     if (response["durum"] == 0) {
@@ -460,7 +460,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
-                                        widget.currentUser!.avatar!.mediaURL
+                                        widget.currentUser.avatar!.mediaURL
                                             .normalURL,
                                       ),
                                       radius: 12,
@@ -473,7 +473,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
-                                        widget.currentUser!.avatar!.mediaURL
+                                        widget.currentUser.avatar!.mediaURL
                                             .normalURL,
                                       ),
                                       radius: 12,

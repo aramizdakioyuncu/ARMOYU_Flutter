@@ -1,9 +1,15 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsSurvey {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsSurvey({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> fetchSurveys({required int page}) async {
     Map<String, String> formData = {"sayfa": "$page"};

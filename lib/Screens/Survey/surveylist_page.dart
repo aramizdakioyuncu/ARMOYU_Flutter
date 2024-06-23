@@ -1,12 +1,17 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/Client_Functions/survey.dart';
 import 'package:ARMOYU/Models/Survey/survey.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Survey/surveynew_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SurveyListPage extends StatefulWidget {
-  const SurveyListPage({super.key});
+  final User currentUser;
+  const SurveyListPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SurveyListPage> createState() => _ChatPageState();
@@ -56,7 +61,8 @@ class _ChatPageState extends State<SurveyListPage>
     }
 
     _surveyListProcces = true;
-    ClientFunctionSurvey function = ClientFunctionSurvey();
+    ClientFunctionSurvey function =
+        ClientFunctionSurvey(currentUser: widget.currentUser);
     List<Survey>? response = await function.fetchsurvey(page: _surveyCounter);
 
     if (response == null) {
@@ -101,7 +107,8 @@ class _ChatPageState extends State<SurveyListPage>
                 controller: _controller,
                 itemCount: _surveyList.length,
                 itemBuilder: (context, index) {
-                  return _surveyList[index].surveyList(context);
+                  return _surveyList[index]
+                      .surveyList(context, currentUser: widget.currentUser);
                 },
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 10),
@@ -113,7 +120,8 @@ class _ChatPageState extends State<SurveyListPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const SurveyNewPage(),
+              builder: (context) =>
+                  SurveyNewPage(currentUser: widget.currentUser),
             ),
           );
         },

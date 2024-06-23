@@ -1,11 +1,20 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Functions/functions_service.dart';
+import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 
 class ClientFunctionsSocail {
+  final User currentUser;
+  late final ApiService apiService;
+
+  ClientFunctionsSocail({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
+
   Future<List<Map<String, String>>> loadXPCards(
       int page, List<Map<String, String>> list) async {
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: currentUser);
     Map<String, dynamic> response = await f.getplayerxp(1);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -30,7 +39,7 @@ class ClientFunctionsSocail {
 
   Future<List<Map<String, String>>> loadpopCards(
       int page, List<Map<String, String>> list) async {
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: currentUser);
     Map<String, dynamic> response = await f.getplayerpop(1);
     if (response["durum"] == 0) {
       log(response["aciklama"]);

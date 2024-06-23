@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Functions/functions.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/LoginRegister/login_page.dart';
@@ -70,6 +70,22 @@ class _StartingScreenState extends State<StartingScreen> {
     }
   }
 
+  Future<bool> checkInternetConnectionv2() async {
+    // İnternet var mı diye kontrol ediyoruz!
+    if (!await AppCore.checkInternetConnection()) {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const NoConnectionPage(),
+          ),
+        );
+      }
+      return false;
+    }
+    return true;
+  }
+
   Future<void> staringfunctions() async {
     //Platform kontrolü yapıyoruz
     getPlatform();
@@ -93,18 +109,6 @@ class _StartingScreenState extends State<StartingScreen> {
       log("Proje Build: ${ARMOYU.appBuild}");
     });
 
-    // İnternet var mı diye kontrol ediyoruz!
-    if (!await AppCore.checkInternetConnection()) {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const NoConnectionPage(),
-          ),
-        );
-      }
-      return;
-    }
     //Bellekteki kullanıcı adı ve şifreyi alıyoruz
     final prefs = await SharedPreferences.getInstance();
 
@@ -114,14 +118,14 @@ class _StartingScreenState extends State<StartingScreen> {
     String? username;
     String? password;
 
-    if (usersJson != null) {
+    if (usersJson != null && usersJson.isNotEmpty) {
       //Listeye Yükle
       ARMOYU.appUsers = usersJson
           .map((userJson) => User.fromJson(jsonDecode(userJson)))
           .toList();
 
-      username = ARMOYU.appUsers[0].userName;
-      password = ARMOYU.appUsers[0].password;
+      username = ARMOYU.appUsers.first.userName;
+      password = ARMOYU.appUsers.first.password;
 
       // for (var element in usersJson) {
       //   // log(element.toString());
@@ -154,14 +158,24 @@ class _StartingScreenState extends State<StartingScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginPage(),
+            builder: (context) => LoginPage(
+              currentUser: User(displayName: "", password: ""),
+            ),
           ),
         );
       }
       return;
     }
-    FunctionService f = FunctionService();
 
+    if (usersJson == null) {
+      bool statusinternet = await checkInternetConnectionv2();
+      if (!statusinternet) {
+        return;
+      }
+    }
+
+    FunctionService f =
+        FunctionService(currentUser: User(displayName: "", password: ""));
     Map<String, dynamic> response = await f.login(
       username.toString(),
       password.toString(),
@@ -182,31 +196,47 @@ class _StartingScreenState extends State<StartingScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const LoginPage(),
+              builder: (context) => LoginPage(
+                currentUser: User(displayName: "", password: ""),
+              ),
             ),
           );
         }
         return;
       }
 
-      ARMOYU.appUsers.length;
+      User newUser = User.fromJson(response["icerik"]);
+      if (ARMOYU.appUsers.isNotEmpty) {
+        newUser = ARMOYU.appUsers.first;
+      }
+
       if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => AppPage(
-              currentUser: ARMOYU.appUsers[0],
+              userID: newUser.userID!,
             ),
           ),
         );
       }
       return;
     } else if (response["durum"] == 0) {
+      if (usersJson == null) {
+        bool statusinternet = await checkInternetConnectionv2();
+        if (!statusinternet) {
+          return;
+        }
+      }
+
+      //internet yok ama önceden giriş yapılmış verileri var
       if (mounted) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const NoConnectionPage(),
+            builder: (context) => AppPage(
+              userID: ARMOYU.appUsers.first.userID!,
+            ),
           ),
         );
       }
@@ -217,7 +247,9 @@ class _StartingScreenState extends State<StartingScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const LoginPage(),
+          builder: (context) => LoginPage(
+            currentUser: User(displayName: "", password: ""),
+          ),
         ),
       );
     }

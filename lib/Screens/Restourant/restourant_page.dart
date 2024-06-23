@@ -44,7 +44,7 @@ class _RestourantPage extends State<RestourantPage>
     }
     fetchEquipmentProcess = true;
 
-    FunctionsStation f = FunctionsStation();
+    FunctionsStation f = FunctionsStation(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.fetchEquipments(widget.cafe.stationID);
     if (response["durum"] == 0) {
@@ -207,7 +207,7 @@ class _RestourantPage extends State<RestourantPage>
                             (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: () {
-                                  void _showQRCodePopup(BuildContext context) {
+                                  void showQRCodePopup(BuildContext context) {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -282,7 +282,7 @@ class _RestourantPage extends State<RestourantPage>
                                     );
                                   }
 
-                                  _showQRCodePopup(context);
+                                  showQRCodePopup(context);
                                 },
                                 child: Container(
                                   height: 400,

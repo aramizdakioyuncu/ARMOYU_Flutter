@@ -1,10 +1,16 @@
 import 'package:ARMOYU/Core/AppCore.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsProfile {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsProfile({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> invitelist(
     int page,

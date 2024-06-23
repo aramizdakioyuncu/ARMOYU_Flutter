@@ -20,7 +20,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   const SettingsPage({
     super.key,
     required this.currentUser,
@@ -46,26 +46,21 @@ class _SettingsPage extends State<SettingsPage> {
   List<WidgetSettings> filteredlistSettingssupport = [];
 
   Future<void> logoutfunction() async {
-    FunctionService f = FunctionService();
-    Map<String, dynamic> response = await f.logOut(widget.currentUser!.userID!);
-
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"].toString());
-
-      return;
-    }
-
-    if (ARMOYU.appUsers.isEmpty) {
+    if (ARMOYU.appUsers.length - 1 == 0) {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(
+            builder: (context) => LoginPage(
+              currentUser: User(userName: "", password: ""),
+              logOut: widget.currentUser,
+            ),
+          ),
           (Route<dynamic> route) => false,
         );
       }
     } else {
-      ARMOYU.selectedUser = 0;
+      // ARMOYU.selectedUser = 0;
 
       pagescontroller.animateToPage(
         0,
@@ -76,6 +71,16 @@ class _SettingsPage extends State<SettingsPage> {
       );
       if (mounted) {
         Navigator.pop(context);
+      }
+
+      FunctionService f = FunctionService(currentUser: widget.currentUser);
+      Map<String, dynamic> response =
+          await f.logOut(widget.currentUser.userID!);
+
+      if (response["durum"] == 0) {
+        log(response["aciklama"]);
+        ARMOYUWidget.toastNotification(response["aciklama"].toString());
+        return;
       }
     }
   }
@@ -146,7 +151,8 @@ class _SettingsPage extends State<SettingsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const SettingsNotificationPage(),
+              builder: (context) =>
+                  SettingsNotificationPage(currentUser: widget.currentUser),
             ),
           );
         },
@@ -158,7 +164,8 @@ class _SettingsPage extends State<SettingsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const SettingsBlockeduserPage(),
+              builder: (context) =>
+                  SettingsBlockeduserPage(currentUser: widget.currentUser),
             ),
           );
         },
@@ -185,7 +192,9 @@ class _SettingsPage extends State<SettingsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const SettingsAccountStatusPage(),
+              builder: (context) => SettingsAccountStatusPage(
+                currentUser: widget.currentUser,
+              ),
             ),
           );
         },
@@ -248,13 +257,13 @@ class _SettingsPage extends State<SettingsPage> {
                     leading: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
-                        widget.currentUser!.avatar!.mediaURL.minURL,
+                        widget.currentUser.avatar!.mediaURL.minURL,
                       ),
                       radius: 28,
                     ),
-                    title: CustomText.costum1(widget.currentUser!.displayName!),
+                    title: CustomText.costum1(widget.currentUser.displayName!),
                     subtitle: CustomText.costum1(
-                        "Hatalı Giriş: ${widget.currentUser!.lastfaillogin}"),
+                        "Hatalı Giriş: ${widget.currentUser.lastfaillogin}"),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -352,7 +361,8 @@ class _SettingsPage extends State<SettingsPage> {
                           final result = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const LoginPage(
+                              builder: (context) => LoginPage(
+                                currentUser: widget.currentUser,
                                 accountAdd: true,
                               ),
                             ),

@@ -14,7 +14,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class PostSharePage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   const PostSharePage({
     super.key,
     required this.currentUser,
@@ -41,7 +41,7 @@ class _PostSharePageState extends State<PostSharePage>
 
     postshareProccess = true;
     setstatefunction();
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.share(
       key.currentState!.controller!.text,
       media,
@@ -115,7 +115,12 @@ class _PostSharePageState extends State<PostSharePage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Media.mediaList(media, setstatefunction, big: true),
+              Media.mediaList(
+                media,
+                setstatefunction,
+                big: true,
+                currentUser: widget.currentUser,
+              ),
               SizedBox(
                 width: ARMOYU.screenWidth,
                 child: SingleChildScrollView(
@@ -159,6 +164,7 @@ class _PostSharePageState extends State<PostSharePage>
               CustomTextfields(setstate: setstatefunction).mentionTextFiled(
                 key: key,
                 minLines: 3,
+                currentUser: widget.currentUser,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

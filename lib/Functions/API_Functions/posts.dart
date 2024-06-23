@@ -1,10 +1,16 @@
 import 'package:ARMOYU/Core/AppCore.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:http/http.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 
 class FunctionsPosts {
-  final ApiService _apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsPosts({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> like(int postID) async {
     Map<String, String> formData = {
@@ -12,7 +18,7 @@ class FunctionsPosts {
       "kategori": "post",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begeni-ekle/", formData);
+        await apiService.request("sosyal/begeni-ekle/", formData);
     return jsonData;
   }
 
@@ -22,7 +28,7 @@ class FunctionsPosts {
       "kategori": "post",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begeni-sil/", formData);
+        await apiService.request("sosyal/begeni-sil/", formData);
     return jsonData;
   }
 
@@ -32,7 +38,7 @@ class FunctionsPosts {
       "kategori": "postyorum",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begeni-ekle/", formData);
+        await apiService.request("sosyal/begeni-ekle/", formData);
     return jsonData;
   }
 
@@ -42,7 +48,7 @@ class FunctionsPosts {
       "kategori": "postyorum",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begeni-sil/", formData);
+        await apiService.request("sosyal/begeni-sil/", formData);
     return jsonData;
   }
 
@@ -75,7 +81,7 @@ class FunctionsPosts {
       };
     }
 
-    Map<String, dynamic> jsonData = await _apiService
+    Map<String, dynamic> jsonData = await apiService
         .request("sosyal/olustur/", formData, files: photosCollection);
     return jsonData;
   }
@@ -86,21 +92,21 @@ class FunctionsPosts {
   Future<Map<String, dynamic>> remove(int postID) async {
     Map<String, String> formData = {"postID": "$postID"};
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/sil/", formData);
+        await apiService.request("sosyal/sil/", formData);
     return jsonData;
   }
 
   Future<Map<String, dynamic>> removecomment(int commentID) async {
     Map<String, String> formData = {"yorumID": "$commentID"};
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/yorum-sil/", formData);
+        await apiService.request("sosyal/yorum-sil/", formData);
     return jsonData;
   }
 
   Future<Map<String, dynamic>> getPosts(int page) async {
     Map<String, String> formData = {"limit": "20"};
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/liste/$page/", formData);
+        await apiService.request("sosyal/liste/$page/", formData);
     return jsonData;
   }
 
@@ -115,14 +121,14 @@ class FunctionsPosts {
       "categorydetail": "$categoryDetail",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/liste/", formData);
+        await apiService.request("sosyal/liste/", formData);
     return jsonData;
   }
 
   Future<Map<String, dynamic>> commentsfetch(int postID) async {
     Map<String, String> formData = {"postID": "$postID"};
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/yorumlar/", formData);
+        await apiService.request("sosyal/yorumlar/", formData);
     return jsonData;
   }
 
@@ -133,7 +139,7 @@ class FunctionsPosts {
       "kategori": "sosyal"
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/yorum-olustur/", formData);
+        await apiService.request("sosyal/yorum-olustur/", formData);
     return jsonData;
   }
 
@@ -142,7 +148,7 @@ class FunctionsPosts {
       "postID": "$postID",
     };
     Map<String, dynamic> jsonData =
-        await _apiService.request("sosyal/begenenler/", formData);
+        await apiService.request("sosyal/begenenler/", formData);
     return jsonData;
   }
 }

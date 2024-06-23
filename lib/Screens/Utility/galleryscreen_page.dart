@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/media.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
@@ -9,7 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class GalleryScreen extends StatefulWidget {
-  const GalleryScreen({super.key});
+  final User currentUser;
+  const GalleryScreen({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<GalleryScreen> createState() => _GalleryScreenState();
@@ -92,7 +97,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     _mediaUploadProcess = true;
     setstatefunction();
 
-    FunctionsMedia funct = FunctionsMedia();
+    FunctionsMedia funct = FunctionsMedia(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.upload(
       files: _mediaList,
       category: "-1",
@@ -125,9 +130,9 @@ class _GalleryScreenState extends State<GalleryScreen>
       _gallerycounter = 0;
     }
     _ismediaProcces = true;
-    FunctionsMedia f = FunctionsMedia();
-    Map<String, dynamic> response = await f.fetch(
-        ARMOYU.appUsers[ARMOYU.selectedUser].userID!, "", _gallerycounter + 1);
+    FunctionsMedia f = FunctionsMedia(currentUser: widget.currentUser);
+    Map<String, dynamic> response =
+        await f.fetch(widget.currentUser.userID!, "", _gallerycounter + 1);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -255,6 +260,7 @@ class _GalleryScreenState extends State<GalleryScreen>
                           _mediaList,
                           setstatefunction,
                           big: false,
+                          currentUser: widget.currentUser,
                         ),
                         SizedBox(
                           height: 150,
@@ -284,6 +290,7 @@ class _GalleryScreenState extends State<GalleryScreen>
                               medialist: _mediaGallery,
                               storyShare: true,
                               setstatefunction: setstatefunction,
+                              currentUser: widget.currentUser,
                             );
                           },
                           gridDelegate:
@@ -311,6 +318,7 @@ class _GalleryScreenState extends State<GalleryScreen>
                           context,
                           MaterialPageRoute(
                             builder: (context) => MediaViewer(
+                              currentUser: widget.currentUser,
                               isMemory: true,
                               media: _memorymedia,
                               initialIndex: index,

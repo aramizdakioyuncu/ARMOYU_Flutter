@@ -4,16 +4,19 @@ import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/school.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/school.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletons/skeletons.dart';
 
 class SchoolPage extends StatefulWidget {
+  final User currentUser;
   final School? school;
   final int schoolID;
 
   const SchoolPage({
     super.key,
+    required this.currentUser,
     this.school,
     required this.schoolID,
   });
@@ -57,7 +60,7 @@ class _ProfilePageState extends State<SchoolPage>
     }
     schoolfetchProcess = true;
     setstatefunction();
-    FunctionsSchool f = FunctionsSchool();
+    FunctionsSchool f = FunctionsSchool(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetchSchool(widget.schoolID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());

@@ -97,6 +97,7 @@ class OneSignalApi {
           AppCore.navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (context) => ChatDetailPage(
+                currentUser: User(userName: "", password: ""),
                 chat: Chat(
                   user: User(userID: int.parse(userID)),
                   chatNotification: false,
@@ -114,8 +115,9 @@ class OneSignalApi {
           AppCore.navigatorKey.currentState?.push(
             MaterialPageRoute(
               builder: (context) => ProfilePage(
+                currentUser: currentUser,
+                profileUser: User(userID: int.parse(userID)),
                 ismyProfile: false,
-                currentUser: User(userID: int.parse(userID)),
                 scrollController: ScrollController(),
               ),
             ),
@@ -145,7 +147,8 @@ class OneSignalApi {
 
           AppCore.navigatorKey.currentState?.push(
             MaterialPageRoute(
-              builder: (context) => const PostDetailPage(
+              builder: (context) => PostDetailPage(
+                currentUser: User(userName: "", password: ""),
                 postID: 11,
               ),
             ),

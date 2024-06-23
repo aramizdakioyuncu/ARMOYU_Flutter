@@ -2,15 +2,18 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/story.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class StoryPublishPage extends StatefulWidget {
+  final User currentUser;
   final String imageURL; // Gezdirilecek fotoğrafların listesi
   final int imageID; // Gezdirilecek fotoğrafların ID listesi
 
   const StoryPublishPage({
     super.key,
+    required this.currentUser,
     required this.imageURL,
     required this.imageID,
   });
@@ -30,7 +33,7 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
   }
 
   Future<void> publishstory(String storyURL, bool isEveryonepublish) async {
-    FunctionsStory f = FunctionsStory();
+    FunctionsStory f = FunctionsStory(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.addstory(storyURL, isEveryonepublish);
     if (response["durum"] == 0) {
@@ -159,8 +162,7 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
                             children: [
                               CircleAvatar(
                                 foregroundImage: CachedNetworkImageProvider(
-                                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!
-                                      .mediaURL.minURL,
+                                  widget.currentUser.avatar!.mediaURL.minURL,
                                 ),
                                 radius: 16,
                               ),

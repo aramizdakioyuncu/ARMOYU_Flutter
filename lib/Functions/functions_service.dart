@@ -11,7 +11,12 @@ import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:ARMOYU/Services/Utility/onesignal.dart';
 
 class FunctionService {
-  ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionService({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   String generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
@@ -60,7 +65,7 @@ class FunctionService {
   }
 
   Future<User?> fetchUserInfo({required int userID}) async {
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: currentUser);
     Map<String, dynamic> response = await f.lookProfile(userID);
 
     if (response["durum"] == 0 ||
@@ -106,16 +111,15 @@ class FunctionService {
       ARMOYU.appUsers.add(userdetail);
     }
 
+    // Kullanıcı listesini SharedPreferences'e kaydetme
     final prefs = await SharedPreferences.getInstance();
 
-// Kullanıcı listesini SharedPreferences'e kaydetme
     List<String> usersJson =
         ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
     prefs.setStringList('users', usersJson);
-//
+    //
 
-    // ARMOYU.appUsers[0] = userdetail;
-    userdetail.updateUser(targetUser: ARMOYU.appUsers[0]);
+    userdetail.updateUser(targetUser: ARMOYU.appUsers.first);
 
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");
@@ -128,6 +132,7 @@ class FunctionService {
       'durum': 1,
       'aciklama': "Başarılı.",
       'aciklamadetay': response["aciklamadetay"],
+      'icerik': ARMOYU.appUsers.last.toJson()
     };
     String jsonencode = jsonEncode(jsonData);
     Map<String, dynamic> jsonString = jsonData = json.decode(jsonencode);
@@ -160,8 +165,14 @@ class FunctionService {
 
   Future<Map<String, dynamic>> logOut(int userID) async {
     //Oturumunu Kapat
-    pagesViewList.removeAt(ARMOYU.selectedUser);
-    ARMOYU.appUsers.removeAt(ARMOYU.selectedUser);
+    try {
+      // pagesViewList.removeAt(ARMOYU.selectedUser);
+      pagesViewList
+          .removeWhere((element) => element.currentUser.userID == userID);
+    } catch (e) {
+      log(e.toString());
+    }
+    ARMOYU.appUsers.removeWhere((element) => element.userID == userID);
     //Oturumunu Kapat Bitiş
 
     // Kullanıcı listesini SharedPreferences'e kaydetme

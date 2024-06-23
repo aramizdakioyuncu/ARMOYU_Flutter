@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/Mention/mention.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -121,9 +122,10 @@ class CustomTextfields {
     );
   }
 
-  mentionTextFiled({
+  FlutterMentions mentionTextFiled({
     required key,
     int? minLines = 1,
+    required User currentUser,
   }) {
     return FlutterMentions(
       key: key,
@@ -145,7 +147,8 @@ class CustomTextfields {
         //Oyuncu listesi bomboşsa
         if (WidgetMention.peopleList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
-            FunctionsSearchEngine f = FunctionsSearchEngine();
+            FunctionsSearchEngine f =
+                FunctionsSearchEngine(currentUser: currentUser);
             Map<String, dynamic> response = await f.onlyusers("", 1);
             if (response["durum"] == 0) {
               log(response["aciklama"]);
@@ -165,7 +168,8 @@ class CustomTextfields {
         //Hashtag listesi bomboşsa
         if (WidgetMention.hashtagList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
-            FunctionsSearchEngine f = FunctionsSearchEngine();
+            FunctionsSearchEngine f =
+                FunctionsSearchEngine(currentUser: currentUser);
             Map<String, dynamic> response = await f.hashtag("", 1);
             if (response["durum"] == 0) {
               log(response["aciklama"]);
@@ -195,7 +199,8 @@ class CustomTextfields {
         // Eğer buraya kadar gelindi ise, yeni bir kelime girilmiştir, mevcut sorguyu iptal eder
         searchTimer?.cancel();
         searchTimer = Timer(const Duration(milliseconds: 500), () async {
-          FunctionsSearchEngine f = FunctionsSearchEngine();
+          FunctionsSearchEngine f =
+              FunctionsSearchEngine(currentUser: currentUser);
 
           Map<String, dynamic> response;
           if (lastWord[0] == "@") {

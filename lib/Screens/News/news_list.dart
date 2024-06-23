@@ -3,11 +3,16 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/news.dart';
 import 'package:ARMOYU/Models/news.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class NewslistPage extends StatefulWidget {
-  const NewslistPage({super.key});
+  final User currentUser;
+  const NewslistPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<NewslistPage> createState() => _NewslistStatePage();
@@ -49,7 +54,7 @@ class _NewslistStatePage extends State<NewslistPage>
     }
 
     eventlistProcces = true;
-    FunctionsNews function = FunctionsNews();
+    FunctionsNews function = FunctionsNews(currentUser: widget.currentUser);
     Map<String, dynamic> response = await function.fetch(newspage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -113,7 +118,8 @@ class _NewslistStatePage extends State<NewslistPage>
                   itemCount: newsList.length,
                   itemBuilder: (context, index) {
                     News aa = newsList[index];
-                    return aa.newsListWidget(context);
+                    return aa.newsListWidget(context,
+                        currentUser: widget.currentUser);
                   },
                   separatorBuilder: (context, index) {
                     return Column(

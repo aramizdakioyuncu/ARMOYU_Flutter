@@ -15,11 +15,13 @@ import 'package:ARMOYU/Functions/API_Functions/posts.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
 
 class PostDetailPage extends StatefulWidget {
+  final User currentUser;
   final int? postID;
   final int? commentID;
 
   const PostDetailPage({
     super.key,
+    required this.currentUser,
     this.postID,
     this.commentID,
   });
@@ -58,7 +60,7 @@ class _PostDetailPage extends State<PostDetailPage>
     );
 
     setstatefunction();
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -86,6 +88,7 @@ class _PostDetailPage extends State<PostDetailPage>
 
           listComments.add(
             WidgetPostComments(
+              currentUser: widget.currentUser,
               comment: Comment(
                 commentID: yorumID,
                 content: text,
@@ -123,7 +126,7 @@ class _PostDetailPage extends State<PostDetailPage>
 
   Widget asa = const Text("");
   Future<void> postdetailfetch() async {
-    FunctionsPosts funct = FunctionsPosts();
+    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.detailfetch(
       postID: widget.postID,
       category: "yorum",
@@ -231,7 +234,10 @@ class _PostDetailPage extends State<PostDetailPage>
       firstthreelike: likers,
       location: response["icerik"][0]["paylasimkonum"],
     );
-    asa = TwitterPostWidget(post: post);
+    asa = TwitterPostWidget(
+      currentUser: widget.currentUser,
+      post: post,
+    );
   }
 
   @override

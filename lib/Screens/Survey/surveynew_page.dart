@@ -3,13 +3,18 @@ import 'dart:developer';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Functions/API_Functions/survey.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
 import 'package:ARMOYU/Widgets/utility.dart';
 import 'package:flutter/material.dart';
 
 class SurveyNewPage extends StatefulWidget {
-  const SurveyNewPage({super.key});
+  final User currentUser;
+  const SurveyNewPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SurveyNewPage> createState() => _ChatPageState();
@@ -99,7 +104,8 @@ class _ChatPageState extends State<SurveyNewPage>
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Media.mediaList(_media, setstatefunction),
+              Media.mediaList(_media, setstatefunction,
+                  currentUser: widget.currentUser),
               const Text("Anket Sorusu"),
               CustomTextfields(setstate: setstatefunction).costum3(
                 controller: controllerSurveyQuestion,
@@ -275,7 +281,8 @@ class _ChatPageState extends State<SurveyNewPage>
               CustomButtons.costum1(
                 text: "Oluştur",
                 onPressed: () async {
-                  FunctionsSurvey f = FunctionsSurvey();
+                  FunctionsSurvey f =
+                      FunctionsSurvey(currentUser: widget.currentUser);
 
                   if (surveyDate == null) {
                     return;

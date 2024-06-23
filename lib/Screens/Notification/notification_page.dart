@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/Notification/friendrequest_page.dart';
 import 'package:ARMOYU/Screens/Notification/grouprequest_page.dart';
@@ -11,7 +12,7 @@ import 'package:ARMOYU/Functions/functions_service.dart';
 import 'package:ARMOYU/Widgets/notification_bars.dart';
 
 class NotificationPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   final ScrollController scrollController;
 
   const NotificationPage({
@@ -64,7 +65,7 @@ class _NotificationPage extends State<NotificationPage>
     await loadnoifications();
   }
 
-  List<Widget> widgetNotifications = [];
+  List<CustomMenusNotificationbars> widgetNotifications = [];
 
   Future<void> loadnoifications() async {
     if (_notificationProccess) {
@@ -74,7 +75,7 @@ class _NotificationPage extends State<NotificationPage>
     if (mounted) {
       setState(() {});
     }
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.getnotifications("", "", _page);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -115,13 +116,22 @@ class _NotificationPage extends State<NotificationPage>
       widgetNotifications.add(
         CustomMenusNotificationbars(
           currentUser: widget.currentUser,
-          avatar: response["icerik"][i]["bildirimgonderenavatar"],
-          userID: response["icerik"][i]["bildirimgonderenID"],
+          user: User(
+            userID: response["icerik"][i]["bildirimgonderenID"],
+            displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
+            avatar: Media(
+              mediaID: response["icerik"][i]["bildirimgonderenID"],
+              mediaURL: MediaURL(
+                bigURL: response["icerik"][i]["bildirimgonderenavatar"],
+                normalURL: response["icerik"][i]["bildirimgonderenavatar"],
+                minURL: response["icerik"][i]["bildirimgonderenavatar"],
+              ),
+            ),
+          ),
           category: response["icerik"][i]["bildirimamac"],
           categorydetail: response["icerik"][i]["bildirimkategori"],
           categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
           date: response["icerik"][i]["bildirimzaman"],
-          displayname: response["icerik"][i]["bildirimgonderenadsoyad"],
           enableButtons: noticiationbuttons,
           text: response["icerik"][i]["bildirimicerik"],
         ),
@@ -141,6 +151,7 @@ class _NotificationPage extends State<NotificationPage>
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         controller: _scrollController,
         slivers: [
           CupertinoSliverRefreshControl(

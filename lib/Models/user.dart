@@ -2,8 +2,11 @@ import 'package:ARMOYU/Models/ARMOYU/country.dart';
 import 'package:ARMOYU/Models/ARMOYU/job.dart';
 import 'package:ARMOYU/Models/ARMOYU/province.dart';
 import 'package:ARMOYU/Models/ARMOYU/role.dart';
+import 'package:ARMOYU/Models/Chat/chat.dart';
+import 'package:ARMOYU/Models/Story/storylist.dart';
 import 'package:ARMOYU/Models/group.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/post.dart';
 import 'package:ARMOYU/Models/school.dart';
 import 'package:ARMOYU/Models/station.dart';
 import 'package:ARMOYU/Models/team.dart';
@@ -56,10 +59,17 @@ class User {
   List<User>? myFriends = [];
   List<User>? mycloseFriends = [];
 
+  // //ARAÇ GEREÇ
+  List<Chat>? chatlist = [];
+
   // //Gruplarım & Okullarım & İşyerlerim
   List<Group>? myGroups = [];
   List<School>? mySchools = [];
   List<Station>? myStations = [];
+
+  //Sosyal KISIM
+  List<Post>? widgetPosts;
+  List<StoryList>? widgetStoriescard;
 
   User({
     this.userID,
@@ -94,10 +104,13 @@ class User {
     this.phoneNumber,
     this.birthdayDate,
     this.myFriends,
+    this.chatlist,
     this.mycloseFriends,
     this.myGroups,
     this.mySchools,
     this.myStations,
+    this.widgetPosts,
+    this.widgetStoriescard,
   });
 
   // JSON'dan User nesnesine dönüşüm
@@ -146,8 +159,24 @@ class User {
           ? List<User>.from(
               json['myfriends'].map((friendJson) => User.fromJson(friendJson)))
           : null,
+      chatlist: json['chatlist'] != null
+          ? List<Chat>.from(
+              json['chatlist'].map((friendJson) => Chat.fromJson(friendJson)))
+          : null,
+      myGroups: json['myGroups'] != null
+          ? List<Group>.from(
+              json['myGroups'].map((friendJson) => Group.fromJson(friendJson)))
+          : null,
       lastlogin: json['lastlogin'],
       lastloginv2: json['lastloginv2'],
+      widgetPosts: json['widgetposts'] != null
+          ? List<Post>.from(
+              json['widgetposts'].map((postJson) => Post.fromJson(postJson)))
+          : null,
+      widgetStoriescard: json['widgetstoriescard'] != null
+          ? List<StoryList>.from(json['widgetstoriescard']
+              .map((storylistJson) => StoryList.fromJson(storylistJson)))
+          : null,
     );
   }
 
@@ -189,11 +218,14 @@ class User {
               'media_minURL': banner!.mediaURL.minURL,
             }
           : null,
-      'myfriends': myFriends != null
-          ? myFriends!.map((friend) => friend.toJson()).toList()
-          : null,
+      'myfriends': myFriends?.map((friend) => friend.toJson()).toList(),
+      'chatlist': chatlist?.map((chat) => chat.toJson()).toList(),
+      'myGroups': myGroups?.map((myGroups) => myGroups.toJson()).toList(),
       'lastlogin': lastlogin,
       'lastloginv2': lastloginv2,
+      'widgetposts': widgetPosts?.map((posts) => posts.toJson()).toList(),
+      'widgetstoriescard':
+          widgetStoriescard?.map((stories) => stories.toJson()).toList(),
     };
   }
 
@@ -260,6 +292,10 @@ class User {
     if (myFriends != null) {
       targetUser.myFriends = myFriends;
     }
+
+    if (chatlist != null) {
+      targetUser.chatlist = chatlist;
+    }
     if (mycloseFriends != null) {
       targetUser.mycloseFriends = mycloseFriends;
     }
@@ -269,6 +305,18 @@ class User {
     }
     if (myStations != null) {
       targetUser.myStations = myStations;
+    }
+
+    if (widgetPosts != null) {
+      targetUser.widgetPosts = widgetPosts;
+    }
+
+    if (widgetPosts != null) {
+      targetUser.widgetPosts = widgetPosts;
+    }
+
+    if (widgetStoriescard != null) {
+      targetUser.widgetStoriescard = widgetStoriescard;
     }
   }
 

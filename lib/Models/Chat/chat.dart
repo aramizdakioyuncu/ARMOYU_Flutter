@@ -11,7 +11,7 @@ class Chat {
   final int? chatID;
   final User user;
   ChatMessage? lastmessage;
-  List<ChatMessage> messages = [];
+  List<ChatMessage>? messages;
   final String? chatType;
   bool chatNotification;
 
@@ -19,11 +19,42 @@ class Chat {
     this.chatID,
     required this.user,
     this.lastmessage,
+    this.messages,
     this.chatType,
     required this.chatNotification,
   });
 
-  Widget listtilechat(context) {
+  // Chat nesnesinden JSON'a dönüşüm
+  Map<String, dynamic> toJson() {
+    return {
+      'chatID': chatID,
+      'user': user.toJson(),
+      'lastmessage': lastmessage?.toJson(),
+      'messages': messages?.map((message) => message.toJson()).toList(),
+      'chatType': chatType,
+      'chatNotification': chatNotification,
+    };
+  }
+
+  // JSON'dan Chat nesnesine dönüşüm
+  factory Chat.fromJson(Map<String, dynamic> json) {
+    return Chat(
+      chatID: json['chatID'],
+      user: User.fromJson(json['user']),
+      lastmessage: json['lastmessage'] != null
+          ? ChatMessage.fromJson(json['lastmessage'])
+          : null,
+      messages: json['messages'] != null
+          ? (json['messages'] as List<dynamic>)
+              .map((message) => ChatMessage.fromJson(message))
+              .toList()
+          : null,
+      chatType: json['chatType'],
+      chatNotification: json['chatNotification'],
+    );
+  }
+
+  Widget listtilechat(context, {required User currentUser}) {
     return Column(
       children: [
         ListTile(
@@ -49,6 +80,7 @@ class Chat {
               MaterialPageRoute(
                 builder: (pagecontext) => ChatDetailPage(
                   chat: this,
+                  currentUser: currentUser,
                 ),
               ),
             );
@@ -59,12 +91,13 @@ class Chat {
     );
   }
 
-  Widget profilesendMessage(context) {
+  Widget profilesendMessage(context, {required User currentUser}) {
     Future<void> sendmessage() async {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ChatDetailPage(
             chat: this,
+            currentUser: currentUser,
           ),
         ),
       );

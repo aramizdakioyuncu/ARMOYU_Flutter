@@ -5,7 +5,12 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FunctionsGroup {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsGroup({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> groupFetch(int grupID) async {
     Map<String, String> formData = {"grupID": "$grupID"};

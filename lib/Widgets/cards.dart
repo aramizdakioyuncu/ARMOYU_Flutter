@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomCards extends StatefulWidget {
+  final User currentUser;
   final String title;
   final List<Map<String, String>> content;
   final Icon icon;
@@ -18,6 +19,7 @@ class CustomCards extends StatefulWidget {
 
   const CustomCards({
     super.key,
+    required this.currentUser,
     required this.title,
     required this.content,
     required this.icon,
@@ -61,9 +63,8 @@ class _CustomCardsState extends State<CustomCards> {
       return;
     }
     morefetchProcces = true;
-    setState(() {});
-
-    FunctionService f = FunctionService();
+    setstatefunction();
+    FunctionService f = FunctionService(currentUser: widget.currentUser);
     Map<String, dynamic> response = {};
 
     if (widget.title == "POP") {
@@ -81,24 +82,19 @@ class _CustomCardsState extends State<CustomCards> {
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
-      if (mounted) {
-        setState(() {
-          if (widget.title == "POP") {
-            widget.content.add({
-              "userID": response["icerik"][i]["oyuncuID"].toString(),
-              "image": response["icerik"][i]["oyuncuavatar"],
-              "displayname": response["icerik"][i]["oyuncuadsoyad"],
-              "score": response["icerik"][i]["oyuncupop"].toString()
-            });
-          } else {
-            widget.content.add({
-              "userID": response["icerik"][i]["oyuncuID"].toString(),
-              "image": response["icerik"][i]["oyuncuavatar"],
-              "displayname": response["icerik"][i]["oyuncuadsoyad"],
-              "score":
-                  response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
-            });
-          }
+      if (widget.title == "POP") {
+        widget.content.add({
+          "userID": response["icerik"][i]["oyuncuID"].toString(),
+          "image": response["icerik"][i]["oyuncuavatar"],
+          "displayname": response["icerik"][i]["oyuncuadsoyad"],
+          "score": response["icerik"][i]["oyuncupop"].toString()
+        });
+      } else {
+        widget.content.add({
+          "userID": response["icerik"][i]["oyuncuID"].toString(),
+          "image": response["icerik"][i]["oyuncuavatar"],
+          "displayname": response["icerik"][i]["oyuncuadsoyad"],
+          "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
         });
       }
     }
@@ -136,7 +132,9 @@ class _CustomCardsState extends State<CustomCards> {
           return InkWell(
             borderRadius: BorderRadius.circular(15),
             onTap: () {
-              PageFunctions.pushProfilePage(
+              PageFunctions functions =
+                  PageFunctions(currentUser: widget.currentUser);
+              functions.pushProfilePage(
                 context,
                 User(
                   userID: int.parse(cardData["userID"].toString()),

@@ -13,6 +13,7 @@ import 'package:ARMOYU/Models/ARMOYU/role.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/team.dart';
 import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:ARMOYU/Widgets/textfields.dart';
@@ -22,6 +23,12 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
+  final User currentUser;
+  late final ApiService apiService;
+
+  ARMOYUFunctions({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
   static User userfetch(response) {
     return User(
       userID: response["playerID"],
@@ -153,9 +160,9 @@ class ARMOYUFunctions {
     );
   }
 
-  static void selectFavTeam(context, {bool? force}) {
+  void selectFavTeam(context, {bool? force}) {
     if (force == null || force == false) {
-      if (ARMOYU.appUsers[ARMOYU.selectedUser].favTeam != null) {
+      if (currentUser.favTeam != null) {
         log("Favori Takım seçilmiş");
         return;
       }
@@ -249,8 +256,8 @@ class ARMOYUFunctions {
     });
   }
 
-  static Future<void> favteamselect(Team? team) async {
-    FunctionsProfile f = FunctionsProfile();
+  Future<void> favteamselect(Team? team) async {
+    FunctionsProfile f = FunctionsProfile(currentUser: currentUser);
     Map<String, dynamic> response = await f.selectfavteam(team?.teamID);
     log(response.toString());
     if (response["durum"] == 0) {
@@ -258,16 +265,16 @@ class ARMOYUFunctions {
       return;
     }
     if (team != null) {
-      ARMOYU.appUsers[ARMOYU.selectedUser].favTeam =
+      currentUser.favTeam =
           Team(teamID: team.teamID, name: team.name, logo: team.logo);
     } else {
-      ARMOYU.appUsers[ARMOYU.selectedUser].favTeam = null;
+      currentUser.favTeam = null;
     }
   }
 
-  static Future<void> favteamfetch() async {
+  Future<void> favteamfetch() async {
     if (ARMOYU.favoriteteams.isEmpty) {
-      FunctionsTeams f = FunctionsTeams();
+      FunctionsTeams f = FunctionsTeams(currentUser: currentUser);
       Map<String, dynamic> response = await f.fetch();
       if (response["durum"] == 0) {
         log(response["aciklama"].toString());
@@ -304,10 +311,10 @@ class ARMOYUFunctions {
     return formattedStr;
   }
 
-  static Future<void> fetchCountry(
+  Future<void> fetchCountry(
     setstatefunction,
   ) async {
-    FunctionsCountry f = FunctionsCountry();
+    FunctionsCountry f = FunctionsCountry(currentUser: currentUser);
     Map<String, dynamic> response = await f.fetch();
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -325,11 +332,10 @@ class ARMOYUFunctions {
         ),
       );
 
-      if (ARMOYU.appUsers[ARMOYU.selectedUser].country != null) {
-        if (country["country_ID"] ==
-            ARMOYU.appUsers[ARMOYU.selectedUser].country!.countryID) {
+      if (currentUser.country != null) {
+        if (country["country_ID"] == currentUser.country!.countryID) {
           fetchProvince(
-            ARMOYU.appUsers[ARMOYU.selectedUser].country!.countryID,
+            currentUser.country!.countryID,
             ARMOYU.countryList.length - 1,
             setstatefunction,
           );
@@ -338,7 +344,7 @@ class ARMOYUFunctions {
     }
   }
 
-  static Future<void> fetchProvince(
+  Future<void> fetchProvince(
       int countryID, selectedIndex, setstatefunction) async {
     if (ARMOYU.countryList[selectedIndex].provinceList != null) {
       if (ARMOYU.countryList[selectedIndex].provinceList!.isNotEmpty) {
@@ -348,7 +354,7 @@ class ARMOYUFunctions {
       }
       return;
     }
-    FunctionsCountry f = FunctionsCountry();
+    FunctionsCountry f = FunctionsCountry(currentUser: currentUser);
     Map<String, dynamic> response = await f.fetchprovince(countryID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -385,31 +391,30 @@ class ARMOYUFunctions {
 
   static bool provinceSelectStatus = false;
 
-  static void profileEdit(BuildContext context, Function setstatefunction) {
+  void profileEdit(BuildContext context, Function setstatefunction) {
     final TextEditingController firstName = TextEditingController();
-    firstName.text = ARMOYU.appUsers[ARMOYU.selectedUser].firstName.toString();
+    firstName.text = currentUser.firstName.toString();
     final TextEditingController lastName = TextEditingController();
-    lastName.text = ARMOYU.appUsers[ARMOYU.selectedUser].lastName.toString();
+    lastName.text = currentUser.lastName.toString();
 
     final TextEditingController email = TextEditingController();
-    email.text = ARMOYU.appUsers[ARMOYU.selectedUser].userMail.toString();
+    email.text = currentUser.userMail.toString();
 
     final TextEditingController birthday = TextEditingController();
-    birthday.text =
-        ARMOYU.appUsers[ARMOYU.selectedUser].birthdayDate.toString();
+    birthday.text = currentUser.birthdayDate.toString();
 
     String country = "Ülke Seçim";
     int? countryIndex = 0;
-    if (ARMOYU.appUsers[ARMOYU.selectedUser].country != null) {
-      country = ARMOYU.appUsers[ARMOYU.selectedUser].country!.name;
-      countryIndex = ARMOYU.appUsers[ARMOYU.selectedUser].country!.countryID;
+    if (currentUser.country != null) {
+      country = currentUser.country!.name;
+      countryIndex = currentUser.country!.countryID;
     }
 
     String province = "İl Seçim";
     int? provinceIndex = 0;
-    if (ARMOYU.appUsers[ARMOYU.selectedUser].province != null) {
-      province = ARMOYU.appUsers[ARMOYU.selectedUser].province!.name;
-      provinceIndex = ARMOYU.appUsers[ARMOYU.selectedUser].province!.provinceID;
+    if (currentUser.province != null) {
+      province = currentUser.province!.name;
+      provinceIndex = currentUser.province!.provinceID;
     }
 
     if (ARMOYU.countryList.isNotEmpty) {
@@ -425,8 +430,7 @@ class ARMOYUFunctions {
     }
 
     final TextEditingController phoneNumber = TextEditingController();
-    phoneNumber.text = formatString(
-        ARMOYU.appUsers[ARMOYU.selectedUser].phoneNumber.toString());
+    phoneNumber.text = formatString(currentUser.phoneNumber.toString());
 
     final TextEditingController passwordControl = TextEditingController();
     bool profileeditProcess = false;
@@ -459,9 +463,7 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU
-                                      .appUsers[ARMOYU.selectedUser]
-                                      .displayName,
+                                  placeholder: currentUser.displayName,
                                   controller: firstName,
                                 ),
                               )
@@ -484,9 +486,7 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU
-                                      .appUsers[ARMOYU.selectedUser]
-                                      .displayName,
+                                  placeholder: currentUser.displayName,
                                   controller: lastName,
                                 ),
                               )
@@ -513,8 +513,7 @@ class ARMOYUFunctions {
                                 child:
                                     CustomTextfields(setstate: setstatefunction)
                                         .costum3(
-                                  placeholder: ARMOYU
-                                      .appUsers[ARMOYU.selectedUser].userMail,
+                                  placeholder: currentUser.userMail,
                                   controller: email,
                                 ),
                               )
@@ -741,7 +740,8 @@ class ARMOYUFunctions {
                               profileeditProcess = true;
                               setstatefunction();
 
-                              FunctionsProfile f = FunctionsProfile();
+                              FunctionsProfile f =
+                                  FunctionsProfile(currentUser: currentUser);
                               Map<String, dynamic> response =
                                   await f.saveprofiledetails(
                                 firstname: firstName.text,
@@ -762,16 +762,12 @@ class ARMOYUFunctions {
                                     response["aciklama"].toString());
                                 return;
                               }
-                              ARMOYU.appUsers[ARMOYU.selectedUser].firstName =
-                                  firstName.text;
-                              ARMOYU.appUsers[ARMOYU.selectedUser].lastName =
-                                  lastName.text;
-                              ARMOYU.appUsers[ARMOYU.selectedUser].displayName =
+                              currentUser.firstName = firstName.text;
+                              currentUser.lastName = lastName.text;
+                              currentUser.displayName =
                                   "${firstName.text} ${lastName.text}";
-                              ARMOYU.appUsers[ARMOYU.selectedUser].userMail =
-                                  email.text;
-                              ARMOYU.appUsers[ARMOYU.selectedUser].country =
-                                  Country(
+                              currentUser.userMail = email.text;
+                              currentUser.country = Country(
                                 countryID: int.parse(countryID),
                                 name: ARMOYU.countryList[countryIndex!].name,
                                 countryCode: ARMOYU
@@ -779,8 +775,7 @@ class ARMOYUFunctions {
                                 phoneCode:
                                     ARMOYU.countryList[countryIndex!].phoneCode,
                               );
-                              ARMOYU.appUsers[ARMOYU.selectedUser].province =
-                                  Province(
+                              currentUser.province = Province(
                                 provinceID: int.parse(provinceID),
                                 name: ARMOYU.countryList[countryIndex!]
                                     .provinceList![provinceIndex!].name,
@@ -789,10 +784,8 @@ class ARMOYUFunctions {
                                 phoneCode: ARMOYU.countryList[countryIndex!]
                                     .provinceList![provinceIndex!].phoneCode,
                               );
-                              ARMOYU.appUsers[ARMOYU.selectedUser].phoneNumber =
-                                  cleanedphoneNumber;
-                              ARMOYU.appUsers[ARMOYU.selectedUser]
-                                  .birthdayDate = birthday.text;
+                              currentUser.phoneNumber = cleanedphoneNumber;
+                              currentUser.birthdayDate = birthday.text;
 
                               ARMOYUWidget.toastNotification(
                                   response["aciklama"].toString());

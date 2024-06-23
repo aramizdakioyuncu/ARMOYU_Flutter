@@ -63,7 +63,7 @@ class _FriendlistPageState extends State<FriendlistPage>
     }
 
     proccessStatus = true;
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.friendlist(widget.currentUser.userID!, page);
 
@@ -126,6 +126,7 @@ class _FriendlistPageState extends State<FriendlistPage>
               itemCount: widget.currentUser.myFriends!.length,
               itemBuilder: (context, index) {
                 return UserListWidget(
+                  currentUser: widget.currentUser,
                   userID: widget.currentUser.myFriends![index].userID!,
                   displayname:
                       widget.currentUser.myFriends![index].displayName!,

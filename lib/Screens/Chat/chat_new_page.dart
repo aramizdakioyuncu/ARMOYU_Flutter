@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/Core/ARMOYU.dart';
@@ -11,7 +10,6 @@ import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatNewPage extends StatefulWidget {
   final User currentUser;
@@ -113,7 +111,7 @@ class _ChatNewPageState extends State<ChatNewPage>
       _chatnewpage++;
     }
 
-    FunctionsProfile f = FunctionsProfile();
+    FunctionsProfile f = FunctionsProfile(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.friendlist(widget.currentUser.userID!, _chatnewpage);
     if (response["durum"] == 0) {
@@ -163,14 +161,6 @@ class _ChatNewPageState extends State<ChatNewPage>
 
     setstatefunction();
 
-    // Kullanıcı listesini SharedPreferences'e kaydetme
-    final prefs = await SharedPreferences.getInstance();
-
-    List<String> usersJson =
-        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-    prefs.setStringList('users', usersJson);
-//
-
     _filteredItems = widget.currentUser.myFriends!;
     _chatnewpage++;
     _chatFriendsprocess = false;
@@ -186,6 +176,7 @@ class _ChatNewPageState extends State<ChatNewPage>
         title: const Text("Yeni Sohbet"),
       ),
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         controller: _chatScrollController,
         slivers: [
           CupertinoSliverRefreshControl(
@@ -246,6 +237,7 @@ class _ChatNewPageState extends State<ChatNewPage>
                                   user: _filteredItems[index],
                                   chatNotification: false,
                                 ),
+                                currentUser: widget.currentUser,
                               ),
                             ),
                           );

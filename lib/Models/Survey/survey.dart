@@ -32,13 +32,14 @@ class Survey {
     required this.surveyRemainingTime,
   });
 
-  Widget surveyList(BuildContext context) {
+  Widget surveyList(BuildContext context, {required User currentUser}) {
     return InkWell(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => SurveyPage(
+              currentUser: currentUser,
               survey: this,
             ),
           ),

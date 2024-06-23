@@ -1,10 +1,13 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/cards.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ARMOYUWidget {
+  final User currentUser;
+
   final ScrollController scrollController;
   List<Map<String, String>> content;
   final bool firstFetch;
@@ -13,10 +16,12 @@ class ARMOYUWidget {
     required this.scrollController,
     required this.content,
     required this.firstFetch,
+    required this.currentUser,
   });
 
   Widget widgetTPlist() {
     return CustomCards(
+      currentUser: currentUser,
       firstFetch: firstFetch,
       title: "TP",
       scrollController: scrollController,
@@ -32,6 +37,7 @@ class ARMOYUWidget {
 
   Widget widgetPOPlist() {
     return CustomCards(
+      currentUser: currentUser,
       firstFetch: firstFetch,
       scrollController: scrollController,
       title: "POP",

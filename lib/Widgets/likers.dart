@@ -6,12 +6,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class LikersListWidget extends StatefulWidget {
+  final User currentUser;
   final User user;
   final String date;
   int islike;
 
   LikersListWidget({
     super.key,
+    required this.currentUser,
     required this.user,
     required this.date,
     required this.islike,
@@ -41,7 +43,9 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       leading: InkWell(
         onTap: () {
-          PageFunctions.pushProfilePage(
+          PageFunctions functions =
+              PageFunctions(currentUser: widget.currentUser);
+          functions.pushProfilePage(
             context,
             User(
               userID: widget.user.userID,

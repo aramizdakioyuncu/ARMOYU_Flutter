@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EventPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
 
   final Event event;
   const EventPage({
@@ -86,7 +86,7 @@ class _EventStatePage extends State<EventPage> {
     fetcheventdetailProcess = true;
     setstatefunction();
 
-    FunctionsEvent f = FunctionsEvent();
+    FunctionsEvent f = FunctionsEvent(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.detailfetch(eventID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -139,7 +139,7 @@ class _EventStatePage extends State<EventPage> {
     }
     fetchParticipantProccess = true;
     setstatefunction();
-    FunctionsEvent f = FunctionsEvent();
+    FunctionsEvent f = FunctionsEvent(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.participantList(eventID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -206,7 +206,7 @@ class _EventStatePage extends State<EventPage> {
 
     //Bireysel Katılımcılar
     for (var element in response["icerik"]["participant_players"]) {
-      if (element["player_ID"] == ARMOYU.appUsers[ARMOYU.selectedUser].userID) {
+      if (element["player_ID"] == widget.currentUser.userID) {
         didijoin = true;
         setstatefunction();
       }
@@ -245,7 +245,7 @@ class _EventStatePage extends State<EventPage> {
     joineventProccess = true;
     setstatefunction();
 
-    FunctionsEvent f = FunctionsEvent();
+    FunctionsEvent f = FunctionsEvent(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.joinOrleave(widget.event.eventID, true);
     if (response["durum"] == 0) {
@@ -262,7 +262,7 @@ class _EventStatePage extends State<EventPage> {
     joineventProccess = true;
     setstatefunction();
 
-    FunctionsEvent f = FunctionsEvent();
+    FunctionsEvent f = FunctionsEvent(currentUser: widget.currentUser);
     Map<String, dynamic> response =
         await f.joinOrleave(widget.event.eventID, false);
     if (response["durum"] == 0) {
@@ -302,6 +302,7 @@ class _EventStatePage extends State<EventPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MediaViewer(
+                      currentUser: widget.currentUser,
                       media: [
                         Media(
                           mediaID: 0,
@@ -361,6 +362,7 @@ class _EventStatePage extends State<EventPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => MediaViewer(
+                              currentUser: widget.currentUser,
                               media: [
                                 Media(
                                   mediaID: 0,
@@ -477,7 +479,9 @@ class _EventStatePage extends State<EventPage> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  PageFunctions.pushProfilePage(
+                                  PageFunctions functions = PageFunctions(
+                                      currentUser: widget.currentUser);
+                                  functions.pushProfilePage(
                                     context,
                                     User(
                                       userID: widget
@@ -714,6 +718,12 @@ class _EventStatePage extends State<EventPage> {
                                                     InkWell(
                                                       onTap: () {
                                                         PageFunctions
+                                                            functions =
+                                                            PageFunctions(
+                                                                currentUser: widget
+                                                                    .currentUser);
+
+                                                        functions
                                                             .pushProfilePage(
                                                           context,
                                                           User(
@@ -837,7 +847,10 @@ class _EventStatePage extends State<EventPage> {
                                       .toString(),
                                 ),
                                 onTap: () {
-                                  PageFunctions.pushProfilePage(
+                                  PageFunctions functions = PageFunctions(
+                                      currentUser: widget.currentUser);
+
+                                  functions.pushProfilePage(
                                     context,
                                     User(
                                       userID: widget.event

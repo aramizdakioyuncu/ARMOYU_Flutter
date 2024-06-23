@@ -5,10 +5,18 @@ import 'package:ARMOYU/Models/Survey/question.dart';
 import 'package:ARMOYU/Models/Survey/survey.dart';
 import 'package:ARMOYU/Models/media.dart';
 import 'package:ARMOYU/Models/user.dart';
+import 'package:ARMOYU/Services/API/api_service.dart';
 
 class ClientFunctionSurvey {
+  final User currentUser;
+  late final ApiService apiService;
+
+  ClientFunctionSurvey({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
+
   Future<List<Survey>?> fetchsurvey({int? page, int? surveyID}) async {
-    FunctionsSurvey f = FunctionsSurvey();
+    FunctionsSurvey f = FunctionsSurvey(currentUser: currentUser);
 
     Map<String, dynamic>? response;
     if (surveyID != null) {

@@ -1,10 +1,16 @@
 import 'package:ARMOYU/Core/appcore.dart';
 import 'package:ARMOYU/Models/media.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Services/API/api_service.dart';
 import 'package:http/http.dart';
 
 class FunctionsMedia {
-  final ApiService apiService = ApiService();
+  final User currentUser;
+  late final ApiService apiService;
+
+  FunctionsMedia({required this.currentUser}) {
+    apiService = ApiService(user: currentUser);
+  }
 
   Future<Map<String, dynamic>> fetch(
       int uyeID, String category, int page) async {

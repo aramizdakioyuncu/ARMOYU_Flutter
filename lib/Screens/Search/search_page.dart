@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/Functions/API_Functions/search.dart';
 
 class SearchPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   final bool appbar;
   final TextEditingController searchController;
   final ScrollController scrollController;
@@ -45,25 +45,34 @@ class _SearchPagePage extends State<SearchPage>
   @override
   bool get wantKeepAlive => true;
 
-  Widget widgetTPCard = ARMOYUWidget(
-          scrollController: ScrollController(), content: [], firstFetch: true)
-      .widgetTPlist();
-  Widget widgetPOPCard = ARMOYUWidget(
-          scrollController: ScrollController(), content: [], firstFetch: true)
-      .widgetPOPlist();
-
   List<Widget> widgetSearch = [];
 
   bool firstProcces = false;
+
+  late Widget widgetTPCard;
+  late Widget widgetPOPCard;
   @override
   void initState() {
     super.initState();
+
+    widgetTPCard = ARMOYUWidget(
+      currentUser: widget.currentUser,
+      scrollController: ScrollController(),
+      content: [],
+      firstFetch: true,
+    ).widgetTPlist();
+    widgetPOPCard = ARMOYUWidget(
+      currentUser: widget.currentUser,
+      scrollController: ScrollController(),
+      content: [],
+      firstFetch: true,
+    ).widgetPOPlist();
 
     widget.searchController.addListener(_onSearchTextChanged);
 
     if (!firstProcces) {
       getnewslist();
-      firstProcces = !firstProcces;
+      firstProcces = true;
     }
   }
 
@@ -72,12 +81,13 @@ class _SearchPagePage extends State<SearchPage>
       return;
     }
     eventlistProcces = true;
-    FunctionsNews f = FunctionsNews();
+    FunctionsNews f = FunctionsNews(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.fetch(newspage);
     if (response["durum"] == 0) {
-      log(response["aciklama"]);
+      ARMOYUWidget.toastNotification(response["aciklama"].toString());
       eventlistProcces = false;
-      //Tekrar çekmeyi dene
+      //10 saniye sonra Tekrar çekmeyi dene
+      await Future.delayed(const Duration(seconds: 10));
       getnewslist();
       return;
     }
@@ -150,7 +160,8 @@ class _SearchPagePage extends State<SearchPage>
       if (text != controller.text) {
         return;
       }
-      FunctionsSearchEngine f = FunctionsSearchEngine();
+      FunctionsSearchEngine f =
+          FunctionsSearchEngine(currentUser: widget.currentUser);
       Map<String, dynamic> response = await f.searchengine(text, 1);
       if (response["durum"] == 0) {
         log(response["aciklama"]);
@@ -190,7 +201,9 @@ class _SearchPagePage extends State<SearchPage>
                         : const Icon(Icons.groups),
                 onTap: () {
                   if (response["icerik"][i]["turu"] == "oyuncu") {
-                    PageFunctions.pushProfilePage(
+                    PageFunctions functions =
+                        PageFunctions(currentUser: widget.currentUser);
+                    functions.pushProfilePage(
                       context,
                       User(
                         userID: response["icerik"][i]["ID"],
@@ -209,8 +222,9 @@ class _SearchPagePage extends State<SearchPage>
                   } else if (response["icerik"][i]["turu"] == "okullar") {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) =>
-                            SchoolPage(schoolID: response["icerik"][i]["ID"]),
+                        builder: (context) => SchoolPage(
+                            currentUser: widget.currentUser,
+                            schoolID: response["icerik"][i]["ID"]),
                       ),
                     );
                   }
@@ -264,6 +278,7 @@ class _SearchPagePage extends State<SearchPage>
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => NewsPage(
+                                      currentUser: widget.currentUser,
                                       news: newsList[index],
                                     ),
                                   ),

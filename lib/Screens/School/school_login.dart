@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/school.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 
 import 'package:ARMOYU/Widgets/textfields.dart';
@@ -28,7 +29,11 @@ List<Map<String, String>> _cupertinolist2 = [
 ];
 
 class SchoolLoginPage extends StatefulWidget {
-  const SchoolLoginPage({super.key});
+  final User currentUser;
+  const SchoolLoginPage({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
   State<SchoolLoginPage> createState() => _SchoolLoginPagetate();
@@ -60,7 +65,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
   Future<void> _handleRefresh() async {}
 
   Future<void> getschools(List<Map<String, String>> listname) async {
-    FunctionsSchool f = FunctionsSchool();
+    FunctionsSchool f = FunctionsSchool(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.getschools();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -80,7 +85,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
 
   Future<void> getschoolclass(
       String schoolID, List<Map<String, String>> listname) async {
-    FunctionsSchool f = FunctionsSchool();
+    FunctionsSchool f = FunctionsSchool(currentUser: widget.currentUser);
 
     log(schoolID);
     Map<String, dynamic> response = await f.getschoolclass(schoolID);
@@ -110,7 +115,7 @@ class _SchoolLoginPagetate extends State<SchoolLoginPage>
     setState(() {
       schoolProcess = true;
     });
-    FunctionsSchool f = FunctionsSchool();
+    FunctionsSchool f = FunctionsSchool(currentUser: widget.currentUser);
     String? schoolID = _cupertinolist[_selectedcupertinolist]["ID"];
     String? classID = _cupertinolist2[_selectedcupertinolist2]["ID"];
     String? jobID = "123";

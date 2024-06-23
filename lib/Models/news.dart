@@ -1,4 +1,5 @@
 import 'package:ARMOYU/Core/ARMOYU.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Screens/News/news_page.dart';
 import 'package:ARMOYU/Widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -25,7 +26,7 @@ class News {
     required this.newsViews,
   });
 
-  Widget newsListWidget(context) {
+  Widget newsListWidget(context, {required User currentUser}) {
     return SizedBox(
       width: ARMOYU.screenWidth,
       child: Material(
@@ -35,7 +36,10 @@ class News {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewsPage(news: this),
+                builder: (context) => NewsPage(
+                  news: this,
+                  currentUser: currentUser,
+                ),
               ),
             );
           },

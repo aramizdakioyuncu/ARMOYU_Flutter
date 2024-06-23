@@ -21,7 +21,7 @@ import 'package:ARMOYU/Widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/Widgets/posts.dart';
 
 class SocialPage extends StatefulWidget {
-  final User? currentUser;
+  final User currentUser;
   final ScrollController homepageScrollController;
 
   const SocialPage({
@@ -45,12 +45,13 @@ class _SocialPageState extends State<SocialPage>
   late final ScrollController _scrollController =
       widget.homepageScrollController;
 
+  bool _fetchPostStatus = false;
   int postpage = 1;
-  bool postpageproccess = false;
-  bool isRefreshing = false;
+
+  bool _fetchStoryStatus = false;
+  int storypage = 1;
 
   List<Widget> widgetPosts = [];
-  List<StoryList> widgetStoriescard = [];
 
   Widget? widgetStories;
 
@@ -58,7 +59,9 @@ class _SocialPageState extends State<SocialPage>
   void initState() {
     super.initState();
 
-    loadSkeletonpost();
+    loadPosts(fetchRestart: true);
+    loadStories(fetchRestart: true);
+
     // ScrollController'ı dinle
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
@@ -67,8 +70,6 @@ class _SocialPageState extends State<SocialPage>
         _loadMoreData();
       }
     });
-
-    loadPosts(postpage);
   }
 
   void setstatefunction() {
@@ -77,48 +78,80 @@ class _SocialPageState extends State<SocialPage>
     }
   }
 
+  //Sayfa Yenilenme işlemi
+  Future<void> _handleRefresh() async {
+    loadStories(fetchRestart: true);
+    await loadPosts(fetchRestart: true);
+  }
+
+  // Yeni veri yükleme işlemi
+  Future<void> _loadMoreData() async {
+    await loadPosts();
+  }
+
   //Hikaye Fonksiyon
-  Future<void> fetchstoryWidget(int page) async {
-    FunctionsStory f = FunctionsStory();
-    Map<String, dynamic> response = await f.stories();
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+  Future<void> fetchstoryWidget({bool fetchRestart = false}) async {
+    if (_fetchStoryStatus) {
       return;
     }
 
-    if (page == 1) {
-      widgetStoriescard.clear();
+    if (fetchRestart) {
+      if (widget.currentUser.widgetPosts != null) {
+        widgetstoryUpdate();
+      } else {
+        loadSkeletonpost(story: true);
+      }
     }
 
-    if (response["icerik"].length == 0) {
-      widgetStoriescard.add(
-        StoryList(
-          ownerID: ARMOYU.appUsers[ARMOYU.selectedUser].userID!,
-          ownerusername: "Hikayen",
-          owneravatar:
-              ARMOYU.appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
-          story: null,
-          isView: true,
-        ),
-      );
+    _fetchStoryStatus = true;
+    setstatefunction();
+
+    FunctionsStory f = FunctionsStory(currentUser: widget.currentUser);
+    Map<String, dynamic> response = await f.stories(storypage);
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+
+      _fetchStoryStatus = false;
+      setstatefunction();
+      return;
+    }
+
+    if (storypage == 1) {
+      widget.currentUser.widgetStoriescard = [];
+      if (response["icerik"].length == 0) {
+        widget.currentUser.widgetStoriescard!.add(
+          StoryList(
+            owner: User(
+              userID: widget.currentUser.userID,
+              userName: "Hikayen",
+              avatar: widget.currentUser.avatar,
+            ),
+            story: null,
+            isView: true,
+          ),
+        );
+      }
     }
 
     for (int i = 0; i < response["icerik"].length; i++) {
       List<Story> widgetStory = [];
 
-      if (i == 0) {
-        if (response["icerik"][i]["oyuncu_ID"].toString() !=
-            ARMOYU.appUsers[ARMOYU.selectedUser].userID.toString()) {
-          widgetStoriescard.add(
-            StoryList(
-              ownerID: ARMOYU.appUsers[ARMOYU.selectedUser].userID!,
-              ownerusername: "Hikayen",
-              owneravatar:
-                  ARMOYU.appUsers[ARMOYU.selectedUser].avatar!.mediaURL.minURL,
-              story: null,
-              isView: true,
-            ),
-          );
+      if (storypage == 1) {
+        if (i == 0) {
+          if (response["icerik"][i]["oyuncu_ID"].toString() !=
+              widget.currentUser.userID.toString()) {
+            widget.currentUser.widgetStoriescard!.add(
+              StoryList(
+                owner: User(
+                  userID: widget.currentUser.userID,
+                  userName: "Hikayen",
+                  avatar: widget.currentUser.avatar,
+                ),
+                story: null,
+                isView: true,
+              ),
+            );
+          }
         }
       }
 
@@ -149,58 +182,67 @@ class _SocialPageState extends State<SocialPage>
           response["icerik"][i]["hikaye_icerik"].length) {
         viewstory = true;
       }
-      widgetStoriescard.add(
+
+      widget.currentUser.widgetStoriescard!.add(
         StoryList(
-          ownerID: response["icerik"][i]["oyuncu_ID"],
-          ownerusername: response["icerik"][i]["oyuncu_kadi"],
-          owneravatar: response["icerik"][i]["oyuncu_avatar"],
+          owner: User(
+            userID: response["icerik"][i]["oyuncu_ID"],
+            userName: response["icerik"][i]["oyuncu_kadi"],
+            avatar: Media(
+              mediaID: response["icerik"][i]["oyuncu_ID"],
+              mediaURL: MediaURL(
+                bigURL: response["icerik"][i]["oyuncu_avatar"],
+                normalURL: response["icerik"][i]["oyuncu_avatar"],
+                minURL: response["icerik"][i]["oyuncu_avatar"],
+              ),
+            ),
+          ),
           story: widgetStory,
           isView: viewstory,
         ),
       );
     }
+    widgetstoryUpdate();
 
-    if (mounted) {
-      setState(() {
-        widgetStories = WidgetStorycircle(
-          content: widgetStoriescard,
-        );
-      });
+    _fetchStoryStatus = false;
+    setstatefunction();
+  }
+
+  Future<void> fetchPosts({bool fetchRestart = false}) async {
+    if (_fetchPostStatus) {
+      return;
     }
-  }
+    if (fetchRestart) {
+      postpage = 1;
 
-  Future<void> _handleRefresh() async {
-    isRefreshing = true;
-    await loadPosts(1);
-    isRefreshing = false;
-  }
+      if (widget.currentUser.widgetPosts != null) {
+        widgetpostUpdate(widget.currentUser.widgetPosts!);
+      } else {
+        loadSkeletonpost(posts: true);
+      }
 
-  // Yeni veri yükleme işlemi
-  Future<void> _loadMoreData() async {
-    if (!postpageproccess) {
-      setState(() {
-        postpageproccess = true;
-      });
-      await loadPosts(postpage);
+      setstatefunction();
     }
-  }
 
-  Future<void> loadPostsv2(int page) async {
-    FunctionsPosts f = FunctionsPosts();
+    _fetchPostStatus = true;
+    setstatefunction();
 
-    Map<String, dynamic> response = await f.getPosts(page);
+    FunctionsPosts f = FunctionsPosts(currentUser: widget.currentUser);
+    Map<String, dynamic> response = await f.getPosts(postpage);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
+
+      _fetchPostStatus = false;
+      setstatefunction();
       return;
     }
 
-    if (response["icerik"].length == 0) {
-      return;
-    }
-    if (page == 1) {
-      widgetPosts.clear();
+    if (postpage == 1) {
+      widgetPosts = [];
+      widget.currentUser.widgetPosts = [];
     }
 
+    List<Post> cachedPostlist = [];
     for (int i = 0; i < response["icerik"].length; i++) {
       List<Media> media = [];
       List<Comment> comments = [];
@@ -269,102 +311,145 @@ class _SocialPageState extends State<SocialPage>
         );
       }
 
-      if (mounted) {
-        bool ismelike = false;
-        if (response["icerik"][i]["benbegendim"] == 1) {
-          ismelike = true;
-        } else {
-          ismelike = false;
-        }
-        bool ismecomment = false;
-
-        if (response["icerik"][i]["benyorumladim"] == 1) {
-          ismecomment = true;
-        } else {
-          ismecomment = false;
-        }
-        setState(() {
-          Post post = Post(
-            postID: response["icerik"][i]["paylasimID"],
-            content: response["icerik"][i]["paylasimicerik"],
-            postDate: response["icerik"][i]["paylasimzamangecen"],
-            sharedDevice: response["icerik"][i]["paylasimnereden"],
-            likesCount: response["icerik"][i]["begenisay"],
-            isLikeme: ismelike,
-            commentsCount: response["icerik"][i]["yorumsay"],
-            iscommentMe: ismecomment,
-            media: media,
-            owner: User(
-              userID: response["icerik"][i]["sahipID"],
-              userName: response["icerik"][i]["sahipad"],
-              avatar: Media(
-                mediaID: response["icerik"][i]["sahipID"],
-                mediaURL: MediaURL(
-                  bigURL: response["icerik"][i]["sahipavatarminnak"],
-                  normalURL: response["icerik"][i]["sahipavatarminnak"],
-                  minURL: response["icerik"][i]["sahipavatarminnak"],
-                ),
-              ),
-            ),
-            firstthreecomment: comments,
-            firstthreelike: likers,
-            location: response["icerik"][i]["paylasimkonum"],
-          );
-          widgetPosts.add(
-            TwitterPostWidget(post: post),
-          );
-
-          if (i / 3 == 1) {
-            widgetPosts.add(
-              ARMOYUWidget(
-                scrollController: ScrollController(),
-                content: listPOPCard,
-                firstFetch: listPOPCard.isEmpty,
-              ).widgetPOPlist(),
-            );
-          }
-          if (i / 7 == 1) {
-            widgetPosts.add(
-              ARMOYUWidget(
-                scrollController: ScrollController(),
-                content: listTPCard,
-                firstFetch: listTPCard.isEmpty,
-              ).widgetTPlist(),
-            );
-          }
-        });
+      bool ismelike = false;
+      if (response["icerik"][i]["benbegendim"] == 1) {
+        ismelike = true;
+      } else {
+        ismelike = false;
       }
+      bool ismecomment = false;
+
+      if (response["icerik"][i]["benyorumladim"] == 1) {
+        ismecomment = true;
+      } else {
+        ismecomment = false;
+      }
+      Post post = Post(
+        postID: response["icerik"][i]["paylasimID"],
+        content: response["icerik"][i]["paylasimicerik"],
+        postDate: response["icerik"][i]["paylasimzamangecen"],
+        sharedDevice: response["icerik"][i]["paylasimnereden"],
+        likesCount: response["icerik"][i]["begenisay"],
+        isLikeme: ismelike,
+        commentsCount: response["icerik"][i]["yorumsay"],
+        iscommentMe: ismecomment,
+        media: media,
+        owner: User(
+          userID: response["icerik"][i]["sahipID"],
+          userName: response["icerik"][i]["sahipad"],
+          avatar: Media(
+            mediaID: response["icerik"][i]["sahipID"],
+            mediaURL: MediaURL(
+              bigURL: response["icerik"][i]["sahipavatarminnak"],
+              normalURL: response["icerik"][i]["sahipavatarminnak"],
+              minURL: response["icerik"][i]["sahipavatarminnak"],
+            ),
+          ),
+        ),
+        firstthreecomment: comments,
+        firstthreelike: likers,
+        location: response["icerik"][i]["paylasimkonum"],
+      );
+
+      cachedPostlist.add(post);
+      widget.currentUser.widgetPosts!.add(post);
     }
+    widgetpostUpdate(cachedPostlist);
+
+    _fetchPostStatus = false;
     postpage++;
-  }
 
-  Future<void> loadSkeletonpost() async {
-    widgetStories =
-        SkeletonStorycircle(currentUser: widget.currentUser, count: 11);
-
-    widgetPosts.clear();
-
-    widgetPosts.add(const SkeletonSocailPosts());
-    widgetPosts.add(const SkeletonSocailPosts());
-    widgetPosts.add(const SkeletonSocailPosts());
-    widgetPosts.add(const SkeletonCustomCards(
-        count: 5, icon: Icon(Icons.view_comfortable_sharp)));
-    widgetPosts.add(const SkeletonSocailPosts());
-    widgetPosts.add(const SkeletonSocailPosts());
-    widgetPosts.add(const SkeletonSocailPosts());
-    widgetPosts.add(const SkeletonSocailPosts());
     setstatefunction();
   }
 
-  Future<void> loadPosts(int page) async {
-    if (page == 1) {
-      postpage = 1;
-      fetchstoryWidget(1);
+  void widgetstoryUpdate() {
+    if (widget.currentUser.widgetStoriescard == null) {
+      return;
     }
-    await loadPostsv2(page);
-    setState(() {
-      postpageproccess = false;
-    });
+    widgetStories = WidgetStorycircle(
+      currentUser: widget.currentUser,
+      content: widget.currentUser.widgetStoriescard!,
+    );
+  }
+
+  void widgetpostUpdate(List<Post> list) {
+    int counter = 0;
+    for (Post postsInfo in list) {
+      counter++;
+
+      //Postu ekle
+      widgetPosts.add(
+        TwitterPostWidget(
+          currentUser: widget.currentUser,
+          post: postsInfo,
+        ),
+      );
+
+      //Popülerlik Kartını ekle
+      if (counter / 3 == 1 || counter / 12 == 1) {
+        widgetPosts.add(
+          ARMOYUWidget(
+            currentUser: widget.currentUser,
+            scrollController: ScrollController(),
+            content: listPOPCard,
+            firstFetch: listPOPCard.isEmpty,
+          ).widgetPOPlist(),
+        );
+      }
+
+      //TP Kartını ekle
+      if (counter / 8 == 1 || counter / 17 == 1) {
+        widgetPosts.add(
+          ARMOYUWidget(
+            currentUser: widget.currentUser,
+            scrollController: ScrollController(),
+            content: listTPCard,
+            firstFetch: listTPCard.isEmpty,
+          ).widgetTPlist(),
+        );
+      }
+    }
+  }
+
+  Future<void> loadSkeletonpost(
+      {bool story = false, bool posts = false}) async {
+    if (story) {
+      widgetStories =
+          SkeletonStorycircle(currentUser: widget.currentUser, count: 11);
+    }
+
+    if (posts) {
+      widget.currentUser.widgetPosts = [];
+      widgetPosts = [];
+
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonCustomCards(
+          count: 5, icon: Icon(Icons.view_comfortable_sharp)));
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+      widgetPosts.add(const SkeletonSocailPosts());
+    }
+
+    setstatefunction();
+  }
+
+  Future<void> loadStories({bool fetchRestart = false}) async {
+    if (fetchRestart) {
+      storypage = 1;
+    }
+    await fetchstoryWidget(fetchRestart: fetchRestart);
+    setstatefunction();
+  }
+
+  Future<void> loadPosts({bool fetchRestart = false}) async {
+    if (fetchRestart) {
+      postpage = 1;
+    }
+
+    await fetchPosts(fetchRestart: fetchRestart);
   }
 
   @override
@@ -373,6 +458,7 @@ class _SocialPageState extends State<SocialPage>
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         controller: _scrollController,
         slivers: [
           CupertinoSliverRefreshControl(
@@ -392,7 +478,7 @@ class _SocialPageState extends State<SocialPage>
           ),
           SliverToBoxAdapter(
             child: Visibility(
-              visible: postpageproccess,
+              visible: _fetchPostStatus,
               child: Container(
                 height: 100,
                 color: ARMOYU.appbarColor,
@@ -403,7 +489,7 @@ class _SocialPageState extends State<SocialPage>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: "socailshare${widget.currentUser!.userID}",
+        heroTag: "socailshare${widget.currentUser.userID}",
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(

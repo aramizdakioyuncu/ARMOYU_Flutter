@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ARMOYU/Core/ARMOYU.dart';
 import 'package:ARMOYU/Core/widgets.dart';
 import 'package:ARMOYU/Functions/API_Functions/group.dart';
+import 'package:ARMOYU/Models/user.dart';
 import 'package:ARMOYU/Widgets/buttons.dart';
 import 'package:ARMOYU/Functions/API_Functions/category.dart';
 
@@ -24,7 +25,12 @@ List<Map<String, String>> cupertinolist3 = [
 ];
 
 class GroupCreatePage extends StatefulWidget {
-  const GroupCreatePage({super.key});
+  final User currentUser;
+
+  const GroupCreatePage({
+    super.key,
+    required this.currentUser,
+  });
 
   // GroupCreatePage({});
   @override
@@ -62,7 +68,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
 
   Future<void> groupcreaterequest(
       String category, List<Map<String, String>> listname) async {
-    FunctionsCategory f = FunctionsCategory();
+    FunctionsCategory f = FunctionsCategory(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.category(category);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -80,7 +86,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
 
   Future<void> groupdetailfetch(
       String data, List<Map<String, String>> listname) async {
-    FunctionsCategory f = FunctionsCategory();
+    FunctionsCategory f = FunctionsCategory(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.categorydetail(data);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -104,7 +110,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
       groupcreateProcess = true;
     });
 
-    FunctionsGroup f = FunctionsGroup();
+    FunctionsGroup f = FunctionsGroup(currentUser: widget.currentUser);
     Map<String, dynamic> response = await f.groupcreate(
         groupname.text,
         groupshortname.text,

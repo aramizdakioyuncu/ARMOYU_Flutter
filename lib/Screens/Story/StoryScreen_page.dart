@@ -13,11 +13,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class StoryScreenPage extends StatefulWidget {
+  final User currentUser;
   final int storyIndex; // Gezdirilecek hikaye indexi
   final List<StoryList> storyList; // Gezdirilecek Hikayelerin listesi
 
   const StoryScreenPage({
     super.key,
+    required this.currentUser,
     required this.storyList,
     required this.storyIndex,
   });
@@ -80,7 +82,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
 
     storyviewProcess = true;
 
-    FunctionsStory funct = FunctionsStory();
+    FunctionsStory funct = FunctionsStory(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.view(story.storyID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -164,7 +166,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
     }
 
     viewlistProcess = true;
-    FunctionsStory funct = FunctionsStory();
+    FunctionsStory funct = FunctionsStory(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.fetchviewlist(storyID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -262,12 +264,13 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                 onTap: () {
                   if (widget.storyList[storyIndex].story![initialStoryIndex]
                           .ownerusername ==
-                      ARMOYU.appUsers[ARMOYU.selectedUser].userName) {
+                      widget.currentUser.userName) {
                     _stopAnimation();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const GalleryScreen(),
+                        builder: (context) =>
+                            GalleryScreen(currentUser: widget.currentUser),
                       ),
                     );
                   }
@@ -292,7 +295,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                     alignment: Alignment.bottomRight,
                     child: widget.storyList[storyIndex]
                                 .story![initialStoryIndex].ownerusername ==
-                            ARMOYU.appUsers[ARMOYU.selectedUser].userName
+                            widget.currentUser.userName
                         ? Container(
                             height: 12,
                             width: 12,
@@ -316,9 +319,9 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
               Text(
                 widget.storyList[storyIndex].story![initialStoryIndex]
                             .ownerusername ==
-                        ARMOYU.appUsers[ARMOYU.selectedUser].userName
+                        widget.currentUser.userName
                     ? "Hikayen"
-                    : widget.storyList[storyIndex].ownerusername,
+                    : widget.storyList[storyIndex].owner.userName!,
                 style: const TextStyle(fontSize: 13),
               ),
               const SizedBox(width: 5),
@@ -462,8 +465,7 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                               onVerticalDragUpdate: (details) {
                                 if (widget.storyList[indexstoryList]
                                         .story![index].ownerID !=
-                                    ARMOYU
-                                        .appUsers[ARMOYU.selectedUser].userID) {
+                                    widget.currentUser.userID) {
                                   return;
                                 }
                                 if (details.delta.dy > 0) {
@@ -509,15 +511,15 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                           ),
                           if (widget.storyList[indexstoryList].story![index]
                                   .ownerusername !=
-                              ARMOYU.appUsers[ARMOYU.selectedUser].userName)
+                              widget.currentUser.userName)
                             Row(
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: CircleAvatar(
                                     foregroundImage: CachedNetworkImageProvider(
-                                      ARMOYU.appUsers[ARMOYU.selectedUser]
-                                          .avatar!.mediaURL.minURL,
+                                      widget
+                                          .currentUser.avatar!.mediaURL.minURL,
                                     ),
                                     radius: 20,
                                   ),
@@ -561,7 +563,9 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                                                     .story![index].isLike ==
                                                 0) {
                                               FunctionsStory funct =
-                                                  FunctionsStory();
+                                                  FunctionsStory(
+                                                      currentUser:
+                                                          widget.currentUser);
                                               Map<String, dynamic> response =
                                                   await funct.like(widget
                                                       .storyList[indexstoryList]
@@ -578,7 +582,9 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                                               setstatefunction();
                                             } else {
                                               FunctionsStory funct =
-                                                  FunctionsStory();
+                                                  FunctionsStory(
+                                                      currentUser:
+                                                          widget.currentUser);
                                               Map<String, dynamic> response =
                                                   await funct.likeremove(widget
                                                       .storyList[indexstoryList]
