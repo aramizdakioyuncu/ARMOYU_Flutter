@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/school.dart';
@@ -12,29 +13,34 @@ import 'package:ARMOYU/app/functions/API_Functions/station.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/Group/group_page/views/old_group_page.dart';
+import 'package:ARMOYU/app/modules/Restourant/restourant_page/views/restourant_page.dart';
 import 'package:ARMOYU/app/modules/School/school_page/views/school_page.dart';
+import 'package:ARMOYU/app/modules/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MainPageController extends GetxController {
-  final ScrollController homepageScrollController;
   final ScrollController notificationScrollController;
   final ScrollController profileScrollController;
   final ScrollController searchScrollController;
-  final PageController socailpageController;
   final UserAccounts currentUserAccount;
 
   MainPageController({
-    required this.homepageScrollController,
     required this.notificationScrollController,
     required this.profileScrollController,
     required this.searchScrollController,
-    required this.socailpageController,
     required this.currentUserAccount,
   });
+
+  var homepageScrollControllerv2 = ScrollController().obs;
+  var socailinitpage = 0.obs;
+  late var socailpageController =
+      PageController(initialPage: socailinitpage.value).obs;
+  var mainsocialpages = <Widget>[].obs;
 
   var mainpagecontroller = PageController(initialPage: 0).obs;
 
@@ -78,9 +84,28 @@ class MainPageController extends GetxController {
     final pagesController = Get.find<PagesController>(
       tag: currentUserAccount.user.userID.toString(),
     );
-    changePageFunction = pagesController.changePage;
 
+    // ((Önemli))
+    changePageFunction = pagesController.changePage;
     currentUserAccounts.value = currentUserAccount;
+
+    if (ARMOYU.cameras!.isNotEmpty) {
+      mainsocialpages.add(
+        CameraScreen(
+          currentUser: currentUserAccounts.value!.user,
+          canPop: false,
+        ),
+      );
+      socailinitpage.value = 1;
+    }
+
+    mainsocialpages.add(
+      SocialPage(
+        currentUserAccounts: currentUserAccounts.value!,
+        homepageScrollController: homepageScrollControllerv2.value,
+      ),
+    );
+
     //Takımları Çek opsiyonel
     ARMOYUFunctions functions = ARMOYUFunctions(
       currentUserAccounts: currentUserAccounts.value!,
@@ -97,7 +122,12 @@ class MainPageController extends GetxController {
     mainpagecontroller.value.jumpToPage(
       0,
     );
-    socailpageController.jumpToPage(1);
+
+    try {
+      socailpageController.value.jumpToPage(1);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   void changePage(int page) {
@@ -109,7 +139,7 @@ class MainPageController extends GetxController {
       if (currentPage.value.toString() == "0") {
         try {
           Future.delayed(const Duration(milliseconds: 100), () {
-            homepageScrollController.animateTo(
+            homepageScrollControllerv2.value.animateTo(
               0,
               duration: const Duration(milliseconds: 500),
               curve: Curves.easeInOut,
@@ -469,13 +499,19 @@ class MainPageController extends GetxController {
           ),
           title: Text(school.schoolName!),
           onTap: () {
-            Get.to(
-              () => SchoolPage(
-                currentUser: currentUserAccounts.value!.user,
-                school: school,
-                schoolID: school.schoolID!,
-              ),
-            );
+            // Get.to(
+            //   () => SchoolPage(
+            //     currentUser: currentUserAccounts.value!.user,
+            //     school: school,
+            //     schoolID: school.schoolID!,
+            //   ),
+            // );
+
+            Get.to(const SchoolPageView(), arguments: {
+              "user": currentUserAccounts.value!.user,
+              "school": school,
+              "schoolID": school.schoolID!,
+            });
           },
         );
       },
@@ -510,6 +546,16 @@ class MainPageController extends GetxController {
           onTap: () {
             // Restoran sayfasına yönlendirme işlemleri yapılabilir
             // Get.to(() => RestourantPage(cafe: foodStation, currentUser: currentUser));
+
+            Get.to(
+                RestourantPageView(
+                  cafe: foodStation,
+                  currentUser: currentUserAccounts.value!.user,
+                ),
+                arguments: {
+                  "cafe": foodStation,
+                  "currentUser": currentUserAccounts.value!.user,
+                });
           },
         );
       },

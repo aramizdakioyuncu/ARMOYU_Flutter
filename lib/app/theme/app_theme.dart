@@ -1,60 +1,117 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 final ThemeData appThemeData = ThemeData(
   primarySwatch: Colors.blue,
   primaryColor: Colors.red,
   visualDensity: VisualDensity.adaptivePlatformDensity,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: Colors.black,
   appBarTheme: const AppBarTheme(
-    color: Color(0xFF3C4CBD),
+    color: Colors.black,
     foregroundColor: Colors.white,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
-      backgroundColor: WidgetStateProperty.all(const Color(0xFF3C4CBD)),
+      backgroundColor: WidgetStateProperty.all(Colors.grey.shade900),
+      foregroundColor: WidgetStateProperty.all(Colors.white),
+    ),
+  ),
+  badgeTheme: const BadgeThemeData(
+    textColor: Colors.white,
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    iconColor: Colors.white,
+    prefixIconColor: Colors.white,
+    fillColor: Colors.grey.shade900,
+    hintStyle: const TextStyle(
+      color: Color.fromARGB(255, 195, 195, 195),
+    ),
+  ),
+  iconTheme: const IconThemeData(
+    color: Colors.white,
+  ),
+  dialogTheme: DialogTheme(
+    backgroundColor: Colors.grey.shade900,
+    contentTextStyle: const TextStyle(
+      color: Colors.white,
+    ),
+  ),
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
       foregroundColor: WidgetStateProperty.all(Colors.white),
     ),
   ),
   buttonTheme: const ButtonThemeData(
     buttonColor: Colors.red,
   ),
+  tabBarTheme: const TabBarTheme(
+    labelColor: Colors.white,
+  ),
+  iconButtonTheme: IconButtonThemeData(
+    style: ButtonStyle(
+      iconColor: WidgetStateProperty.all(Colors.white),
+      foregroundColor: WidgetStateProperty.all(Colors.white),
+    ),
+  ),
   snackBarTheme: const SnackBarThemeData(
-    backgroundColor: Color(0xFF3C4CBD), // SnackBar arka plan rengi
+    backgroundColor: Color(0xFF3C4CBD),
     contentTextStyle: TextStyle(
       color: Colors.white,
-    ), // SnackBar metin rengi
-    actionTextColor: Colors.yellow, //
+    ),
+    actionTextColor: Colors.yellow,
   ),
   drawerTheme: const DrawerThemeData(
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.black,
+    scrimColor: Colors.black,
+    shadowColor: Colors.black,
+    surfaceTintColor: Colors.black,
   ),
   textTheme: const TextTheme(
     titleLarge: TextStyle(
-      color: Colors.black,
+      color: Colors.white,
     ),
     titleMedium: TextStyle(
-      color: Colors.black,
+      color: Colors.white,
     ),
     titleSmall: TextStyle(
-      color: Colors.black,
+      color: Colors.white,
     ),
     bodyLarge: TextStyle(
-      color: Colors.black,
+      color: Colors.white,
     ),
     bodyMedium: TextStyle(
-      color: Colors.black,
+      color: Colors.white,
     ),
     bodySmall: TextStyle(
-      color: Colors.black,
+      color: Colors.white,
     ),
   ),
   dividerTheme: const DividerThemeData(
-    color: Colors.black,
-    thickness: 3,
+    color: Colors.white,
+    thickness: 0,
+    endIndent: 0,
+    indent: 0,
+    space: 0,
   ),
+  cupertinoOverrideTheme: const NoDefaultCupertinoThemeData(
+    brightness: Brightness.dark,
+  ),
+  cardColor: Colors.grey.shade900,
   listTileTheme: const ListTileThemeData(
-    tileColor: Color(0xFF3C4CBD),
     textColor: Colors.white,
     iconColor: Colors.white,
+  ),
+  expansionTileTheme: const ExpansionTileThemeData(
+    textColor: Colors.white,
+    collapsedTextColor: Colors.white,
+    collapsedIconColor: Colors.white,
+    iconColor: Colors.red,
+  ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: Colors.black,
+    selectedItemColor: Colors.white,
+    selectedIconTheme: IconThemeData(
+      color: Colors.white,
+    ),
   ),
 );

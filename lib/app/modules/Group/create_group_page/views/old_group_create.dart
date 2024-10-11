@@ -170,14 +170,14 @@ class _GroupCreatePageState extends State<GroupCreatePage>
           child: Column(
             children: [
               const SizedBox(height: 16),
-              CustomTextfields(setstate: setstatefunction).costum3(
+              CustomTextfields.costum3(
                 title: "Grup Adı",
                 controller: groupname,
                 isPassword: false,
                 preicon: const Icon(Icons.business),
               ),
               const SizedBox(height: 16),
-              CustomTextfields(setstate: setstatefunction).costum3(
+              CustomTextfields.costum3(
                 title: "Grup Kısa Adı",
                 controller: groupshortname,
                 isPassword: false,

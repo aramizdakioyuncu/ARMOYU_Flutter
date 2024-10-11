@@ -104,7 +104,7 @@ class _ChatPageState extends State<SurveyPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anket Sorusu"),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async => await refreshSurvey(),
@@ -126,8 +126,8 @@ class _ChatPageState extends State<SurveyPage>
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
-              color: ARMOYU.appbarColor,
+            SizedBox(
+              // color: ARMOYU.appbarColor,
               height: ARMOYU.screenHeight / 3,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,

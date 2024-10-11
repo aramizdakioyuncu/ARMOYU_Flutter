@@ -224,7 +224,7 @@ class _GalleryScreenState extends State<GalleryScreen>
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         title: const Text('Hikaye Gönder'),
       ),
       body: Column(

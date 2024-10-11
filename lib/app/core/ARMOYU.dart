@@ -17,14 +17,14 @@ class ARMOYU {
   static String devicePlatform = "";
   static String deviceModel = "";
 
-  static Color appbarColor = Colors.black;
+  // static Color appbarColor = Colors.black;
   static Color appbottomColor = Colors.black;
   static Color bodyColor = Colors.black;
 
   static Color color = Colors.black;
   static Color backgroundcolor = Colors.black;
 
-  static Color textColor = Colors.black;
+  // static Color textColor = Colors.black;
   static Color textbackColor = Colors.black;
   static Color texthintColor = Colors.black;
 

@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
@@ -66,7 +65,7 @@ class _CustomMenusNotificationbarsState
     return Visibility(
       visible: widget.natificationisVisible,
       child: Container(
-        color: ARMOYU.appbarColor,
+        // color: ARMOYU.appbarColor,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Column(
           children: [

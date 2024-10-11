@@ -69,7 +69,7 @@ class _SettingsPage extends State<BusinessApplicationsView> {
           ),
           subtitle: CustomText.costum1(
             departmentInfo["sapplication_position"]["position_department"],
-            color: ARMOYU.textColor.withOpacity(0.6),
+            color: Colors.black.withOpacity(0.6),
           ),
           trailing: departmentInfo["sapplication_status"] == 2
               ? CustomText.costum1("İnceleniyor")
@@ -89,10 +89,10 @@ class _SettingsPage extends State<BusinessApplicationsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
         title: CustomText.costum1('Bize Katıl'),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async => await fetchapplicationInfo(firstpage: true),

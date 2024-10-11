@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/Utility/noconnectionpage/controllers/noconnection_controller.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 
@@ -14,7 +13,7 @@ class NoConnectionpageView extends StatelessWidget {
         Get.put(NoconnectionapageController());
 
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       body: Center(
         child: Obx(
           () => Column(

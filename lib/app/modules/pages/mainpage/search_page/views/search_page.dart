@@ -192,7 +192,7 @@ class _SearchPagePage extends State<SearchPage>
                                 width: ARMOYU.screenWidth,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: ARMOYU.appbarColor,
+                                  // color: ARMOYU.appbarColor,
                                 ),
                                 child: const Center(
                                   child: CupertinoActivityIndicator(),

@@ -59,7 +59,6 @@ class _SettingsPage extends State<SettingsPage> {
       if (mounted) {
         Navigator.pop(context);
       }
-      appPageController.changeAccount(ARMOYU.appUsers.first);
 
       FunctionService f = FunctionService(currentUser: widget.currentUser);
       Map<String, dynamic> response =
@@ -70,6 +69,8 @@ class _SettingsPage extends State<SettingsPage> {
         ARMOYUWidget.toastNotification(response["aciklama"].toString());
         return;
       }
+
+      appPageController.changeAccount(ARMOYU.appUsers.first);
     }
   }
 
@@ -229,10 +230,8 @@ class _SettingsPage extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ARMOYU.appbarColor,
         appBar: AppBar(
           title: CustomText.costum1('Ayarlar'),
-          backgroundColor: ARMOYU.appbarColor,
         ),
         body: SingleChildScrollView(
           child: Column(

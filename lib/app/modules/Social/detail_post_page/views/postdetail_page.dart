@@ -13,7 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
-import 'package:ARMOYU/app/widgets/posts.dart';
+import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 
 class PostDetailPage extends StatefulWidget {
   final UserAccounts currentUserAccounts;
@@ -250,7 +250,7 @@ class _PostDetailPage extends State<PostDetailPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text('Paylaşım', style: TextStyle(fontSize: 18)),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         toolbarHeight: 40,
       ),
       body: Column(

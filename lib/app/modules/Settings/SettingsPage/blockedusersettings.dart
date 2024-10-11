@@ -116,10 +116,10 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
         title: const Text('Engellenen Hesaplar'),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
               onPressed: () async => await getblockedlist(),

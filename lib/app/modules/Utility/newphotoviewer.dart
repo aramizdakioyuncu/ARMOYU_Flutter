@@ -45,7 +45,7 @@ class _MediaViewerPage extends State<MediaViewer> {
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: <Widget>[
           Visibility(
             visible: isRotationprocces,

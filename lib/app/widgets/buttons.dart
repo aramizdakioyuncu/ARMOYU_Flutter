@@ -27,14 +27,11 @@ class CustomButtons {
 
   static Widget costum1({
     required String text,
-    Color? background = Colors.amber,
+    Color? background,
     required Function onPressed,
     required bool loadingStatus,
     bool enabled = true,
   }) {
-    if (background == Colors.amber) {
-      background = ARMOYU.buttonColor;
-    }
     Color foregroundColor = Colors.white;
 
     return loadingStatus

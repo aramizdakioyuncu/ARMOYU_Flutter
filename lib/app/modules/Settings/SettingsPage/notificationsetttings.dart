@@ -137,9 +137,9 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         title: const Text('Bildirimler'),
         actions: [
           IconButton(

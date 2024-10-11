@@ -163,4 +163,20 @@ class RegisterpageController extends GetxController {
       // });
     }
   }
+
+  void davetkodu() {
+    if (inviteController.value.text.length == 5) {
+      log("5 karakter yazıldı: ${inviteController.value.text}");
+      invitecodeTester(
+        inviteController.value.text,
+      );
+    }
+  }
+
+  void davetkodu2(value) {
+    inviteController.refresh();
+    if (value.length == 5) {
+      invitecodeTester(value);
+    }
+  }
 }

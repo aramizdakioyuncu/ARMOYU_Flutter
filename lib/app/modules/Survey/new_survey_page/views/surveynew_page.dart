@@ -36,12 +36,10 @@ class _ChatPageState extends State<SurveyNewPage>
     super.initState();
     _answerlist = [
       {
-        1: CustomTextfields(setstate: setstatefunction)
-            .costum3(title: "1.Seçenek", controller: _t1),
+        1: CustomTextfields.costum3(title: "1.Seçenek", controller: _t1),
       },
       {
-        2: CustomTextfields(setstate: setstatefunction)
-            .costum3(title: "2.Seçenek", controller: _t2),
+        2: CustomTextfields.costum3(title: "2.Seçenek", controller: _t2),
       }
     ];
     _controllers = [
@@ -63,7 +61,7 @@ class _ChatPageState extends State<SurveyNewPage>
 
     final TextEditingController t = TextEditingController();
     _answerlist.add({
-      countID: CustomTextfields(setstate: setstatefunction).costum3(
+      countID: CustomTextfields.costum3(
         title: "Seçenek",
         controller: t,
         suffixiconbutton: IconButton(
@@ -97,7 +95,7 @@ class _ChatPageState extends State<SurveyNewPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anket Oluştur"),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -110,7 +108,7 @@ class _ChatPageState extends State<SurveyNewPage>
                 currentUser: widget.currentUserAccounts.user,
               ),
               const Text("Anket Sorusu"),
-              CustomTextfields(setstate: setstatefunction).costum3(
+              CustomTextfields.costum3(
                 controller: controllerSurveyQuestion,
                 maxLines: null,
                 minLines: 2,
@@ -272,11 +270,10 @@ class _ChatPageState extends State<SurveyNewPage>
                     SizedBox(
                       height: 115,
                       width: ARMOYU.screenWidth - 60,
-                      child: CustomTextfields(setstate: setstatefunction)
-                          .costum3(
-                              title: "Seçenek Ekle",
-                              controller: TextEditingController(),
-                              enabled: false),
+                      child: CustomTextfields.costum3(
+                          title: "Seçenek Ekle",
+                          controller: TextEditingController(),
+                          enabled: false),
                     ),
                   ],
                 ),

@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/Events/event_page/views/event_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Event {
   int eventID;
@@ -63,17 +64,24 @@ class Event {
     return SizedBox(
       width: ARMOYU.screenWidth,
       child: Material(
-        color: ARMOYU.appbarColor,
+        color: Get.theme.cardColor,
         child: InkWell(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EventPage(
-                  currentUserAccounts: currentUserAccounts,
-                  event: this,
-                ),
-              ),
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(
+            //     builder: (context) => EventPage(
+            //       currentUserAccounts: currentUserAccounts,
+            //       event: this,
+            //     ),
+            //   ),
+            // );
+
+            Get.to(
+              EventPage(currentUserAccounts: currentUserAccounts),
+              arguments: {
+                "event": this,
+              },
             );
           },
           child: SizedBox(

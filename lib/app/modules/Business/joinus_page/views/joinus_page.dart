@@ -149,10 +149,10 @@ class _SettingsPage extends State<JoinUsBusinessView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
         title: CustomText.costum1('Bize Katıl'),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -252,7 +252,7 @@ class _SettingsPage extends State<JoinUsBusinessView> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomTextfields(setstate: setstatefunction).costum3(
+                child: CustomTextfields.costum3(
                   title: "Neden ekibe katılmak istiyorsun?",
                   minLines: 5,
                   maxLength: 200,
@@ -262,7 +262,7 @@ class _SettingsPage extends State<JoinUsBusinessView> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomTextfields(setstate: setstatefunction).costum3(
+                child: CustomTextfields.costum3(
                   title: "Neden bu yetkiyi seçtin?",
                   minLines: 3,
                   maxLength: 100,
@@ -272,7 +272,7 @@ class _SettingsPage extends State<JoinUsBusinessView> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CustomTextfields(setstate: setstatefunction).costum3(
+                child: CustomTextfields.costum3(
                   title: "Bize haftada kaç gün ayırabilirsin?",
                   minLines: 2,
                   maxLength: 50,

@@ -107,7 +107,7 @@ class _PostSharePageState extends State<PostSharePage>
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         title: const Text("Paylaşım Yap"),
       ),
       body: Padding(
@@ -161,10 +161,11 @@ class _PostSharePageState extends State<PostSharePage>
                   ),
                 ),
               ),
-              CustomTextfields(setstate: setstatefunction).mentionTextFiled(
+              CustomTextfields.mentionTextFiled(
                 key: key,
                 minLines: 3,
                 currentUser: widget.currentUser,
+                setstate: setstatefunction,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

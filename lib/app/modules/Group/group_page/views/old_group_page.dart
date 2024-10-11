@@ -1048,8 +1048,7 @@ class _GroupPage extends State<GroupPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: CustomTextfields(setstate: setstatefunction)
-                            .costum3(
+                        child: CustomTextfields.costum3(
                           controller: _searchuser,
                         ),
                       ),
@@ -1173,17 +1172,17 @@ class _GroupPage extends State<GroupPage> {
                     onPressed: changegroupbanner,
                     loadingStatus: _changegroupbannerStatus,
                   ),
-                  CustomTextfields(setstate: setstatefunction).costum3(
+                  CustomTextfields.costum3(
                     controller: _groupname,
                     title: "Grup Adı",
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: setstatefunction).costum3(
+                  CustomTextfields.costum3(
                     controller: _groupshortname,
                     title: "Grup Etiketi",
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: setstatefunction).costum3(
+                  CustomTextfields.costum3(
                     controller: _groupdescription,
                     title: "Grup Açıklaması",
                   ),
@@ -1203,12 +1202,12 @@ class _GroupPage extends State<GroupPage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: setstatefunction).costum3(
+                  CustomTextfields.costum3(
                     controller: _socialdiscord,
                     title: "Discord Davet Linki",
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: setstatefunction).costum3(
+                  CustomTextfields.costum3(
                     controller: _socialweb,
                     title: "Web sitesi",
                   ),

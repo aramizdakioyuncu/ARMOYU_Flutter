@@ -60,7 +60,7 @@ class News {
     return SizedBox(
       width: ARMOYU.screenWidth,
       child: Material(
-        color: ARMOYU.appbarColor,
+        color: Get.theme.cardColor,
         child: InkWell(
           onTap: () {
             log("sa");
@@ -87,7 +87,6 @@ class News {
                       const SizedBox(width: 10),
                       Text(
                         author,
-                        style: TextStyle(color: ARMOYU.color),
                       ),
                       Expanded(
                         child: Row(
@@ -100,7 +99,6 @@ class News {
                             const SizedBox(width: 3),
                             Text(
                               newsViews.toString(),
-                              style: TextStyle(color: ARMOYU.color),
                             ),
                           ],
                         ),
@@ -132,7 +130,6 @@ class News {
                       const SizedBox(height: 10),
                       Text(
                         newssummary,
-                        style: TextStyle(color: ARMOYU.textColor),
                       ),
                       const SizedBox(height: 10),
                     ],

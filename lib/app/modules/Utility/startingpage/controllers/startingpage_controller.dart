@@ -105,20 +105,20 @@ class StartingpageController extends GetxController {
     String? username;
     String? password;
 
-    if (usersJson != null && usersJson.isNotEmpty) {
-      //Listeye Yükle
-      ARMOYU.appUsers = usersJson
+    //Listeye Yükle
+    try {
+      ARMOYU.appUsers = usersJson!
           .map((userJson) => UserAccounts.fromJson(jsonDecode(userJson)))
           .toList();
+    } catch (e) {
+      log(e.toString());
+    }
 
+    if (ARMOYU.appUsers.isNotEmpty) {
       username = ARMOYU.appUsers.first.user.userName;
       password = ARMOYU.appUsers.first.user.password;
 
-      // for (var element in usersJson) {
-      //   // log(element.toString());
-      // }
-
-      log("Açık Kullanıcı Hesabı : ${usersJson.length}");
+      log("Açık Kullanıcı Hesabı : ${usersJson!.length}");
 
       int sirasay = 0;
       for (UserAccounts userInfo in ARMOYU.appUsers) {
@@ -185,10 +185,10 @@ class StartingpageController extends GetxController {
         // ARMOYU.appUsers.first.user = newUser;
       }
 
-      Get.to(() => const AppPageView(), arguments: {
-        'currentUserAccounts': ARMOYU.appUsers,
-        'userID': 1,
-      });
+      // Get.to(() => const AppPageView(), arguments: {
+      // });
+
+      Get.offNamed("/app");
 
       return;
     } else if (response["durum"] == 0) {

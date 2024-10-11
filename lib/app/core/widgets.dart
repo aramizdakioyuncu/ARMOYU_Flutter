@@ -55,10 +55,7 @@ class ARMOYUWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: ARMOYU.backgroundcolor,
-        content: Text(
-          text,
-          style: TextStyle(color: ARMOYU.textColor),
-        ),
+        content: Text(text),
         duration: const Duration(milliseconds: 500),
       ),
     );

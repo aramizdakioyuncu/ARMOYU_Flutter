@@ -28,14 +28,14 @@ class GroupCreateView extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            CustomTextfields(setstate: () {}).costum3(
+            CustomTextfields.costum3(
               title: "Grup Adı",
               controller: controller.groupname,
               isPassword: false,
               preicon: const Icon(Icons.business),
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: () {}).costum3(
+            CustomTextfields.costum3(
               title: "Grup Kısa Adı",
               controller: controller.groupshortname,
               isPassword: false,

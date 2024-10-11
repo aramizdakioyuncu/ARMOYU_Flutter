@@ -525,7 +525,7 @@ class GroupPageView extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Expanded(
-                        child: CustomTextfields(setstate: () {}).costum3(
+                        child: CustomTextfields.costum3(
                           controller: controller.searchuser.value,
                         ),
                       ),
@@ -659,17 +659,17 @@ class GroupPageView extends StatelessWidget {
                     onPressed: controller.changegroupbanner,
                     loadingStatus: controller.changegroupbannerStatus.value,
                   ),
-                  CustomTextfields(setstate: () {}).costum3(
+                  CustomTextfields.costum3(
                     controller: controller.groupname.value,
                     title: "Grup Adı",
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: () {}).costum3(
+                  CustomTextfields.costum3(
                     controller: controller.groupshortname.value,
                     title: "Grup Etiketi",
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: () {}).costum3(
+                  CustomTextfields.costum3(
                     controller: controller.groupdescription.value,
                     title: "Grup Açıklaması",
                   ),
@@ -689,12 +689,12 @@ class GroupPageView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: () {}).costum3(
+                  CustomTextfields.costum3(
                     controller: controller.socialdiscord.value,
                     title: "Discord Davet Linki",
                   ),
                   const SizedBox(height: 20),
-                  CustomTextfields(setstate: () {}).costum3(
+                  CustomTextfields.costum3(
                     controller: controller.socialweb.value,
                     title: "Web sitesi",
                   ),

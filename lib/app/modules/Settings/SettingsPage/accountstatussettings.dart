@@ -25,9 +25,9 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         title: const Text('Hesap Durumu'),
       ),
       body: SingleChildScrollView(

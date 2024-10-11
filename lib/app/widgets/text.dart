@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -12,11 +11,8 @@ class CustomText {
     double? size,
     FontWeight? weight,
     TextAlign align = TextAlign.left,
-    Color color = Colors.white70,
+    Color? color,
   }) {
-    if (color == Colors.white70) {
-      color = ARMOYU.textColor;
-    }
     return Text(
       text,
       style: TextStyle(
@@ -40,8 +36,8 @@ class CustomText {
         children: [
           TextSpan(
             text: user.displayName,
-            style: TextStyle(
-              color: ARMOYU.textColor,
+            style: const TextStyle(
+              // color: ARMOYU.textColor,
               fontWeight: FontWeight.bold,
             ),
             recognizer: TapGestureRecognizer()
@@ -64,9 +60,9 @@ class CustomText {
     textSpans.add(
       TextSpan(
         text: " $text",
-        style: TextStyle(
-          color: ARMOYU.textColor,
-        ),
+        style: const TextStyle(
+            // color: ARMOYU.textColor,
+            ),
       ),
     );
 

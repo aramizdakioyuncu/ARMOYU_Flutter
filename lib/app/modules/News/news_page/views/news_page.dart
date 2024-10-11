@@ -14,10 +14,8 @@ class NewsPageView extends StatelessWidget {
     final NewsPageController controller = Get.put(NewsPageController());
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ARMOYU.bodyColor,
         appBar: AppBar(
           title: Text(controller.news.value!.newsTitle.toString()),
-          backgroundColor: ARMOYU.appbarColor,
           actions: [
             IconButton(
               onPressed: () {

@@ -22,9 +22,9 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.appbarColor,
+      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         title: const Text('Veri Tasarrufu'),
       ),
       body: SingleChildScrollView(

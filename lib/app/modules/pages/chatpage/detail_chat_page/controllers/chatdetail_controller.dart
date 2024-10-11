@@ -7,7 +7,7 @@ import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
+import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/Socket/socket.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,7 +41,7 @@ class ChatdetailController extends GetxController {
     final Map<String, dynamic> arguments =
         Get.arguments as Map<String, dynamic>;
 
-    final currentAccountController = Get.find<AppPageController>();
+    final currentAccountController = Get.find<PagesController>();
 
     log("*****${currentAccountController.currentUserAccounts.user.displayName}");
 

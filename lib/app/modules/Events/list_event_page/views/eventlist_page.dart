@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -112,10 +111,8 @@ class _EventlistPage extends State<EventlistPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text('Etkinlikler'),
-        backgroundColor: ARMOYU.appbarColor,
       ),
       body: CustomScrollView(
         slivers: [
@@ -133,10 +130,12 @@ class _EventlistPage extends State<EventlistPage>
               : SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      Event aa = eventsList[index];
-                      return aa.eventListWidget(
-                        context,
-                        currentUserAccounts: widget.currentUserAccounts,
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: eventsList[index].eventListWidget(
+                          context,
+                          currentUserAccounts: widget.currentUserAccounts,
+                        ),
                       );
                     },
                     childCount: eventsList.length,

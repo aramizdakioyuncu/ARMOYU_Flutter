@@ -13,13 +13,7 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 
 class CustomTextfields {
-  Timer? searchTimer;
-  final Function setstate;
-  CustomTextfields({
-    required this.setstate,
-    this.searchTimer,
-  });
-  Widget costum3({
+  static Widget costum3({
     String? title,
     required TextEditingController controller,
     bool isPassword = false,
@@ -62,7 +56,7 @@ class CustomTextfields {
             onTap();
           },
           onChanged: (value) {
-            setstate();
+            // setstate();
             if (onChanged != null) {
               onChanged(value);
             }
@@ -83,7 +77,6 @@ class CustomTextfields {
           keyboardType: type,
           textInputAction: TextInputAction.next,
           autofillHints: const [AutofillHints.username],
-          style: TextStyle(color: ARMOYU.textColor),
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(16.0),
             suffixIcon: suffixiconbutton,
@@ -113,28 +106,27 @@ class CustomTextfields {
               borderSide: BorderSide.none,
             ),
             prefixIcon: preicon,
-            prefixIconColor: ARMOYU.textColor,
             hintText: placeholder,
-            hintStyle: TextStyle(color: ARMOYU.texthintColor),
             filled: true,
-            fillColor: ARMOYU.textbackColor,
           ),
         ),
       ],
     );
   }
 
-  FlutterMentions mentionTextFiled({
+  static FlutterMentions mentionTextFiled({
     required key,
     int? minLines = 1,
     required User currentUser,
+    Timer? searchTimer,
+    required Function setstate,
   }) {
     return FlutterMentions(
       key: key,
       suggestionPosition: SuggestionPosition.Top,
       maxLines: 20,
       minLines: minLines,
-      suggestionListDecoration: BoxDecoration(color: ARMOYU.appbarColor),
+      suggestionListDecoration: const BoxDecoration(color: Colors.black),
       suggestionListHeight: ARMOYU.screenHeight / 3,
       onChanged: (value) {
         List<String> words = value.split(' ');
@@ -246,7 +238,7 @@ class CustomTextfields {
     );
   }
 
-  TextField number({
+  static TextField number({
     String? placeholder,
     required TextEditingController controller,
     required int length,
@@ -277,11 +269,8 @@ class CustomTextfields {
         prefixIcon: icon,
         prefixIconColor: Colors.white,
         hintText: placeholder,
-        hintStyle: const TextStyle(
-          color: Colors.white,
-        ),
+
         filled: true,
-        fillColor: Colors.grey.shade900,
       ),
     );
   }

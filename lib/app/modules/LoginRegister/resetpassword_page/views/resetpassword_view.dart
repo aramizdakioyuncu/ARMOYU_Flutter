@@ -44,14 +44,14 @@ class ResetPasswordpageView extends StatelessWidget {
                     visible: controller.step1.value,
                     child: Column(
                       children: [
-                        CustomTextfields(setstate: () {}).costum3(
+                        CustomTextfields.costum3(
                           title: "Kullanıcı Adı",
                           controller: controller.usernameController.value,
                           isPassword: false,
                           preicon: const Icon(Icons.person),
                         ),
                         const SizedBox(height: 16),
-                        CustomTextfields(setstate: () {}).costum3(
+                        CustomTextfields.costum3(
                           title: "E-posta",
                           controller: controller.emailController.value,
                           isPassword: false,
@@ -147,21 +147,21 @@ class ResetPasswordpageView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        CustomTextfields(setstate: () {}).number(
+                        CustomTextfields.number(
                           placeholder: "Kod",
                           controller: controller.codeController.value,
                           length: 6,
                           icon: const Icon(Icons.sms),
                         ),
                         const SizedBox(height: 16),
-                        CustomTextfields(setstate: () {}).costum3(
+                        CustomTextfields.costum3(
                           title: "Şifre",
                           controller: controller.passwordController.value,
                           isPassword: true,
                           preicon: const Icon(Icons.lock_outline),
                         ),
                         const SizedBox(height: 16),
-                        CustomTextfields(setstate: () {}).costum3(
+                        CustomTextfields.costum3(
                             title: "Şifre Tekrar",
                             controller: controller.repasswordController.value,
                             isPassword: true,

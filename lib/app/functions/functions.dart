@@ -475,9 +475,7 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child:
-                                    CustomTextfields(setstate: setstatefunction)
-                                        .costum3(
+                                child: CustomTextfields.costum3(
                                   placeholder:
                                       currentUserAccounts.user.displayName,
                                   controller: firstName,
@@ -499,9 +497,7 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child:
-                                    CustomTextfields(setstate: setstatefunction)
-                                        .costum3(
+                                child: CustomTextfields.costum3(
                                   placeholder:
                                       currentUserAccounts.user.displayName,
                                   controller: lastName,
@@ -523,9 +519,7 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child:
-                                    CustomTextfields(setstate: setstatefunction)
-                                        .costum3(
+                                child: CustomTextfields.costum3(
                                   placeholder: currentUserAccounts.user.aboutme,
                                   controller: aboutme,
                                 ),
@@ -550,9 +544,7 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child:
-                                    CustomTextfields(setstate: setstatefunction)
-                                        .costum3(
+                                child: CustomTextfields.costum3(
                                   placeholder:
                                       currentUserAccounts.user.userMail,
                                   controller: email,
@@ -701,9 +693,7 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child:
-                                    CustomTextfields(setstate: setstatefunction)
-                                        .number(
+                                child: CustomTextfields.number(
                                   placeholder: "(XXX) XXX XX XX",
                                   controller: phoneNumber,
                                   icon: const Icon(Icons.phone),
@@ -727,12 +717,10 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child:
-                                    CustomTextfields(setstate: setstatefunction)
-                                        .costum3(
-                                            controller: passwordControl,
-                                            isPassword: true,
-                                            focusNode: myFocusPassword),
+                                child: CustomTextfields.costum3(
+                                    controller: passwordControl,
+                                    isPassword: true,
+                                    focusNode: myFocusPassword),
                               )
                             ],
                           ),

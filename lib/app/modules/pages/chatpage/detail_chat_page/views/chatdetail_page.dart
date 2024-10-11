@@ -176,8 +176,7 @@ class _ChatDetailPage extends State<ChatDetailView>
                                 minLines: 1,
                                 maxLines: 5,
                                 cursorColor: Colors.blue,
-                                style: TextStyle(
-                                  color: ARMOYU.textColor,
+                                style: const TextStyle(
                                   fontSize: 18,
                                 ),
                                 decoration: const InputDecoration(

@@ -16,14 +16,12 @@ class ListNewsView extends StatelessWidget {
         backgroundColor: ARMOYU.backgroundcolor,
         appBar: AppBar(
           title: const Text('Haberler'),
-          backgroundColor: ARMOYU.appbarColor,
         ),
         body: Obx(
           () => CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
               CupertinoSliverRefreshControl(
-                // key: controller.refreshIndicatorKey,
                 onRefresh: () async {
                   await controller.getnewslist();
                 },

@@ -68,7 +68,7 @@ class ChatPage extends StatelessWidget {
                     ),
                   )
                 : const Text("Sohbetler"),
-            backgroundColor: ARMOYU.appbarColor,
+            // backgroundColor: ARMOYU.appbarColor,
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.search),

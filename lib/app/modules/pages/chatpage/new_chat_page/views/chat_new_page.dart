@@ -175,7 +175,7 @@ class _ChatNewPageState extends State<ChatNewPage>
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         title: const Text("Yeni Sohbet"),
       ),
       body: CustomScrollView(
@@ -186,29 +186,26 @@ class _ChatNewPageState extends State<ChatNewPage>
             onRefresh: () async => await getchatfriendlist(fecthRestart: true),
           ),
           SliverToBoxAdapter(
-            child: Container(
-              color: ARMOYU.appbarColor,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    color: ARMOYU.bodyColor,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                height: 45,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  color: ARMOYU.bodyColor,
+                ),
+                child: TextField(
+                  controller: _newchatcontroller,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 20,
+                    ),
+                    hintText: 'Ara',
                   ),
-                  child: TextField(
-                    controller: _newchatcontroller,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 20,
-                      ),
-                      hintText: 'Ara',
-                    ),
-                    style: TextStyle(
-                      color: ARMOYU.color,
-                    ),
+                  style: TextStyle(
+                    color: ARMOYU.color,
                   ),
                 ),
               ),
@@ -229,7 +226,7 @@ class _ChatNewPageState extends State<ChatNewPage>
                         ),
                         title: CustomText.costum1(
                             _filteredItems[index].displayName!),
-                        tileColor: ARMOYU.appbarColor,
+                        // tileColor: ARMOYU.appbarColor,
                         trailing:
                             Text(_filteredItems[index].lastloginv2.toString()),
                         onTap: () {

@@ -174,13 +174,6 @@ class FunctionService {
 
   Future<Map<String, dynamic>> logOut(int userID) async {
     //Oturumunu Kapat
-    // try {
-    //   // pagesViewList.removeAt(ARMOYU.selectedUser);
-    // şuanda çalışmıyor bakılacak  //   pagesViewList.removeWhere(
-    //       (element) => element.currentUserAccounts.user.userID == userID);
-    // } catch (e) {
-    //   log(e.toString());
-    // }
     ARMOYU.appUsers.removeWhere((element) => element.user.userID == userID);
     //Oturumunu Kapat Bitiş
 

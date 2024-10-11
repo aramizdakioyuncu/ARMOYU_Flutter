@@ -22,7 +22,7 @@ class _TextPageState extends State<TextPage> {
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: Text(widget.texttitle),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

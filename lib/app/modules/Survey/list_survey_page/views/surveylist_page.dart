@@ -88,7 +88,7 @@ class _ChatPageState extends State<SurveyListPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anketler"),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async {

@@ -12,18 +12,16 @@ import 'package:ARMOYU/app/modules/School/login_school_page/views/school_login.d
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
 import 'package:ARMOYU/app/modules/Settings/_main/views/settings_page.dart';
 import 'package:ARMOYU/app/modules/Survey/list_survey_page/views/surveylist_page.dart';
-import 'package:ARMOYU/app/modules/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:ARMOYU/app/theme/app_theme.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/app/Services/Utility/barcode.dart';
-import 'package:ARMOYU/app/Services/Utility/theme.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../socail_page/views/social_page.dart';
 import '../../Notification/notification_page/views/notification_page.dart';
 
 class MainPageView extends StatelessWidget {
@@ -36,7 +34,7 @@ class MainPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController homepageScrollController = ScrollController();
+    // final ScrollController homepageScrollController = ScrollController();
     final ScrollController searchScrollController =
         ScrollController(initialScrollOffset: 0);
     final ScrollController notificationScrollController =
@@ -44,15 +42,13 @@ class MainPageView extends StatelessWidget {
     final ScrollController profileScrollController =
         ScrollController(initialScrollOffset: 0);
 
-    final PageController socailpageController = PageController(initialPage: 1);
-
     final controller = Get.put(
       MainPageController(
-        homepageScrollController: homepageScrollController,
+        // homepageScrollController: homepageScrollController,
         notificationScrollController: notificationScrollController,
         profileScrollController: profileScrollController,
         searchScrollController: searchScrollController,
-        socailpageController: socailpageController,
+        // socailpageController: socailpageController,
         currentUserAccount: currentUserAccounts,
       ),
       tag: currentUserAccounts.user.userID.toString(),
@@ -74,7 +70,7 @@ class MainPageView extends StatelessWidget {
               () => Visibility(
                 visible: controller.isBottomNavbarVisible.value,
                 child: AppBar(
-                  backgroundColor: ARMOYU.appbarColor,
+                  // backgroundColor: ARMOYU.appbarColor,
                   elevation: 0,
                   leading: Builder(
                     builder: (BuildContext context) {
@@ -118,18 +114,20 @@ class MainPageView extends StatelessWidget {
                       ),
                       child: TextField(
                         controller: controller.appbarSearchTextController.value,
-                        style: TextStyle(
-                          color: ARMOYU.textColor,
+                        style: const TextStyle(
+                          // color: ARMOYU.textColor,
                           fontSize: 14,
                         ),
-                        decoration: InputDecoration(
-                          prefixIcon: const Icon(
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(
                             Icons.search,
                             size: 20,
                           ),
                           hintText: 'Ara',
                           border: InputBorder.none,
-                          hintStyle: TextStyle(color: ARMOYU.textColor),
+                          hintStyle: TextStyle(
+                              // color: ARMOYU.textColor,
+                              ),
                         ),
                       ),
                     ),
@@ -150,9 +148,8 @@ class MainPageView extends StatelessWidget {
                           ),
                           backgroundColor: Colors.red,
                           textColor: Colors.white,
-                          child: Icon(
+                          child: const Icon(
                             Icons.chat_bubble_rounded,
-                            color: ARMOYU.color,
                           ),
                         ),
                         onPressed: () {
@@ -166,11 +163,12 @@ class MainPageView extends StatelessWidget {
             ),
           ),
           drawer: Drawer(
-            backgroundColor: ARMOYU.appbarColor,
+            backgroundColor: Colors.black,
             child: Column(
               children: [
                 Obx(
                   () => UserAccountsDrawerHeader(
+                    margin: EdgeInsets.zero,
                     accountName: controller
                                 .currentUserAccounts.value!.user.displayName ==
                             null
@@ -182,7 +180,9 @@ class MainPageView extends StatelessWidget {
                         : Text(
                             controller
                                 .currentUserAccounts.value!.user.displayName!,
-                            style: const TextStyle(color: Colors.white),
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                     accountEmail:
                         controller.currentUserAccounts.value!.user.userMail ==
@@ -190,7 +190,9 @@ class MainPageView extends StatelessWidget {
                             ? Shimmer.fromColors(
                                 baseColor: ARMOYU.baseColor,
                                 highlightColor: ARMOYU.highlightColor,
-                                child: const SizedBox(width: 20),
+                                child: const SizedBox(
+                                  width: 20,
+                                ),
                               )
                             : Text(
                                 controller
@@ -201,8 +203,7 @@ class MainPageView extends StatelessWidget {
                               ),
                     currentAccountPicture: GestureDetector(
                       onTap: () {
-                        // controller.changePage(3);
-                        Navigator.of(context).pop();
+                        Get.back();
                       },
                       child:
                           controller.currentUserAccounts.value!.user.avatar ==
@@ -210,7 +211,8 @@ class MainPageView extends StatelessWidget {
                               ? Shimmer.fromColors(
                                   baseColor: ARMOYU.baseColor,
                                   highlightColor: ARMOYU.highlightColor,
-                                  child: const CircleAvatar())
+                                  child: const CircleAvatar(),
+                                )
                               : CircleAvatar(
                                   backgroundColor: Colors.transparent,
                                   foregroundImage: CachedNetworkImageProvider(
@@ -219,7 +221,7 @@ class MainPageView extends StatelessWidget {
                                   ),
                                 ),
                     ),
-                    currentAccountPictureSize: const Size.square(70),
+                    currentAccountPictureSize: const Size.square(75),
                     decoration:
                         controller.currentUserAccounts.value!.user.banner ==
                                 null
@@ -247,8 +249,6 @@ class MainPageView extends StatelessWidget {
                                     .role!.roleID ==
                                 0,
                             child: ListTile(
-                              textColor: ARMOYU.textColor,
-                              iconColor: ARMOYU.textColor,
                               leading: const Icon(Icons.group),
                               title: const Text("Toplantı"),
                               onTap: () {},
@@ -256,8 +256,6 @@ class MainPageView extends StatelessWidget {
                           ),
                         ),
                         ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
                           leading: const Icon(Icons.article),
                           title: const Text("Haberler"),
                           onTap: () {
@@ -268,8 +266,9 @@ class MainPageView extends StatelessWidget {
                           },
                         ),
                         ExpansionTile(
-                          textColor: ARMOYU.textColor,
-                          leading: Icon(Icons.group, color: ARMOYU.textColor),
+                          leading: const Icon(
+                            Icons.group,
+                          ),
                           title: const Text('Gruplarım'),
                           onExpansionChanged: (value) async {
                             if (value) {
@@ -283,8 +282,11 @@ class MainPageView extends StatelessWidget {
                             ListTile(
                               leading: ClipRRect(
                                 borderRadius: BorderRadius.circular(10.0),
-                                child: const Icon(Icons.add,
-                                    size: 30, color: Colors.blue),
+                                child: const Icon(
+                                  Icons.add,
+                                  size: 30,
+                                  color: Colors.blue,
+                                ),
                               ),
                               title: const Text("Grup Oluştur"),
                               onTap: () {
@@ -304,8 +306,9 @@ class MainPageView extends StatelessWidget {
                           ],
                         ),
                         ExpansionTile(
-                          textColor: ARMOYU.textColor,
-                          leading: Icon(Icons.school, color: ARMOYU.textColor),
+                          leading: const Icon(
+                            Icons.school,
+                          ),
                           title: const Text('Okullarım'),
                           onExpansionChanged: (value) async {
                             if (value) {
@@ -324,15 +327,10 @@ class MainPageView extends StatelessWidget {
                               ),
                               title: const Text("Okula Katıl"),
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SchoolLoginPage(
-                                      currentUser: controller
-                                          .currentUserAccounts.value!.user,
-                                    ),
-                                  ),
-                                );
+                                Get.to(const SchoolLoginPageView(), arguments: {
+                                  "currentUser": controller
+                                      .currentUserAccounts.value!.user,
+                                });
                               },
                             ),
                             Obx(
@@ -345,8 +343,9 @@ class MainPageView extends StatelessWidget {
                           ],
                         ),
                         ExpansionTile(
-                          leading:
-                              Icon(Icons.local_drink, color: ARMOYU.textColor),
+                          leading: const Icon(
+                            Icons.local_drink,
+                          ),
                           title: const Text('Yemek'),
                           onExpansionChanged: (value) async {
                             if (value) {
@@ -368,9 +367,8 @@ class MainPageView extends StatelessWidget {
                           ],
                         ),
                         ExpansionTile(
-                          leading: Icon(
+                          leading: const Icon(
                             Icons.videogame_asset_rounded,
-                            color: ARMOYU.textColor,
                           ),
                           title: const Text('Oyun'),
                           onExpansionChanged: (value) async {
@@ -393,8 +391,6 @@ class MainPageView extends StatelessWidget {
                           ],
                         ),
                         ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
                           leading: const Icon(Icons.event),
                           title: const Text("Etkinlikler"),
                           onTap: () {
@@ -410,8 +406,6 @@ class MainPageView extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
                           leading: const Icon(Icons.analytics_rounded),
                           title: const Text("Anketler"),
                           onTap: () {
@@ -427,8 +421,6 @@ class MainPageView extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
                           leading: const Icon(Icons.assignment_sharp),
                           title: const Text("Davet Et"),
                           onTap: () {
@@ -444,8 +436,6 @@ class MainPageView extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
                           leading: const Icon(Icons.business_center),
                           title: const Text("Bize Katıl"),
                           onTap: () {
@@ -461,8 +451,6 @@ class MainPageView extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          textColor: ARMOYU.textColor,
-                          iconColor: ARMOYU.textColor,
                           leading: const Icon(Icons.settings),
                           title: const Text("Ayarlar"),
                           onTap: () {
@@ -478,20 +466,22 @@ class MainPageView extends StatelessWidget {
                           },
                         ),
                         ListTile(
-                          // Sağ tarafta bir buton
                           trailing: IconButton(
-                            icon:
-                                Icon(Icons.nightlight, color: ARMOYU.textColor),
+                            icon: const Icon(
+                              Icons.nightlight,
+                            ),
                             onPressed: () {
-                              // setState(() {
-                              ThemeProvider().toggleTheme();
-                              // });
+                              if (Get.isDarkMode) {
+                                Get.changeTheme(appThemeData);
+                              } else {
+                                Get.changeTheme(ThemeData.dark());
+                              }
                             },
                           ),
-                          // Sol tarafta bir buton
                           leading: IconButton(
-                            icon: Icon(Icons.qr_code_2_rounded,
-                                color: ARMOYU.textColor),
+                            icon: const Icon(
+                              Icons.qr_code_2_rounded,
+                            ),
                             onPressed: () async {
                               BarcodeService bc = BarcodeService();
                               String responsew = await bc.scanQR();
@@ -506,57 +496,52 @@ class MainPageView extends StatelessWidget {
               ],
             ),
           ),
-          body: Obx(
-            () => PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: controller.mainpagecontroller.value,
-              onPageChanged: (int page) {
-                ARMOYUFunctions functions = ARMOYUFunctions(
-                    currentUserAccounts: controller.currentUserAccounts.value!);
-                functions.selectFavTeam(context);
-              },
-              children: [
-                PageView(
-                  controller: socailpageController,
+          body: PageView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: controller.mainpagecontroller.value,
+            onPageChanged: (int page) {
+              ARMOYUFunctions functions = ARMOYUFunctions(
+                currentUserAccounts: controller.currentUserAccounts.value!,
+              );
+              functions.selectFavTeam(context);
+            },
+            children: [
+              Obx(
+                () => PageView(
+                  controller: controller.socailpageController.value,
                   physics: const ClampingScrollPhysics(),
                   onPageChanged: (value) {
-                    log(controller.socailpageController.initialPage.toString());
-                    if (value == 0) {
+                    log(controller.socailpageController.value.initialPage
+                        .toString());
+                    if (value == 0 && controller.mainsocialpages.length != 1) {
                       controller.isBottomNavbarVisible.value = false;
                     } else {
                       controller.isBottomNavbarVisible.value = true;
                     }
                   },
-                  children: [
-                    ARMOYU.cameras!.isNotEmpty
-                        ? CameraScreen(
-                            currentUser:
-                                controller.currentUserAccounts.value!.user,
-                            canPop: false,
-                          )
-                        : Container(),
-                    SocialPage(
-                      currentUserAccounts:
-                          controller.currentUserAccounts.value!,
-                      homepageScrollController: homepageScrollController,
-                    )
-                  ],
+                  children: controller.mainsocialpages,
                 ),
-                SearchPage(
+              ),
+              Obx(
+                () => SearchPage(
                   currentUserAccounts: controller.currentUserAccounts.value!,
                   appbar: true,
                   scrollController: searchScrollController,
                 ),
-                NotificationPage(
+              ),
+              Obx(
+                () => NotificationPage(
                   currentUserAccounts: controller.currentUserAccounts.value!,
                   scrollController: notificationScrollController,
                 ),
-                ProfileView(
+              ),
+              Obx(
+                () => ProfileView(
                   currentUserAccounts: controller.currentUserAccounts.value!,
                   profileScrollController: profileScrollController,
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
           bottomNavigationBar: Obx(
             () => Visibility(
@@ -566,7 +551,7 @@ class MainPageView extends StatelessWidget {
                   controller.changePage(value);
                 },
                 currentIndex: controller.currentPage.value,
-                backgroundColor: ARMOYU.appbarColor,
+                // backgroundColor: ARMOYU.appbarColor,
                 type: BottomNavigationBarType.fixed,
                 showSelectedLabels: false,
                 showUnselectedLabels: false,
@@ -586,14 +571,18 @@ class MainPageView extends StatelessWidget {
                               controller.currentUserAccounts.value!
                                   .friendRequestCount) >
                           0,
-                      label: Text((controller
-                                  .currentUserAccounts.value!.groupInviteCount +
-                              controller.currentUserAccounts.value!
-                                  .friendRequestCount)
-                          .toString()),
+                      label: Text(
+                        (controller.currentUserAccounts.value!
+                                    .groupInviteCount +
+                                controller.currentUserAccounts.value!
+                                    .friendRequestCount)
+                            .toString(),
+                      ),
                       textColor: Colors.white,
                       backgroundColor: Colors.red,
-                      child: const Icon(Icons.notifications),
+                      child: const Icon(
+                        Icons.notifications,
+                      ),
                     ),
                     label: 'Bildirimler',
                   ),
@@ -642,7 +631,7 @@ class MainPageView extends StatelessWidget {
 
                                               controller2.changeAccount(
                                                 ARMOYU.appUsers[index],
-                                              ); // Fonksiyonu çağır
+                                              );
                                             },
                                           );
                                         }),
@@ -682,7 +671,7 @@ class MainPageView extends StatelessWidget {
                         isLabelVisible: false,
                         label: const Text("1"),
                         backgroundColor: ARMOYU.color,
-                        textColor: ARMOYU.appbarColor,
+                        // textColor: ARMOYU.appbarColor,
                         child: const Icon(Icons.person),
                       ),
                     ),

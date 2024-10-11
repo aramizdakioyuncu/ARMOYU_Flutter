@@ -11,10 +11,11 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/story.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/storycircle_skeleton.dart';
-import 'package:ARMOYU/app/widgets/posts.dart';
+import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:ARMOYU/app/widgets/storycircle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,14 +40,21 @@ class SocailPageController extends GetxController {
   var fetchStoryStatus = false.obs;
   var storypage = 1.obs;
 
-  var widgetPosts = <Widget>[].obs; // Reaktif liste
+  var widgetPosts = <Widget>[].obs;
 
   var widgetStories = Rx<Widget?>(null);
 
   @override
   void onInit() {
     super.onInit();
-    _scrollController = scrollController;
+
+    final mainController = Get.find<MainPageController>(
+      tag: currentUserAccounts.user.userID.toString(),
+    );
+
+    _scrollController = mainController.homepageScrollControllerv2.value;
+
+    // _scrollController = scrollController;
 
     loadPosts(fetchRestart: true);
     loadStories(fetchRestart: true);

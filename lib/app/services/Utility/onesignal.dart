@@ -178,16 +178,28 @@ class OneSignalApi {
             userID = element["userID"];
           }
 
-          AppCore.navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (context) => EventPage(
-                event: Event(
-                  eventID: 1,
-                ),
-                currentUserAccounts:
-                    UserAccounts(user: User(userID: int.parse(userID))),
-              ),
+          // AppCore.navigatorKey.currentState?.push(
+          //   MaterialPageRoute(
+          //     builder: (context) => EventPage(
+          //       event: Event(
+          //         eventID: 1,
+          //       ),
+          //       currentUserAccounts:
+          //           UserAccounts(user: User(userID: int.parse(userID))),
+          //     ),
+          //   ),
+          // );
+
+          Get.to(
+            EventPage(
+              currentUserAccounts:
+                  UserAccounts(user: User(userID: int.parse(userID))),
             ),
+            arguments: {
+              "event": Event(
+                eventID: 1,
+              ),
+            },
           );
         }
       } catch (e) {

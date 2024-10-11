@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfileView>
           return [
             SliverAppBar(
               pinned: !controller.ismyProfile.value ? true : false,
-              backgroundColor: ARMOYU.appbarColor,
+              // backgroundColor: ARMOYU.appbarColor,
               expandedHeight: ARMOYU.screenHeight * 0.25,
               leading: Obx(
                 () => controller.buildLeadingWidget(context),

@@ -20,14 +20,12 @@ class SocialPage extends StatefulWidget {
   });
 
   @override
-  State<SocialPage> createState() => _SocialPageState();
+  State<StatefulWidget> createState() => _SocialPage();
 }
 
-class _SocialPageState extends State<SocialPage>
-    with AutomaticKeepAliveClientMixin<SocialPage> {
+class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -37,13 +35,14 @@ class _SocialPageState extends State<SocialPage>
     );
 
     log("***Social**${currentAccountController.currentUserAccounts.user.displayName}");
+    String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
 
     final controller = Get.put(
       SocailPageController(
         currentUserAccounts: currentAccountController.currentUserAccounts,
         scrollController: widget.homepageScrollController,
       ),
-      tag: widget.currentUserAccounts.user.userID.toString(),
+      tag: "socail-$uniqueTag",
     );
 
     return Scaffold(
@@ -64,10 +63,10 @@ class _SocialPageState extends State<SocialPage>
           Obx(
             () => SliverList(
               delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return controller.widgetPosts[index];
-                },
                 childCount: controller.widgetPosts.length,
+                (BuildContext context, int index) {
+                  return Obx(() => controller.widgetPosts[index]);
+                },
               ),
             ),
           ),
@@ -75,10 +74,9 @@ class _SocialPageState extends State<SocialPage>
             () => SliverToBoxAdapter(
               child: Visibility(
                 visible: controller.fetchPostStatus.value,
-                child: Container(
+                child: const SizedBox(
                   height: 100,
-                  color: ARMOYU.appbarColor,
-                  child: const CupertinoActivityIndicator(),
+                  child: CupertinoActivityIndicator(),
                 ),
               ),
             ),

@@ -37,7 +37,7 @@ class LoginpageView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16.0),
-            CustomTextfields(setstate: () {}).costum3(
+            CustomTextfields.costum3(
               title: "Kullanıcı Adı / E-posta",
               controller: controller.usernameController.value,
               isPassword: false,
@@ -45,7 +45,7 @@ class LoginpageView extends StatelessWidget {
               type: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: () {}).costum3(
+            CustomTextfields.costum3(
               title: "Şifreniz",
               controller: controller.passwordController.value,
               isPassword: true,

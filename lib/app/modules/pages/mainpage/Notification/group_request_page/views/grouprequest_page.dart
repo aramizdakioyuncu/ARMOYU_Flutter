@@ -153,7 +153,7 @@ class _NotificationPage extends State<NotificationGroupRequestPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Grup İstekleri"),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async {

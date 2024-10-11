@@ -165,7 +165,7 @@ class NotificationPageController extends GetxController {
               Icons.person_add_rounded,
               color: ARMOYU.color,
             ),
-            tileColor: ARMOYU.appbarColor,
+            // tileColor: ARMOYU.appbarColor,
             title: CustomText.costum1("Arkadaşlık İstekleri"),
             subtitle: CustomText.costum1("Arkadaşlık isteklerini gözden geçir"),
             trailing: Badge(
@@ -199,7 +199,7 @@ class NotificationPageController extends GetxController {
               Icons.groups_2,
               color: ARMOYU.color,
             ),
-            tileColor: ARMOYU.appbarColor,
+            // tileColor: ARMOYU.appbarColor,
             title: CustomText.costum1("Grup İstekleri"),
             subtitle: CustomText.costum1(
               "Grup isteklerini gözden geçir",

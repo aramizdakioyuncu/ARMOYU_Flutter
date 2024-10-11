@@ -132,7 +132,7 @@ class _EventStatePage extends State<InvitePage>
                   response["icerik"][i]["oyuncu_avatar"],
                 ),
               ),
-              tileColor: ARMOYU.appbarColor,
+              // tileColor: ARMOYU.appbarColor,
               title: CustomText.costum1(
                   response["icerik"][i]["oyuncu_displayname"]),
               subtitle:

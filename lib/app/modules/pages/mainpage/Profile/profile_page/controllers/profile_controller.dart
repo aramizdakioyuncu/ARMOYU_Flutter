@@ -20,7 +20,7 @@ import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/friends_page/views/friendlist_page.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/detectabletext.dart';
-import 'package:ARMOYU/app/widgets/posts.dart';
+import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -968,11 +968,10 @@ class ProfileController extends GetxController
                     ),
                     Visibility(
                       visible: postsfetchproccess.value,
-                      child: Container(
+                      child: const SizedBox(
                         height: 100,
                         width: double.infinity,
-                        color: ARMOYU.appbarColor,
-                        child: const CupertinoActivityIndicator(),
+                        child: CupertinoActivityIndicator(),
                       ),
                     ),
                   ],
@@ -1030,11 +1029,10 @@ class ProfileController extends GetxController
                     ),
                     Visibility(
                       visible: galleryproccess.value,
-                      child: Container(
+                      child: const SizedBox(
                         height: 100,
                         width: double.infinity,
-                        color: ARMOYU.appbarColor,
-                        child: const CupertinoActivityIndicator(),
+                        child: CupertinoActivityIndicator(),
                       ),
                     )
                   ],

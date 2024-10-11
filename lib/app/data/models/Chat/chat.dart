@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -67,8 +66,7 @@ class Chat {
               user.avatar!.mediaURL.minURL,
             ),
           ),
-          tileColor:
-              chatNotification ? Colors.red.shade900 : ARMOYU.appbarColor,
+          tileColor: chatNotification ? Colors.red.shade900 : Colors.black,
           title: CustomText.costum1(user.displayName!),
           subtitle: lastmessage == null
               ? const Text("")

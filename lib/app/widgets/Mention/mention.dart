@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,9 @@ class WidgetMention {
                   CustomText.costum1(data['full_name']),
                   Text(
                     '@${data['display']}',
-                    style: TextStyle(color: ARMOYU.textColor.withOpacity(0.7)),
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.7),
+                    ),
                   ),
                 ],
               )
@@ -73,9 +74,6 @@ class WidgetMention {
       suggestionBuilder: (data) {
         return Container(
           padding: const EdgeInsets.all(10.0),
-          decoration: BoxDecoration(
-            color: ARMOYU.appbarColor,
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -84,7 +82,7 @@ class WidgetMention {
                   "#${data['display']} (${data["numberofuses"]})"),
               Text(
                 "Gündemdekiler",
-                style: TextStyle(color: ARMOYU.textColor.withOpacity(0.7)),
+                style: TextStyle(color: Colors.black.withOpacity(0.7)),
               ),
             ],
           ),

@@ -163,7 +163,7 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
       backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Arkadaşlık İstekleri"),
-        backgroundColor: ARMOYU.appbarColor,
+        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async {

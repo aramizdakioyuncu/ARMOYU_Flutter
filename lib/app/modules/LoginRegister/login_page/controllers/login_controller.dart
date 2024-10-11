@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
+import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,8 +14,6 @@ class LoginPageController extends GetxController {
 
   var usernameController = TextEditingController().obs;
   var passwordController = TextEditingController().obs;
-
-  // var currentUser = Rx<User?>(null);
 
   late var user = Rxn<User>();
 
@@ -72,7 +71,6 @@ class LoginPageController extends GetxController {
 
     loginProcess.value = true;
 
-    log(accountAdd.value.toString());
     if (accountAdd.value) {
       FunctionService f = FunctionService(currentUser: currentUser);
       Map<String, dynamic> response =
@@ -91,7 +89,10 @@ class LoginPageController extends GetxController {
 
       loginProcess.value = false;
 
-      Get.back();
+      Get.delete<AppPageController>();
+      Get.offAndToNamed("/app", arguments: {});
+
+      // Get.back();
       return;
     }
 

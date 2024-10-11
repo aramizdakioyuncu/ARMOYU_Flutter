@@ -198,13 +198,17 @@ class SearchPageController extends GetxController {
                   //   ),
                   // );
                 } else if (response["icerik"][i]["turu"] == "okullar") {
-                  Navigator.of(Get.context!).push(
-                    MaterialPageRoute(
-                      builder: (context) => SchoolPage(
-                          currentUser: currentUserAccounts.user,
-                          schoolID: response["icerik"][i]["ID"]),
-                    ),
-                  );
+                  Get.to(const SchoolPageView(), arguments: {
+                    "user": currentUserAccounts.user,
+                    "schoolID": response["icerik"][i]["ID"],
+                  });
+                  // Navigator.of(Get.context!).push(
+                  //   MaterialPageRoute(
+                  //     builder: (context) => SchoolPageView(
+                  //         currentUser: currentUserAccounts.user,
+                  //         schoolID: response["icerik"][i]["ID"]),
+                  //   ),
+                  // );
                 }
               },
             ),

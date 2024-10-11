@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/register_page/controllers/register_controller.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -33,28 +31,28 @@ class RegisterpageView extends StatelessWidget {
                 width: 150,
               ),
             ),
-            CustomTextfields(setstate: controller.setstatefunction).costum3(
+            CustomTextfields.costum3(
               title: "Adınız",
               controller: controller.nameController.value,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: controller.setstatefunction).costum3(
+            CustomTextfields.costum3(
               title: "Soyadınız",
               controller: controller.lastnameController.value,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: controller.setstatefunction).costum3(
+            CustomTextfields.costum3(
               title: "Kullanıcı Adınız",
               controller: controller.usernameController.value,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: controller.setstatefunction).costum3(
+            CustomTextfields.costum3(
               title: "E-posta",
               controller: controller.emailController.value,
               isPassword: false,
@@ -62,102 +60,90 @@ class RegisterpageView extends StatelessWidget {
               type: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: controller.setstatefunction).costum3(
+            CustomTextfields.costum3(
               title: "Şifreniz",
               controller: controller.passwordController.value,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
             const SizedBox(height: 16),
-            CustomTextfields(setstate: controller.setstatefunction).costum3(
+            CustomTextfields.costum3(
               title: "Şifreniz Tekrar",
               controller: controller.rpasswordController.value,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
             const SizedBox(height: 16),
-            controller.inviteduseravatar.value == null
-                ? Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextfields(
-                                setstate: controller.setstatefunction)
-                            .costum3(
-                          title: "Davet Kodu",
-                          controller: controller.inviteController.value,
-                          isPassword: false,
-                          maxLength: 5,
-                          preicon: const Icon(Icons.people),
-                          suffixiconbutton: IconButton(
-                              onPressed: () {
-                                // setState(() {
-                                if (controller
-                                        .inviteController.value.text.length ==
-                                    5) {
-                                  log("5 karakter yazıldı: ${controller.inviteController.value.text}");
-                                  controller.invitecodeTester(
-                                    controller.inviteController.value.text,
-                                  );
-                                }
-                                // });
-                              },
-                              icon: const Icon(Icons.refresh)),
-                          onChanged: (value) {
-                            if (value.length == 5) {
-                              controller.invitecodeTester(value);
-                            }
-                          },
+            Obx(
+              () => controller.inviteduseravatar.value == null
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: CustomTextfields.costum3(
+                            title: "Davet Kodu",
+                            controller: controller.inviteController.value,
+                            isPassword: false,
+                            maxLength: 5,
+                            preicon: const Icon(Icons.people),
+                            suffixiconbutton: IconButton(
+                              onPressed: () => controller.davetkodu(),
+                              icon: const Icon(
+                                Icons.refresh,
+                              ),
+                            ),
+                            onChanged: (value) => controller.davetkodu2(value),
+                          ),
                         ),
+                      ],
+                    )
+                  : ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 5),
+                      tileColor: ARMOYU.textbackColor,
+                      leading: controller.inviteduseravatar.value != null
+                          ? CircleAvatar(
+                              foregroundImage: CachedNetworkImageProvider(
+                                controller.inviteduseravatar.value.toString(),
+                              ),
+                            )
+                          : Shimmer.fromColors(
+                              baseColor: ARMOYU.baseColor,
+                              highlightColor: ARMOYU.highlightColor,
+                              child: const CircleAvatar(
+                                radius: 30.0, // Adjust the radius as needed
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                      //  const SkeletonAvatar(
+                      //     style: SkeletonAvatarStyle(
+                      //       borderRadius: BorderRadius.all(
+                      //         Radius.circular(30),
+                      //       ),
+                      //     ),
+                      //   ),
+                      title: controller.inviteduserdisplayName.value != null
+                          ? Text(controller.inviteduserdisplayName.value
+                              .toString())
+                          : Shimmer.fromColors(
+                              baseColor: ARMOYU.baseColor,
+                              highlightColor: ARMOYU.highlightColor,
+                              child: Container(width: 200),
+                            ),
+                      // const SkeletonLine(
+                      //     style: SkeletonLineStyle(width: 200),
+                      //   ),
+                      trailing: IconButton(
+                        onPressed: () {
+                          // setState(() {
+                          controller.inviteduserID.value = null;
+                          controller.inviteduseravatar.value = null;
+                          controller.inviteduserdisplayName.value = null;
+                          // });
+                        },
+                        icon: const Icon(Icons.close, color: Colors.red),
                       ),
-                    ],
-                  )
-                : ListTile(
-                    contentPadding:
-                        const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-                    tileColor: ARMOYU.textbackColor,
-                    leading: controller.inviteduseravatar.value != null
-                        ? CircleAvatar(
-                            foregroundImage: CachedNetworkImageProvider(
-                              controller.inviteduseravatar.value.toString(),
-                            ),
-                          )
-                        : Shimmer.fromColors(
-                            baseColor: ARMOYU.baseColor,
-                            highlightColor: ARMOYU.highlightColor,
-                            child: const CircleAvatar(
-                              radius: 30.0, // Adjust the radius as needed
-                              backgroundColor: Colors.white,
-                            ),
-                          ),
-                    //  const SkeletonAvatar(
-                    //     style: SkeletonAvatarStyle(
-                    //       borderRadius: BorderRadius.all(
-                    //         Radius.circular(30),
-                    //       ),
-                    //     ),
-                    //   ),
-                    title: controller.inviteduserdisplayName.value != null
-                        ? Text(
-                            controller.inviteduserdisplayName.value.toString())
-                        : Shimmer.fromColors(
-                            baseColor: ARMOYU.baseColor,
-                            highlightColor: ARMOYU.highlightColor,
-                            child: Container(width: 200),
-                          ),
-                    // const SkeletonLine(
-                    //     style: SkeletonLineStyle(width: 200),
-                    //   ),
-                    trailing: IconButton(
-                      onPressed: () {
-                        // setState(() {
-                        controller.inviteduserID.value = null;
-                        controller.inviteduseravatar.value = null;
-                        controller.inviteduserdisplayName.value = null;
-                        // });
-                      },
-                      icon: const Icon(Icons.close, color: Colors.red),
                     ),
-                  ),
+            ),
             const SizedBox(height: 16),
             CustomButtons.costum1(
               text: "Kayıt Ol",

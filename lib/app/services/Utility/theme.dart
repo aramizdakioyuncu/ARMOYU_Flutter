@@ -13,7 +13,7 @@ class ThemeProvider with ChangeNotifier {
     prefs.setString('thememode', "dark");
     _themeData = ThemeData.dark();
 
-    ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
+    // ARMOYU.textColor = const Color.fromARGB(255, 255, 255, 255);
     ARMOYU.textbackColor = Colors.grey.shade900;
     ARMOYU.texthintColor = const Color.fromARGB(255, 195, 195, 195);
 
@@ -21,7 +21,7 @@ class ThemeProvider with ChangeNotifier {
     ARMOYU.highlightColor = Colors.grey[900]!;
 
     ARMOYU.color = Colors.white;
-    ARMOYU.appbarColor = Colors.black;
+    // ARMOYU.appbarColor = Colors.black;
     ARMOYU.appbottomColor = Colors.black;
     ARMOYU.bodyColor = Colors.grey.shade900;
     ARMOYU.backgroundcolor = Colors.black;
@@ -32,7 +32,7 @@ class ThemeProvider with ChangeNotifier {
     prefs.setString('thememode', "light");
     _themeData = ThemeData.light();
 
-    ARMOYU.textColor = Colors.black;
+    // ARMOYU.textColor = Colors.black;
     ARMOYU.textbackColor = Colors.grey.shade100;
     ARMOYU.texthintColor = const Color.fromARGB(255, 169, 169, 169);
 
@@ -40,7 +40,7 @@ class ThemeProvider with ChangeNotifier {
     ARMOYU.highlightColor = Colors.grey[100]!;
 
     ARMOYU.color = Colors.black;
-    ARMOYU.appbarColor = Colors.white;
+    // ARMOYU.appbarColor = Colors.white;
     ARMOYU.appbottomColor = Colors.white;
 
     ARMOYU.bodyColor = Colors.grey.shade100;

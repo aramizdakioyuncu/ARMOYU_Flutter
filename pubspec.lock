@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.0"
+  armoyu_services:
+    dependency: "direct main"
+    description:
+      name: armoyu_services
+      sha256: d3ae5bcd297208765e57ea22375623ff68b2993dae05570445a654d302450280
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+3"
   async:
     dependency: transitive
     description:
@@ -1451,5 +1459,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.4.0 <4.0.0"
+  dart: ">=3.4.4 <4.0.0"
   flutter: ">=3.22.0"

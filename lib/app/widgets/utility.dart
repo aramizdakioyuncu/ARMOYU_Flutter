@@ -12,12 +12,8 @@ class WidgetUtility {
   static Widget specialText(BuildContext context, String text,
       {TextAlign textAlign = TextAlign.start,
       FontWeight fontWeight = FontWeight.normal,
-      Color color = Colors.red,
+      Color? color,
       required UserAccounts currentUserAccounts}) {
-    if (color == Colors.red) {
-      color = ARMOYU.textColor;
-    }
-
     final lines = text.split('\n');
     final textSpans = <TextSpan>[];
 
