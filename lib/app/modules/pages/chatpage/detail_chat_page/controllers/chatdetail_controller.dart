@@ -16,13 +16,6 @@ class ChatdetailController extends GetxController {
   var messageController = TextEditingController().obs;
   var scrollController = ScrollController().obs;
 
-/////////
-  // Isolate? isolateListen;
-  // ReceivePort? receiveportListen;
-
-  // Isolate? isolateSend;
-  // ReceivePort? receiveportSend;
-
   Rxn<Isolate> isolateListen = Rxn<Isolate>();
   Rxn<ReceivePort> receiveportListen = Rxn<ReceivePort>();
 
@@ -41,7 +34,10 @@ class ChatdetailController extends GetxController {
     final Map<String, dynamic> arguments =
         Get.arguments as Map<String, dynamic>;
 
-    final currentAccountController = Get.find<PagesController>();
+    UserAccounts currentUser = arguments['CurrentUserAccounts'];
+    final currentAccountController = Get.find<PagesController>(
+      tag: currentUser.user.userID.toString(),
+    );
 
     log("*****${currentAccountController.currentUserAccounts.user.displayName}");
 

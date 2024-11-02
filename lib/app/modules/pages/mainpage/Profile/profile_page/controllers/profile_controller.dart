@@ -1708,6 +1708,7 @@ class ProfileController extends GetxController
         ),
       ),
       context: context,
+      backgroundColor: Get.theme.cardColor,
       builder: (BuildContext context) {
         return SafeArea(
           child: Wrap(

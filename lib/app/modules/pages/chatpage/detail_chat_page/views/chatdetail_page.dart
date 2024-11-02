@@ -25,7 +25,9 @@ class _ChatDetailPage extends State<ChatDetailView>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final controller = Get.put(ChatdetailController());
+    final controller = Get.put(
+      ChatdetailController(),
+    );
 
     return Scaffold(
       backgroundColor: ARMOYU.backgroundcolor,

@@ -107,27 +107,23 @@ class MainPageView extends StatelessWidget {
                   title: Visibility(
                     visible: controller.appbarSearch.value,
                     child: Container(
-                      height: 50,
+                      // height: 50,
                       decoration: BoxDecoration(
-                        color: ARMOYU.bodyColor,
+                        color: Get.theme.cardColor,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: TextField(
                         controller: controller.appbarSearchTextController.value,
                         style: const TextStyle(
-                          // color: ARMOYU.textColor,
-                          fontSize: 14,
+                          fontSize: 18,
                         ),
                         decoration: const InputDecoration(
                           prefixIcon: Icon(
                             Icons.search,
-                            size: 20,
+                            size: 18,
                           ),
                           hintText: 'Ara',
                           border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              // color: ARMOYU.textColor,
-                              ),
                         ),
                       ),
                     ),

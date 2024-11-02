@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -161,11 +160,9 @@ class NotificationPageController extends GetxController {
           ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-            leading: Icon(
+            leading: const Icon(
               Icons.person_add_rounded,
-              color: ARMOYU.color,
             ),
-            // tileColor: ARMOYU.appbarColor,
             title: CustomText.costum1("Arkadaşlık İstekleri"),
             subtitle: CustomText.costum1("Arkadaşlık isteklerini gözden geçir"),
             trailing: Badge(
@@ -195,11 +192,9 @@ class NotificationPageController extends GetxController {
           ListTile(
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-            leading: Icon(
+            leading: const Icon(
               Icons.groups_2,
-              color: ARMOYU.color,
             ),
-            // tileColor: ARMOYU.appbarColor,
             title: CustomText.costum1("Grup İstekleri"),
             subtitle: CustomText.costum1(
               "Grup isteklerini gözden geçir",

@@ -18,9 +18,6 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final currentAccountController = Get.find<AppPageController>();
-    // log("*****${currentAccountController.currentUserAccounts.user.displayName}");
-
     final currentAccountController = Get.find<PagesController>(
       tag: currentUserAccounts.user.userID.toString(),
     );

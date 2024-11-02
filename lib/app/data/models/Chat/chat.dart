@@ -83,7 +83,13 @@ class Chat {
             //     ),
             //   ),
             // );
-            Get.toNamed("/chat/detail", arguments: {"chat": this});
+            Get.toNamed(
+              "/chat/detail",
+              arguments: {
+                "chat": this,
+                "CurrentUserAccounts": currentUserAccounts
+              },
+            );
           },
         ),
         const SizedBox(height: 1)
