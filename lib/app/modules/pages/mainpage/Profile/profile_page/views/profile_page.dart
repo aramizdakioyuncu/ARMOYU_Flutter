@@ -66,7 +66,7 @@ class _ProfilePageState extends State<ProfileView>
     );
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      // backgroundColor: ARMOYU.backgroundcolor,
       body: NestedScrollView(
         controller: controller.profileScrollController.value,
         physics: const BouncingScrollPhysics(
@@ -119,6 +119,7 @@ class _ProfilePageState extends State<ProfileView>
                       return;
                     }
                     showModalBottomSheet<void>(
+                      backgroundColor: Get.theme.scaffoldBackgroundColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                           top: Radius.circular(10),
@@ -331,7 +332,7 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
   ) {
     return Container(
       alignment: Alignment.center,
-      color: ARMOYU.backgroundcolor,
+      color: Get.theme.scaffoldBackgroundColor,
       child: TabBar(
         controller: tabController,
         isScrollable: true,

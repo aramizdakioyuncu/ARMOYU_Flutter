@@ -1,7 +1,7 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonStorycircle extends StatefulWidget {
@@ -22,7 +22,7 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ARMOYU.backgroundcolor,
+      color: Get.theme.scaffoldBackgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -80,8 +80,8 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                             ),
                           )
                         : Shimmer.fromColors(
-                            baseColor: ARMOYU.baseColor,
-                            highlightColor: ARMOYU.highlightColor,
+                            baseColor: Get.theme.disabledColor,
+                            highlightColor: Get.theme.highlightColor,
                             child: const SizedBox(
                               width: 40,
                               height: 40,

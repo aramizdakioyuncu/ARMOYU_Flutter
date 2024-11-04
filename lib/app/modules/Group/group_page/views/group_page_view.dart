@@ -23,7 +23,7 @@ class GroupPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(GroupPageController());
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -92,8 +92,9 @@ class GroupPageView extends StatelessWidget {
                                   child: controller.group.value!.groupName ==
                                           null
                                       ? Shimmer.fromColors(
-                                          baseColor: ARMOYU.baseColor,
-                                          highlightColor: ARMOYU.highlightColor,
+                                          baseColor: Get.theme.disabledColor,
+                                          highlightColor:
+                                              Get.theme.highlightColor,
                                           child: Container(width: 100),
                                         )
                                       // const SkeletonLine(
@@ -423,7 +424,8 @@ class GroupPageView extends StatelessWidget {
                               }
                               //
                               showModalBottomSheet<void>(
-                                backgroundColor: ARMOYU.backgroundcolor,
+                                backgroundColor:
+                                    Get.theme.scaffoldBackgroundColor,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(10),
@@ -596,8 +598,8 @@ class GroupPageView extends StatelessWidget {
                   ),
                   controller.group.value!.groupLogo == null
                       ? Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: const SizedBox(
                             height: 100,
                           ),
@@ -633,8 +635,8 @@ class GroupPageView extends StatelessWidget {
                   ),
                   controller.group.value!.groupBanner == null
                       ? Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: const SizedBox(
                             height: 100,
                           ),

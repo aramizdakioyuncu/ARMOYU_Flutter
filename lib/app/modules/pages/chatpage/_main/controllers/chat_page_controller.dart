@@ -17,12 +17,9 @@ class ChatPageController extends GetxController {
   var chatsearchprocess = false.obs;
   var isFirstFetch = true.obs;
   var filteredItems = Rxn<List<Chat>>();
-
-  var searchStatus = false.obs;
-
   var chatcontroller = TextEditingController().obs;
-
   var chatScrollController = ScrollController().obs;
+  var searchStatus = false.obs;
 
   @override
   void onInit() {
@@ -115,8 +112,8 @@ class ChatPageController extends GetxController {
           user: User(
             userID: response["icerik"][i]["kullid"],
             displayName: response["icerik"][i]["adisoyadi"],
-            lastlogin: response["icerik"][i]["songiris"],
-            lastloginv2: response["icerik"][i]["songiris"],
+            lastlogin: Rx<String>(response["icerik"][i]["songiris"]),
+            lastloginv2: Rx<String>(response["icerik"][i]["songiris"]),
             avatar: Media(
               mediaID: response["icerik"][i]["kullid"],
               mediaURL: MediaURL(
@@ -159,11 +156,19 @@ class ChatPageController extends GetxController {
   Widget chatListWidget(
       BuildContext context, UserAccounts currentUserAccounts) {
     if (filteredItems.value == null) {
-      return const SliverFillRemaining(child: CupertinoActivityIndicator());
+      return const SliverFillRemaining(
+        child: CupertinoActivityIndicator(),
+      );
     } else if (filteredItems.value!.isEmpty) {
       return !isFirstFetch.value && !chatsearchprocess.value
-          ? const SliverFillRemaining(child: Text("Sohbet geçmişi boş"))
-          : const SliverFillRemaining(child: CupertinoActivityIndicator());
+          ? const SliverFillRemaining(
+              child: Center(
+                child: Text("Sohbet Geçmişi Boş"),
+              ),
+            )
+          : const SliverFillRemaining(
+              child: CupertinoActivityIndicator(),
+            );
     } else {
       return SliverList(
         delegate: SliverChildBuilderDelegate(

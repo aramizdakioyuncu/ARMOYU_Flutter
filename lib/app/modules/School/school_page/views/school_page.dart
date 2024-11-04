@@ -22,7 +22,6 @@ class SchoolPageView extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: RefreshIndicator(
         onRefresh: () => controller.handleRefresh(),
         child: CustomScrollView(
@@ -78,9 +77,10 @@ class SchoolPageView extends StatelessWidget {
                                     child: Obx(
                                       () => controller.schoolInfo.value == null
                                           ? Shimmer.fromColors(
-                                              baseColor: ARMOYU.baseColor,
+                                              baseColor:
+                                                  Get.theme.disabledColor,
                                               highlightColor:
-                                                  ARMOYU.highlightColor,
+                                                  Get.theme.highlightColor,
                                               child: const SizedBox(width: 30),
                                             )
                                           : Text(

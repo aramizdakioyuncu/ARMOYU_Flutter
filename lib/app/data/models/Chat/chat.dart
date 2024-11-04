@@ -75,14 +75,6 @@ class Chat {
               ? const Icon(Icons.person)
               : const Icon(Icons.people_alt),
           onTap: () {
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder: (pagecontext) => ChatDetailPage(
-            //       chat: this,
-            //       currentUserAccounts: currentUserAccounts,
-            //     ),
-            //   ),
-            // );
             Get.toNamed(
               "/chat/detail",
               arguments: {
@@ -109,7 +101,10 @@ class Chat {
       //   ),
       // );
 
-      Get.toNamed("/chat/detail", arguments: {"chat": this});
+      Get.toNamed("/chat/detail", arguments: {
+        "chat": this,
+        "CurrentUserAccounts": currentUserAccounts,
+      });
     }
 
     return CustomButtons.friendbuttons(

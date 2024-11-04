@@ -13,7 +13,6 @@ class ListNewsView extends StatelessWidget {
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: ARMOYU.backgroundcolor,
         appBar: AppBar(
           title: const Text('Haberler'),
         ),

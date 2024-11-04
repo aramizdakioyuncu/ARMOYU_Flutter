@@ -21,6 +21,7 @@ import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
@@ -30,6 +31,7 @@ class ARMOYUFunctions {
   ARMOYUFunctions({required this.currentUserAccounts}) {
     apiService = ApiService(user: currentUserAccounts.user);
   }
+
   static User userfetch(response) {
     return User(
       userID: response["playerID"],
@@ -38,7 +40,7 @@ class ARMOYUFunctions {
       lastName: response["lastName"],
       displayName: response["displayName"],
       userMail: response["detailInfo"]["email"],
-      aboutme: response["detailInfo"]["about"],
+      aboutme: Rx<String>(response["detailInfo"]["about"]),
       avatar: Media(
         mediaID: response["avatar"]["media_ID"],
         ownerID: response["playerID"],
@@ -57,11 +59,19 @@ class ARMOYUFunctions {
           minURL: response["banner"]["media_minURL"],
         ),
       ),
-      burc: response["burc"],
-      invitecode: response["detailInfo"]["inviteCode"],
-      lastlogin: response["detailInfo"]["lastloginDate"],
-      lastloginv2: response["detailInfo"]["lastloginDateV2"],
-      lastfaillogin: response["detailInfo"]["lastfailedDate"],
+      burc: Rx<String>(response["burc"]),
+      invitecode: response["detailInfo"]["inviteCode"] == null
+          ? null
+          : Rx<String>(response["detailInfo"]["inviteCode"]),
+      lastlogin: response["detailInfo"]["lastloginDate"] == null
+          ? null
+          : Rx<String>(response["detailInfo"]["lastloginDate"]),
+      lastloginv2: response["detailInfo"]["lastloginDateV2"] == null
+          ? null
+          : Rx<String>(response["detailInfo"]["lastloginDateV2"]),
+      lastfaillogin: response["detailInfo"]["lastfailedDate"] == null
+          ? null
+          : Rx<String>(response["detailInfo"]["lastfailedDate"]),
       job: response["job"] == null
           ? null
           : Job(
@@ -520,7 +530,8 @@ class ARMOYUFunctions {
                               ),
                               Expanded(
                                 child: CustomTextfields.costum3(
-                                  placeholder: currentUserAccounts.user.aboutme,
+                                  placeholder:
+                                      currentUserAccounts.user.aboutme!.value,
                                   controller: aboutme,
                                 ),
                               )
@@ -809,7 +820,8 @@ class ARMOYUFunctions {
                               currentUserAccounts.user.displayName =
                                   "${firstName.text} ${lastName.text}";
 
-                              currentUserAccounts.user.aboutme = aboutme.text;
+                              currentUserAccounts.user.aboutme!.value =
+                                  aboutme.text;
                               currentUserAccounts.user.userMail = email.text;
                               currentUserAccounts.user.country = Country(
                                 countryID: int.parse(countryID),

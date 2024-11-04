@@ -10,7 +10,6 @@ import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart'
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_page.dart';
 import 'package:ARMOYU/app/modules/School/login_school_page/views/school_login.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
-import 'package:ARMOYU/app/modules/Settings/_main/views/settings_page.dart';
 import 'package:ARMOYU/app/modules/Survey/list_survey_page/views/surveylist_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/theme/app_theme.dart';
@@ -63,7 +62,6 @@ class MainPageView extends StatelessWidget {
         top: false,
         bottom: false,
         child: Scaffold(
-          backgroundColor: ARMOYU.backgroundcolor,
           appBar: PreferredSize(
             preferredSize: const Size.fromHeight(kToolbarHeight),
             child: Obx(
@@ -87,8 +85,8 @@ class MainPageView extends StatelessWidget {
                                           .avatar ==
                                       null
                                   ? Shimmer.fromColors(
-                                      baseColor: ARMOYU.baseColor,
-                                      highlightColor: ARMOYU.highlightColor,
+                                      baseColor: Get.theme.disabledColor,
+                                      highlightColor: Get.theme.highlightColor,
                                       child: const CircleAvatar(),
                                     )
                                   : CachedNetworkImage(
@@ -169,8 +167,8 @@ class MainPageView extends StatelessWidget {
                                 .currentUserAccounts.value!.user.displayName ==
                             null
                         ? Shimmer.fromColors(
-                            baseColor: ARMOYU.baseColor,
-                            highlightColor: ARMOYU.highlightColor,
+                            baseColor: Get.theme.disabledColor,
+                            highlightColor: Get.theme.highlightColor,
                             child: const SizedBox(width: 20),
                           )
                         : Text(
@@ -184,8 +182,8 @@ class MainPageView extends StatelessWidget {
                         controller.currentUserAccounts.value!.user.userMail ==
                                 null
                             ? Shimmer.fromColors(
-                                baseColor: ARMOYU.baseColor,
-                                highlightColor: ARMOYU.highlightColor,
+                                baseColor: Get.theme.disabledColor,
+                                highlightColor: Get.theme.highlightColor,
                                 child: const SizedBox(
                                   width: 20,
                                 ),
@@ -205,8 +203,8 @@ class MainPageView extends StatelessWidget {
                           controller.currentUserAccounts.value!.user.avatar ==
                                   null
                               ? Shimmer.fromColors(
-                                  baseColor: ARMOYU.baseColor,
-                                  highlightColor: ARMOYU.highlightColor,
+                                  baseColor: Get.theme.disabledColor,
+                                  highlightColor: Get.theme.highlightColor,
                                   child: const CircleAvatar(),
                                 )
                               : CircleAvatar(
@@ -450,15 +448,20 @@ class MainPageView extends StatelessWidget {
                           leading: const Icon(Icons.settings),
                           title: const Text("Ayarlar"),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SettingsPage(
-                                  currentUser: controller
-                                      .currentUserAccounts.value!.user,
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => SettingsPage(
+                            //       currentUser: controller
+                            //           .currentUserAccounts.value!.user,
+                            //     ),
+                            //   ),
+                            // );
+
+                            Get.toNamed("/settings", arguments: {
+                              "currentUserAccounts":
+                                  controller.currentUserAccounts.value,
+                            });
                           },
                         ),
                         ListTile(
@@ -593,13 +596,12 @@ class MainPageView extends StatelessWidget {
                             ),
                           ),
                           isScrollControlled: true,
-                          backgroundColor: ARMOYU.backgroundcolor,
+                          backgroundColor: Get.theme.scaffoldBackgroundColor,
                           context: context,
                           builder: (BuildContext context) {
                             return FractionallySizedBox(
                               heightFactor: 0.3,
                               child: Scaffold(
-                                backgroundColor: ARMOYU.backgroundcolor,
                                 body: SingleChildScrollView(
                                   child: SafeArea(
                                     child: Column(

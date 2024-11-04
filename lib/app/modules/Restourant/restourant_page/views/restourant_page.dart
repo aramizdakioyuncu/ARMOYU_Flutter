@@ -35,7 +35,6 @@ class RestourantPageView extends StatelessWidget {
       ),
     );
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: RefreshIndicator(
         onRefresh: () async {
           await controller.fetchequipmentlist();

@@ -17,14 +17,14 @@ class ThemeProvider with ChangeNotifier {
     ARMOYU.textbackColor = Colors.grey.shade900;
     ARMOYU.texthintColor = const Color.fromARGB(255, 195, 195, 195);
 
-    ARMOYU.baseColor = const Color.fromARGB(255, 169, 169, 169);
-    ARMOYU.highlightColor = Colors.grey[900]!;
+    // ARMOYU.baseColor = const Color.fromARGB(255, 169, 169, 169);
+    // ARMOYU.highlightColor = Colors.grey[900]!;
 
     ARMOYU.color = Colors.white;
     // ARMOYU.appbarColor = Colors.black;
     ARMOYU.appbottomColor = Colors.black;
     ARMOYU.bodyColor = Colors.grey.shade900;
-    ARMOYU.backgroundcolor = Colors.black;
+    // ARMOYU.backgroundcolor = Colors.black;
     ARMOYU.buttonColor = Colors.grey.shade900;
   }
 
@@ -36,15 +36,15 @@ class ThemeProvider with ChangeNotifier {
     ARMOYU.textbackColor = Colors.grey.shade100;
     ARMOYU.texthintColor = const Color.fromARGB(255, 169, 169, 169);
 
-    ARMOYU.baseColor = Colors.grey[300]!;
-    ARMOYU.highlightColor = Colors.grey[100]!;
+    // ARMOYU.baseColor = Colors.grey[300]!;
+    // ARMOYU.highlightColor = Colors.grey[100]!;
 
     ARMOYU.color = Colors.black;
     // ARMOYU.appbarColor = Colors.white;
     ARMOYU.appbottomColor = Colors.white;
 
     ARMOYU.bodyColor = Colors.grey.shade100;
-    ARMOYU.backgroundcolor = Colors.white;
+    // ARMOYU.backgroundcolor = Colors.white;
     ARMOYU.buttonColor = Colors.blue;
   }
 

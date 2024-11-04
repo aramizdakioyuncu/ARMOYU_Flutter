@@ -7,6 +7,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SettingsNotificationPage extends StatefulWidget {
@@ -159,26 +160,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Yorum Beğenileri"),
                   subtitle: CustomText.costum1(
                       "Yorumlarınız beğenildiğinde bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiCommentLike == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //     child: Switch(
-                          //       value: false,
-                          //       onChanged: (value) {},
-                          //     ),
-                          //   )
                           : Switch(
                               value: _notifiCommentLike!,
                               onChanged: (value) {
@@ -194,25 +188,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Paylaşım Beğenileri"),
                   subtitle: CustomText.costum1(
                       "Paylaşımlarınız beğeni aldığında bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiPostLike == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiPostLike!,
                               onChanged: (value) {
@@ -228,26 +216,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Yorum"),
                   subtitle: CustomText.costum1(
                       "Paylaşımlarınız yorum aldığında bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiComments == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiComments!,
                               onChanged: (value) {
@@ -263,26 +244,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Yorum Yanıtları"),
                   subtitle: CustomText.costum1(
                       "Yorumunuza yanıt geldiğinde bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiReplyComment == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiReplyComment!,
                               onChanged: (value) {
@@ -298,26 +272,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Etkinlik"),
                   subtitle: CustomText.costum1(
                       "Etkinlik ile ilgili tüm duyuruları bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiEvents == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiEvents!,
                               onChanged: (value) {
@@ -333,26 +300,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Doğum Günleri"),
                   subtitle: CustomText.costum1(
                       "Arkadaşlarınızın doğum günlerini bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiBirthdays == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiBirthdays!,
                               onChanged: (value) {
@@ -368,26 +328,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Mesajlar"),
                   subtitle:
                       CustomText.costum1("Yeni mesaj geldiğinde bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiMessages == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiMessages!,
                               onChanged: (value) {
@@ -403,26 +356,19 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   title: CustomText.costum1("Aramalar"),
                   subtitle:
                       CustomText.costum1("Birisi sizi aradığında bildirir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _notifiCalling == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiCalling!,
                               onChanged: (value) {
@@ -443,20 +389,13 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                     children: [
                       _notifiMention == null
                           ? Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Switch(
                                 value: false,
                                 onChanged: (value) {},
                               ),
                             )
-
-                          // SkeletonItem(
-                          //   child: Switch(
-                          //     value: false,
-                          //     onChanged: (value) {},
-                          //   ),
-                          // )
                           : Switch(
                               value: _notifiMention!,
                               onChanged: (value) {

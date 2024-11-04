@@ -9,30 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
-class ChatDetailView extends StatefulWidget {
+class ChatDetailView extends StatelessWidget {
   const ChatDetailView({super.key});
 
   @override
-  State<ChatDetailView> createState() => _ChatDetailPage();
-}
-
-class _ChatDetailPage extends State<ChatDetailView>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
-    final controller = Get.put(
-      ChatdetailController(),
-    );
+    final controller = Get.put(ChatdetailController());
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
-        backgroundColor: ARMOYU.backgroundcolor,
         automaticallyImplyLeading: false,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class InvitePage extends StatefulWidget {
   final UserAccounts currentUserAccounts;
@@ -246,13 +247,12 @@ class _EventStatePage extends State<InvitePage>
         log(response["aciklama"]);
         return;
       }
-      setState(() {
-        widget.currentUserAccounts.user.invitecode = response["aciklamadetay"];
-      });
+
+      widget.currentUserAccounts.user.invitecode =
+          Rx<String>(response["aciklamadetay"]);
     }
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: CustomScrollView(
         controller: _scrollController,
         physics: const BouncingScrollPhysics(
@@ -277,7 +277,7 @@ class _EventStatePage extends State<InvitePage>
               )
             ],
             pinned: true,
-            backgroundColor: ARMOYU.backgroundcolor,
+            backgroundColor: Get.theme.scaffoldBackgroundColor,
             expandedHeight: ARMOYU.screenHeight * 0.25,
             flexibleSpace: FlexibleSpaceBar(
               background: CachedNetworkImage(
@@ -337,23 +337,25 @@ class _EventStatePage extends State<InvitePage>
                                       Clipboard.setData(
                                         ClipboardData(
                                           text: widget.currentUserAccounts.user
-                                              .invitecode!
+                                              .invitecode!.value
                                               .toString(),
                                         ),
                                       );
                                       ARMOYUWidget.toastNotification(
-                                          "Kod koyalandı");
+                                        "Kod koyalandı",
+                                      );
                                     },
                                     child: Row(
                                       children: [
-                                        Text(
-                                          widget.currentUserAccounts.user
-                                              .invitecode
-                                              .toString(),
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
+                                        Obx(
+                                          () => Text(
+                                            widget.currentUserAccounts.user
+                                                .invitecode!.value,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(width: 2),

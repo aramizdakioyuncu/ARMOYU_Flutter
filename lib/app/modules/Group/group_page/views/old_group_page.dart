@@ -20,6 +20,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
@@ -564,7 +565,7 @@ class _GroupPage extends State<GroupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: NestedScrollView(
         physics: const BouncingScrollPhysics(),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -631,8 +632,9 @@ class _GroupPage extends State<GroupPage> {
                                   padding: const EdgeInsets.all(2),
                                   child: _group.groupName == null
                                       ? Shimmer.fromColors(
-                                          baseColor: ARMOYU.baseColor,
-                                          highlightColor: ARMOYU.highlightColor,
+                                          baseColor: Get.theme.disabledColor,
+                                          highlightColor:
+                                              Get.theme.highlightColor,
                                           child: Container(width: 100),
                                         )
                                       // const SkeletonLine(
@@ -951,7 +953,8 @@ class _GroupPage extends State<GroupPage> {
                               }
                               //
                               showModalBottomSheet<void>(
-                                backgroundColor: ARMOYU.backgroundcolor,
+                                backgroundColor:
+                                    Get.theme.scaffoldBackgroundColor,
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(10),
@@ -1111,8 +1114,8 @@ class _GroupPage extends State<GroupPage> {
                   ),
                   _group.groupLogo == null
                       ? Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: const SizedBox(
                             height: 100,
                           ),
@@ -1147,8 +1150,8 @@ class _GroupPage extends State<GroupPage> {
                   ),
                   _group.groupBanner == null
                       ? Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: const SizedBox(
                             height: 100,
                           ),

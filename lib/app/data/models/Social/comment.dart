@@ -1,11 +1,10 @@
 import 'dart:developer';
-
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:like_button/like_button.dart';
 
 class Comment {
@@ -121,7 +120,7 @@ class Comment {
         _likeButtonKey.currentState?.onTap();
       },
       child: Container(
-        color: ARMOYU.backgroundcolor,
+        color: Get.theme.scaffoldBackgroundColor,
         child: Row(
           children: [
             Expanded(

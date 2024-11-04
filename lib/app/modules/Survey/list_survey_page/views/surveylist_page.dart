@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/Client_Functions/survey.dart';
 import 'package:ARMOYU/app/data/models/Survey/survey.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -85,7 +84,6 @@ class _ChatPageState extends State<SurveyListPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anketler"),
         // backgroundColor: ARMOYU.appbarColor,
@@ -129,11 +127,7 @@ class _ChatPageState extends State<SurveyListPage>
             ),
           );
         },
-        backgroundColor: ARMOYU.buttonColor,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.add),
       ),
     );
   }

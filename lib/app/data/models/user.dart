@@ -13,6 +13,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class User {
   int? userID = -1;
@@ -32,12 +33,12 @@ class User {
   Job? job;
   Role? role;
 
-  String? aboutme = "";
-  String? burc = "";
-  String? invitecode = "";
-  String? lastlogin = "";
-  String? lastloginv2 = "";
-  String? lastfaillogin = "";
+  Rx<String>? aboutme = "".obs;
+  Rx<String>? burc = "".obs;
+  Rx<String>? invitecode = "".obs;
+  Rx<String>? lastlogin = "".obs;
+  Rx<String>? lastloginv2 = "".obs;
+  Rx<String>? lastfaillogin = "".obs;
 
   int? level = 0;
   String? levelColor;
@@ -120,7 +121,7 @@ class User {
       userName: json['username'],
       password: json['password'],
       displayName: json['displayname'],
-      aboutme: json['aboutme'],
+      aboutme: json['aboutme'] == null ? null : (json['aboutme'] as String).obs,
       level: json['level'],
       xp: json['xp'],
       levelColor: json['levelcolor'],
@@ -167,8 +168,11 @@ class User {
           ? List<Group>.from(
               json['myGroups'].map((friendJson) => Group.fromJson(friendJson)))
           : null,
-      lastlogin: json['lastlogin'],
-      lastloginv2: json['lastloginv2'],
+      lastlogin:
+          json['lastlogin'] == null ? null : (json['lastlogin'] as String).obs,
+      lastloginv2: json['lastloginv2'] == null
+          ? null
+          : (json['lastloginv2'] as String).obs,
       widgetPosts: json['widgetposts'] != null
           ? List<Post>.from(
               json['widgetposts'].map((postJson) => Post.fromJson(postJson)))
@@ -187,7 +191,7 @@ class User {
       'username': userName,
       'password': password,
       'displayname': displayName,
-      'aboutme': aboutme,
+      'aboutme': aboutme?.value,
       'level': level,
       'xp': xp,
       'levelcolor': levelColor,
@@ -221,8 +225,8 @@ class User {
       'myfriends': myFriends?.map((friend) => friend.toJson()).toList(),
       'chatlist': chatlist?.map((chat) => chat.toJson()).toList(),
       'myGroups': myGroups?.map((myGroups) => myGroups.toJson()).toList(),
-      'lastlogin': lastlogin,
-      'lastloginv2': lastloginv2,
+      'lastlogin': lastlogin?.value,
+      'lastloginv2': lastloginv2?.value,
       'widgetposts': widgetPosts?.map((posts) => posts.toJson()).toList(),
       'widgetstoriescard':
           widgetStoriescard?.map((stories) => stories.toJson()).toList(),

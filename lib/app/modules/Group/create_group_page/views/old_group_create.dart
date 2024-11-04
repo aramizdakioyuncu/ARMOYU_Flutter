@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:developer';
 
+import 'package:get/get.dart';
+
 const double _kItemExtent = 32.0;
 List<Map<String, String>> cupertinolist = [
   {'ID': '-1', 'value': 'Seç'}
@@ -158,7 +160,7 @@ class _GroupCreatePageState extends State<GroupCreatePage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text("Grup Oluştur"),
         backgroundColor: Colors.black,

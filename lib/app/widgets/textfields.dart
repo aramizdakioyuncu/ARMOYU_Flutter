@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
+import 'package:get/get.dart';
 
 class CustomTextfields {
   static Widget costum3({
@@ -115,14 +116,13 @@ class CustomTextfields {
   }
 
   static FlutterMentions mentionTextFiled({
-    required key,
+    required Rx<GlobalKey<FlutterMentionsState>> key,
     int? minLines = 1,
     required User currentUser,
     Timer? searchTimer,
-    required Function setstate,
   }) {
     return FlutterMentions(
-      key: key,
+      key: key.value,
       suggestionPosition: SuggestionPosition.Top,
       maxLines: 20,
       minLines: minLines,
@@ -156,7 +156,8 @@ class CustomTextfields {
                 'photo': element["avatar"].toString()
               });
             }
-            setstate();
+            // setstate();
+            key.refresh();
           });
         }
         //Hashtag listesi bomboşsa
@@ -176,7 +177,7 @@ class CustomTextfields {
                 'numberofuses': element["hashtag_numberofuses"],
               });
             }
-            setstate();
+            // setstate();
           });
         }
 
@@ -227,7 +228,7 @@ class CustomTextfields {
             }
           }
 
-          setstate();
+          // setstate();
         });
       },
       decoration: const InputDecoration(hintText: 'Bir şeyler yaz'),

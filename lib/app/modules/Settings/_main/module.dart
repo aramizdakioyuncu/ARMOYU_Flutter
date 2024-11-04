@@ -1,18 +1,15 @@
-// import 'package:get/get.dart';
+import 'package:ARMOYU/app/modules/Settings/_main/bindings/setttings_binding.dart';
+import 'package:ARMOYU/app/modules/Settings/_main/views/settings_view.dart';
+import 'package:get/get.dart';
 
-// class HomepageModule {
-//   static const route = '/home';
+class SettingsModule {
+  static const route = '/settings';
 
-//   static final List<GetPage> routes = [
-//     GetPage(
-//       name: route,
-//       page: () => const HomepageView(),
-//       binding: HomepageBinding(),
-//     ),
-//     GetPage(
-//       name: "$route/admin",
-//       page: () => const AdminHomepageView(),
-//       binding: AdminHomepageBinding(),
-//     ),
-//   ];
-// }
+  static final List<GetPage> routes = [
+    GetPage(
+      name: route,
+      page: () => const SettingsView(),
+      binding: SetttingsBinding(),
+    ),
+  ];
+}

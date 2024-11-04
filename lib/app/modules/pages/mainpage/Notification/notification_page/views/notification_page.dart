@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/notification_page/controllers/notification_page_controller.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +34,6 @@ class _NotificationPage extends State<NotificationPage>
     );
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: Obx(
         () => controller.notificationlistwidget(),
       ),

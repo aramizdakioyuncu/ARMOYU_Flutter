@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/Social/share_post_page/views/postshare_page.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
@@ -46,7 +45,6 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
     );
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         controller: controller.scrollController,
@@ -94,11 +92,7 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
             ),
           );
         },
-        backgroundColor: ARMOYU.buttonColor,
-        child: const Icon(
-          Icons.post_add,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.post_add),
       ),
     );
   }

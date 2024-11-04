@@ -8,6 +8,7 @@ import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SurveyNewPage extends StatefulWidget {
   final UserAccounts currentUserAccounts;
@@ -22,7 +23,7 @@ class SurveyNewPage extends StatefulWidget {
 
 class _ChatPageState extends State<SurveyNewPage>
     with AutomaticKeepAliveClientMixin<SurveyNewPage> {
-  final List<Media> _media = [];
+  var media = <Media>[].obs;
   final TextEditingController _t1 = TextEditingController();
   final TextEditingController _t2 = TextEditingController();
   int _answercounter = 3;
@@ -92,7 +93,6 @@ class _ChatPageState extends State<SurveyNewPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Anket Oluştur"),
         // backgroundColor: ARMOYU.appbarColor,
@@ -103,8 +103,7 @@ class _ChatPageState extends State<SurveyNewPage>
           child: Column(
             children: [
               Media.mediaList(
-                _media,
-                setstatefunction,
+                media,
                 currentUser: widget.currentUserAccounts.user,
               ),
               const Text("Anket Sorusu"),

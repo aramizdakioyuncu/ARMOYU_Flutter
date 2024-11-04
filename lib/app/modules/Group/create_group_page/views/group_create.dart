@@ -18,7 +18,7 @@ class GroupCreateView extends StatelessWidget {
     final GroupCreateController controller = Get.put(GroupCreateController());
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text("Grup Oluştur"),
         backgroundColor: Colors.black,

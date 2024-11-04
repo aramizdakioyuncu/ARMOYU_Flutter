@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
@@ -119,7 +117,6 @@ class _FriendlistPageState extends State<FriendlistPage>
         title: CustomText.costum1(
             widget.currentUserAccounts.user.userName.toString()),
       ),
-      backgroundColor: ARMOYU.backgroundcolor,
       body: widget.currentUserAccounts.user.myFriends == null
           ? const Center(
               child: CupertinoActivityIndicator(),

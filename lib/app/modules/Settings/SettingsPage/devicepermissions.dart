@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SettingsDevicePermissionsPage extends StatefulWidget {
@@ -116,7 +117,7 @@ class _SettingsDevicePermissionsPage
               children: [
                 ListTile(
                   title: CustomText.costum1("Kamera"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
                     if (camPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -142,7 +143,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Kişiler"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
                     if (contactPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -169,7 +170,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Konum"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
                     if (locationPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -196,7 +197,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Mikrofon"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
                     if (micPermission != "İzin verilmedi") {
                       openAppSettings();
@@ -223,7 +224,7 @@ class _SettingsDevicePermissionsPage
                 ),
                 ListTile(
                   title: CustomText.costum1("Bildirimler"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
                     if (notifiPermission != "İzin verilmedi") {
                       openAppSettings();

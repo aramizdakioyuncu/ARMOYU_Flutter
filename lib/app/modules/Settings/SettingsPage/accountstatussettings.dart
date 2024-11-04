@@ -3,6 +3,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsAccountStatusPage extends StatefulWidget {
   final User currentUser;
@@ -78,7 +79,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 ListTile(
                   leading: const Icon(Icons.photo_size_select_actual_rounded),
                   title: CustomText.costum1("Kaldırılan İçerikler"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -96,7 +97,7 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 ListTile(
                   leading: const Icon(Icons.report),
                   title: CustomText.costum1("Kısıtlanmaların"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

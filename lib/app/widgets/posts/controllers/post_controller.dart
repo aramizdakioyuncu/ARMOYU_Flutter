@@ -232,7 +232,7 @@ class PostController extends GetxController {
         ),
       ),
       isScrollControlled: true,
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.cardColor,
       context: Get.context!,
       builder: (BuildContext context) {
         return FractionallySizedBox(
@@ -242,20 +242,20 @@ class PostController extends GetxController {
               postID,
               fetchRestart: true,
             ),
-            child: Scaffold(
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    CustomText.costum1("YORUMLAR"),
-                    const SizedBox(height: 5),
-                    const Divider(),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: fetchCommentStatus.value &&
+            child: SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  CustomText.costum1("YORUMLAR"),
+                  const SizedBox(height: 5),
+                  const Divider(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Obx(
+                          () => fetchCommentStatus.value &&
                                   postInfo.value.comments == null
                               ? Column(
                                   children: [
@@ -294,75 +294,74 @@ class PostController extends GetxController {
                         ),
                       ),
                     ),
-                    Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            foregroundImage: CachedNetworkImageProvider(
-                              currentUserAccounts.user.avatar!.mediaURL.minURL,
-                            ),
-                            radius: 20,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          foregroundImage: CachedNetworkImageProvider(
+                            currentUserAccounts.user.avatar!.mediaURL.minURL,
                           ),
+                          radius: 20,
                         ),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.all(5),
-                            height: 55,
-                            child: Center(
-                              child: Container(
-                                padding: const EdgeInsets.only(left: 5),
-                                decoration: BoxDecoration(
-                                  color: ARMOYU.backgroundcolor,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: TextField(
-                                  controller: controllerMessage.value,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                  decoration: const InputDecoration(
-                                    hintText: 'Mesaj yaz',
-                                    border: InputBorder.none,
-                                  ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.all(5),
+                          height: 55,
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 5),
+                              decoration: BoxDecoration(
+                                color: Get.theme.scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: TextField(
+                                controller: controllerMessage.value,
+                                style: const TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                                decoration: const InputDecoration(
+                                  hintText: 'Mesaj yaz',
+                                  border: InputBorder.none,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.all(5.0),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              FunctionsPosts funct = FunctionsPosts(
-                                currentUser: currentUserAccounts.user,
-                              );
-                              Map<String, dynamic> response =
-                                  await funct.createcomment(
-                                      postInfo.value.postID,
-                                      controllerMessage.value.text);
-                              if (response["durum"] == 0) {
-                                ARMOYUWidget.toastNotification(
-                                    response["aciklama"].toString());
-                                return;
-                              }
-                              await getcommentsfetch(
-                                postInfo.value.postID,
-                                fetchRestart: true,
-                              );
-                              controllerMessage.value.text = "";
-                            },
-                            child: const Icon(
-                              Icons.send,
-                              size: 16,
-                            ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(5.0),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            FunctionsPosts funct = FunctionsPosts(
+                              currentUser: currentUserAccounts.user,
+                            );
+                            Map<String, dynamic> response =
+                                await funct.createcomment(postInfo.value.postID,
+                                    controllerMessage.value.text);
+                            if (response["durum"] == 0) {
+                              ARMOYUWidget.toastNotification(
+                                  response["aciklama"].toString());
+                              return;
+                            }
+                            await getcommentsfetch(
+                              postInfo.value.postID,
+                              fetchRestart: true,
+                            );
+                            controllerMessage.value.text = "";
+                          },
+                          child: const Icon(
+                            Icons.send,
+                            size: 16,
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -384,20 +383,14 @@ class PostController extends GetxController {
     Map<String, dynamic> response = await funct.like(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
-      // setState(() {
       widgetlike = widgetlike;
       postInfo.value.likesCount = postInfo.value.likesCount;
-      // });
       return;
     }
 
     postInfo.value.isLikeme = true;
     postInfo.value.likesCount++;
     likeunlikeProcces.value = false;
-
-    // if (mounted) {
-    //   setState(() {});
-    // }
   }
 
   void aa2postLike(widgetlike, postID) async {
@@ -411,18 +404,13 @@ class PostController extends GetxController {
     Map<String, dynamic> response = await funct.unlike(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
-      // setState(() {
       widgetlike = widgetlike;
       postInfo.value.likesCount = postInfo.value.likesCount;
-      // });
       return;
     }
 
     postInfo.value.isLikeme = false;
     postInfo.value.likesCount--;
-    // if (mounted) {
-    //   setState(() {});
-    // }
 
     likeunlikeProcces.value = false;
   }
@@ -451,7 +439,7 @@ class PostController extends GetxController {
         ),
       ),
       isScrollControlled: true,
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.cardColor,
       context: Get.context!,
       builder: (BuildContext context) {
         return FractionallySizedBox(
@@ -461,21 +449,20 @@ class PostController extends GetxController {
               postInfo.value.postID,
               fetchRestart: true,
             ),
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: SafeArea(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    const Text("BEĞENENLER"),
-                    const SizedBox(height: 5),
-                    const Divider(),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: fetchlikersStatus.value &&
+            child: SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  const Text("BEĞENENLER"),
+                  const SizedBox(height: 5),
+                  const Divider(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Obx(
+                          () => fetchlikersStatus.value &&
                                   postInfo.value.likers == null
                               ? Column(
                                   children: [
@@ -506,8 +493,8 @@ class PostController extends GetxController {
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -519,7 +506,7 @@ class PostController extends GetxController {
 
   void postfeedback() {
     showModalBottomSheet<void>(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(10),

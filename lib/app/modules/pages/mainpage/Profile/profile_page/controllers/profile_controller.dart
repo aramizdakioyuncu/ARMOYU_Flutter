@@ -1106,6 +1106,7 @@ class ProfileController extends GetxController
           return;
         }
         showModalBottomSheet<void>(
+          backgroundColor: Get.theme.cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
           ),
@@ -1161,8 +1162,8 @@ class ProfileController extends GetxController
       },
       child: userProfile.value.avatar == null
           ? Shimmer.fromColors(
-              baseColor: ARMOYU.baseColor,
-              highlightColor: ARMOYU.highlightColor,
+              baseColor: Get.theme.disabledColor,
+              highlightColor: Get.theme.highlightColor,
               child: const CircleAvatar(
                   radius: 50.0, backgroundColor: Colors.white),
             )
@@ -1225,8 +1226,8 @@ class ProfileController extends GetxController
         const SizedBox(height: 2),
         if (userProfile.value.xp == null)
           Shimmer.fromColors(
-            baseColor: ARMOYU.baseColor,
-            highlightColor: ARMOYU.highlightColor,
+            baseColor: Get.theme.disabledColor,
+            highlightColor: Get.theme.highlightColor,
             child: const SizedBox(width: 200),
           )
         else
@@ -1302,8 +1303,8 @@ class ProfileController extends GetxController
   Widget getPostsCountWidget() {
     if (userProfile.value.postsCount == null) {
       return Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: const SizedBox(width: 35, height: 30),
       );
     } else {
@@ -1335,8 +1336,8 @@ class ProfileController extends GetxController
       },
       child: userProfile.value.friendsCount == null
           ? Shimmer.fromColors(
-              baseColor: ARMOYU.baseColor,
-              highlightColor: ARMOYU.highlightColor,
+              baseColor: Get.theme.disabledColor,
+              highlightColor: Get.theme.highlightColor,
               child: const SizedBox(width: 35, height: 30),
             )
           : Column(
@@ -1353,8 +1354,8 @@ class ProfileController extends GetxController
   Widget getAwardsCountWidget() {
     if (userProfile.value.awardsCount == null) {
       return Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: Container(
           width: 35,
           height: 30,
@@ -1404,8 +1405,8 @@ class ProfileController extends GetxController
   Widget getDisplayNameWidget() {
     if (userProfile.value.displayName == null) {
       return Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: Container(
           width: 50.0,
           padding: const EdgeInsets.all(5),
@@ -1424,8 +1425,8 @@ class ProfileController extends GetxController
   Widget getUserNameWidget() {
     if (userProfile.value.userName == null) {
       return Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: Container(
           width: 80,
           padding: const EdgeInsets.all(5),
@@ -1442,8 +1443,8 @@ class ProfileController extends GetxController
   Widget getUserRoleWidget() {
     if (userProfile.value.role == null) {
       return Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: const SizedBox(
           width: 20,
         ),
@@ -1489,7 +1490,7 @@ class ProfileController extends GetxController
           size: 20,
         ),
         const SizedBox(width: 3),
-        CustomText.costum1(userProfile.value.burc!),
+        CustomText.costum1(userProfile.value.burc!.value),
       ],
     );
   }
@@ -1594,8 +1595,8 @@ class ProfileController extends GetxController
       return Container();
     } else if (userProfile.value.displayName == null) {
       return Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: Container(width: 200),
       );
     } else {
@@ -1628,8 +1629,8 @@ class ProfileController extends GetxController
       if (friendStatus.value == "") {
         return Expanded(
           child: Shimmer.fromColors(
-            baseColor: ARMOYU.baseColor,
-            highlightColor: ARMOYU.highlightColor,
+            baseColor: Get.theme.disabledColor,
+            highlightColor: Get.theme.highlightColor,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
@@ -1683,14 +1684,14 @@ class ProfileController extends GetxController
       children: [
         userProfile.value.aboutme == null
             ? Shimmer.fromColors(
-                baseColor: ARMOYU.baseColor,
-                highlightColor: ARMOYU.highlightColor,
+                baseColor: Get.theme.disabledColor,
+                highlightColor: Get.theme.highlightColor,
                 child: const SizedBox(
                   width: 350,
                 ),
               )
             : CustomDedectabletext.costum1(
-                userProfile.value.aboutme!,
+                userProfile.value.aboutme!.value,
                 3,
                 13,
               ),

@@ -31,7 +31,6 @@ class ChatPage extends StatelessWidget {
     );
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Obx(
@@ -59,13 +58,9 @@ class ChatPage extends StatelessWidget {
                         ),
                         hintText: 'Ara',
                       ),
-                      style: TextStyle(
-                        color: ARMOYU.color,
-                      ),
                     ),
                   )
                 : const Text("Sohbetler"),
-            // backgroundColor: ARMOYU.appbarColor,
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.search),
@@ -79,8 +74,9 @@ class ChatPage extends StatelessWidget {
         ),
       ),
       body: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        controller: ScrollController(),
+        //Allways olduğu zaman her zaman oluyor lakin androidde çalışmıyor
+        physics: const BouncingScrollPhysics(),
+        controller: controller.chatScrollController.value,
         slivers: [
           CupertinoSliverRefreshControl(
             onRefresh: () async {

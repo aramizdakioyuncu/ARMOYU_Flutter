@@ -22,7 +22,7 @@ class ARMOYU {
   static Color bodyColor = Colors.black;
 
   static Color color = Colors.black;
-  static Color backgroundcolor = Colors.black;
+  // static Color backgroundcolor = Colors.black;
 
   // static Color textColor = Colors.black;
   static Color textbackColor = Colors.black;
@@ -30,8 +30,8 @@ class ARMOYU {
 
   static Color buttonColor = Colors.black;
 
-  static Color baseColor = Colors.grey.shade300;
-  static Color highlightColor = Colors.grey.shade100;
+  // static Color baseColor = Colors.grey.shade300;
+  // static Color highlightColor = Colors.grey.shade100;
 
   static double get screenWidth =>
       MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;

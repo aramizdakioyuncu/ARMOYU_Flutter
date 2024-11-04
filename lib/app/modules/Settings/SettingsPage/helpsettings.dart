@@ -1,6 +1,7 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsHelpPage extends StatefulWidget {
   const SettingsHelpPage({super.key});
@@ -36,13 +37,13 @@ class _SettingsHelpPage extends State<SettingsHelpPage> {
               children: [
                 ListTile(
                   title: CustomText.costum1("Sorun Bildir"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Destek Talepleri"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),

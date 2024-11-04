@@ -7,6 +7,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WidgetUtility {
   static Widget specialText(BuildContext context, String text,
@@ -143,7 +144,7 @@ class WidgetUtility {
         return Container(
           height: 250,
           width: ARMOYU.screenWidth,
-          color: ARMOYU.backgroundcolor,
+          color: Get.theme.scaffoldBackgroundColor,
           child: Column(
             children: [
               Align(
@@ -281,7 +282,7 @@ class WidgetUtility {
         return Container(
           height: 250,
           width: ARMOYU.screenWidth,
-          color: ARMOYU.backgroundcolor,
+          color: Get.theme.scaffoldBackgroundColor,
           child: Column(
             children: [
               Align(
@@ -362,7 +363,7 @@ class WidgetUtility {
     required BuildContext context,
     required title,
     required Function(int, String) onChanged,
-    required Function setstatefunction,
+    Function? setstatefunction,
     required List<Map<int, String>> list,
     bool looping = false,
   }) {
@@ -382,7 +383,7 @@ class WidgetUtility {
         return Container(
           height: 250,
           width: ARMOYU.screenWidth,
-          color: ARMOYU.backgroundcolor,
+          color: Get.theme.scaffoldBackgroundColor,
           child: Column(
             children: [
               Align(
@@ -390,7 +391,10 @@ class WidgetUtility {
                 child: GestureDetector(
                   onTap: () {
                     onChanged(selectedItemID - 1, selectedItem);
-                    setstatefunction();
+
+                    if (setstatefunction != null) {
+                      setstatefunction();
+                    }
                     Navigator.pop(context);
                   },
                   child: const Padding(
@@ -430,7 +434,9 @@ class WidgetUtility {
                         //
                         onChanged(selectedItemID - 1, selectedItem);
 
-                        setstatefunction();
+                        if (setstatefunction != null) {
+                          setstatefunction();
+                        }
                       },
                     ),
                   ),

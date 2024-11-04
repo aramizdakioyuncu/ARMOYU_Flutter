@@ -1,11 +1,10 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+// ignore_for_file: deprecated_member_use
 
 import 'dart:developer';
-
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -86,7 +85,6 @@ class _ChaCallPageState extends State<ChatCallPage>
         return true; // true döndürmek, normal geri tuşu işlevini sürdürür.
       },
       child: Scaffold(
-        backgroundColor: ARMOYU.backgroundcolor,
         body: Stack(
           children: [
             Container(
@@ -252,9 +250,10 @@ class _ChaCallPageState extends State<ChatCallPage>
                                       "assets/sounds/calling_end.mp3");
                                   player.play();
 
-                                  if (mounted) {
-                                    Navigator.pop(context);
-                                  }
+                                  // if (mounted) {
+                                  //   Navigator.pop(context);
+                                  // }
+                                  Get.back();
                                 } catch (e) {
                                   log(e.toString());
                                 }

@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 final ThemeData appThemeData = ThemeData(
-  primarySwatch: Colors.blue,
   primaryColor: Colors.red,
+  primarySwatch: Colors.amber,
+  indicatorColor: Colors.amber,
   visualDensity: VisualDensity.adaptivePlatformDensity,
   scaffoldBackgroundColor: Colors.black,
   appBarTheme: const AppBarTheme(
@@ -16,9 +17,24 @@ final ThemeData appThemeData = ThemeData(
       foregroundColor: WidgetStateProperty.all(Colors.white),
     ),
   ),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: Colors.grey.shade900,
+    foregroundColor: Colors.white,
+  ),
   badgeTheme: const BadgeThemeData(
     textColor: Colors.white,
   ),
+  switchTheme: SwitchThemeData(
+    thumbColor: const WidgetStatePropertyAll(Colors.red),
+    trackColor: WidgetStatePropertyAll(Colors.grey.shade900),
+  ),
+  radioTheme: const RadioThemeData(
+    fillColor: WidgetStatePropertyAll(Colors.red),
+  ),
+  checkboxTheme: const CheckboxThemeData(
+      checkColor: WidgetStatePropertyAll(
+    Colors.amber,
+  )),
   inputDecorationTheme: InputDecorationTheme(
     iconColor: Colors.white,
     prefixIconColor: Colors.white,

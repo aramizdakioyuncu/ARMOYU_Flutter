@@ -1,3 +1,4 @@
+import 'package:ARMOYU/app/modules/Settings/_main/module.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/group_page/module.dart';
@@ -22,6 +23,7 @@ class AppPages {
     ...GroupCreateModule.routes,
     ...GroupPageModule.routes,
     ...ProfileModule.routes,
-    ...ChatdetailModule.routes
+    ...ChatdetailModule.routes,
+    ...SettingsModule.routes,
   ];
 }

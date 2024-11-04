@@ -34,10 +34,9 @@ class SchoolLoginPageView extends StatelessWidget {
       ),
     );
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Okul Seçim"),
-        backgroundColor: ARMOYU.backgroundcolor,
+        backgroundColor: Get.theme.scaffoldBackgroundColor,
       ),
       body: RefreshIndicator(
         onRefresh: () => controller.handleRefresh(),

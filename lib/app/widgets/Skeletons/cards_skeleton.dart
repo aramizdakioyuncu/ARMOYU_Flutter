@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonCustomCards extends StatefulWidget {
@@ -56,8 +56,8 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: Container(
                             decoration: const BoxDecoration(
                               color: Colors.white,
@@ -75,8 +75,8 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
                         const SizedBox(height: 10),
 
                         Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: const SizedBox(
                             width: 600,
                           ),
@@ -92,8 +92,8 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
                             widget.icon,
                             const SizedBox(width: 5),
                             Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: const SizedBox(width: 10),
                             ),
                             // const SkeletonLine(

@@ -16,7 +16,7 @@ class RegisterpageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(RegisterpageController());
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -107,8 +107,8 @@ class RegisterpageView extends StatelessWidget {
                               ),
                             )
                           : Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: const CircleAvatar(
                                 radius: 30.0, // Adjust the radius as needed
                                 backgroundColor: Colors.white,
@@ -125,8 +125,8 @@ class RegisterpageView extends StatelessWidget {
                           ? Text(controller.inviteduserdisplayName.value
                               .toString())
                           : Shimmer.fromColors(
-                              baseColor: ARMOYU.baseColor,
-                              highlightColor: ARMOYU.highlightColor,
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
                               child: Container(width: 200),
                             ),
                       // const SkeletonLine(

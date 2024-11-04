@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -160,7 +158,6 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text("Arkadaşlık İstekleri"),
         // backgroundColor: ARMOYU.appbarColor,

@@ -54,7 +54,6 @@ class _SearchPagePage extends State<SearchPage>
     );
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: Obx(
         () => controller.widgetSearch.isNotEmpty
             ? ListView.builder(

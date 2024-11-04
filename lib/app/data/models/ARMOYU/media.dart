@@ -12,6 +12,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class Media {
@@ -184,8 +185,12 @@ class Media {
     );
   }
 
-  static Widget mediaList(List<Media> list, Function setState,
-      {required User currentUser, bool big = false}) {
+  static Widget mediaList(
+    RxList<Media> list, {
+    required User currentUser,
+    bool big = false,
+    bool editable = false,
+  }) {
     double imgheight = 100;
     double imgwidgth = 100;
     double closeSize = 16;
@@ -228,7 +233,7 @@ class Media {
                               ),
                             ),
                           );
-                          setState();
+                          list.refresh();
                         }
                       }
                     },
@@ -239,7 +244,21 @@ class Media {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
-              onTap: () {
+              onTap: () async {
+                if (editable) {
+                  //Kırpma İşlemi
+                  XFile? selectedCroppedImage = await AppCore.cropperImage(
+                    XFile(list[index].mediaURL.bigURL),
+                  );
+                  if (selectedCroppedImage == null) {
+                    return null;
+                  }
+                  // image = selectedCroppedImage;
+                  list[index].mediaXFile = selectedCroppedImage;
+                  //Kırpma İşlemi
+
+                  return;
+                }
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => MediaViewer(
@@ -259,20 +278,22 @@ class Media {
                 ),
                 child: Stack(
                   children: [
-                    Image.file(
-                      File(list[index].mediaURL.bigURL),
-                      fit: BoxFit.contain,
-                      height: imgheight,
-                      width: imgwidgth,
-                    ),
+                    list[index].mediaXFile != null
+                        ? Image.file(File(list[index].mediaXFile!.path))
+                        : Image.file(
+                            File(list[index].mediaURL.bigURL),
+                            fit: BoxFit.contain,
+                            height: imgheight,
+                            width: imgwidgth,
+                          ),
                     Positioned(
                       right: 0,
                       top: 0,
                       child: InkWell(
                         onTap: () {
-                          log("a");
+                          log("media listeden silindi");
                           list.removeAt(index);
-                          setState();
+                          list.refresh();
                         },
                         child: Container(
                           decoration: const BoxDecoration(

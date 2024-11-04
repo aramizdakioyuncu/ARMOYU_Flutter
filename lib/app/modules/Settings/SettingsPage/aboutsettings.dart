@@ -1,6 +1,7 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsAboutPage extends StatefulWidget {
   const SettingsAboutPage({super.key});
@@ -36,25 +37,25 @@ class _SettingsAboutPage extends State<SettingsAboutPage> {
               children: [
                 ListTile(
                   title: CustomText.costum1("Hesabın Hakkında"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Gizlilik ilkesi"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Kullanım Koşulları"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),
                 ListTile(
                   title: CustomText.costum1("Açık Kaynak Kütüphaneleri"),
-                  tileColor: ARMOYU.backgroundcolor,
+                  tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing:
                       const Icon(Icons.arrow_forward_ios_outlined, size: 17),
                 ),

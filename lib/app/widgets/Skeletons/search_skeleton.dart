@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonSearch extends StatefulWidget {
@@ -29,8 +29,8 @@ class _SkeletonSearch extends State<SkeletonSearch> {
               backgroundColor: Colors
                   .transparent, // Set a background color for the avatar if needed
               child: Shimmer.fromColors(
-                baseColor: ARMOYU.baseColor,
-                highlightColor: ARMOYU.highlightColor,
+                baseColor: Get.theme.disabledColor,
+                highlightColor: Get.theme.highlightColor,
                 child: const SizedBox(
                   width: 40,
                   height: 400,
@@ -51,8 +51,8 @@ class _SkeletonSearch extends State<SkeletonSearch> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Shimmer.fromColors(
-                  baseColor: ARMOYU.baseColor,
-                  highlightColor: ARMOYU.highlightColor,
+                  baseColor: Get.theme.disabledColor,
+                  highlightColor: Get.theme.highlightColor,
                   child: const SizedBox(width: 100),
                 ),
                 // SkeletonLine(
@@ -68,8 +68,8 @@ class _SkeletonSearch extends State<SkeletonSearch> {
             crossAxisAlignment: CrossAxisAlignment.end, // Sağa yaslamak için
             children: [
               Shimmer.fromColors(
-                baseColor: ARMOYU.baseColor,
-                highlightColor: ARMOYU.highlightColor,
+                baseColor: Get.theme.disabledColor,
+                highlightColor: Get.theme.highlightColor,
                 child: const SizedBox(width: 20),
               ),
               // SkeletonLine(

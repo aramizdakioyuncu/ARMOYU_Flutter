@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
@@ -189,7 +188,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

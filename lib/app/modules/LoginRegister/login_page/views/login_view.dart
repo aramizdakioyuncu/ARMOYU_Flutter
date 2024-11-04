@@ -20,7 +20,6 @@ class LoginpageView extends StatelessWidget {
     final LoginPageController controller = Get.put(LoginPageController());
 
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/widgets/cards.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 class ARMOYUWidget {
   final UserAccounts currentUserAccounts;
@@ -54,7 +55,7 @@ class ARMOYUWidget {
   static void stackbarNotification(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: ARMOYU.backgroundcolor,
+        backgroundColor: Get.theme.scaffoldBackgroundColor,
         content: Text(text),
         duration: const Duration(milliseconds: 500),
       ),
@@ -79,7 +80,7 @@ class ARMOYUWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: ARMOYU.backgroundcolor,
+          backgroundColor: Get.theme.scaffoldBackgroundColor,
           title: CustomText.costum1('Emin misiniz?'),
           content: CustomText.costum1(
               'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?'),

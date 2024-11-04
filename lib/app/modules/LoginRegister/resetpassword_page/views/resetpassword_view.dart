@@ -1,9 +1,6 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/controllers/resetpassword_controller.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
-
 import 'package:flutter/material.dart';
-
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:get/get.dart';
@@ -17,7 +14,6 @@ class ResetPasswordpageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ResetpasswordController());
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

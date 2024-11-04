@@ -4,16 +4,16 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/modules/Social/share_post_page/controllers/postshare_controller.dart';
 import 'package:ARMOYU/app/modules/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 
-class PostSharePage extends StatefulWidget {
+class PostSharePage extends StatelessWidget {
   final User currentUser;
   const PostSharePage({
     super.key,
@@ -21,93 +21,14 @@ class PostSharePage extends StatefulWidget {
   });
 
   @override
-  State<PostSharePage> createState() => _PostSharePageState();
-}
-
-class _PostSharePageState extends State<PostSharePage>
-    with AutomaticKeepAliveClientMixin<PostSharePage> {
-  GlobalKey<FlutterMentionsState> key = GlobalKey<FlutterMentionsState>();
-  @override
-  bool get wantKeepAlive => true;
-
-  TextEditingController postsharetext = TextEditingController();
-  List<Media> media = [];
-  bool postshareProccess = false;
-
-  Future<void> sharePost() async {
-    if (postshareProccess) {
-      return;
-    }
-
-    postshareProccess = true;
-    setstatefunction();
-    FunctionsPosts funct = FunctionsPosts(currentUser: widget.currentUser);
-    Map<String, dynamic> response = await funct.share(
-      key.currentState!.controller!.text,
-      media,
-      location: userLocation,
-    );
-    if (response["durum"] == 0) {
-      postsharetext.text = response["aciklama"].toString();
-      postshareProccess = false;
-      setstatefunction();
-
-      return;
-    }
-
-    if (response["durum"] == 1) {
-      postsharetext.text = response["aciklama"].toString();
-      postshareProccess = false;
-      setstatefunction();
-
-      if (mounted) {
-        Navigator.of(context).pop();
-      }
-    }
-  }
-
-  void setstatefunction() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition();
-  }
-
-  String? userLocation;
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final controller = Get.put(
+      PostshareController(
+        currentUser: currentUser,
+      ),
+    );
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
-        // backgroundColor: ARMOYU.appbarColor,
         title: const Text("Paylaşım Yap"),
       ),
       body: Padding(
@@ -115,11 +36,13 @@ class _PostSharePageState extends State<PostSharePage>
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Media.mediaList(
-                media,
-                setstatefunction,
-                big: true,
-                currentUser: widget.currentUser,
+              Obx(
+                () => Media.mediaList(
+                  controller.media,
+                  big: true,
+                  editable: true,
+                  currentUser: currentUser,
+                ),
               ),
               SizedBox(
                 width: ARMOYU.screenWidth,
@@ -128,44 +51,46 @@ class _PostSharePageState extends State<PostSharePage>
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      userLocation == null
-                          ? Container()
-                          : Stack(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CustomButtons.costum2(
-                                    text: userLocation,
-                                    icon: const Icon(Icons.location_on),
-                                    onPressed: () {},
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 12,
-                                  top: 12,
-                                  child: InkWell(
-                                    onTap: () {
-                                      userLocation = null;
-                                      setstatefunction();
-                                    },
-                                    child: const Icon(
-                                      Icons.close,
-                                      color: Colors.red,
-                                      size: 16,
+                      Obx(
+                        () => controller.userLocation.value == null
+                            ? Container()
+                            : Stack(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: CustomButtons.costum2(
+                                      text: controller.userLocation.value,
+                                      icon: const Icon(Icons.location_on),
+                                      onPressed: () {},
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                  Positioned(
+                                    right: 12,
+                                    top: 12,
+                                    child: InkWell(
+                                      onTap: () {
+                                        controller.userLocation.value = null;
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                        color: Colors.red,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              CustomTextfields.mentionTextFiled(
-                key: key,
-                minLines: 3,
-                currentUser: widget.currentUser,
-                setstate: setstatefunction,
+              Obx(
+                () => CustomTextfields.mentionTextFiled(
+                  key: controller.key,
+                  minLines: 3,
+                  currentUser: currentUser,
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -174,7 +99,7 @@ class _PostSharePageState extends State<PostSharePage>
                     const Spacer(),
                     IconButton(
                       onPressed: () async {
-                        dynamic aa = await _determinePosition();
+                        dynamic aa = await controller.determinePosition();
                         log(aa.toString());
 
                         Position position = await Geolocator.getCurrentPosition(
@@ -184,10 +109,11 @@ class _PostSharePageState extends State<PostSharePage>
                                 position.latitude, position.longitude)
                             .then((List<Placemark> placemarks) {
                           Placemark place = placemarks[0];
-                          userLocation = place.subAdministrativeArea.toString();
+                          controller.userLocation.value =
+                              place.subAdministrativeArea.toString();
                           ARMOYUWidget.toastNotification(
                               "${place.street}, ${place.subLocality} ,${place.subAdministrativeArea}, ${place.postalCode}");
-                          setstatefunction();
+                          controller.setstatefunction();
                         }).catchError((e) {
                           debugPrint(e);
                         });
@@ -200,7 +126,8 @@ class _PostSharePageState extends State<PostSharePage>
                     const Spacer(),
                     IconButton(
                       onPressed: () {
-                        key.currentState!.controller!.text += "@";
+                        controller.key.value.currentState!.controller!.text +=
+                            "@";
                       },
                       icon: const Icon(
                         Icons.person_2,
@@ -215,7 +142,7 @@ class _PostSharePageState extends State<PostSharePage>
                             context,
                             MaterialPageRoute(
                               builder: (context) => CameraScreen(
-                                currentUser: widget.currentUser,
+                                currentUser: currentUser,
                                 canPop: true,
                               ),
                             ),
@@ -223,8 +150,8 @@ class _PostSharePageState extends State<PostSharePage>
                           for (var element in photo) {
                             log(element.mediaURL.minURL);
                           }
-                          media += photo;
-                          setstatefunction();
+                          controller.media += photo;
+                          controller.setstatefunction();
                         },
                         icon: const Icon(
                           Icons.camera_alt,
@@ -234,7 +161,8 @@ class _PostSharePageState extends State<PostSharePage>
                     if (ARMOYU.cameras!.isNotEmpty) const Spacer(),
                     IconButton(
                       onPressed: () {
-                        key.currentState!.controller!.text += "#";
+                        controller.key.value.currentState!.controller!.text +=
+                            "#";
                       },
                       icon: const Icon(
                         Icons.numbers_rounded,
@@ -249,13 +177,17 @@ class _PostSharePageState extends State<PostSharePage>
                 height: 100,
                 child: Column(
                   children: [
-                    CustomButtons.costum1(
-                      text: "Paylaş",
-                      onPressed: sharePost,
-                      loadingStatus: postshareProccess,
+                    Obx(
+                      () => CustomButtons.costum1(
+                        text: "Paylaş",
+                        onPressed: controller.sharePost,
+                        loadingStatus: controller.postshareProccess.value,
+                      ),
                     ),
                     const SizedBox(height: 10),
-                    Text(postsharetext.text),
+                    Obx(
+                      () => Text(controller.postsharetext.value.text),
+                    ),
                   ],
                 ),
               ),

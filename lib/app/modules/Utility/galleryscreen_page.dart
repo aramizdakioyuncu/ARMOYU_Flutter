@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
@@ -7,6 +6,7 @@ import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class GalleryScreen extends StatefulWidget {
@@ -27,7 +27,7 @@ bool _mediaUploadProcess = false;
 
 bool _pageisactive = false;
 late TabController _tabController;
-List<Media> _mediaList = [];
+var mediaList = <Media>[].obs;
 final ScrollController _galleryscrollcontroller = ScrollController();
 
 bool _fetchFirstDeviceGalleryStatus = false;
@@ -99,7 +99,7 @@ class _GalleryScreenState extends State<GalleryScreen>
 
     FunctionsMedia funct = FunctionsMedia(currentUser: widget.currentUser);
     Map<String, dynamic> response = await funct.upload(
-      files: _mediaList,
+      files: mediaList,
       category: "-1",
     );
 
@@ -112,7 +112,7 @@ class _GalleryScreenState extends State<GalleryScreen>
 
     _mediaUploadProcess = false;
 
-    _mediaList.clear();
+    mediaList.clear();
     setstatefunction();
     galleryfetch(reloadpage: true);
   }
@@ -222,7 +222,6 @@ class _GalleryScreenState extends State<GalleryScreen>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         // backgroundColor: ARMOYU.appbarColor,
         title: const Text('Hikaye Gönder'),
@@ -257,8 +256,7 @@ class _GalleryScreenState extends State<GalleryScreen>
                     child: Column(
                       children: [
                         Media.mediaList(
-                          _mediaList,
-                          setstatefunction,
+                          mediaList,
                           big: false,
                           currentUser: widget.currentUser,
                         ),
@@ -270,7 +268,7 @@ class _GalleryScreenState extends State<GalleryScreen>
                                 height: 50,
                                 child: CustomButtons.costum1(
                                   text: "Yükle",
-                                  enabled: _mediaList.isNotEmpty,
+                                  enabled: mediaList.isNotEmpty,
                                   onPressed: () async =>
                                       await uploadmediafunction(),
                                   loadingStatus: _mediaUploadProcess,

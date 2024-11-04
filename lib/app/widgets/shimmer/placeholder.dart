@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 enum ContentLineType {
@@ -10,8 +10,8 @@ enum ContentLineType {
 class ShimmerPlaceholder {
   static Widget titlePlaceholder({double? width}) {
     return Shimmer.fromColors(
-      baseColor: ARMOYU.baseColor,
-      highlightColor: ARMOYU.highlightColor,
+      baseColor: Get.theme.disabledColor,
+      highlightColor: Get.theme.highlightColor,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.black,
@@ -39,13 +39,13 @@ class ShimmerPlaceholder {
     return ListTile(
       contentPadding: const EdgeInsets.all(0),
       leading: Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: const CircleAvatar(),
       ),
       title: Shimmer.fromColors(
-        baseColor: ARMOYU.baseColor,
-        highlightColor: ARMOYU.highlightColor,
+        baseColor: Get.theme.disabledColor,
+        highlightColor: Get.theme.highlightColor,
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
@@ -57,8 +57,8 @@ class ShimmerPlaceholder {
       subtitle: Row(
         children: [
           Shimmer.fromColors(
-            baseColor: ARMOYU.baseColor,
-            highlightColor: ARMOYU.highlightColor,
+            baseColor: Get.theme.disabledColor,
+            highlightColor: Get.theme.highlightColor,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
@@ -75,8 +75,8 @@ class ShimmerPlaceholder {
           : Padding(
               padding: const EdgeInsets.all(1.0),
               child: Shimmer.fromColors(
-                baseColor: ARMOYU.baseColor,
-                highlightColor: ARMOYU.highlightColor,
+                baseColor: Get.theme.disabledColor,
+                highlightColor: Get.theme.highlightColor,
                 child: trailingIcon,
               ),
             ),

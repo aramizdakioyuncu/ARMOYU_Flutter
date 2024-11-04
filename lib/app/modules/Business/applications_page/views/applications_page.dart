@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/joinus.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Business/joinus_page/views/joinus_page.dart';
@@ -119,7 +118,6 @@ class _SettingsPage extends State<BusinessApplicationsView> {
                 JoinUsBusinessView(currentUser: widget.currentUser),
           ));
         },
-        backgroundColor: ARMOYU.buttonColor,
         child: const Icon(Icons.add),
       ),
     );

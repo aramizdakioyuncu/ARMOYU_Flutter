@@ -28,7 +28,7 @@ class EventPage extends StatelessWidget {
       currentUserAccounts: currentUserAccounts,
     ));
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
+      backgroundColor: Get.theme.scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text("${controller.event.value!.name} Etkinliği"),
         // backgroundColor: ARMOYU.appbarColor,

@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
@@ -40,7 +39,7 @@ class TwitterPostWidget extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.only(bottom: 1),
           decoration: BoxDecoration(
-            color: ARMOYU.backgroundcolor,
+            color: Get.theme.scaffoldBackgroundColor,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +101,8 @@ class TwitterPostWidget extends StatelessWidget {
                                   () => CustomText.costum1(
                                     controller.postInfo.value.postDate,
                                     weight: FontWeight.normal,
-                                    color: Colors.black.withOpacity(0.69),
+                                    color: Get.theme.primaryColor
+                                        .withOpacity(0.69),
                                   ),
                                 ),
                               ],

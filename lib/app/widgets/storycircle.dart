@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Story/screen_story_page/views/storyscreen_page.dart';
@@ -6,6 +5,7 @@ import 'package:ARMOYU/app/modules/Utility/galleryscreen_page.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WidgetStorycircle extends StatefulWidget {
   final User currentUser;
@@ -36,7 +36,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: ARMOYU.backgroundcolor,
+      color: Get.theme.scaffoldBackgroundColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -132,26 +132,26 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                               ),
                             ),
                           ),
-                          child:
-                              cardData.owner.userID == widget.currentUser.userID
-                                  ? Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Container(
-                                        height: 24,
-                                        width: 24,
-                                        decoration: BoxDecoration(
-                                          color: ARMOYU.backgroundcolor,
-                                          borderRadius: const BorderRadius.all(
-                                            Radius.elliptical(100, 100),
-                                          ),
-                                        ),
-                                        child: const Icon(
-                                          Icons.add,
-                                          color: Colors.blue,
-                                        ),
+                          child: cardData.owner.userID ==
+                                  widget.currentUser.userID
+                              ? Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Container(
+                                    height: 24,
+                                    width: 24,
+                                    decoration: BoxDecoration(
+                                      color: Get.theme.scaffoldBackgroundColor,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.elliptical(100, 100),
                                       ),
-                                    )
-                                  : null,
+                                    ),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 2),
                         CustomText.costum1(

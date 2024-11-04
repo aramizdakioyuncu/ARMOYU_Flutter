@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonSocailPosts extends StatefulWidget {
@@ -17,7 +18,7 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
     return Container(
       margin: const EdgeInsets.only(bottom: 2),
       decoration: BoxDecoration(
-        color: ARMOYU.backgroundcolor,
+        color: Get.theme.scaffoldBackgroundColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,8 +31,8 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
                 GestureDetector(
                   onTap: () {},
                   child: Shimmer.fromColors(
-                    baseColor: ARMOYU.baseColor,
-                    highlightColor: ARMOYU.highlightColor,
+                    baseColor: Get.theme.disabledColor,
+                    highlightColor: Get.theme.highlightColor,
                     child: const SizedBox(
                       width: 40,
                       height: 40,
@@ -51,8 +52,8 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Shimmer.fromColors(
-                        baseColor: ARMOYU.baseColor,
-                        highlightColor: ARMOYU.highlightColor,
+                        baseColor: Get.theme.disabledColor,
+                        highlightColor: Get.theme.highlightColor,
                         child: const SizedBox(
                           width: 100,
                         ),
@@ -64,8 +65,8 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 2.0),
                         child: Shimmer.fromColors(
-                          baseColor: ARMOYU.baseColor,
-                          highlightColor: ARMOYU.highlightColor,
+                          baseColor: Get.theme.disabledColor,
+                          highlightColor: Get.theme.highlightColor,
                           child: const SizedBox(width: 20),
                         ),
                         //  SkeletonLine(
@@ -89,8 +90,8 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Shimmer.fromColors(
-              baseColor: ARMOYU.baseColor,
-              highlightColor: ARMOYU.highlightColor,
+              baseColor: Get.theme.disabledColor,
+              highlightColor: Get.theme.highlightColor,
               child: const SizedBox(
                 // width: 600,
                 height: 140,
@@ -103,8 +104,8 @@ class _SkeletonSocailPosts extends State<SkeletonSocailPosts> {
           const SizedBox(height: 5),
           Center(
             child: Shimmer.fromColors(
-              baseColor: ARMOYU.baseColor,
-              highlightColor: ARMOYU.highlightColor,
+              baseColor: Get.theme.disabledColor,
+              highlightColor: Get.theme.highlightColor,
               child: SizedBox(
                 width: ARMOYU.screenWidth / 1,
                 height: 400,

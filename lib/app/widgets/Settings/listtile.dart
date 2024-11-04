@@ -1,10 +1,10 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class WidgetSettings {
   final String listtileTitle;
-  String? tralingText;
+  RxString? tralingText;
   final IconData listtileIcon;
   final dynamic onTap;
 
@@ -19,7 +19,7 @@ class WidgetSettings {
     return ListTile(
       leading: Icon(listtileIcon),
       title: CustomText.costum1(listtileTitle),
-      tileColor: ARMOYU.backgroundcolor,
+      tileColor: Get.theme.scaffoldBackgroundColor,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -247,7 +247,6 @@ class _PostDetailPage extends State<PostDetailPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      backgroundColor: ARMOYU.backgroundcolor,
       appBar: AppBar(
         title: const Text('Paylaşım', style: TextStyle(fontSize: 18)),
         // backgroundColor: ARMOYU.appbarColor,
