@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
+import 'package:get/get.dart';
 
 class PostDetailPage extends StatefulWidget {
   final UserAccounts currentUserAccounts;
@@ -103,9 +104,9 @@ class _PostDetailPage extends State<PostDetailPage>
                   avatar: Media(
                     mediaID: userID,
                     mediaURL: MediaURL(
-                      bigURL: avatar,
-                      normalURL: avatar,
-                      minURL: avatar,
+                      bigURL: Rx<String>(avatar),
+                      normalURL: Rx<String>(avatar),
+                      minURL: Rx<String>(avatar),
                     ),
                   ),
                 ),

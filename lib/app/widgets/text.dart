@@ -86,7 +86,7 @@ class CustomText {
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
             foregroundImage: CachedNetworkImageProvider(
-              user.avatar!.mediaURL.minURL,
+              user.avatar!.mediaURL.minURL.value,
             ),
             radius: 8,
           ),

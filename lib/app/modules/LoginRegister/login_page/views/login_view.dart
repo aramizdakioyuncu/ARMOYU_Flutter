@@ -2,11 +2,9 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/login_page/controllers/login_controller.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/register_page/views/register_view.dart';
-import 'package:ARMOYU/app/theme/app_theme.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/views/eski_resetpassword_page.dart';
 import 'package:ARMOYU/app/modules/Utility/text_page.dart';
 
 import 'package:flutter/material.dart';
@@ -38,7 +36,7 @@ class LoginpageView extends StatelessWidget {
             const SizedBox(height: 16.0),
             CustomTextfields.costum3(
               title: "Kullanıcı Adı / E-posta",
-              controller: controller.usernameController.value,
+              controller: controller.usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
               type: TextInputType.emailAddress,
@@ -46,7 +44,7 @@ class LoginpageView extends StatelessWidget {
             const SizedBox(height: 16),
             CustomTextfields.costum3(
               title: "Şifreniz",
-              controller: controller.passwordController.value,
+              controller: controller.passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
@@ -57,7 +55,7 @@ class LoginpageView extends StatelessWidget {
                 onPressed: () async => await controller.login(
                   currentUser: controller.currentUser.value!,
                 ),
-                loadingStatus: controller.loginProcess.value,
+                loadingStatus: controller.loginProcess,
               ),
             ),
             const SizedBox(
@@ -65,16 +63,16 @@ class LoginpageView extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Get.to(() => const ResetPasswordPage());
+                Get.toNamed("/ressetpassword");
               },
               child: CustomText.costum1("Şifremi Unuttum"),
             ),
             IconButton(
               icon: const Icon(Icons.nightlight), // Sağdaki butonun ikonu
               onPressed: () {
-                // ThemeProvider().toggleTheme();
-                //Ayar yapılması lazım
-                Get.changeTheme(appThemeData);
+                Get.changeThemeMode(
+                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
+                );
               },
             ),
             Row(

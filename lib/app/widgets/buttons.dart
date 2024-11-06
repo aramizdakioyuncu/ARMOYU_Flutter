@@ -1,6 +1,7 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomButtons {
   static Widget friendbuttons(String text, onPressed, Color color) {
@@ -29,18 +30,18 @@ class CustomButtons {
     required String text,
     Color? background,
     required Function onPressed,
-    required bool loadingStatus,
+    required Rx<bool> loadingStatus,
     bool enabled = true,
   }) {
     Color foregroundColor = Colors.white;
 
-    return loadingStatus
-        ? CupertinoActivityIndicator(color: ARMOYU.color)
+    return loadingStatus.value
+        ? const CupertinoActivityIndicator()
         : ElevatedButton(
             onPressed: !enabled
                 ? null
                 : () async {
-                    if (!loadingStatus) {
+                    if (!loadingStatus.value) {
                       await onPressed();
                     }
                   },

@@ -45,18 +45,18 @@ class ARMOYUFunctions {
         mediaID: response["avatar"]["media_ID"],
         ownerID: response["playerID"],
         mediaURL: MediaURL(
-          bigURL: response["avatar"]["media_bigURL"],
-          normalURL: response["avatar"]["media_URL"],
-          minURL: response["avatar"]["media_minURL"],
+          bigURL: Rx<String>(response["avatar"]["media_bigURL"]),
+          normalURL: Rx<String>(response["avatar"]["media_URL"]),
+          minURL: Rx<String>(response["avatar"]["media_minURL"]),
         ),
       ),
       banner: Media(
         mediaID: response["banner"]["media_ID"],
         ownerID: response["playerID"],
         mediaURL: MediaURL(
-          bigURL: response["banner"]["media_bigURL"],
-          normalURL: response["banner"]["media_URL"],
-          minURL: response["banner"]["media_minURL"],
+          bigURL: Rx<String>(response["banner"]["media_bigURL"]),
+          normalURL: Rx<String>(response["banner"]["media_URL"]),
+          minURL: Rx<String>(response["banner"]["media_minURL"]),
         ),
       ),
       burc: Rx<String>(response["burc"]),
@@ -413,19 +413,20 @@ class ARMOYUFunctions {
   void profileEdit(BuildContext context, Function setstatefunction) {
     FocusNode myFocusPassword = FocusNode();
 
-    final TextEditingController firstName = TextEditingController();
-    firstName.text = currentUserAccounts.user.firstName.toString();
-    final TextEditingController lastName = TextEditingController();
-    lastName.text = currentUserAccounts.user.lastName.toString();
+    var firstName = TextEditingController().obs;
+    firstName.value.text = currentUserAccounts.user.firstName.toString();
 
-    final TextEditingController aboutme = TextEditingController();
-    aboutme.text = currentUserAccounts.user.aboutme.toString();
+    var lastName = TextEditingController().obs;
+    lastName.value.text = currentUserAccounts.user.lastName.toString();
 
-    final TextEditingController email = TextEditingController();
-    email.text = currentUserAccounts.user.userMail.toString();
+    var aboutme = TextEditingController().obs;
+    aboutme.value.text = currentUserAccounts.user.aboutme.toString();
 
-    final TextEditingController birthday = TextEditingController();
-    birthday.text = currentUserAccounts.user.birthdayDate.toString();
+    var email = TextEditingController().obs;
+    email.value.text = currentUserAccounts.user.userMail.toString();
+
+    var birthday = TextEditingController().obs;
+    birthday.value.text = currentUserAccounts.user.birthdayDate.toString();
 
     String country = "Ülke Seçim";
     int? countryIndex = 0;
@@ -453,12 +454,12 @@ class ARMOYUFunctions {
       fetchCountry(setstatefunction);
     }
 
-    final TextEditingController phoneNumber = TextEditingController();
-    phoneNumber.text =
+    var phoneNumber = TextEditingController().obs;
+    phoneNumber.value.text =
         formatString(currentUserAccounts.user.phoneNumber.toString());
 
-    final TextEditingController passwordControl = TextEditingController();
-    bool profileeditProcess = false;
+    var passwordControl = TextEditingController().obs;
+    var profileeditProcess = false.obs;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -623,7 +624,7 @@ class ARMOYUFunctions {
                                             }).toList(),
                                           );
                                         },
-                                        loadingStatus: false,
+                                        loadingStatus: false.obs,
                                       ),
                                     ),
                                     const SizedBox(width: 10),
@@ -652,7 +653,7 @@ class ARMOYUFunctions {
                                             }).toList(),
                                           );
                                         },
-                                        loadingStatus: false,
+                                        loadingStatus: false.obs,
                                       ),
                                     ),
                                   ],
@@ -675,17 +676,17 @@ class ARMOYUFunctions {
                               ),
                               Expanded(
                                 child: CustomButtons.costum1(
-                                  text: birthday.text,
+                                  text: birthday.value.text,
                                   onPressed: () {
                                     WidgetUtility.cupertinoDatePicker(
                                       context: context,
                                       onChanged: (selectedValue) {
-                                        birthday.text = selectedValue;
+                                        birthday.value.text = selectedValue;
                                       },
                                       setstatefunction: setstatefunction,
                                     );
                                   },
-                                  loadingStatus: false,
+                                  loadingStatus: false.obs,
                                 ),
                               ),
                             ],
@@ -706,7 +707,7 @@ class ARMOYUFunctions {
                               Expanded(
                                 child: CustomTextfields.number(
                                   placeholder: "(XXX) XXX XX XX",
-                                  controller: phoneNumber,
+                                  controller: phoneNumber.value,
                                   icon: const Icon(Icons.phone),
                                   category: "phoneNumber",
                                   length: 10,
@@ -741,10 +742,11 @@ class ARMOYUFunctions {
                           child: CustomButtons.costum1(
                             text: "Güncelle",
                             onPressed: () async {
-                              String cleanedphoneNumber = phoneNumber.text
+                              String cleanedphoneNumber = phoneNumber.value.text
                                   .replaceAll(RegExp(r'[()\s]'), '');
 
-                              List<String> words = birthday.text.split(".");
+                              List<String> words =
+                                  birthday.value.text.split(".");
                               if (words.isEmpty) {
                                 return;
                               }
@@ -765,19 +767,19 @@ class ARMOYUFunctions {
                                     .toString();
                               }
 
-                              log(firstName.text);
-                              log(lastName.text);
+                              log(firstName.value.text);
+                              log(lastName.value.text);
 
-                              log(aboutme.text);
+                              log(aboutme.value.text);
 
-                              log(email.text);
+                              log(email.value.text);
                               log(countryID.toString());
                               log(provinceID.toString());
                               log(newDate);
                               log(cleanedphoneNumber);
-                              log(passwordControl.text);
+                              log(passwordControl.value.text);
 
-                              if (passwordControl.text == "") {
+                              if (passwordControl.value.text == "") {
                                 ARMOYUWidget.toastNotification(
                                     "Parola doğrulamasını yapınız!");
 
@@ -785,28 +787,28 @@ class ARMOYUFunctions {
                                 return;
                               }
 
-                              if (profileeditProcess) {
+                              if (profileeditProcess.value) {
                                 return;
                               }
-                              profileeditProcess = true;
+                              profileeditProcess = true.obs;
                               setstatefunction();
 
                               FunctionsProfile f = FunctionsProfile(
                                   currentUser: currentUserAccounts.user);
                               Map<String, dynamic> response =
                                   await f.saveprofiledetails(
-                                firstname: firstName.text,
-                                lastname: lastName.text,
-                                aboutme: aboutme.text,
-                                email: email.text,
+                                firstname: firstName.value.text,
+                                lastname: lastName.value.text,
+                                aboutme: aboutme.value.text,
+                                email: email.value.text,
                                 countryID: countryID.toString(),
                                 provinceID: provinceID.toString(),
                                 birthday: newDate,
                                 phoneNumber: cleanedphoneNumber,
-                                passwordControl: passwordControl.text,
+                                passwordControl: passwordControl.value.text,
                               );
 
-                              profileeditProcess = false;
+                              profileeditProcess.value = false;
                               setstatefunction();
                               if (response["durum"] == 0) {
                                 log(response["aciklama"]);
@@ -815,14 +817,16 @@ class ARMOYUFunctions {
                                 return;
                               }
                               currentUserAccounts.user.firstName =
-                                  firstName.text;
-                              currentUserAccounts.user.lastName = lastName.text;
+                                  firstName.value.text;
+                              currentUserAccounts.user.lastName =
+                                  lastName.value.text;
                               currentUserAccounts.user.displayName =
-                                  "${firstName.text} ${lastName.text}";
+                                  "${firstName.value.text} ${lastName.value.text}";
 
                               currentUserAccounts.user.aboutme!.value =
-                                  aboutme.text;
-                              currentUserAccounts.user.userMail = email.text;
+                                  aboutme.value.text;
+                              currentUserAccounts.user.userMail =
+                                  email.value.text;
                               currentUserAccounts.user.country = Country(
                                 countryID: int.parse(countryID),
                                 name: ARMOYU.countryList[countryIndex!].name,
@@ -843,7 +847,7 @@ class ARMOYUFunctions {
                               currentUserAccounts.user.phoneNumber =
                                   cleanedphoneNumber;
                               currentUserAccounts.user.birthdayDate =
-                                  birthday.text;
+                                  birthday.value.text;
 
                               ARMOYUWidget.toastNotification(
                                   response["aciklama"].toString());

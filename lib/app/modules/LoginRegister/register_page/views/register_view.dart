@@ -33,28 +33,28 @@ class RegisterpageView extends StatelessWidget {
             ),
             CustomTextfields.costum3(
               title: "Adınız",
-              controller: controller.nameController.value,
+              controller: controller.nameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
               title: "Soyadınız",
-              controller: controller.lastnameController.value,
+              controller: controller.lastnameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
               title: "Kullanıcı Adınız",
-              controller: controller.usernameController.value,
+              controller: controller.usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
               title: "E-posta",
-              controller: controller.emailController.value,
+              controller: controller.emailController,
               isPassword: false,
               preicon: const Icon(Icons.email),
               type: TextInputType.emailAddress,
@@ -62,14 +62,14 @@ class RegisterpageView extends StatelessWidget {
             const SizedBox(height: 16),
             CustomTextfields.costum3(
               title: "Şifreniz",
-              controller: controller.passwordController.value,
+              controller: controller.passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
               title: "Şifreniz Tekrar",
-              controller: controller.rpasswordController.value,
+              controller: controller.rpasswordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
@@ -81,7 +81,7 @@ class RegisterpageView extends StatelessWidget {
                         Expanded(
                           child: CustomTextfields.costum3(
                             title: "Davet Kodu",
-                            controller: controller.inviteController.value,
+                            controller: controller.inviteController,
                             isPassword: false,
                             maxLength: 5,
                             preicon: const Icon(Icons.people),
@@ -148,7 +148,7 @@ class RegisterpageView extends StatelessWidget {
             CustomButtons.costum1(
               text: "Kayıt Ol",
               onPressed: () async => await controller.register(),
-              loadingStatus: controller.registerProccess.value,
+              loadingStatus: controller.registerProccess,
             ),
             const SizedBox(height: 16),
             Row(

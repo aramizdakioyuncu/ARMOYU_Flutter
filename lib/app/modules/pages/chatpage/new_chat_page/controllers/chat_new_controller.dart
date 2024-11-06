@@ -90,9 +90,9 @@ class ChatNewController extends GetxController {
           avatar: Media(
             mediaID: response["icerik"][i]["oyuncuID"],
             mediaURL: MediaURL(
-              bigURL: response["icerik"][i]["oyuncuavatar"],
-              normalURL: response["icerik"][i]["oyuncufakavatar"],
-              minURL: response["icerik"][i]["oyuncuminnakavatar"],
+              bigURL: Rx<String>(response["icerik"][i]["oyuncuavatar"]),
+              normalURL: Rx<String>(response["icerik"][i]["oyuncufakavatar"]),
+              minURL: Rx<String>(response["icerik"][i]["oyuncuminnakavatar"]),
             ),
           ),
         ),

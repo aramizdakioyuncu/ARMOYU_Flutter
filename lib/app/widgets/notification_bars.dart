@@ -147,7 +147,7 @@ class _CustomMenusNotificationbarsState
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
-                        widget.user.avatar!.mediaURL.minURL,
+                        widget.user.avatar!.mediaURL.minURL.value,
                       ),
                       radius: 25,
                     ),
@@ -229,7 +229,7 @@ class _CustomMenusNotificationbarsState
                                     }
                                   }
                                 },
-                                loadingStatus: false,
+                                loadingStatus: false.obs,
                               ),
                               const SizedBox(width: 16),
                               CustomButtons.costum1(
@@ -286,7 +286,7 @@ class _CustomMenusNotificationbarsState
                                     }
                                   }
                                 },
-                                loadingStatus: false,
+                                loadingStatus: false.obs,
                               ),
                             ],
                           ),

@@ -16,7 +16,7 @@ import 'package:get/get.dart';
 class CustomTextfields {
   static Widget costum3({
     String? title,
-    required TextEditingController controller,
+    required Rx<TextEditingController> controller,
     bool isPassword = false,
     String? placeholder,
     Icon? preicon,
@@ -58,6 +58,7 @@ class CustomTextfields {
           },
           onChanged: (value) {
             // setstate();
+            controller.refresh();
             if (onChanged != null) {
               onChanged(value);
             }
@@ -70,7 +71,7 @@ class CustomTextfields {
           },
           focusNode: focusNode,
           enabled: enabled,
-          controller: controller,
+          controller: controller.value,
           obscureText: isPassword,
           minLines: minLines,
           maxLines: !isPassword ? maxLines : 1,
@@ -82,20 +83,20 @@ class CustomTextfields {
             contentPadding: const EdgeInsets.all(16.0),
             suffixIcon: suffixiconbutton,
             counter: minLength != null || maxLength != null
-                ? minLength != null && controller.text.length < minLength
+                ? minLength != null && controller.value.text.length < minLength
                     ? Text(
-                        "${controller.text.length}/${controller.text.length <= minLength ? minLength : minLength}",
+                        "${controller.value.text.length}/${controller.value.text.length <= minLength ? minLength : minLength}",
                         style: TextStyle(
-                          color: controller.text.length < minLength
+                          color: controller.value.text.length < minLength
                               ? Colors.red
                               : Colors.grey,
                         ),
                       )
                     : maxLength != null
                         ? Text(
-                            "${controller.text.length}/${controller.text.length >= maxLength ? maxLength : maxLength}",
+                            "${controller.value.text.length}/${controller.value.text.length >= maxLength ? maxLength : maxLength}",
                             style: TextStyle(
-                              color: controller.text.length == maxLength
+                              color: controller.value.text.length == maxLength
                                   ? Colors.red
                                   : Colors.grey,
                             ),
@@ -126,7 +127,7 @@ class CustomTextfields {
       suggestionPosition: SuggestionPosition.Top,
       maxLines: 20,
       minLines: minLines,
-      suggestionListDecoration: const BoxDecoration(color: Colors.black),
+      suggestionListDecoration: BoxDecoration(color: Get.theme.cardColor),
       suggestionListHeight: ARMOYU.screenHeight / 3,
       onChanged: (value) {
         List<String> words = value.split(' ');
@@ -156,7 +157,6 @@ class CustomTextfields {
                 'photo': element["avatar"].toString()
               });
             }
-            // setstate();
             key.refresh();
           });
         }
@@ -177,7 +177,7 @@ class CustomTextfields {
                 'numberofuses': element["hashtag_numberofuses"],
               });
             }
-            // setstate();
+            key.refresh();
           });
         }
 
@@ -228,7 +228,7 @@ class CustomTextfields {
             }
           }
 
-          // setstate();
+          key.refresh();
         });
       },
       decoration: const InputDecoration(hintText: 'Bir şeyler yaz'),

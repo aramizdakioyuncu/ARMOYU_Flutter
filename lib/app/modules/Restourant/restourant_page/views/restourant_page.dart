@@ -73,7 +73,7 @@ class RestourantPageView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     CachedNetworkImage(
-                                      imageUrl: cafe.logo.mediaURL.minURL,
+                                      imageUrl: cafe.logo.mediaURL.minURL.value,
                                       height: 60,
                                       fit: BoxFit.cover,
                                     ),
@@ -108,7 +108,7 @@ class RestourantPageView extends StatelessWidget {
                 ),
                 background: GestureDetector(
                   child: CachedNetworkImage(
-                    imageUrl: cafe.banner.mediaURL.minURL,
+                    imageUrl: cafe.banner.mediaURL.minURL.value,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -233,7 +233,7 @@ class RestourantPageView extends StatelessWidget {
                                           width: double.maxFinite,
                                           child: Image.network(
                                             cafe.products[index].logo.mediaURL
-                                                .minURL,
+                                                .minURL.value,
                                             fit: BoxFit.cover,
                                           ),
                                         ),

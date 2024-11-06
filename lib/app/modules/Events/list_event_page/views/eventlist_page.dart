@@ -7,6 +7,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EventlistPage extends StatefulWidget {
   final UserAccounts currentUserAccounts;
@@ -69,9 +70,9 @@ class _EventlistPage extends State<EventlistPage>
                 avatar: Media(
                   mediaID: element2["player_ID"],
                   mediaURL: MediaURL(
-                    bigURL: element2["player_avatar"],
-                    normalURL: element2["player_avatar"],
-                    minURL: element2["player_avatar"],
+                    bigURL: Rx<String>(element2["player_avatar"]),
+                    normalURL: Rx<String>(element2["player_avatar"]),
+                    minURL: Rx<String>(element2["player_avatar"]),
                   ),
                 ),
               ),

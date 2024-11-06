@@ -518,8 +518,8 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: CircleAvatar(
                                     foregroundImage: CachedNetworkImageProvider(
-                                      widget
-                                          .currentUser.avatar!.mediaURL.minURL,
+                                      widget.currentUser.avatar!.mediaURL.minURL
+                                          .value,
                                     ),
                                     radius: 20,
                                   ),

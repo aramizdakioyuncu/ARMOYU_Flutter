@@ -48,7 +48,7 @@ class SettingsView extends StatelessWidget {
                     leading: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
-                        currentUserAccounts.user.avatar!.mediaURL.minURL,
+                        currentUserAccounts.user.avatar!.mediaURL.minURL.value,
                       ),
                       radius: 28,
                     ),

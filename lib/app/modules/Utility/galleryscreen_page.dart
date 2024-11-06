@@ -23,7 +23,7 @@ class GalleryScreen extends StatefulWidget {
 final List<Media> _mediaGallery = [];
 int _gallerycounter = 0;
 bool _ismediaProcces = false;
-bool _mediaUploadProcess = false;
+var mediaUploadProcess = false.obs;
 
 bool _pageisactive = false;
 late TabController _tabController;
@@ -90,11 +90,11 @@ class _GalleryScreenState extends State<GalleryScreen>
   }
 
   Future<void> uploadmediafunction() async {
-    if (_mediaUploadProcess) {
+    if (mediaUploadProcess.value) {
       return;
     }
 
-    _mediaUploadProcess = true;
+    mediaUploadProcess.value = true;
     setstatefunction();
 
     FunctionsMedia funct = FunctionsMedia(currentUser: widget.currentUser);
@@ -105,12 +105,12 @@ class _GalleryScreenState extends State<GalleryScreen>
 
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
-      _mediaUploadProcess = false;
+      mediaUploadProcess.value = false;
       setstatefunction();
       return;
     }
 
-    _mediaUploadProcess = false;
+    mediaUploadProcess.value = false;
 
     mediaList.clear();
     setstatefunction();
@@ -196,9 +196,9 @@ class _GalleryScreenState extends State<GalleryScreen>
           mediaID: element.typeInt,
           mediaBytes: bytes,
           mediaURL: MediaURL(
-            bigURL: "bigURL",
-            normalURL: "normalURL",
-            minURL: "minURL",
+            bigURL: Rx<String>("bigURL"),
+            normalURL: Rx<String>("normalURL"),
+            minURL: Rx<String>("minURL"),
           ),
         ),
       );
@@ -208,9 +208,9 @@ class _GalleryScreenState extends State<GalleryScreen>
           mediaID: element.typeInt,
           mediaBytes: thumbnailbytes,
           mediaURL: MediaURL(
-            bigURL: "bigURL",
-            normalURL: "normalURL",
-            minURL: "minURL",
+            bigURL: Rx<String>("bigURL"),
+            normalURL: Rx<String>("normalURL"),
+            minURL: Rx<String>("minURL"),
           ),
         ),
       );
@@ -271,7 +271,7 @@ class _GalleryScreenState extends State<GalleryScreen>
                                   enabled: mediaList.isNotEmpty,
                                   onPressed: () async =>
                                       await uploadmediafunction(),
-                                  loadingStatus: _mediaUploadProcess,
+                                  loadingStatus: mediaUploadProcess,
                                 ),
                               ),
                             ],

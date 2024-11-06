@@ -6,6 +6,7 @@ import 'package:ARMOYU/app/data/models/Survey/survey.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/Services/API/api_service.dart';
+import 'package:get/get.dart';
 
 class ClientFunctionSurvey {
   final User currentUser;
@@ -50,9 +51,9 @@ class ClientFunctionSurvey {
           Media(
             mediaID: media["media_ID"],
             mediaURL: MediaURL(
-              bigURL: media["media_bigURL"],
-              normalURL: media["media_URL"],
-              minURL: media["media_minURL"],
+              bigURL: Rx<String>(media["media_bigURL"]),
+              normalURL: Rx<String>(media["media_URL"]),
+              minURL: Rx<String>(media["media_minURL"]),
             ),
           ),
         );
@@ -71,9 +72,9 @@ class ClientFunctionSurvey {
             avatar: Media(
               mediaID: element["survey_ID"],
               mediaURL: MediaURL(
-                bigURL: element["survey_owner"]["owner_avatar"],
-                normalURL: element["survey_owner"]["owner_avatar"],
-                minURL: element["survey_owner"]["owner_avatar"],
+                bigURL: Rx<String>(element["survey_owner"]["owner_avatar"]),
+                normalURL: Rx<String>(element["survey_owner"]["owner_avatar"]),
+                minURL: Rx<String>(element["survey_owner"]["owner_avatar"]),
               ),
             ),
           ),

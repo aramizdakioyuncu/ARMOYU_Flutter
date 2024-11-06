@@ -148,7 +148,7 @@ class PostSharePage extends StatelessWidget {
                             ),
                           );
                           for (var element in photo) {
-                            log(element.mediaURL.minURL);
+                            log(element.mediaURL.minURL.value);
                           }
                           controller.media += photo;
                           controller.setstatefunction();
@@ -181,7 +181,7 @@ class PostSharePage extends StatelessWidget {
                       () => CustomButtons.costum1(
                         text: "Paylaş",
                         onPressed: controller.sharePost,
-                        loadingStatus: controller.postshareProccess.value,
+                        loadingStatus: controller.postshareProccess,
                       ),
                     ),
                     const SizedBox(height: 10),

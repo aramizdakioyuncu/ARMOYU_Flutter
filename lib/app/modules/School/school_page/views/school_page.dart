@@ -62,7 +62,8 @@ class SchoolPageView extends StatelessWidget {
                                                 .value!
                                                 .schoolLogo!
                                                 .mediaURL
-                                                .minURL,
+                                                .minURL
+                                                .value,
                                             height: 60,
                                             fit: BoxFit.cover,
                                           ),
@@ -111,7 +112,7 @@ class SchoolPageView extends StatelessWidget {
                         ? Container()
                         : CachedNetworkImage(
                             imageUrl: controller.schoolInfo.value!.schoolBanner!
-                                .mediaURL.minURL,
+                                .mediaURL.minURL.value,
                             fit: BoxFit.cover,
                           ),
                   ),

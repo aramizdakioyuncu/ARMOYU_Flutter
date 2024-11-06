@@ -38,7 +38,7 @@ class NoConnectionpageView extends StatelessWidget {
               CustomButtons.costum1(
                 text: "Tekrar dene",
                 onPressed: controller.checkInternetConnection2,
-                loadingStatus: controller.connectionProcess.value,
+                loadingStatus: controller.connectionProcess,
               ),
             ],
           ),

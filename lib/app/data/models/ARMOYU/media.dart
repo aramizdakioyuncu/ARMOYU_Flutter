@@ -91,7 +91,7 @@ class Media {
               builder: (context) => StoryPublishPage(
                 currentUser: currentUser,
                 imageID: 1,
-                imageURL: medialist[index].mediaURL.bigURL,
+                imageURL: medialist[index].mediaURL.bigURL.value,
               ),
             ),
           );
@@ -177,7 +177,7 @@ class Media {
             });
       },
       child: CachedNetworkImage(
-        imageUrl: mediaURL.minURL,
+        imageUrl: mediaURL.minURL.value,
         fit: BoxFit.cover,
         placeholder: (context, url) => const CupertinoActivityIndicator(),
         errorWidget: (context, url, error) => const Icon(Icons.error),
@@ -227,9 +227,9 @@ class Media {
                               mediaXFile: element,
                               mediaID: element.hashCode,
                               mediaURL: MediaURL(
-                                bigURL: element.path,
-                                normalURL: element.path,
-                                minURL: element.path,
+                                bigURL: Rx<String>(element.path),
+                                normalURL: Rx<String>(element.path),
+                                minURL: Rx<String>(element.path),
                               ),
                             ),
                           );
@@ -248,15 +248,15 @@ class Media {
                 if (editable) {
                   //Kırpma İşlemi
                   XFile? selectedCroppedImage = await AppCore.cropperImage(
-                    XFile(list[index].mediaURL.bigURL),
+                    XFile(list[index].mediaURL.bigURL.value),
                   );
                   if (selectedCroppedImage == null) {
-                    return null;
+                    return;
                   }
                   // image = selectedCroppedImage;
                   list[index].mediaXFile = selectedCroppedImage;
                   //Kırpma İşlemi
-
+                  list.refresh();
                   return;
                 }
                 Navigator.of(context).push(
@@ -279,9 +279,16 @@ class Media {
                 child: Stack(
                   children: [
                     list[index].mediaXFile != null
-                        ? Image.file(File(list[index].mediaXFile!.path))
+                        ? Image.file(
+                            File(
+                              list[index].mediaXFile!.path,
+                            ),
+                            fit: BoxFit.contain,
+                            height: imgheight,
+                            width: imgwidgth,
+                          )
                         : Image.file(
-                            File(list[index].mediaURL.bigURL),
+                            File(list[index].mediaURL.bigURL.value),
                             fit: BoxFit.contain,
                             height: imgheight,
                             width: imgwidgth,
@@ -321,9 +328,9 @@ class Media {
 }
 
 class MediaURL {
-  String bigURL;
-  String normalURL;
-  String minURL;
+  Rx<String> bigURL;
+  Rx<String> normalURL;
+  Rx<String> minURL;
 
   MediaURL({
     required this.bigURL,
@@ -333,17 +340,17 @@ class MediaURL {
 
   Map<String, dynamic> toJson() {
     return {
-      'bigURL': bigURL,
-      'normalURL': normalURL,
-      'minURL': minURL,
+      'bigURL': bigURL.value,
+      'normalURL': normalURL.value,
+      'minURL': minURL.value,
     };
   }
 
   factory MediaURL.fromJson(Map<String, dynamic> json) {
     return MediaURL(
-      bigURL: json['bigURL'],
-      normalURL: json['normalURL'],
-      minURL: json['minURL'],
+      bigURL: Rx<String>(json['bigURL']),
+      normalURL: Rx<String>(json['normalURL']),
+      minURL: Rx<String>(json['minURL']),
     );
   }
 }

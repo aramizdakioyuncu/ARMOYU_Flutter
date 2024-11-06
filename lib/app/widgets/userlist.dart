@@ -9,6 +9,7 @@ import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../functions/API_Functions/profile.dart';
 
@@ -121,7 +122,7 @@ class _UserListWidgetState extends State<UserListWidget> {
             child: CustomButtons.costum1(
               text: buttonremovefriend,
               onPressed: removefriend,
-              loadingStatus: false,
+              loadingStatus: false.obs,
             ),
           ),
         ),
@@ -133,7 +134,7 @@ class _UserListWidgetState extends State<UserListWidget> {
             child: CustomButtons.costum1(
               text: buttonbefriend,
               onPressed: friendrequest,
-              loadingStatus: false,
+              loadingStatus: false.obs,
             ),
           ),
         )

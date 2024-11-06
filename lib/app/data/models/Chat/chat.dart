@@ -63,7 +63,7 @@ class Chat {
           leading: CircleAvatar(
             backgroundColor: Colors.transparent,
             foregroundImage: CachedNetworkImageProvider(
-              user.avatar!.mediaURL.minURL,
+              user.avatar!.mediaURL.minURL.value,
             ),
           ),
           tileColor: chatNotification ? Colors.red.shade900 : Colors.black,

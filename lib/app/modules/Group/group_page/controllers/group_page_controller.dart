@@ -327,27 +327,27 @@ class GroupPageController extends GetxController {
     user.value!.myGroups![groupIndex].groupLogo = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
     group.value!.groupLogo = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
     group.value!.groupLogo = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
@@ -391,27 +391,27 @@ class GroupPageController extends GetxController {
     user.value!.myGroups![groupIndex].groupBanner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
     group.value!.groupBanner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
     group.value!.groupBanner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 

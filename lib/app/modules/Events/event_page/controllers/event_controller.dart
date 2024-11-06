@@ -107,7 +107,7 @@ class EventController extends GetxController {
     for (var detail in response["icerik"]["detail"]) {
       detail["detail_ID"];
       if (detail["detail_name"] == "cekicilogo") {
-        eventdetailImage = detail["detail_info"];
+        eventdetailImage = Rx<String>(detail["detail_info"]);
       }
       detailList.add(
         {
@@ -150,9 +150,9 @@ class EventController extends GetxController {
             avatar: Media(
               mediaID: element2["player_ID"],
               mediaURL: MediaURL(
-                bigURL: element2["player_avatar"],
-                normalURL: element2["player_avatar"],
-                minURL: element2["player_avatar"],
+                bigURL: Rx<String>(element2["player_avatar"]),
+                normalURL: Rx<String>(element2["player_avatar"]),
+                minURL: Rx<String>(element2["player_avatar"]),
               ),
             ),
             role: Role(
@@ -166,17 +166,17 @@ class EventController extends GetxController {
         groupLogo: Media(
           mediaID: element["group_ID"],
           mediaURL: MediaURL(
-            bigURL: element["group_logo"],
-            normalURL: element["group_logo"],
-            minURL: element["group_logo"],
+            bigURL: Rx<String>(element["group_logo"]),
+            normalURL: Rx<String>(element["group_logo"]),
+            minURL: Rx<String>(element["group_logo"]),
           ),
         ),
         groupBanner: Media(
           mediaID: element["group_ID"],
           mediaURL: MediaURL(
-            bigURL: element["group_banner"],
-            normalURL: element["group_banner"],
-            minURL: element["group_banner"],
+            bigURL: Rx<String>(element["group_banner"]),
+            normalURL: Rx<String>(element["group_banner"]),
+            minURL: Rx<String>(element["group_banner"]),
           ),
         ),
         groupName: element["group_name"],
@@ -200,9 +200,9 @@ class EventController extends GetxController {
           avatar: Media(
             mediaID: element["player_ID"],
             mediaURL: MediaURL(
-              bigURL: element["player_avatar"],
-              normalURL: element["player_avatar"],
-              minURL: element["player_avatar"],
+              bigURL: Rx<String>(element["player_avatar"]),
+              normalURL: Rx<String>(element["player_avatar"]),
+              minURL: Rx<String>(element["player_avatar"]),
             ),
           ),
         ),

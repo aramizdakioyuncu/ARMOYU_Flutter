@@ -50,7 +50,8 @@ class _SkeletonStorycircleState extends State<SkeletonStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                widget.currentUser!.avatar!.mediaURL.minURL,
+                                widget
+                                    .currentUser!.avatar!.mediaURL.minURL.value,
                               ),
                             ),
                           )

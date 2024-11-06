@@ -95,7 +95,7 @@ class _ChaCallPageState extends State<ChatCallPage>
                     BlendMode.darken,
                   ),
                   image: CachedNetworkImageProvider(
-                    widget.user.avatar!.mediaURL.normalURL,
+                    widget.user.avatar!.mediaURL.normalURL.value,
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -106,7 +106,7 @@ class _ChaCallPageState extends State<ChatCallPage>
                 const SizedBox(height: 150),
                 ClipOval(
                   child: CachedNetworkImage(
-                    imageUrl: widget.user.avatar!.mediaURL.minURL,
+                    imageUrl: widget.user.avatar!.mediaURL.minURL.value,
                     width: 150, // Set the desired width
                     height: 150, // Set the desired height
                     fit: BoxFit.cover,

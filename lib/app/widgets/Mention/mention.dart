@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:get/get.dart';
 
 class WidgetMention {
   static List<Map<String, dynamic>> peopleList = [];
@@ -36,29 +36,20 @@ class WidgetMention {
       data: peopleList,
       matchAll: false,
       suggestionBuilder: (data) {
-        return Container(
-          padding: const EdgeInsets.all(10.0),
-          child: Row(
-            children: <Widget>[
-              CircleAvatar(
-                backgroundImage: CachedNetworkImageProvider(
-                  data['photo'],
-                ),
+        return Material(
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(0),
+            enableFeedback: true,
+            leading: CircleAvatar(
+              foregroundImage: CachedNetworkImageProvider(data['photo']),
+            ),
+            title: Text(data['full_name']),
+            subtitle: Text(
+              "@${data['display']}",
+              style: TextStyle(
+                color: Get.theme.primaryColor.withOpacity(0.7),
               ),
-              const SizedBox(width: 20.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  CustomText.costum1(data['full_name']),
-                  Text(
-                    '@${data['display']}',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              )
-            ],
+            ),
           ),
         );
       },
@@ -68,27 +59,20 @@ class WidgetMention {
   static Mention hashtag() {
     return Mention(
       trigger: '#',
-      disableMarkup: true,
       style: const TextStyle(color: Colors.blue),
-      matchAll: true,
+      data: hashtagList,
+      matchAll: false,
       suggestionBuilder: (data) {
-        return Container(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomText.costum1(
-                  "#${data['display']} (${data["numberofuses"]})"),
-              Text(
-                "Gündemdekiler",
-                style: TextStyle(color: Colors.black.withOpacity(0.7)),
-              ),
-            ],
+        return ListTile(
+          title: Text("#${data['display']} (${data["numberofuses"]})"),
+          subtitle: Text(
+            "Gündemdekiler",
+            style: TextStyle(
+              color: Get.theme.primaryColor.withOpacity(0.7),
+            ),
           ),
         );
       },
-      data: hashtagList,
     );
   }
 }

@@ -12,7 +12,6 @@ import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/API_Functions/station.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/Group/group_page/views/old_group_page.dart';
 import 'package:ARMOYU/app/modules/Restourant/restourant_page/views/restourant_page.dart';
 import 'package:ARMOYU/app/modules/School/school_page/views/school_page.dart';
 import 'package:ARMOYU/app/modules/Utility/camera_screen_page.dart';
@@ -277,17 +276,17 @@ class MainPageController extends GetxController {
         groupLogo: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: element['group_logo']['media_bigURL'],
-            normalURL: element['group_logo']['media_URL'],
-            minURL: element['group_logo']['media_minURL'],
+            bigURL: Rx<String>(element['group_logo']['media_bigURL']),
+            normalURL: Rx<String>(element['group_logo']['media_URL']),
+            minURL: Rx<String>(element['group_logo']['media_minURL']),
           ),
         ),
         groupBanner: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: element['group_banner']['media_bigURL'],
-            normalURL: element['group_banner']['media_URL'],
-            minURL: element['group_banner']['media_minURL'],
+            bigURL: Rx<String>(element['group_banner']['media_bigURL']),
+            normalURL: Rx<String>(element['group_banner']['media_URL']),
+            minURL: Rx<String>(element['group_banner']['media_minURL']),
           ),
         ),
         myRole: GroupRoles(
@@ -346,17 +345,23 @@ class MainPageController extends GetxController {
         schoolLogo: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: response["icerik"][i]["school_logo"]["media_bigURL"],
-            normalURL: response["icerik"][i]["school_logo"]["media_URL"],
-            minURL: response["icerik"][i]["school_logo"]["media_minURL"],
+            bigURL: Rx<String>(
+                response["icerik"][i]["school_logo"]["media_bigURL"]),
+            normalURL:
+                Rx<String>(response["icerik"][i]["school_logo"]["media_URL"]),
+            minURL: Rx<String>(
+                response["icerik"][i]["school_logo"]["media_minURL"]),
           ),
         ),
         schoolBanner: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: response["icerik"][i]["school_banner"]["media_bigURL"],
-            normalURL: response["icerik"][i]["school_banner"]["media_URL"],
-            minURL: response["icerik"][i]["school_banner"]["media_minURL"],
+            bigURL: Rx<String>(
+                response["icerik"][i]["school_banner"]["media_bigURL"]),
+            normalURL:
+                Rx<String>(response["icerik"][i]["school_banner"]["media_URL"]),
+            minURL: Rx<String>(
+                response["icerik"][i]["school_banner"]["media_minURL"]),
           ),
         ),
       );
@@ -393,17 +398,17 @@ class MainPageController extends GetxController {
           logo: Media(
             mediaID: element["station_ID"],
             mediaURL: MediaURL(
-              bigURL: element["station_logo"]["media_bigURL"],
-              normalURL: element["station_logo"]["media_URL"],
-              minURL: element["station_logo"]["media_minURL"],
+              bigURL: Rx<String>(element["station_logo"]["media_bigURL"]),
+              normalURL: Rx<String>(element["station_logo"]["media_URL"]),
+              minURL: Rx<String>(element["station_logo"]["media_minURL"]),
             ),
           ),
           banner: Media(
             mediaID: element["station_ID"],
             mediaURL: MediaURL(
-              bigURL: element["station_banner"]["media_bigURL"],
-              normalURL: element["station_banner"]["media_URL"],
-              minURL: element["station_banner"]["media_minURL"],
+              bigURL: Rx<String>(element["station_banner"]["media_bigURL"]),
+              normalURL: Rx<String>(element["station_banner"]["media_URL"]),
+              minURL: Rx<String>(element["station_banner"]["media_minURL"]),
             ),
           ),
         ),
@@ -451,7 +456,7 @@ class MainPageController extends GetxController {
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: CachedNetworkImage(
-              imageUrl: group.groupLogo!.mediaURL.minURL,
+              imageUrl: group.groupLogo!.mediaURL.minURL.value,
               width: 30,
               height: 30,
               fit: BoxFit.cover,
@@ -459,13 +464,18 @@ class MainPageController extends GetxController {
           ),
           title: Text(group.groupName!),
           onTap: () {
-            Get.to(
-              () => GroupPage(
-                currentUserAccounts: currentUserAccounts.value!,
-                group: group,
-                groupID: group.groupID!,
-              ),
-            );
+            Get.toNamed("/group", arguments: {
+              "currentUserAccounts": currentUserAccounts.value!,
+              "group": group,
+              "groupID": group.groupID!,
+            });
+            // Get.to(
+            //   () => GroupPage(
+            //     currentUserAccounts: currentUserAccounts.value!,
+            //     group: group,
+            //     groupID: group.groupID!,
+            //   ),
+            // );
           },
         );
       },
@@ -491,7 +501,7 @@ class MainPageController extends GetxController {
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: CachedNetworkImage(
-              imageUrl: school.schoolLogo!.mediaURL.minURL,
+              imageUrl: school.schoolLogo!.mediaURL.minURL.value,
               width: 30,
               height: 30,
               fit: BoxFit.cover,
@@ -499,14 +509,6 @@ class MainPageController extends GetxController {
           ),
           title: Text(school.schoolName!),
           onTap: () {
-            // Get.to(
-            //   () => SchoolPage(
-            //     currentUser: currentUserAccounts.value!.user,
-            //     school: school,
-            //     schoolID: school.schoolID!,
-            //   ),
-            // );
-
             Get.to(const SchoolPageView(), arguments: {
               "user": currentUserAccounts.value!.user,
               "school": school,
@@ -536,7 +538,7 @@ class MainPageController extends GetxController {
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: CachedNetworkImage(
-              imageUrl: foodStation.logo.mediaURL.minURL,
+              imageUrl: foodStation.logo.mediaURL.minURL.value,
               width: 30,
               height: 30,
               fit: BoxFit.cover,
@@ -580,7 +582,7 @@ class MainPageController extends GetxController {
           leading: ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: CachedNetworkImage(
-              imageUrl: gameStation.logo.mediaURL.minURL,
+              imageUrl: gameStation.logo.mediaURL.minURL.value,
               width: 30,
               height: 30,
               fit: BoxFit.cover,

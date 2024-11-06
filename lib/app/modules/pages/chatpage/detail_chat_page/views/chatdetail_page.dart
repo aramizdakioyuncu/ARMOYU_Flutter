@@ -73,8 +73,8 @@ class ChatDetailView extends StatelessWidget {
                     );
                   },
                   child: CachedNetworkImage(
-                    imageUrl:
-                        controller.chat.value!.user.avatar!.mediaURL.minURL,
+                    imageUrl: controller
+                        .chat.value!.user.avatar!.mediaURL.minURL.value,
                     width: 30,
                     height: 30,
                     fit: BoxFit.cover,

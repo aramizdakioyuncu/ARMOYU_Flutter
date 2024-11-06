@@ -92,7 +92,7 @@ class FilterItem {
               padding: const EdgeInsets.all(4),
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: media!.mediaURL.normalURL,
+                  imageUrl: media!.mediaURL.normalURL.value,
                   fit: BoxFit.cover,
                   color: color!.withOpacity(0.5),
                   colorBlendMode: BlendMode.hardLight,
@@ -123,7 +123,7 @@ class FilterItem {
             image: DecorationImage(
               image: FileImage(
                 File(
-                  media!.mediaURL.normalURL,
+                  media!.mediaURL.normalURL.value,
                 ),
               ),
               fit: BoxFit.contain,

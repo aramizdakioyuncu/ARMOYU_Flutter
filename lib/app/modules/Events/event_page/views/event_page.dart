@@ -57,10 +57,12 @@ class EventPage extends StatelessWidget {
                           Media(
                             mediaID: 0,
                             mediaURL: MediaURL(
-                              bigURL: controller.event.value!.image.toString(),
-                              normalURL:
-                                  controller.event.value!.image.toString(),
-                              minURL: controller.event.value!.image.toString(),
+                              bigURL: Rx<String>(
+                                  controller.event.value!.image.toString()),
+                              normalURL: Rx<String>(
+                                  controller.event.value!.image.toString()),
+                              minURL: Rx<String>(
+                                  controller.event.value!.image.toString()),
                             ),
                           ),
                         ],
@@ -125,15 +127,18 @@ class EventPage extends StatelessWidget {
                                   Media(
                                     mediaID: 0,
                                     mediaURL: MediaURL(
-                                      bigURL: controller
-                                          .event.value!.detailImage
-                                          .toString(),
-                                      normalURL: controller
-                                          .event.value!.detailImage
-                                          .toString(),
-                                      minURL: controller
-                                          .event.value!.detailImage
-                                          .toString(),
+                                      bigURL: Rx<String>(
+                                        controller.event.value!.detailImage
+                                            .toString(),
+                                      ),
+                                      normalURL: Rx<String>(
+                                        controller.event.value!.detailImage
+                                            .toString(),
+                                      ),
+                                      minURL: Rx<String>(
+                                        controller.event.value!.detailImage
+                                            .toString(),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -267,7 +272,8 @@ class EventPage extends StatelessWidget {
                                           .eventorganizer![index]
                                           .avatar!
                                           .mediaURL
-                                          .minURL,
+                                          .minURL
+                                          .value,
                                       fit: BoxFit.cover,
                                       height: ARMOYU.screenWidth / 5,
                                       width: ARMOYU.screenWidth / 5,
@@ -348,7 +354,8 @@ class EventPage extends StatelessWidget {
                                                   .participantgroupsList![index]
                                                   .groupBanner!
                                                   .mediaURL
-                                                  .minURL,
+                                                  .minURL
+                                                  .value,
                                             ),
                                           ),
                                         ),
@@ -373,21 +380,6 @@ class EventPage extends StatelessWidget {
                                                             .groupID!,
                                                       )
                                                     });
-                                                // Navigator.push(
-                                                //   context,
-                                                //   MaterialPageRoute(
-                                                //     builder: (content) =>
-                                                //         GroupPage(
-                                                //       currentUserAccounts: widget
-                                                //           .currentUserAccounts,
-                                                //       groupID: widget
-                                                //           .event
-                                                //           .participantgroupsList![
-                                                //               index]
-                                                //           .groupID!,
-                                                //     ),
-                                                //   ),
-                                                // );
                                               },
                                               child: CircleAvatar(
                                                 radius: 50,
@@ -402,7 +394,8 @@ class EventPage extends StatelessWidget {
                                                           index]
                                                       .groupLogo!
                                                       .mediaURL
-                                                      .minURL,
+                                                      .minURL
+                                                      .value,
                                                 ),
                                               ),
                                             ),
@@ -550,7 +543,8 @@ class EventPage extends StatelessWidget {
                                                                     index2]
                                                                 .avatar!
                                                                 .mediaURL
-                                                                .minURL,
+                                                                .minURL
+                                                                .value,
                                                           ),
                                                           radius: 18,
                                                         ),
@@ -642,7 +636,8 @@ class EventPage extends StatelessWidget {
                                               .participantpeopleList![index]
                                               .avatar!
                                               .mediaURL
-                                              .minURL,
+                                              .minURL
+                                              .value,
                                         ),
                                         radius: 14,
                                       ),
@@ -713,8 +708,7 @@ class EventPage extends StatelessWidget {
                               CustomButtons.costum1(
                                 text: "VAZGEÇ",
                                 onPressed: controller.leaveevent,
-                                loadingStatus:
-                                    controller.joineventProccess.value,
+                                loadingStatus: controller.joineventProccess,
                               ),
                             ],
                           ),
@@ -745,8 +739,7 @@ class EventPage extends StatelessWidget {
                                 text: "KATIL",
                                 onPressed: controller.joinevent,
                                 enabled: controller.rulesacception.value,
-                                loadingStatus:
-                                    controller.joineventProccess.value,
+                                loadingStatus: controller.joineventProccess,
                               ),
                             ],
                           ),

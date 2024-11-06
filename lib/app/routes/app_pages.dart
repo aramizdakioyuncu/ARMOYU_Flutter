@@ -1,3 +1,4 @@
+import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/resetpassword_module.dart';
 import 'package:ARMOYU/app/modules/Settings/_main/module.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/module.dart';
@@ -25,5 +26,6 @@ class AppPages {
     ...ProfileModule.routes,
     ...ChatdetailModule.routes,
     ...SettingsModule.routes,
+    ...ResetPasswordModule.routes,
   ];
 }

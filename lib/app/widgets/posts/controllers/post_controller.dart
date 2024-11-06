@@ -139,9 +139,9 @@ class PostController extends GetxController {
           avatar: Media(
             mediaID: userID,
             mediaURL: MediaURL(
-              bigURL: avatar,
-              normalURL: avatar,
-              minURL: avatar,
+              bigURL: Rx<String>(avatar),
+              normalURL: Rx<String>(avatar),
+              minURL: Rx<String>(avatar),
             ),
           ),
         ),
@@ -192,9 +192,9 @@ class PostController extends GetxController {
             avatar: Media(
               mediaID: userID,
               mediaURL: MediaURL(
-                bigURL: avatar,
-                normalURL: avatar,
-                minURL: avatar,
+                bigURL: Rx<String>(avatar),
+                normalURL: Rx<String>(avatar),
+                minURL: Rx<String>(avatar),
               ),
             ),
           ),
@@ -302,7 +302,8 @@ class PostController extends GetxController {
                         child: CircleAvatar(
                           backgroundColor: Colors.transparent,
                           foregroundImage: CachedNetworkImageProvider(
-                            currentUserAccounts.user.avatar!.mediaURL.minURL,
+                            currentUserAccounts
+                                .user.avatar!.mediaURL.minURL.value,
                           ),
                           radius: 20,
                         ),
@@ -736,7 +737,7 @@ class PostController extends GetxController {
           mediarow1.add(
             mediaSablon(
               indexlength: postInfo.value.media.length,
-              postInfo.value.media[i].mediaURL.normalURL,
+              postInfo.value.media[i].mediaURL.normalURL.value,
               isvideo: true,
             ),
           );
@@ -785,7 +786,7 @@ class PostController extends GetxController {
           },
           child: mediaSablon(
             indexlength: postInfo.value.media.length,
-            postInfo.value.media[i].mediaURL.normalURL,
+            postInfo.value.media[i].mediaURL.normalURL.value,
             width: mediawidth,
             height: mediaheight,
             fit: mediadirection,

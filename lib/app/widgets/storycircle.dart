@@ -128,7 +128,7 @@ class _WidgetStorycircleState extends State<WidgetStorycircle> {
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.high,
                               image: CachedNetworkImageProvider(
-                                cardData.owner.avatar!.mediaURL.minURL,
+                                cardData.owner.avatar!.mediaURL.minURL.value,
                               ),
                             ),
                           ),

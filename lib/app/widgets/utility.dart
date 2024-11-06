@@ -65,10 +65,12 @@ class WidgetUtility {
                 },
             ));
           } else {
-            lineSpans.add(TextSpan(
-              text: word,
-              style: TextStyle(color: color),
-            ));
+            lineSpans.add(
+              TextSpan(
+                text: word,
+                style: TextStyle(color: color),
+              ),
+            );
           }
 
           if (i < words.length - 1) {
@@ -81,10 +83,11 @@ class WidgetUtility {
       textSpans.add(const TextSpan(text: '\n'));
     }
 
+    // return Text("data");
     return RichText(
       text: TextSpan(
         children: textSpans,
-        style: TextStyle(fontWeight: fontWeight),
+        style: TextStyle(fontWeight: fontWeight, color: Get.theme.primaryColor),
       ),
       textAlign: textAlign,
     );

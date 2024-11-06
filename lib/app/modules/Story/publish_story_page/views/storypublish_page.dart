@@ -162,7 +162,8 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
                             children: [
                               CircleAvatar(
                                 foregroundImage: CachedNetworkImageProvider(
-                                  widget.currentUser.avatar!.mediaURL.minURL,
+                                  widget.currentUser.avatar!.mediaURL.minURL
+                                      .value,
                                 ),
                                 radius: 16,
                               ),

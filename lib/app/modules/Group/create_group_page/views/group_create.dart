@@ -225,7 +225,7 @@ class GroupCreateView extends StatelessWidget {
             CustomButtons.costum1(
               text: "Oluştur",
               onPressed: controller.creategroupfunction,
-              loadingStatus: controller.groupcreateProcess.value,
+              loadingStatus: controller.groupcreateProcess,
             ),
           ],
         ),

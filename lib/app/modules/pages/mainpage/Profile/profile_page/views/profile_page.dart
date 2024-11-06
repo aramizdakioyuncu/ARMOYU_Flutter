@@ -285,7 +285,7 @@ class _ProfilePageState extends State<ProfileView>
                     const SizedBox(height: 5),
                     Obx(
                       () => Visibility(
-                        visible: controller.userProfile.value.aboutme != "",
+                        visible: controller.userProfile.value.aboutme != null,
                         child: controller.buildAboutMeSection(context),
                       ),
                     ),

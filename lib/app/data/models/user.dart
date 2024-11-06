@@ -141,9 +141,9 @@ class User {
           : Media(
               mediaID: json['avatar']['media_ID'],
               mediaURL: MediaURL(
-                bigURL: json['avatar']['media_bigURL'],
-                normalURL: json['avatar']['media_normalURL'],
-                minURL: json['avatar']['media_minURL'],
+                bigURL: Rx<String>(json['avatar']['media_bigURL']),
+                normalURL: Rx<String>(json['avatar']['media_normalURL']),
+                minURL: Rx<String>(json['avatar']['media_minURL']),
               ),
             ),
       banner: json['banner'] == null
@@ -151,9 +151,9 @@ class User {
           : Media(
               mediaID: json['banner']['media_ID'],
               mediaURL: MediaURL(
-                bigURL: json['banner']['media_bigURL'],
-                normalURL: json['banner']['media_normalURL'],
-                minURL: json['banner']['media_minURL'],
+                bigURL: Rx<String>(json['banner']['media_bigURL']),
+                normalURL: Rx<String>(json['banner']['media_normalURL']),
+                minURL: Rx<String>(json['banner']['media_minURL']),
               ),
             ),
       myFriends: json['myfriends'] != null
@@ -209,17 +209,17 @@ class User {
       'avatar': avatar != null
           ? {
               'media_ID': avatar!.mediaID,
-              'media_bigURL': avatar!.mediaURL.bigURL,
-              'media_normalURL': avatar!.mediaURL.normalURL,
-              'media_minURL': avatar!.mediaURL.minURL,
+              'media_bigURL': avatar!.mediaURL.bigURL.value,
+              'media_normalURL': avatar!.mediaURL.normalURL.value,
+              'media_minURL': avatar!.mediaURL.minURL.value,
             }
           : null,
       'banner': banner != null
           ? {
               'media_ID': banner!.mediaID,
-              'media_bigURL': banner!.mediaURL.bigURL,
-              'media_normalURL': banner!.mediaURL.normalURL,
-              'media_minURL': banner!.mediaURL.minURL,
+              'media_bigURL': banner!.mediaURL.bigURL.value,
+              'media_normalURL': banner!.mediaURL.normalURL.value,
+              'media_minURL': banner!.mediaURL.minURL.value,
             }
           : null,
       'myfriends': myFriends?.map((friend) => friend.toJson()).toList(),
@@ -327,7 +327,8 @@ class User {
   Widget storyViewUserList({bool isLiked = false}) {
     return ListTile(
       leading: CircleAvatar(
-        foregroundImage: CachedNetworkImageProvider(avatar!.mediaURL.minURL),
+        foregroundImage:
+            CachedNetworkImageProvider(avatar!.mediaURL.minURL.value),
       ),
       title: CustomText.costum1(displayName!, weight: FontWeight.bold),
       trailing: isLiked

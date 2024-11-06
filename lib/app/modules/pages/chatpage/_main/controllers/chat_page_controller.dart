@@ -117,9 +117,12 @@ class ChatPageController extends GetxController {
             avatar: Media(
               mediaID: response["icerik"][i]["kullid"],
               mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["chatImage"]["media_bigURL"],
-                normalURL: response["icerik"][i]["chatImage"]["media_URL"],
-                minURL: response["icerik"][i]["chatImage"]["media_minURL"],
+                bigURL: Rx<String>(
+                    response["icerik"][i]["chatImage"]["media_bigURL"]),
+                normalURL:
+                    Rx<String>(response["icerik"][i]["chatImage"]["media_URL"]),
+                minURL: Rx<String>(
+                    response["icerik"][i]["chatImage"]["media_minURL"]),
               ),
             ),
           ),

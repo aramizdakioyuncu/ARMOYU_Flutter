@@ -86,8 +86,8 @@ class GroupCreateController extends GetxController {
 
     FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
     Map<String, dynamic> response = await f.groupcreate(
-      groupname.text,
-      groupshortname.text,
+      groupname.value.text,
+      groupshortname.value.text,
       selectedcupertinolist.value,
       selectedcupertinolist2.value,
       selectedcupertinolist3.value,
@@ -122,6 +122,6 @@ class GroupCreateController extends GetxController {
     );
   }
 
-  TextEditingController groupshortname = TextEditingController();
-  TextEditingController groupname = TextEditingController();
+  var groupshortname = TextEditingController().obs;
+  var groupname = TextEditingController().obs;
 }

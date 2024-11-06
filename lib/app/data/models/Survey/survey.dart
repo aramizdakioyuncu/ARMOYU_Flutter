@@ -220,7 +220,7 @@ class Survey {
                         CircleAvatar(
                           backgroundColor: Colors.transparent,
                           foregroundImage: CachedNetworkImageProvider(
-                            surveyOwner.avatar!.mediaURL.minURL,
+                            surveyOwner.avatar!.mediaURL.minURL.value,
                           ),
                         ),
                         Text(

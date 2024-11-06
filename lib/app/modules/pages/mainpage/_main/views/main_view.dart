@@ -12,7 +12,6 @@ import 'package:ARMOYU/app/modules/School/login_school_page/views/school_login.d
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
 import 'package:ARMOYU/app/modules/Survey/list_survey_page/views/surveylist_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/theme/app_theme.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -68,7 +67,6 @@ class MainPageView extends StatelessWidget {
               () => Visibility(
                 visible: controller.isBottomNavbarVisible.value,
                 child: AppBar(
-                  // backgroundColor: ARMOYU.appbarColor,
                   elevation: 0,
                   leading: Builder(
                     builder: (BuildContext context) {
@@ -90,8 +88,14 @@ class MainPageView extends StatelessWidget {
                                       child: const CircleAvatar(),
                                     )
                                   : CachedNetworkImage(
-                                      imageUrl: controller.currentUserAccounts
-                                          .value!.user.avatar!.mediaURL.minURL,
+                                      imageUrl: controller
+                                          .currentUserAccounts
+                                          .value!
+                                          .user
+                                          .avatar!
+                                          .mediaURL
+                                          .minURL
+                                          .value,
                                       width: 30,
                                       height: 30,
                                       fit: BoxFit.cover,
@@ -142,7 +146,7 @@ class MainPageView extends StatelessWidget {
                           ),
                           backgroundColor: Colors.red,
                           textColor: Colors.white,
-                          child: const Icon(
+                          child: Icon(
                             Icons.chat_bubble_rounded,
                           ),
                         ),
@@ -157,7 +161,6 @@ class MainPageView extends StatelessWidget {
             ),
           ),
           drawer: Drawer(
-            backgroundColor: Colors.black,
             child: Column(
               children: [
                 Obx(
@@ -211,7 +214,7 @@ class MainPageView extends StatelessWidget {
                                   backgroundColor: Colors.transparent,
                                   foregroundImage: CachedNetworkImageProvider(
                                     controller.currentUserAccounts.value!.user
-                                        .avatar!.mediaURL.minURL,
+                                        .avatar!.mediaURL.minURL.value,
                                   ),
                                 ),
                     ),
@@ -224,7 +227,7 @@ class MainPageView extends StatelessWidget {
                                 image: DecorationImage(
                                   image: CachedNetworkImageProvider(
                                     controller.currentUserAccounts.value!.user
-                                        .banner!.mediaURL.minURL,
+                                        .banner!.mediaURL.minURL.value,
                                   ),
                                   fit: BoxFit.cover,
                                 ),
@@ -470,11 +473,12 @@ class MainPageView extends StatelessWidget {
                               Icons.nightlight,
                             ),
                             onPressed: () {
-                              if (Get.isDarkMode) {
-                                Get.changeTheme(appThemeData);
-                              } else {
-                                Get.changeTheme(ThemeData.dark());
-                              }
+                              Get.changeThemeMode(
+                                Get.isDarkMode
+                                    ? ThemeMode.light
+                                    : ThemeMode.dark,
+                              );
+                              Get.back();
                             },
                           ),
                           leading: IconButton(
@@ -614,8 +618,13 @@ class MainPageView extends StatelessWidget {
                                                   Colors.transparent,
                                               foregroundImage:
                                                   CachedNetworkImageProvider(
-                                                ARMOYU.appUsers[index].user
-                                                    .avatar!.mediaURL.minURL,
+                                                ARMOYU
+                                                    .appUsers[index]
+                                                    .user
+                                                    .avatar!
+                                                    .mediaURL
+                                                    .minURL
+                                                    .value,
                                               ),
                                             ),
                                             title: CustomText.costum1(
@@ -665,12 +674,15 @@ class MainPageView extends StatelessWidget {
                           },
                         );
                       },
-                      child: Badge(
-                        isLabelVisible: false,
-                        label: const Text("1"),
-                        backgroundColor: ARMOYU.color,
-                        // textColor: ARMOYU.appbarColor,
-                        child: const Icon(Icons.person),
+                      child: Obx(
+                        () => CircleAvatar(
+                          radius: 12,
+                          backgroundColor: Colors.transparent,
+                          foregroundImage: CachedNetworkImageProvider(
+                            currentUserAccounts
+                                .user.avatar!.mediaURL.minURL.value,
+                          ),
+                        ),
                       ),
                     ),
                     label: 'Profil',

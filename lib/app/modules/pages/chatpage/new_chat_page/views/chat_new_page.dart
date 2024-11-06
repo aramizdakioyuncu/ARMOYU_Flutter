@@ -81,7 +81,7 @@ class ChatNewPage extends StatelessWidget {
                                 backgroundColor: Colors.transparent,
                                 foregroundImage: CachedNetworkImageProvider(
                                   controller.filteredItems[index].avatar!
-                                      .mediaURL.minURL,
+                                      .mediaURL.minURL.value,
                                 ),
                               ),
                               title: CustomText.costum1(

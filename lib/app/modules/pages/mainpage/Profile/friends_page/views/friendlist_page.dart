@@ -7,6 +7,7 @@ import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/userlist.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FriendlistPage extends StatefulWidget {
   final UserAccounts currentUserAccounts; // Zorunlu olarak alınacak veri
@@ -93,9 +94,9 @@ class _FriendlistPageState extends State<FriendlistPage>
         avatar: Media(
           mediaID: userID,
           mediaURL: MediaURL(
-            bigURL: avatar,
-            normalURL: normalavatar,
-            minURL: minavatar,
+            bigURL: Rx<String>(avatar),
+            normalURL: Rx<String>(normalavatar),
+            minURL: Rx<String>(minavatar),
           ),
         ),
         userName: userlogin,
@@ -132,7 +133,7 @@ class _FriendlistPageState extends State<FriendlistPage>
                   displayname: widget
                       .currentUserAccounts.user.myFriends![index].displayName!,
                   profileImageUrl: widget.currentUserAccounts.user
-                      .myFriends![index].avatar!.mediaURL.minURL,
+                      .myFriends![index].avatar!.mediaURL.minURL.value,
                   username: widget
                       .currentUserAccounts.user.myFriends![index].userName!,
                   isFriend: widget

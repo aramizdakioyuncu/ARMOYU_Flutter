@@ -47,8 +47,8 @@ class ChatMessage {
               padding: const EdgeInsets.only(right: 5),
               child: CircleAvatar(
                 backgroundColor: Colors.transparent,
-                foregroundImage:
-                    CachedNetworkImageProvider(user.avatar!.mediaURL.minURL),
+                foregroundImage: CachedNetworkImageProvider(
+                    user.avatar!.mediaURL.minURL.value),
               ),
             ),
           Container(

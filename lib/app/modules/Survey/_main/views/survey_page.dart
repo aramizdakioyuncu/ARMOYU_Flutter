@@ -10,6 +10,7 @@ import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SurveyPage extends StatefulWidget {
   final Survey survey;
@@ -30,14 +31,14 @@ class _ChatPageState extends State<SurveyPage>
   String? _selectedOption;
   @override
   bool get wantKeepAlive => true;
-  bool answerSurveyProccess = false;
+  var answerSurveyProccess = false.obs;
 
   Future<void> answerfunction() async {
-    if (answerSurveyProccess) {
+    if (answerSurveyProccess.value) {
       return;
     }
 
-    answerSurveyProccess = true;
+    answerSurveyProccess.value = true;
     FunctionsSurvey f = FunctionsSurvey(
       currentUser: widget.currentUserAccounts.user,
     );
@@ -47,12 +48,12 @@ class _ChatPageState extends State<SurveyPage>
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       //Tekrar çekmeyi dene
-      answerSurveyProccess = false;
+      answerSurveyProccess.value = false;
       return;
     }
     await refreshSurvey();
 
-    answerSurveyProccess = false;
+    answerSurveyProccess.value = false;
   }
 
   Future<void> refreshSurvey() async {
@@ -149,7 +150,7 @@ class _ChatPageState extends State<SurveyPage>
                       width: ARMOYU.screenWidth,
                       height: ARMOYU.screenHeight / 3,
                       imageUrl: widget.survey.surveyQuestion
-                          .questionImages![index].mediaURL.normalURL,
+                          .questionImages![index].mediaURL.normalURL.value,
                     ),
                   );
                 },
@@ -183,8 +184,8 @@ class _ChatPageState extends State<SurveyPage>
                             CircleAvatar(
                               backgroundColor: Colors.transparent,
                               foregroundImage: CachedNetworkImageProvider(
-                                widget
-                                    .survey.surveyOwner.avatar!.mediaURL.minURL,
+                                widget.survey.surveyOwner.avatar!.mediaURL
+                                    .minURL.value,
                               ),
                             ),
                             SingleChildScrollView(
@@ -271,7 +272,7 @@ class _ChatPageState extends State<SurveyPage>
                             activeColor: Colors.amber,
                             groupValue: _selectedOption,
                             onChanged: widget.survey.didIVote ||
-                                    answerSurveyProccess ||
+                                    answerSurveyProccess.value ||
                                     !widget.survey.surveyStatus
                                 ? null
                                 : (value) {

@@ -186,7 +186,7 @@ class SchoolLoginPageView extends StatelessWidget {
                 CustomButtons.costum1(
                   text: "Katıl",
                   onPressed: controller.loginschool,
-                  loadingStatus: controller.schoolProcess.value,
+                  loadingStatus: controller.schoolProcess,
                 ),
               ],
             ),

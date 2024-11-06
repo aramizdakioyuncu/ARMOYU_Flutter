@@ -50,7 +50,7 @@ class SchoolLoginController extends GetxController {
     String? schoolID = cupertinolist[selectedcupertinolist.value]["ID"];
     String? classID = cupertinolist2[selectedcupertinolist2.value]["ID"];
     String? jobID = "123";
-    String classPassword = schoolpassword.text;
+    String classPassword = schoolpassword.value.text;
 
     Map<String, dynamic> response =
         await f.joinschool(schoolID!, classID!, jobID, classPassword);
@@ -71,7 +71,7 @@ class SchoolLoginController extends GetxController {
     // });
   }
 
-  TextEditingController schoolpassword = TextEditingController();
+  var schoolpassword = TextEditingController().obs;
 
   Future<void> handleRefresh() async {}
 

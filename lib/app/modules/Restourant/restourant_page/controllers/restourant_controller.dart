@@ -50,17 +50,17 @@ class RestourantController extends GetxController {
           logo: Media(
             mediaID: element["equipment_ID"],
             mediaURL: MediaURL(
-              bigURL: element["equipment_image"],
-              normalURL: element["equipment_image"],
-              minURL: element["equipment_image"],
+              bigURL: Rx<String>(element["equipment_image"]),
+              normalURL: Rx<String>(element["equipment_image"]),
+              minURL: Rx<String>(element["equipment_image"]),
             ),
           ),
           banner: Media(
             mediaID: element["equipment_ID"],
             mediaURL: MediaURL(
-              bigURL: element["equipment_image"],
-              normalURL: element["equipment_image"],
-              minURL: element["equipment_image"],
+              bigURL: Rx<String>(element["equipment_image"]),
+              normalURL: Rx<String>(element["equipment_image"]),
+              minURL: Rx<String>(element["equipment_image"]),
             ),
           ),
           price: element["equipment_price"],

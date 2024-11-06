@@ -10,6 +10,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:get/get.dart';
 
 class CameraScreen extends StatefulWidget {
   final User currentUser;
@@ -74,12 +75,12 @@ class _CameraScreenState extends State<CameraScreen> {
           media: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              normalURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              minURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              bigURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              normalURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              minURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
             ),
           ),
         ),
@@ -92,12 +93,12 @@ class _CameraScreenState extends State<CameraScreen> {
           media: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              normalURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              minURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              bigURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              normalURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              minURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
             ),
           ),
         ),
@@ -109,12 +110,12 @@ class _CameraScreenState extends State<CameraScreen> {
           media: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              normalURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              minURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              bigURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              normalURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              minURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
             ),
           ),
         ),
@@ -126,12 +127,12 @@ class _CameraScreenState extends State<CameraScreen> {
           media: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              normalURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              minURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              bigURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              normalURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              minURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
             ),
           ),
         ),
@@ -143,12 +144,12 @@ class _CameraScreenState extends State<CameraScreen> {
           media: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              normalURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
-              minURL:
-                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp",
+              bigURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              normalURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
+              minURL: Rx<String>(
+                  "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
             ),
           ),
         ),
@@ -213,9 +214,9 @@ class _CameraScreenState extends State<CameraScreen> {
           mediaXFile: picture,
           mediaID: picture.hashCode,
           mediaURL: MediaURL(
-            bigURL: picture.path,
-            normalURL: picture.path,
-            minURL: picture.path,
+            bigURL: Rx<String>(picture.path),
+            normalURL: Rx<String>(picture.path),
+            minURL: Rx<String>(picture.path),
           ),
         ),
       );
@@ -227,9 +228,9 @@ class _CameraScreenState extends State<CameraScreen> {
             mediaXFile: picture,
             mediaID: picture.hashCode,
             mediaURL: MediaURL(
-              bigURL: picture.path,
-              normalURL: picture.path,
-              minURL: picture.path,
+              bigURL: Rx<String>(picture.path),
+              normalURL: Rx<String>(picture.path),
+              minURL: Rx<String>(picture.path),
             ),
           ),
           isImage: true,
@@ -461,7 +462,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       foregroundImage:
                                           CachedNetworkImageProvider(
                                         widget.currentUser.avatar!.mediaURL
-                                            .normalURL,
+                                            .normalURL.value,
                                       ),
                                       radius: 12,
                                     ),
@@ -474,7 +475,7 @@ class _CameraScreenState extends State<CameraScreen> {
                                       foregroundImage:
                                           CachedNetworkImageProvider(
                                         widget.currentUser.avatar!.mediaURL
-                                            .normalURL,
+                                            .normalURL.value,
                                       ),
                                       radius: 12,
                                     ),
@@ -538,8 +539,11 @@ class _CameraScreenState extends State<CameraScreen> {
 
                               if (_camfilter[value].isImage! &&
                                   _camfilter[value].media != null) {
-                                _viewMedia =
-                                    _camfilter[value].media!.mediaURL.normalURL;
+                                _viewMedia = _camfilter[value]
+                                    .media!
+                                    .mediaURL
+                                    .normalURL
+                                    .value;
                                 setstatefunction();
                               } else {
                                 _viewMedia = null;

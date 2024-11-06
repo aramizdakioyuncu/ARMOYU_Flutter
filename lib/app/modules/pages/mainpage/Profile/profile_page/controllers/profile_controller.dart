@@ -215,9 +215,9 @@ class ProfileController extends GetxController
               mediaType: mediaInfo["paylasimkategori"],
               mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                bigURL: mediaInfo["fotourl"],
-                normalURL: mediaInfo["fotoufakurl"],
-                minURL: mediaInfo["fotominnakurl"],
+                bigURL: Rx<String>(mediaInfo["fotourl"]),
+                normalURL: Rx<String>(mediaInfo["fotoufakurl"]),
+                minURL: Rx<String>(mediaInfo["fotominnakurl"]),
               ),
             ),
           );
@@ -235,9 +235,9 @@ class ProfileController extends GetxController
                 avatar: Media(
                   mediaID: firstthreelike["ID"],
                   mediaURL: MediaURL(
-                    bigURL: firstthreelike["avatar"],
-                    normalURL: firstthreelike["avatar"],
-                    minURL: firstthreelike["avatar"],
+                    bigURL: Rx<String>(firstthreelike["avatar"]),
+                    normalURL: Rx<String>(firstthreelike["avatar"]),
+                    minURL: Rx<String>(firstthreelike["avatar"]),
                   ),
                 ),
               ),
@@ -255,9 +255,11 @@ class ProfileController extends GetxController
                 avatar: Media(
                   mediaID: firstthreecomment["yorumcuid"],
                   mediaURL: MediaURL(
-                    bigURL: firstthreecomment["yorumcuavatar"],
-                    normalURL: firstthreecomment["yorumcuufakavatar"],
-                    minURL: firstthreecomment["yorumcuminnakavatar"],
+                    bigURL: Rx<String>(firstthreecomment["yorumcuavatar"]),
+                    normalURL:
+                        Rx<String>(firstthreecomment["yorumcuufakavatar"]),
+                    minURL:
+                        Rx<String>(firstthreecomment["yorumcuminnakavatar"]),
                   ),
                 ),
               ),
@@ -297,9 +299,10 @@ class ProfileController extends GetxController
             avatar: Media(
               mediaID: response["icerik"][i]["sahipID"],
               mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["sahipavatarminnak"],
-                normalURL: response["icerik"][i]["sahipavatarminnak"],
-                minURL: response["icerik"][i]["sahipavatarminnak"],
+                bigURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+                normalURL:
+                    Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+                minURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
               ),
             ),
           ),
@@ -356,9 +359,9 @@ class ProfileController extends GetxController
           mediaTime: response["icerik"][i]["media_time"],
           mediaType: response["icerik"][i]["fotodosyatipi"],
           mediaURL: MediaURL(
-            bigURL: response["icerik"][i]["fotoorijinalurl"],
-            normalURL: response["icerik"][i]["fotoufaklikurl"],
-            minURL: response["icerik"][i]["fotominnakurl"],
+            bigURL: Rx<String>(response["icerik"][i]["fotoorijinalurl"]),
+            normalURL: Rx<String>(response["icerik"][i]["fotoufaklikurl"]),
+            minURL: Rx<String>(response["icerik"][i]["fotominnakurl"]),
           ),
         ),
       );
@@ -402,9 +405,9 @@ class ProfileController extends GetxController
               mediaType: mediaInfo["paylasimkategori"],
               mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                bigURL: mediaInfo["fotoufakurl"],
-                normalURL: mediaInfo["fotominnakurl"],
-                minURL: mediaInfo["fotominnakurl"],
+                bigURL: Rx<String>(mediaInfo["fotoufakurl"]),
+                normalURL: Rx<String>(mediaInfo["fotominnakurl"]),
+                minURL: Rx<String>(mediaInfo["fotominnakurl"]),
               ),
             ),
           );
@@ -422,9 +425,9 @@ class ProfileController extends GetxController
                 avatar: Media(
                   mediaID: firstthreelike["ID"],
                   mediaURL: MediaURL(
-                    bigURL: firstthreelike["avatar"],
-                    normalURL: firstthreelike["avatar"],
-                    minURL: firstthreelike["avatar"],
+                    bigURL: Rx<String>(firstthreelike["avatar"]),
+                    normalURL: Rx<String>(firstthreelike["avatar"]),
+                    minURL: Rx<String>(firstthreelike["avatar"]),
                   ),
                 ),
               ),
@@ -442,9 +445,11 @@ class ProfileController extends GetxController
                 avatar: Media(
                   mediaID: firstthreecomment["yorumcuid"],
                   mediaURL: MediaURL(
-                    bigURL: firstthreecomment["yorumcuavatar"],
-                    normalURL: firstthreecomment["yorumcuufakavatar"],
-                    minURL: firstthreecomment["yorumcuminnakavatar"],
+                    bigURL: Rx<String>(firstthreecomment["yorumcuavatar"]),
+                    normalURL:
+                        Rx<String>(firstthreecomment["yorumcuufakavatar"]),
+                    minURL:
+                        Rx<String>(firstthreecomment["yorumcuminnakavatar"]),
                   ),
                 ),
               ),
@@ -483,9 +488,9 @@ class ProfileController extends GetxController
           avatar: Media(
             mediaID: response["icerik"][i]["sahipID"],
             mediaURL: MediaURL(
-              bigURL: response["icerik"][i]["sahipavatarminnak"],
-              normalURL: response["icerik"][i]["sahipavatarminnak"],
-              minURL: response["icerik"][i]["sahipavatarminnak"],
+              bigURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+              normalURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+              minURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
             ),
           ),
         ),
@@ -730,18 +735,18 @@ class ProfileController extends GetxController
     currentUserAccounts.user.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
     userProfile.value.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
@@ -772,18 +777,18 @@ class ProfileController extends GetxController
     currentUserAccounts.user.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
     userProfile.value.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
@@ -825,9 +830,9 @@ class ProfileController extends GetxController
     currentUserAccounts.user.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
     changeavatarStatus.value = false;
@@ -870,9 +875,9 @@ class ProfileController extends GetxController
     currentUserAccounts.user.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: response["aciklamadetay"].toString(),
-        normalURL: response["aciklamadetay"].toString(),
-        minURL: response["aciklamadetay"].toString(),
+        bigURL: Rx<String>(response["aciklamadetay"].toString()),
+        normalURL: Rx<String>(response["aciklamadetay"].toString()),
+        minURL: Rx<String>(response["aciklamadetay"].toString()),
       ),
     );
 
@@ -1191,7 +1196,7 @@ class ProfileController extends GetxController
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
                       image: CachedNetworkImageProvider(
-                        userProfile.value.avatar!.mediaURL.minURL,
+                        userProfile.value.avatar!.mediaURL.minURL.value,
                       ),
                     ),
             ),
@@ -1259,7 +1264,7 @@ class ProfileController extends GetxController
                         BlendMode.darken,
                       ),
                 image: CachedNetworkImageProvider(
-                  userProfile.value.banner!.mediaURL.minURL,
+                  userProfile.value.banner!.mediaURL.minURL.value,
                 ),
               ),
       ),

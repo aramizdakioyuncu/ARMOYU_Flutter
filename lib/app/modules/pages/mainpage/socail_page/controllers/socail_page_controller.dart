@@ -241,9 +241,9 @@ class SocailPageController extends GetxController {
               mediaType: mediaInfo["paylasimkategori"],
               mediaDirection: mediaInfo["medyayonu"],
               mediaURL: MediaURL(
-                bigURL: mediaInfo["fotourl"],
-                normalURL: mediaInfo["fotoufakurl"],
-                minURL: mediaInfo["fotominnakurl"],
+                bigURL: Rx<String>(mediaInfo["fotourl"]),
+                normalURL: Rx<String>(mediaInfo["fotoufakurl"]),
+                minURL: Rx<String>(mediaInfo["fotominnakurl"]),
               ),
             ),
           );
@@ -261,9 +261,9 @@ class SocailPageController extends GetxController {
                 avatar: Media(
                   mediaID: firstthreelike["ID"],
                   mediaURL: MediaURL(
-                    bigURL: firstthreelike["avatar"],
-                    normalURL: firstthreelike["avatar"],
-                    minURL: firstthreelike["avatar"],
+                    bigURL: Rx<String>(firstthreelike["avatar"]),
+                    normalURL: Rx<String>(firstthreelike["avatar"]),
+                    minURL: Rx<String>(firstthreelike["avatar"]),
                   ),
                 ),
               ),
@@ -282,9 +282,11 @@ class SocailPageController extends GetxController {
                 avatar: Media(
                   mediaID: firstthreecomment["yorumcuid"],
                   mediaURL: MediaURL(
-                    bigURL: firstthreecomment["yorumcuavatar"],
-                    normalURL: firstthreecomment["yorumcuufakavatar"],
-                    minURL: firstthreecomment["yorumcuminnakavatar"],
+                    bigURL: Rx<String>(firstthreecomment["yorumcuavatar"]),
+                    normalURL:
+                        Rx<String>(firstthreecomment["yorumcuufakavatar"]),
+                    minURL:
+                        Rx<String>(firstthreecomment["yorumcuminnakavatar"]),
                   ),
                 ),
               ),
@@ -324,9 +326,9 @@ class SocailPageController extends GetxController {
           avatar: Media(
             mediaID: response["icerik"][i]["sahipID"],
             mediaURL: MediaURL(
-              bigURL: response["icerik"][i]["sahipavatarminnak"],
-              normalURL: response["icerik"][i]["sahipavatarminnak"],
-              minURL: response["icerik"][i]["sahipavatarminnak"],
+              bigURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+              normalURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+              minURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
             ),
           ),
         ),

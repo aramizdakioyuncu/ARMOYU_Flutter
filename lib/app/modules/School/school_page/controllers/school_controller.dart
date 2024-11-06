@@ -56,9 +56,12 @@ class SchoolController extends GetxController {
       schoolBanner: Media(
         mediaID: response["icerik"]["school_banner"]["media_ID"],
         mediaURL: MediaURL(
-          bigURL: response["icerik"]["school_banner"]["media_bigURL"],
-          normalURL: response["icerik"]["school_banner"]["media_URL"],
-          minURL: response["icerik"]["school_banner"]["media_minURL"],
+          bigURL:
+              Rx<String>(response["icerik"]["school_banner"]["media_bigURL"]),
+          normalURL:
+              Rx<String>(response["icerik"]["school_banner"]["media_URL"]),
+          minURL:
+              Rx<String>(response["icerik"]["school_banner"]["media_minURL"]),
         ),
       ),
       schoolLogo: Media(

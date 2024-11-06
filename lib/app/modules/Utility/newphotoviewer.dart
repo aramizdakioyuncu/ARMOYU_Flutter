@@ -149,7 +149,7 @@ class _MediaViewerPage extends State<MediaViewer> {
             if (widget.isFile!) {
               imageProvider = FileImage(
                 File(
-                  widget.media[index].mediaURL.bigURL,
+                  widget.media[index].mediaURL.bigURL.value,
                 ),
               );
             } else if (widget.isMemory!) {
@@ -158,7 +158,7 @@ class _MediaViewerPage extends State<MediaViewer> {
               );
             } else {
               imageProvider = CachedNetworkImageProvider(
-                widget.media[index].mediaURL.bigURL,
+                widget.media[index].mediaURL.bigURL.value,
               );
             }
 

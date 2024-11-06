@@ -33,7 +33,7 @@ bool? _notifiMessages;
 bool? _notifiCalling;
 bool? _notifiMention;
 
-bool _updatesettingProcess = false;
+var updatesettingProcess = false.obs;
 
 bool _firstfetchnotifi = false;
 
@@ -97,10 +97,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
   }
 
   Future<void> savenotifi() async {
-    if (_updatesettingProcess) {
+    if (updatesettingProcess.value) {
       return;
     }
-    _updatesettingProcess = true;
+    updatesettingProcess.value = true;
 
     setstatefunction();
 
@@ -123,13 +123,13 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
-      _updatesettingProcess = false;
+      updatesettingProcess.value = false;
       setstatefunction();
       return;
     }
     ARMOYUWidget.toastNotification(response["aciklama"]);
 
-    _updatesettingProcess = false;
+    updatesettingProcess.value = false;
     if (mounted) {
       setstatefunction();
     }
@@ -411,7 +411,7 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                 CustomButtons.costum1(
                   text: "Güncelle",
                   onPressed: () async => savenotifi(),
-                  loadingStatus: _updatesettingProcess,
+                  loadingStatus: updatesettingProcess,
                   enabled: !_firstfetchnotifi,
                 ),
               ],

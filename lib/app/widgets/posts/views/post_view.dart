@@ -68,8 +68,8 @@ class TwitterPostWidget extends StatelessWidget {
                         () => CircleAvatar(
                           backgroundColor: Colors.transparent,
                           foregroundImage: CachedNetworkImageProvider(
-                            controller
-                                .postInfo.value.owner.avatar!.mediaURL.minURL,
+                            controller.postInfo.value.owner.avatar!.mediaURL
+                                .minURL.value,
                           ),
                           radius: 20,
                         ),
@@ -262,7 +262,8 @@ class TwitterPostWidget extends StatelessWidget {
                                         .user
                                         .avatar!
                                         .mediaURL
-                                        .minURL,
+                                        .minURL
+                                        .value,
                                   ),
                                   radius: 10,
                                 ),
@@ -321,7 +322,7 @@ class TwitterPostWidget extends StatelessWidget {
                                 .postcomments(controller.postInfo.value.postID),
                             child: CustomText.costum1(
                               "${controller.postInfo.value.commentsCount} yorumun tamamını gör",
-                              color: Colors.black.withOpacity(0.8),
+                              color: Get.theme.primaryColor.withOpacity(0.8),
                             ),
                           ),
                         ),

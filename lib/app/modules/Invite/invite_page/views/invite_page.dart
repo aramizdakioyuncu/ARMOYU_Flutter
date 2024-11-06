@@ -301,7 +301,7 @@ class _EventStatePage extends State<InvitePage>
                                 backgroundColor: Colors.transparent,
                                 foregroundImage: CachedNetworkImageProvider(
                                   widget.currentUserAccounts.user.avatar!
-                                      .mediaURL.normalURL,
+                                      .mediaURL.normalURL.value,
                                 ),
                                 radius: 25,
                               ),

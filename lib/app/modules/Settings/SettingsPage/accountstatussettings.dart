@@ -42,7 +42,8 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                   CircleAvatar(
                     backgroundColor: Colors.transparent,
                     foregroundImage: CachedNetworkImageProvider(
-                        widget.currentUser.avatar!.mediaURL.minURL),
+                      widget.currentUser.avatar!.mediaURL.minURL.value,
+                    ),
                     radius: 60,
                   ),
                   Padding(

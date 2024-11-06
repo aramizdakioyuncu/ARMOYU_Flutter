@@ -63,19 +63,12 @@ class GroupPageView extends StatelessWidget {
                                         backgroundColor: Colors.white,
                                       ),
                                     )
-                                  // const SkeletonAvatar(
-                                  //     style: SkeletonAvatarStyle(
-                                  //       borderRadius: BorderRadius.all(
-                                  //         Radius.circular(30),
-                                  //       ),
-                                  //     ),
-                                  //   )
                                   : CircleAvatar(
                                       backgroundColor: Colors.transparent,
                                       foregroundImage:
                                           CachedNetworkImageProvider(
                                         controller.group.value!.groupLogo!
-                                            .mediaURL.minURL,
+                                            .mediaURL.minURL.value,
                                       ),
                                       radius: 24,
                                     ),
@@ -122,7 +115,7 @@ class GroupPageView extends StatelessWidget {
                     ? null
                     : CachedNetworkImage(
                         imageUrl: controller
-                            .group.value!.groupBanner!.mediaURL.minURL,
+                            .group.value!.groupBanner!.mediaURL.minURL.value,
                         progressIndicatorBuilder: (context, url, progress) =>
                             const CupertinoActivityIndicator(),
                         fit: BoxFit.cover,
@@ -482,7 +475,7 @@ class GroupPageView extends StatelessWidget {
                               backgroundColor: Colors.transparent,
                               foregroundImage: CachedNetworkImageProvider(
                                 controller.group.value!.groupUsers![index]
-                                    .avatar!.mediaURL.normalURL,
+                                    .avatar!.mediaURL.normalURL.value,
                               ),
                             ),
                             title: CustomText.costum1(
@@ -528,7 +521,7 @@ class GroupPageView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: CustomTextfields.costum3(
-                          controller: controller.searchuser.value,
+                          controller: controller.searchuser,
                         ),
                       ),
                       Padding(
@@ -539,7 +532,7 @@ class GroupPageView extends StatelessWidget {
                           enabled: controller.selectedUsers.isNotEmpty
                               ? true
                               : false,
-                          loadingStatus: controller.inviteuserStatus.value,
+                          loadingStatus: controller.inviteuserStatus,
                         ),
                       ),
                     ],
@@ -549,8 +542,8 @@ class GroupPageView extends StatelessWidget {
                       leading: CircleAvatar(
                         backgroundColor: Colors.transparent,
                         foregroundImage: CachedNetworkImageProvider(
-                          controller
-                              .searchUserList[index].avatar!.mediaURL.minURL,
+                          controller.searchUserList[index].avatar!.mediaURL
+                              .minURL.value,
                         ),
                       ),
                       title: CustomText.costum1(
@@ -604,18 +597,13 @@ class GroupPageView extends StatelessWidget {
                             height: 100,
                           ),
                         )
-                      // const SkeletonItem(
-                      //     child: SizedBox(
-                      //       height: 100,
-                      //     ),
-                      //   )
                       : Container(
                           height: 100,
                           decoration: BoxDecoration(
                             image: DecorationImage(
                               image: CachedNetworkImageProvider(
-                                controller
-                                    .group.value!.groupLogo!.mediaURL.minURL,
+                                controller.group.value!.groupLogo!.mediaURL
+                                    .minURL.value,
                               ),
                             ),
                           ),
@@ -624,7 +612,7 @@ class GroupPageView extends StatelessWidget {
                   CustomButtons.costum1(
                     text: "Değiştir",
                     onPressed: controller.changegrouplogo,
-                    loadingStatus: controller.changegrouplogoStatus.value,
+                    loadingStatus: controller.changegrouplogoStatus,
                   ),
                   Row(
                     children: [
@@ -651,28 +639,28 @@ class GroupPageView extends StatelessWidget {
                           decoration: BoxDecoration(
                             image: DecorationImage(
                                 image: CachedNetworkImageProvider(
-                              controller
-                                  .group.value!.groupBanner!.mediaURL.minURL,
+                              controller.group.value!.groupBanner!.mediaURL
+                                  .minURL.value,
                             )),
                           ),
                         ),
                   CustomButtons.costum1(
                     text: "Değiştir",
                     onPressed: controller.changegroupbanner,
-                    loadingStatus: controller.changegroupbannerStatus.value,
+                    loadingStatus: controller.changegroupbannerStatus,
                   ),
                   CustomTextfields.costum3(
-                    controller: controller.groupname.value,
+                    controller: controller.groupname,
                     title: "Grup Adı",
                   ),
                   const SizedBox(height: 20),
                   CustomTextfields.costum3(
-                    controller: controller.groupshortname.value,
+                    controller: controller.groupshortname,
                     title: "Grup Etiketi",
                   ),
                   const SizedBox(height: 20),
                   CustomTextfields.costum3(
-                    controller: controller.groupdescription.value,
+                    controller: controller.groupdescription,
                     title: "Grup Açıklaması",
                   ),
                   const SizedBox(height: 20),
@@ -692,19 +680,19 @@ class GroupPageView extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   CustomTextfields.costum3(
-                    controller: controller.socialdiscord.value,
+                    controller: controller.socialdiscord,
                     title: "Discord Davet Linki",
                   ),
                   const SizedBox(height: 20),
                   CustomTextfields.costum3(
-                    controller: controller.socialweb.value,
+                    controller: controller.socialweb,
                     title: "Web sitesi",
                   ),
                   const SizedBox(height: 20),
                   CustomButtons.costum1(
                     text: "Kaydet",
                     onPressed: controller.groupdetailSave,
-                    loadingStatus: controller.groupdetailSaveproccess.value,
+                    loadingStatus: controller.groupdetailSaveproccess,
                   ),
                   const SizedBox(height: 50),
                 ],
