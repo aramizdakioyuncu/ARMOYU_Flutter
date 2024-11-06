@@ -12,6 +12,7 @@ import 'package:ARMOYU/app/modules/Settings/SettingsPage/devicepermissions.dart'
 import 'package:ARMOYU/app/modules/Settings/SettingsPage/helpsettings.dart';
 import 'package:ARMOYU/app/modules/Settings/SettingsPage/notificationsetttings.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Settings/listtile.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +24,13 @@ class SettingsController extends GetxController {
 
   var settingsController = TextEditingController().obs;
 
-  // List<Map<int, String>> languageList = [];
   var languageList = RxList<Map<int, String>>([]);
 
   List<Map<String, String>> cupertinolist = [
     {'ID': '-1', 'value': 'Seç'}
   ];
-  var selectedLanguage = "Türkçe".obs;
+
+  var selectedLanguage = "".obs;
   var listSettings = RxList<WidgetSettings>([]);
   var filteredlistSettings = RxList<WidgetSettings>([]);
   var listSettingssupport = RxList<WidgetSettings>([]);
@@ -69,14 +70,15 @@ class SettingsController extends GetxController {
   void onInit() {
     super.onInit();
 
-    languageList.add({1: "Türkçe"});
-    languageList.add({1: "İngilizce"});
-    languageList.add({1: "Almanca"});
+    for (var element in AppTranslation.translationKeys.entries) {
+      languageList.add({1: element.value.entries.first.value});
+    }
 
+    selectedLanguage.value = SettingsKeys.currentLanguage.tr;
     listSettings.value = [
       WidgetSettings(
         listtileIcon: Icons.phone_android_rounded,
-        listtileTitle: "Cihaz İzinleri",
+        listtileTitle: SettingsKeys.devicePermissions.tr,
         onTap: () {
           Navigator.push(
             Get.context!,
@@ -88,13 +90,13 @@ class SettingsController extends GetxController {
       ),
       WidgetSettings(
         listtileIcon: Icons.download_rounded,
-        listtileTitle: "İndirme ve Arşivleme",
+        listtileTitle: SettingsKeys.downloadAndArchive.tr,
         tralingText: "Kapalı".obs,
         onTap: () {},
       ),
       WidgetSettings(
         listtileIcon: Icons.network_wifi_3_bar_rounded,
-        listtileTitle: "Veri Tasarrufu",
+        listtileTitle: SettingsKeys.dataSaver.tr,
         onTap: () {
           Navigator.push(
             Get.context!,
@@ -106,7 +108,7 @@ class SettingsController extends GetxController {
       ),
       WidgetSettings(
         listtileIcon: Icons.language,
-        listtileTitle: "Diller",
+        listtileTitle: SettingsKeys.languages.tr,
         tralingText: selectedLanguage,
         onTap: () {
           WidgetUtility.cupertinoselector(
@@ -119,6 +121,8 @@ class SettingsController extends GetxController {
               listSettings[3].tralingText!.value = selectedValue;
 
               listSettings.refresh();
+
+              // Get.updateLocale(const Locale('tr', 'TR'));
             },
             list: languageList,
           );
@@ -126,26 +130,28 @@ class SettingsController extends GetxController {
       ),
       WidgetSettings(
         listtileIcon: Icons.notifications_active,
-        listtileTitle: "Bildirimler",
+        listtileTitle: SettingsKeys.notifications.tr,
         onTap: () {
           Navigator.push(
             Get.context!,
             MaterialPageRoute(
               builder: (context) => SettingsNotificationPage(
-                  currentUser: currentUserAccounts.user),
+                currentUser: currentUserAccounts.user,
+              ),
             ),
           );
         },
       ),
       WidgetSettings(
         listtileIcon: Icons.block,
-        listtileTitle: "Engellenenler",
+        listtileTitle: SettingsKeys.blockedList.tr,
         onTap: () {
           Navigator.push(
             Get.context!,
             MaterialPageRoute(
               builder: (context) => SettingsBlockeduserPage(
-                  currentUser: currentUserAccounts.user),
+                currentUser: currentUserAccounts.user,
+              ),
             ),
           );
         },
@@ -155,7 +161,7 @@ class SettingsController extends GetxController {
     listSettingssupport.value = [
       WidgetSettings(
         listtileIcon: Icons.help,
-        listtileTitle: "Yardım",
+        listtileTitle: SettingsKeys.help.tr,
         onTap: () {
           Navigator.push(
             Get.context!,
@@ -167,7 +173,7 @@ class SettingsController extends GetxController {
       ),
       WidgetSettings(
         listtileIcon: Icons.person,
-        listtileTitle: "Hesap Durumu",
+        listtileTitle: SettingsKeys.accountStatus.tr,
         onTap: () {
           Navigator.push(
             Get.context!,
@@ -181,7 +187,7 @@ class SettingsController extends GetxController {
       ),
       WidgetSettings(
         listtileIcon: Icons.info,
-        listtileTitle: "Hakkında",
+        listtileTitle: SettingsKeys.about.tr,
         onTap: () {
           Navigator.push(
             Get.context!,

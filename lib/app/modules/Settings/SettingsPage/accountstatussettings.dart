@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,8 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        // backgroundColor: ARMOYU.appbarColor,
-        title: const Text('Hesap Durumu'),
+        title: Text(SettingsKeys.accountStatus.tr),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -54,15 +53,15 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                   RichText(
                     textAlign:
                         TextAlign.center, // Bu, metnin genel hizasını belirler
-                    text: const TextSpan(
-                      style: TextStyle(
+                    text: TextSpan(
+                      style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 16), // Stil ayarları (isteğe bağlı)
                       children: <TextSpan>[
                         TextSpan(
-                          text:
-                              'Hesabının veya içeriklerinde kurallara uygun olmayan işlemleri buradan takip edebilirsin', // İkinci satır
-                          style: TextStyle(
+                          text: AccountStatusKeys
+                              .accountStatusabout.tr, // İkinci satır
+                          style: const TextStyle(
                             color: Colors
                                 .grey, // İkinci satırın renk ayarı (isteğe bağlı)
                             fontSize:
@@ -79,7 +78,10 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.photo_size_select_actual_rounded),
-                  title: CustomText.costum1("Kaldırılan İçerikler"),
+                  title: CustomText.costum1(
+                      AccountStatusKeys.removedContentExplain.tr),
+                  subtitle:
+                      CustomText.costum1(AccountStatusKeys.removedContent.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -97,7 +99,10 @@ class _SettingsAccountStatusPage extends State<SettingsAccountStatusPage> {
                 ),
                 ListTile(
                   leading: const Icon(Icons.report),
-                  title: CustomText.costum1("Kısıtlanmaların"),
+                  title:
+                      CustomText.costum1(AccountStatusKeys.myRestrictions.tr),
+                  subtitle: CustomText.costum1(
+                      AccountStatusKeys.myRestrictionsExplain.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,

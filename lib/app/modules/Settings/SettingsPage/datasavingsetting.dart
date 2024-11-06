@@ -1,4 +1,5 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,22 +24,21 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        // backgroundColor: ARMOYU.appbarColor,
-        title: const Text('Veri Tasarrufu'),
+        title: Text(SettingsKeys.dataSaver.tr),
       ),
       body: SingleChildScrollView(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(color: ARMOYU.bodyColor, height: 1),
             Column(
               children: [
                 ListTile(
-                  title: CustomText.costum1("Daha az hücresel veri kullan"),
+                  title:
+                      CustomText.costum1(DataSaverKeys.useLessCellularData.tr),
                   subtitle: CustomText.costum1(
-                      "Sayfa sonuna gelmeden yeni sayfa yüklenmez"),
+                    DataSaverKeys.useLessCellularDataExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -55,9 +55,11 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("En düşük kalitede medya yükle"),
+                  title: CustomText.costum1(
+                      DataSaverKeys.uploadMediaInTheLowestQuality.tr),
                   subtitle: CustomText.costum1(
-                      "Medyalar en düşük kalitede gösterilir bu can sıkıcı olabilir"),
+                    DataSaverKeys.uploadMediaInTheLowestQualityExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -74,9 +76,11 @@ class _SettingsDataSavingPage extends State<SettingsDataSavingPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Videoları otomatik olarak oynat"),
-                  subtitle:
-                      CustomText.costum1("Videolar otomatik olarak oynatılır"),
+                  title: CustomText.costum1(
+                      DataSaverKeys.disableAutoplayVideos.tr),
+                  subtitle: CustomText.costum1(
+                    DataSaverKeys.disableAutoplayVideosExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,

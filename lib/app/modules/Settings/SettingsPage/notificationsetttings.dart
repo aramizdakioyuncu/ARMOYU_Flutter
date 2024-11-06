@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/API_Functions/notification.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -138,10 +139,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        // backgroundColor: ARMOYU.appbarColor,
-        title: const Text('Bildirimler'),
+        title: Text(
+          SettingsKeys.notifications.tr,
+        ),
         actions: [
           IconButton(
             onPressed: () async => fetchNotificationdetail(),
@@ -157,9 +158,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
             Column(
               children: [
                 ListTile(
-                  title: CustomText.costum1("Yorum Beğenileri"),
+                  title: CustomText.costum1(NotificationsKeys.commentLikes.tr),
                   subtitle: CustomText.costum1(
-                      "Yorumlarınız beğenildiğinde bildirir"),
+                    NotificationsKeys.commentLikesExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -185,9 +187,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Paylaşım Beğenileri"),
+                  title: CustomText.costum1(NotificationsKeys.postLikes.tr),
                   subtitle: CustomText.costum1(
-                      "Paylaşımlarınız beğeni aldığında bildirir"),
+                    NotificationsKeys.postLikesExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -213,9 +216,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Yorum"),
+                  title: CustomText.costum1(NotificationsKeys.comment.tr),
                   subtitle: CustomText.costum1(
-                      "Paylaşımlarınız yorum aldığında bildirir"),
+                    NotificationsKeys.commentExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -241,9 +245,11 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Yorum Yanıtları"),
+                  title:
+                      CustomText.costum1(NotificationsKeys.commentReplies.tr),
                   subtitle: CustomText.costum1(
-                      "Yorumunuza yanıt geldiğinde bildirir"),
+                    NotificationsKeys.commentRepliesExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -269,9 +275,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Etkinlik"),
+                  title: CustomText.costum1(NotificationsKeys.event.tr),
                   subtitle: CustomText.costum1(
-                      "Etkinlik ile ilgili tüm duyuruları bildirir"),
+                    NotificationsKeys.eventExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -297,9 +304,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Doğum Günleri"),
+                  title: CustomText.costum1(NotificationsKeys.birthdays.tr),
                   subtitle: CustomText.costum1(
-                      "Arkadaşlarınızın doğum günlerini bildirir"),
+                    NotificationsKeys.birthdaysExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -325,9 +333,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Mesajlar"),
-                  subtitle:
-                      CustomText.costum1("Yeni mesaj geldiğinde bildirir"),
+                  title: CustomText.costum1(NotificationsKeys.messages.tr),
+                  subtitle: CustomText.costum1(
+                    NotificationsKeys.messagesExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -353,9 +362,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Aramalar"),
-                  subtitle:
-                      CustomText.costum1("Birisi sizi aradığında bildirir"),
+                  title: CustomText.costum1(NotificationsKeys.calls.tr),
+                  subtitle: CustomText.costum1(
+                    NotificationsKeys.callsExplain.tr,
+                  ),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -381,9 +391,10 @@ class _SettingsNotificationPage extends State<SettingsNotificationPage> {
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Bahsetmeler"),
-                  subtitle:
-                      CustomText.costum1("Etiketlendiğiniz her şeyi bildirir."),
+                  title: CustomText.costum1(NotificationsKeys.mentions.tr),
+                  subtitle: CustomText.costum1(
+                    NotificationsKeys.mentionsExplain.tr,
+                  ),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

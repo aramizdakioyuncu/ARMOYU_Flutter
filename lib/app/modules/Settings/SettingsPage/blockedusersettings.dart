@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/blocking.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SettingsBlockeduserPage extends StatefulWidget {
   final User currentUser;
@@ -97,9 +99,9 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
               onPressed: () async {
                 removeblock(blockeduserID, i);
               },
-              child: const Text(
-                "Engellemeyi Kaldır",
-                style: TextStyle(fontSize: 13),
+              child: Text(
+                BlockedListKeys.unblock.tr,
+                style: const TextStyle(fontSize: 13),
               ),
             ),
           ),
@@ -118,7 +120,9 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
     return Scaffold(
       // backgroundColor: ARMOYU.appbarColor,
       appBar: AppBar(
-        title: const Text('Engellenen Hesaplar'),
+        title: Text(
+          SettingsKeys.blockedList.tr,
+        ),
         // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
@@ -133,7 +137,7 @@ class _SettingsBlockeduserStatePage extends State<SettingsBlockeduserPage> {
             child: _blockedList.isEmpty
                 ? Center(
                     child: !_blockedProcces && !_isFirstProcces
-                        ? const Text("Engellenen hesap yok")
+                        ? Text(BlockedListKeys.noBlockedAccounts.tr)
                         : const CupertinoActivityIndicator())
                 : ListView.builder(
                     itemCount: _blockedList.length,

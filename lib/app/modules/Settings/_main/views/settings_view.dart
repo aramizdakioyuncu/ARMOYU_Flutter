@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/Settings/SettingsPage/Account/accountsettings.dart';
 import 'package:ARMOYU/app/modules/Settings/_main/controller/settings_controller.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -102,7 +103,8 @@ class SettingsView extends StatelessWidget {
                       visible: controller.filteredlistSettings.isNotEmpty,
                       child: ListTile(
                         tileColor: Get.theme.scaffoldBackgroundColor,
-                        title: CustomText.costum1("Uygulaman ve medya"),
+                        title: CustomText.costum1(
+                            SettingsKeys.applicationAndMedia.tr),
                       ),
                     ),
                   ),
@@ -130,7 +132,8 @@ class SettingsView extends StatelessWidget {
                           controller.filteredlistSettingssupport.isNotEmpty,
                       child: ListTile(
                         tileColor: Get.theme.scaffoldBackgroundColor,
-                        title: CustomText.costum1("Daha fazla bilgi ve destek"),
+                        title: CustomText.costum1(
+                            SettingsKeys.moreInformationAndSupport.tr),
                       ),
                     ),
                   ),
@@ -159,7 +162,7 @@ class SettingsView extends StatelessWidget {
                       ListTile(
                         tileColor: Get.theme.scaffoldBackgroundColor,
                         title: CustomText.costum1(
-                          "Hesap Ekle",
+                          SettingsKeys.addAccount.tr,
                           color: Colors.blue,
                         ),
                         onTap: () async {
@@ -176,7 +179,7 @@ class SettingsView extends StatelessWidget {
                       ListTile(
                         tileColor: Get.theme.scaffoldBackgroundColor,
                         title: CustomText.costum1(
-                          "Çıkış Yap",
+                          SettingsKeys.logOut.tr,
                           color: Colors.red,
                         ),
                         onTap: () => controller.logoutfunction(),
@@ -186,7 +189,7 @@ class SettingsView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: CustomText.costum1(
-                      "Versiyon : ${ARMOYU.appVersion.toString()} (${ARMOYU.appBuild.toString()})",
+                      "${SettingsKeys.version.tr}: ${ARMOYU.appVersion.toString()} (${ARMOYU.appBuild.toString()})",
                     ),
                   ),
                 ],

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,11 +17,11 @@ class SettingsDevicePermissionsPage extends StatefulWidget {
 
 class _SettingsDevicePermissionsPage
     extends State<SettingsDevicePermissionsPage> {
-  String micPermission = "İzin verilmedi";
-  String locationPermission = "İzin verilmedi";
-  String camPermission = "İzin verilmedi";
-  String contactPermission = "İzin verilmedi";
-  String notifiPermission = "İzin verilmedi";
+  String micPermission = DevicePermissionKeys.deviceDenied.tr;
+  String locationPermission = DevicePermissionKeys.deviceDenied.tr;
+  String camPermission = DevicePermissionKeys.deviceDenied.tr;
+  String contactPermission = DevicePermissionKeys.deviceDenied.tr;
+  String notifiPermission = DevicePermissionKeys.deviceDenied.tr;
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _SettingsDevicePermissionsPage
     var status = await Permission.camera.status;
     if (status.isGranted) {
       setState(() {
-        camPermission = "İzin verildi";
+        camPermission = DevicePermissionKeys.deviceGranted.tr;
       });
     } else if (status.isPermanentlyDenied) {
       setState(() {
@@ -49,7 +50,7 @@ class _SettingsDevicePermissionsPage
     var status = await Permission.microphone.status;
     if (status.isGranted) {
       setState(() {
-        micPermission = "İzin verildi";
+        micPermission = DevicePermissionKeys.deviceGranted.tr;
       });
     } else if (status.isPermanentlyDenied) {
       setState(() {
@@ -62,7 +63,7 @@ class _SettingsDevicePermissionsPage
     var status = await Permission.location.status;
     if (status.isGranted) {
       setState(() {
-        locationPermission = "İzin verildi";
+        locationPermission = DevicePermissionKeys.deviceGranted.tr;
       });
     } else if (status.isPermanentlyDenied) {
       setState(() {
@@ -75,7 +76,7 @@ class _SettingsDevicePermissionsPage
     var status = await Permission.contacts.status;
     if (status.isGranted) {
       setState(() {
-        contactPermission = "İzin verildi";
+        contactPermission = DevicePermissionKeys.deviceGranted.tr;
       });
     } else if (status.isPermanentlyDenied) {
       setState(() {
@@ -91,7 +92,7 @@ class _SettingsDevicePermissionsPage
     if (status.isGranted) {
       log(status.isGranted.toString());
       setState(() {
-        notifiPermission = "İzin verildi";
+        notifiPermission = DevicePermissionKeys.deviceGranted.tr;
       });
     } else if (status.isPermanentlyDenied) {
       setState(() {
@@ -116,10 +117,11 @@ class _SettingsDevicePermissionsPage
             Column(
               children: [
                 ListTile(
-                  title: CustomText.costum1("Kamera"),
+                  title:
+                      CustomText.costum1(DevicePermissionKeys.deviceCamera.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
-                    if (camPermission != "İzin verilmedi") {
+                    if (camPermission != DevicePermissionKeys.deviceDenied.tr) {
                       openAppSettings();
                       return;
                     }
@@ -142,10 +144,12 @@ class _SettingsDevicePermissionsPage
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Kişiler"),
+                  title:
+                      CustomText.costum1(DevicePermissionKeys.deviceContact.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
-                    if (contactPermission != "İzin verilmedi") {
+                    if (contactPermission !=
+                        DevicePermissionKeys.deviceDenied.tr) {
                       openAppSettings();
                       return;
                     }
@@ -169,10 +173,12 @@ class _SettingsDevicePermissionsPage
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Konum"),
+                  title: CustomText.costum1(
+                      DevicePermissionKeys.deviceLocation.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
-                    if (locationPermission != "İzin verilmedi") {
+                    if (locationPermission !=
+                        DevicePermissionKeys.deviceDenied.tr) {
                       openAppSettings();
                       return;
                     }
@@ -196,10 +202,11 @@ class _SettingsDevicePermissionsPage
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Mikrofon"),
+                  title: CustomText.costum1(
+                      DevicePermissionKeys.deviceMicrpohone.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
-                    if (micPermission != "İzin verilmedi") {
+                    if (micPermission != DevicePermissionKeys.deviceDenied.tr) {
                       openAppSettings();
                       return;
                     }
@@ -223,10 +230,12 @@ class _SettingsDevicePermissionsPage
                   ),
                 ),
                 ListTile(
-                  title: CustomText.costum1("Bildirimler"),
+                  title: CustomText.costum1(
+                      DevicePermissionKeys.deviceNotifications.tr),
                   tileColor: Get.theme.scaffoldBackgroundColor,
                   onTap: () async {
-                    if (notifiPermission != "İzin verilmedi") {
+                    if (notifiPermission !=
+                        DevicePermissionKeys.deviceDenied.tr) {
                       openAppSettings();
                       return;
                     }
