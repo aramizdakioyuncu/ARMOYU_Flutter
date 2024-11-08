@@ -1,37 +1,31 @@
 import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Settings/SettingsPage/Account/accountsettings.dart';
 import 'package:ARMOYU/app/modules/Settings/_main/controller/settings_controller.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
-
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({
-    super.key,
-  });
+  const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> arguments = Get.arguments;
-
-    UserAccounts currentUserAccounts = arguments['currentUserAccounts'];
-
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
     final currentAccountController = Get.find<PagesController>(
-      tag: currentUserAccounts.user.userID.toString(),
+      tag: findCurrentAccountController
+          .currentUserAccounts.value.user.value.userID
+          .toString(),
     );
-    log("***-**${currentAccountController.currentUserAccounts.user.displayName}");
+    log("***-**${currentAccountController.currentUserAccounts.user.value.displayName}");
 
-    final controller = Get.put(
-      SettingsController(
-        currentUserAccounts: currentAccountController.currentUserAccount,
-      ),
-    );
+    final controller = Get.put(SettingsController());
 
     return SafeArea(
       child: Scaffold(
@@ -49,21 +43,17 @@ class SettingsView extends StatelessWidget {
                     leading: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
-                        currentUserAccounts.user.avatar!.mediaURL.minURL.value,
+                        findCurrentAccountController.currentUserAccounts.value
+                            .user.value.avatar!.mediaURL.minURL.value,
                       ),
                       radius: 28,
                     ),
-                    title: CustomText.costum1(
-                        currentUserAccounts.user.displayName!),
+                    title: CustomText.costum1(findCurrentAccountController
+                        .currentUserAccounts.value.user.value.displayName!),
                     subtitle: CustomText.costum1(
-                        "Hatalı Giriş: ${currentUserAccounts.user.lastfaillogin}"),
+                        "Hatalı Giriş: ${findCurrentAccountController.currentUserAccounts.value.user.value.lastfaillogin}"),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingsAccountPage(),
-                        ),
-                      );
+                      Get.toNamed("/settings/account");
                     },
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -104,7 +94,8 @@ class SettingsView extends StatelessWidget {
                       child: ListTile(
                         tileColor: Get.theme.scaffoldBackgroundColor,
                         title: CustomText.costum1(
-                            SettingsKeys.applicationAndMedia.tr),
+                          SettingsKeys.applicationAndMedia.tr,
+                        ),
                       ),
                     ),
                   ),
@@ -167,7 +158,8 @@ class SettingsView extends StatelessWidget {
                         ),
                         onTap: () async {
                           final result = Get.toNamed("/login", arguments: {
-                            "currentUser": currentUserAccounts.user,
+                            "currentUser": findCurrentAccountController
+                                .currentUserAccounts.value.user,
                             "accountAdd": true,
                           });
 

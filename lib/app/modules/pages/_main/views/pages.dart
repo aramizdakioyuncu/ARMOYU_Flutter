@@ -1,10 +1,9 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:developer';
 
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/views/main_view.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/_main/views/chat_page.dart';
 import 'package:get/get.dart';
@@ -18,15 +17,17 @@ class Pages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("***1**${currentUserAccounts.user.displayName}**1***");
+    log("***1**${currentUserAccounts.user.value.displayName}**1***");
 
+    //Controller Çek
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     final controller = Get.put(
-      PagesController(
-        currentUserAccounts: currentUserAccounts,
-      ),
-      tag: currentUserAccounts.user.userID.toString(),
+      PagesController(currentUserAccounts: currentUserAccounts),
+      tag: currentUserAccounts.user.value.userID.toString(),
     );
 
+    // ignore: deprecated_member_use
     return WillPopScope(
       onWillPop: () async {
         // Geri tuşuna basıldığında yapılacak işlemler
@@ -39,9 +40,7 @@ class Pages extends StatelessWidget {
           controller: controller.pageController,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            MainPageView(
-              currentUserAccounts: currentUserAccounts,
-            ),
+            const MainPageView(),
             ChatPage(
               currentUserAccounts: currentUserAccounts,
             ),

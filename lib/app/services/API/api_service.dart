@@ -24,8 +24,8 @@ class ApiService {
     String? password,
     List<MultipartFile>? files,
   }) async {
-    String usernameURL = "";
-    String passwordURL = "";
+    String usernameURL = "0";
+    String passwordURL = "0";
 
     if (user.userMail != null && user.password != null) {
       usernameURL = user.userName!;

@@ -1,11 +1,15 @@
 import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/resetpassword_module.dart';
-import 'package:ARMOYU/app/modules/Settings/_main/module.dart';
+import 'package:ARMOYU/app/modules/Settings/settings_module.dart';
+import 'package:ARMOYU/app/modules/Social/socail_module.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/group_page/module.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/loginregister_module.dart';
 import 'package:ARMOYU/app/modules/News/list_news_page/module.dart';
 import 'package:ARMOYU/app/modules/News/news_page/module.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/Notification/friend_request_page/friend_requst_module.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/Notification/group_request_page/group_request_module.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/Profile/friends_page/profile_friendlist_module.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/module.dart';
 import 'package:ARMOYU/app/modules/Utility/noconnectionpage/noconnection_module.dart';
 import 'package:ARMOYU/app/modules/Utility/startingpage/startingpage_module.dart';
@@ -16,16 +20,33 @@ class AppPages {
 
   static final routes = [
     ...StartingpageModule.routes,
-    ...LoginRegisterpageModule.routes,
     ...NoconnectionpageModule.routes,
     ...AppPageModule.routes,
     ...ListNewsModule.routes,
     ...NewsPageModule.routes,
+
+    ...ChatdetailModule.routes,
+
+    //Group
     ...GroupCreateModule.routes,
     ...GroupPageModule.routes,
-    ...ProfileModule.routes,
-    ...ChatdetailModule.routes,
-    ...SettingsModule.routes,
+
+    //Login Register Password
+    ...LoginRegisterpageModule.routes,
     ...ResetPasswordModule.routes,
+
+    //Social
+    ...SocailModule.routes,
+
+    //Notifications
+    ...GroupRequestModule.routes,
+    ...FriendRequstModule.routes,
+
+    //Profile
+    ...ProfileModule.routes,
+    ...ProfileFriendlistModule.routes,
+
+    //Settings
+    ...SettingsModule.routes,
   ];
 }

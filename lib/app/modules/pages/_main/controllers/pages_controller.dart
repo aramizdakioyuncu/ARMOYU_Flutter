@@ -72,12 +72,14 @@ class PagesController extends GetxController {
       return;
     }
 
-    if (currentUserAccount.user.userID == null) {
+    if (currentUserAccount.user.value.userID == null) {
       someCondition.value = true;
       return;
     }
     siteMessagesProcces.value = true;
-    FunctionsApp f = FunctionsApp(currentUser: currentUserAccount.user);
+    FunctionsApp f = FunctionsApp(
+      currentUser: currentUserAccount.user.value,
+    );
     Map<String, dynamic> response = await f.sitemesaji();
 
     if (response["durum"] == 0) {

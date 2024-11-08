@@ -103,8 +103,9 @@ class PostController extends GetxController {
     }
     fetchCommentStatus.value = true;
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.user);
+    FunctionsPosts funct = FunctionsPosts(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await funct.commentsfetch(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -164,8 +165,9 @@ class PostController extends GetxController {
     }
     fetchlikersStatus.value = true;
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.user);
+    FunctionsPosts funct = FunctionsPosts(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await funct.postlikeslist(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -208,8 +210,9 @@ class PostController extends GetxController {
   Future<void> removepost() async {
     postVisible.value = false;
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.user);
+    FunctionsPosts funct = FunctionsPosts(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await funct.remove(postInfo.value.postID);
 
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
@@ -303,7 +306,7 @@ class PostController extends GetxController {
                           backgroundColor: Colors.transparent,
                           foregroundImage: CachedNetworkImageProvider(
                             currentUserAccounts
-                                .user.avatar!.mediaURL.minURL.value,
+                                .user.value.avatar!.mediaURL.minURL.value,
                           ),
                           radius: 20,
                         ),
@@ -338,7 +341,7 @@ class PostController extends GetxController {
                         child: ElevatedButton(
                           onPressed: () async {
                             FunctionsPosts funct = FunctionsPosts(
-                              currentUser: currentUserAccounts.user,
+                              currentUser: currentUserAccounts.user.value,
                             );
                             Map<String, dynamic> response =
                                 await funct.createcomment(postInfo.value.postID,
@@ -379,8 +382,9 @@ class PostController extends GetxController {
 
     likeunlikeProcces.value = true;
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.user);
+    FunctionsPosts funct = FunctionsPosts(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await funct.like(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -400,8 +404,9 @@ class PostController extends GetxController {
     }
     likeunlikeProcces.value = true;
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.user);
+    FunctionsPosts funct = FunctionsPosts(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await funct.unlike(postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -537,7 +542,8 @@ class PostController extends GetxController {
                     child: InkWell(
                       onTap: () async {
                         FunctionsPosts funct = FunctionsPosts(
-                            currentUser: currentUserAccounts.user);
+                          currentUser: currentUserAccounts.user.value,
+                        );
                         Map<String, dynamic> response =
                             await funct.remove(postInfo.value.postID);
                         if (response["durum"] == 0) {
@@ -556,7 +562,7 @@ class PostController extends GetxController {
                   ),
                   Visibility(
                     visible: postInfo.value.owner.userID ==
-                        currentUserAccounts.user.userID,
+                        currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () async {},
                       child: const ListTile(
@@ -573,7 +579,7 @@ class PostController extends GetxController {
                   ),
                   Visibility(
                     visible: postInfo.value.owner.userID !=
-                        currentUserAccounts.user.userID,
+                        currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () {},
                       child: const ListTile(
@@ -588,7 +594,7 @@ class PostController extends GetxController {
                   ),
                   Visibility(
                     visible: postInfo.value.owner.userID !=
-                        currentUserAccounts.user.userID,
+                        currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () async {
                         // if (mounted) {
@@ -596,7 +602,7 @@ class PostController extends GetxController {
                         // }
                         ClientFunctionsProfile function =
                             ClientFunctionsProfile(
-                          currentUser: currentUserAccounts.user,
+                          currentUser: currentUserAccounts.user.value,
                         );
                         ARMOYUWidget.toastNotification(
                           await function.userblock(
@@ -616,7 +622,7 @@ class PostController extends GetxController {
                   ),
                   Visibility(
                     visible: postInfo.value.owner.userID ==
-                        currentUserAccounts.user.userID,
+                        currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () async => ARMOYUWidget.showConfirmationDialog(
                         context,
@@ -777,7 +783,7 @@ class PostController extends GetxController {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => MediaViewer(
-                  currentUser: currentUserAccounts.user,
+                  currentUser: currentUserAccounts.user.value,
                   media: postInfo.value.media,
                   initialIndex: i,
                 ),

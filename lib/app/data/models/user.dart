@@ -57,8 +57,9 @@ class User {
   bool? ismyFriend;
 
   // //Arkadaşlarım
-  List<User>? myFriends = [];
-  List<User>? mycloseFriends = [];
+
+  RxList<User>? myFriends;
+  RxList<User>? mycloseFriends;
 
   // //ARAÇ GEREÇ
   List<Chat>? chatlist = [];
@@ -157,8 +158,8 @@ class User {
               ),
             ),
       myFriends: json['myfriends'] != null
-          ? List<User>.from(
-              json['myfriends'].map((friendJson) => User.fromJson(friendJson)))
+          ? List<User>.from(json['myfriends']
+              .map((friendJson) => User.fromJson(friendJson))).obs
           : null,
       chatlist: json['chatlist'] != null
           ? List<Chat>.from(

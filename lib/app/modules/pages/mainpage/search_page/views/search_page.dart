@@ -37,12 +37,12 @@ class _SearchPagePage extends State<SearchPage>
     super.build(context);
     // final currentAccountController = Get.find<AppPageController>();
     final currentAccountController = Get.find<PagesController>(
-      tag: widget.currentUserAccounts.user.userID.toString(),
+      tag: widget.currentUserAccounts.user.value.userID.toString(),
     );
-    log("*****${currentAccountController.currentUserAccounts.user.displayName}");
+    log("*****${currentAccountController.currentUserAccounts.user.value.displayName}");
 
     final mainpagecontroller = Get.find<MainPageController>(
-      tag: widget.currentUserAccounts.user.userID.toString(),
+      tag: widget.currentUserAccounts.user.value.userID.toString(),
     );
 
     final controller = Get.put(
@@ -50,7 +50,7 @@ class _SearchPagePage extends State<SearchPage>
         currentUserAccounts: currentAccountController.currentUserAccounts,
         searchController: mainpagecontroller.appbarSearchTextController.value,
       ),
-      tag: widget.currentUserAccounts.user.userID.toString(),
+      tag: widget.currentUserAccounts.user.value.userID.toString(),
     );
 
     return Scaffold(

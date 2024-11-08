@@ -20,6 +20,31 @@ Map<String, String> en = {
   SettingsKeys.logOut: 'Log Out',
   SettingsKeys.version: 'Version',
 
+  //Drawer
+  DrawerKeys.drawerMeeting: 'Meeting',
+  DrawerKeys.drawerNews: 'News',
+  DrawerKeys.drawerMyGroups: 'My Groups',
+  DrawerKeys.drawerMySchools: 'My Schools',
+  DrawerKeys.drawerFood: 'Food',
+  DrawerKeys.drawerGames: 'Games',
+  DrawerKeys.drawerEvents: 'Events',
+  DrawerKeys.drawerPolls: 'Polls',
+  DrawerKeys.drawerInvite: 'Invite',
+  DrawerKeys.drawerJoinUs: 'Join Us',
+  DrawerKeys.drawerSettings: 'Settings',
+
+  //Login
+  LoginKeys.loginKeysUsernameoremail: 'Username / Email',
+  LoginKeys.loginKeysPassword: 'Password',
+  LoginKeys.loginKeysLogin: 'Login',
+  LoginKeys.loginKeysForgotmypassword: 'Forgot my password',
+  LoginKeys.loginKeysSignup: 'Sign Up',
+  LoginKeys.loginKeysHaveyougotaccount: 'Have you got an account?',
+  LoginKeys.loginKeysPrivacyPolicy: 'Privacy Policy',
+  LoginKeys.loginKeysTermsAndConditions: 'Terms and Conditions/User Policy',
+  LoginKeys.loginKeysacceptanceMessage:
+      'By continuing, you accept the Terms and Conditions and Privacy Policy.',
+
   // BlockedListKeys
   BlockedListKeys.noBlockedAccounts: 'No blocked accounts',
   BlockedListKeys.unblock: 'Unblock',
@@ -30,8 +55,9 @@ Map<String, String> en = {
   DevicePermissionKeys.deviceLocation: 'Location',
   DevicePermissionKeys.deviceMicrpohone: 'Microphone',
   DevicePermissionKeys.deviceNotifications: 'Notifications',
-  DevicePermissionKeys.deviceGranted: 'granted',
-  DevicePermissionKeys.deviceDenied: 'denied',
+  DevicePermissionKeys.deviceGranted: 'Granted',
+  DevicePermissionKeys.deviceDenied: 'Denied',
+  DevicePermissionKeys.devicePermanentlyDenied: 'Permanently Denied',
 
   //Data Saver
   DataSaverKeys.useLessCellularData: 'Use less cellular data',

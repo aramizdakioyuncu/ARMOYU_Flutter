@@ -15,8 +15,8 @@ class PageFunctions {
       BuildContext context, User userProfile, ScrollController scrollController,
       {bool ismyProfile = false}) {
     if (!ismyProfile &&
-        (userProfile.userID == currentUserAccounts.user.userID ||
-            userProfile.userName == currentUserAccounts.user.userName)) {
+        (userProfile.userID == currentUserAccounts.user.value.userID ||
+            userProfile.userName == currentUserAccounts.user.value.userName)) {
       log("Kendi Profiline girmezsin!");
       return;
     }

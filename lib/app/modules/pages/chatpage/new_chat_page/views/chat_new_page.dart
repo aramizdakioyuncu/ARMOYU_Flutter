@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/controllers/chat_new_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,14 +21,12 @@ class ChatNewPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentAccountController = Get.find<PagesController>(
-      tag: currentUserAccounts.user.userID.toString(),
-    );
-    log("***-**${currentAccountController.currentUserAccounts.user.displayName}");
-
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     final controller = Get.put(
       ChatNewController(
-        currentUserAccounts: currentAccountController.currentUserAccounts,
+        currentUserAccounts:
+            findCurrentAccountController.currentUserAccounts.value,
       ),
     );
     return Scaffold(

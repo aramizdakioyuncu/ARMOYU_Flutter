@@ -71,7 +71,7 @@ class EventController extends GetxController {
     fetcheventdetailProcess.value = true;
 
     FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUserAccounts.user,
+      currentUser: currentUserAccounts.user.value,
     );
     Map<String, dynamic> response = await f.detailfetch(eventID);
     if (response["durum"] == 0) {
@@ -123,7 +123,9 @@ class EventController extends GetxController {
       return;
     }
     fetchParticipantProccess.value = true;
-    FunctionsEvent f = FunctionsEvent(currentUser: currentUserAccounts.user);
+    FunctionsEvent f = FunctionsEvent(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await f.participantList(eventID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -188,7 +190,7 @@ class EventController extends GetxController {
 
     //Bireysel Katılımcılar
     for (var element in response["icerik"]["participant_players"]) {
-      if (element["player_ID"] == currentUserAccounts.user.userID) {
+      if (element["player_ID"] == currentUserAccounts.user.value.userID) {
         didijoin.value = true;
       }
 
@@ -224,7 +226,8 @@ class EventController extends GetxController {
 
     joineventProccess.value = true;
 
-    FunctionsEvent f = FunctionsEvent(currentUser: currentUserAccounts.user);
+    FunctionsEvent f =
+        FunctionsEvent(currentUser: currentUserAccounts.user.value);
     Map<String, dynamic> response =
         await f.joinOrleave(event.value!.eventID, true);
     if (response["durum"] == 0) {
@@ -239,7 +242,9 @@ class EventController extends GetxController {
   Future<void> leaveevent() async {
     joineventProccess.value = true;
 
-    FunctionsEvent f = FunctionsEvent(currentUser: currentUserAccounts.user);
+    FunctionsEvent f = FunctionsEvent(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response =
         await f.joinOrleave(event.value!.eventID, false);
     if (response["durum"] == 0) {

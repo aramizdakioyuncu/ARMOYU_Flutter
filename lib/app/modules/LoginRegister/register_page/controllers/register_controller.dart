@@ -6,8 +6,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/loginregister.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
-// import 'package:ARMOYU/app/modules/apppage/views/eski_app_page.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,12 +27,6 @@ class RegisterpageController extends GetxController {
   var inviteduserdisplayName = Rx<String?>(null);
   var inviteduseravatar = Rx<String?>(null);
 
-  void setstatefunction() {
-    // if (mounted) {
-    //   setState(() {});
-    // }
-  }
-
   Future<void> invitecodeTester(String code) async {
     if (inviteCodeProcces.value) {
       return;
@@ -42,16 +36,12 @@ class RegisterpageController extends GetxController {
     // });
 
     FunctionsLoginRegister f =
-        FunctionsLoginRegister(currentUser: User(userName: "", password: ""));
+        FunctionsLoginRegister(currentUser: User(userName: "0", password: "0"));
     Map<String, dynamic> response = await f.inviteCodeTest(code);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
-      // if (mounted) {
       ARMOYUWidget.stackbarNotification(Get.context!, response["aciklama"]);
-      // }
-      // setState(() {
       inviteCodeProcces.value = false;
-      // });
       return;
     }
     log(inviteduserID.value =
@@ -69,9 +59,7 @@ class RegisterpageController extends GetxController {
     if (registerProccess.value) {
       return;
     }
-    // setState(() {
     registerProccess.value = true;
-    // });
     // Kayıt işlemini burada gerçekleştirin
     final username = usernameController.value.text;
     final name = nameController.value.text;
@@ -91,9 +79,7 @@ class RegisterpageController extends GetxController {
       ARMOYUWidget.stackbarNotification(Get.context!, text);
       log(text);
 
-      // setState(() {
       registerProccess.value = false;
-      // });
       return;
     }
     if (password != rpassword) {
@@ -101,9 +87,7 @@ class RegisterpageController extends GetxController {
       ARMOYUWidget.stackbarNotification(Get.context!, text);
       log(text);
 
-      // setState(() {
       registerProccess.value = false;
-      // });
       return;
     }
 
@@ -114,12 +98,8 @@ class RegisterpageController extends GetxController {
 
     if (response["durum"] == 0) {
       String text = response["aciklama"];
-      // if (mounted) {
       ARMOYUWidget.stackbarNotification(Get.context!, text);
-      // }
-      // setState(() {
       registerProccess.value = false;
-      // });
       return;
     }
 
@@ -128,39 +108,21 @@ class RegisterpageController extends GetxController {
           await f.login(username, password, true);
 
       if (loginresponse["aciklama"] == "Başarılı.") {
-        // if (mounted) {
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => Pages(
-        //         currentUser: ARMOYU.appUsers[0],
-        //       ),
-        //     ),
-        //   );
-        // }
-
         UserAccounts newUser = ARMOYU.appUsers.first;
-        // if (mounted) {
-        //   Navigator.pushReplacement(
-        //     context,
-        //     MaterialPageRoute(
-        //       builder: (context) => AppPage(
-        //         userID: newUser.user.userID!,
-        //       ),
-        //     ),
-        //   );
-        // }
 
-        Get.offAll(
-          () => const AppPageView(),
-          arguments: {'userID': newUser.user.userID!},
+        accountController.changeUser(
+          UserAccounts(user: newUser.user),
         );
+
+        Get.toNamed("/app", arguments: {'userID': newUser.user.value.userID!});
+        // Get.offAll(
+        //   () => const AppPageView(),
+        //   arguments: {'userID': newUser.user.value.userID!},
+        // );
         return;
       }
 
-      // setState(() {
       registerProccess.value = false;
-      // });
     }
   }
 
@@ -178,5 +140,20 @@ class RegisterpageController extends GetxController {
     if (value.length == 5) {
       invitecodeTester(value);
     }
+  }
+
+  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+
+  late AccountUserController accountController;
+  @override
+  void onInit() {
+    super.onInit();
+
+    //***//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    accountController = findCurrentAccountController;
+    currentUserAccounts.value =
+        findCurrentAccountController.currentUserAccounts.value;
+    //***//
   }
 }

@@ -39,18 +39,20 @@ class ChatNewController extends GetxController {
     chatFriendsprocess.value = true;
     isFirstFetch.value = false;
 
-    if (!fecthRestart && currentUserAccounts.user.myFriends != null) {
-      int pageCount = (currentUserAccounts.user.myFriends!.length / 50).ceil();
+    if (!fecthRestart && currentUserAccounts.user.value.myFriends != null) {
+      int pageCount =
+          (currentUserAccounts.user.value.myFriends!.length / 50).ceil();
       log(pageCount.toString());
 
       chatnewpage.value = pageCount;
       chatnewpage++;
     }
 
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user);
-    Map<String, dynamic> response =
-        await f.friendlist(currentUserAccounts.user.userID!, chatnewpage.value);
+    FunctionsProfile f = FunctionsProfile(
+      currentUser: currentUserAccounts.user.value,
+    );
+    Map<String, dynamic> response = await f.friendlist(
+        currentUserAccounts.user.value.userID!, chatnewpage.value);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       chatFriendsprocess.value = false;
@@ -61,7 +63,7 @@ class ChatNewController extends GetxController {
     if (chatnewpage.value == 1) {
       newchatList.value = [];
 
-      currentUserAccounts.user.myFriends = [];
+      currentUserAccounts.user.value.myFriends!.value = [];
     }
     if (response["icerik"].length == 0) {
       log("Sohbet Arkadaşlarım Sayfa Sonu");
@@ -72,7 +74,7 @@ class ChatNewController extends GetxController {
       return;
     }
     for (int i = 0; i < response["icerik"].length; i++) {
-      currentUserAccounts.user.myFriends!.add(
+      currentUserAccounts.user.value.myFriends!.add(
         User(
           userID: response["icerik"][i]["oyuncuID"],
           userName: response["icerik"][i]["oyuncukullaniciad"],
@@ -99,7 +101,7 @@ class ChatNewController extends GetxController {
       );
     }
 
-    filteredItems.value = currentUserAccounts.user.myFriends!;
+    filteredItems.value = currentUserAccounts.user.value.myFriends!;
     chatnewpage++;
     chatFriendsprocess.value = false;
   }
@@ -108,9 +110,9 @@ class ChatNewController extends GetxController {
   void onInit() {
     super.onInit();
     if (isFirstFetch.value) {
-      if (currentUserAccounts.user.myFriends != null) {
-        if (currentUserAccounts.user.myFriends!.isNotEmpty) {
-          filteredItems.value = currentUserAccounts.user.myFriends!;
+      if (currentUserAccounts.user.value.myFriends != null) {
+        if (currentUserAccounts.user.value.myFriends!.isNotEmpty) {
+          filteredItems.value = currentUserAccounts.user.value.myFriends!;
         } else {
           getchatfriendlist();
         }
@@ -130,7 +132,8 @@ class ChatNewController extends GetxController {
     newchatcontroller.value.addListener(() {
       String newText = newchatcontroller.value.text.toLowerCase();
       // Filtreleme işlemi
-      filteredItems.value = currentUserAccounts.user.myFriends!.where((item) {
+      filteredItems.value =
+          currentUserAccounts.user.value.myFriends!.where((item) {
         return item.displayName!.toLowerCase().contains(newText);
         // return item.user.displayName!.toLowerCase().contains(newText);
       }).toList();

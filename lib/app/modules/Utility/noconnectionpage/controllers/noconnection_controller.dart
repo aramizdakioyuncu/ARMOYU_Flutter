@@ -32,12 +32,12 @@ class NoconnectionapageController extends GetxController {
 
       if (usersJson != null) {
         //Listeye Yükle
-        ARMOYU.appUsers = usersJson
+        ARMOYU.appUsers.value = usersJson
             .map((userJson) => UserAccounts.fromJson(jsonDecode(userJson)))
             .toList();
         for (var element in usersJson) {
-          username = ARMOYU.appUsers[0].user.userName;
-          password = ARMOYU.appUsers[0].user.password;
+          username = ARMOYU.appUsers.first.user.value.userName;
+          password = ARMOYU.appUsers.first.user.value.password;
           log(element.toString());
         }
       }
@@ -131,7 +131,8 @@ class NoconnectionapageController extends GetxController {
       //     ),
       //   );
       // }
-      Get.off(const AppPageView(), arguments: {'userID': newUser.user.userID!});
+      Get.off(const AppPageView(),
+          arguments: {'userID': newUser.user.value.userID!});
 
       // setState(() {
       isConnected.value = true;

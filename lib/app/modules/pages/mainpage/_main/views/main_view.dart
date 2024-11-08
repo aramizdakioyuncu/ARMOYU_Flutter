@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/modules/Business/applications_page/views/applications_page.dart';
 import 'package:ARMOYU/app/modules/Events/list_event_page/views/eventlist_page.dart';
@@ -12,6 +11,8 @@ import 'package:ARMOYU/app/modules/School/login_school_page/views/school_login.d
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
 import 'package:ARMOYU/app/modules/Survey/list_survey_page/views/surveylist_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,19 +21,18 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/app/Services/Utility/barcode.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../Notification/notification_page/views/notification_page.dart';
+import '../../Notification/_main/views/notification_page.dart';
 
 class MainPageView extends StatelessWidget {
-  final UserAccounts currentUserAccounts;
-
-  const MainPageView({
-    super.key,
-    required this.currentUserAccounts,
-  });
+  const MainPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final ScrollController homepageScrollController = ScrollController();
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+
     final ScrollController searchScrollController =
         ScrollController(initialScrollOffset: 0);
     final ScrollController notificationScrollController =
@@ -42,18 +42,20 @@ class MainPageView extends StatelessWidget {
 
     final controller = Get.put(
       MainPageController(
-        // homepageScrollController: homepageScrollController,
         notificationScrollController: notificationScrollController,
         profileScrollController: profileScrollController,
         searchScrollController: searchScrollController,
-        // socailpageController: socailpageController,
-        currentUserAccount: currentUserAccounts,
+        currentUserAccount:
+            findCurrentAccountController.currentUserAccounts.value,
       ),
-      tag: currentUserAccounts.user.userID.toString(),
+      tag: findCurrentAccountController
+          .currentUserAccounts.value.user.value.userID
+          .toString(),
     );
 
     return PopScope(
       canPop: false,
+      // ignore: deprecated_member_use
       onPopInvoked: (didPop) {
         controller.popfunction();
       },
@@ -80,7 +82,7 @@ class MainPageView extends StatelessWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(50.0),
                               child: controller.currentUserAccounts.value!.user
-                                          .avatar ==
+                                          .value.avatar ==
                                       null
                                   ? Shimmer.fromColors(
                                       baseColor: Get.theme.disabledColor,
@@ -92,6 +94,7 @@ class MainPageView extends StatelessWidget {
                                           .currentUserAccounts
                                           .value!
                                           .user
+                                          .value
                                           .avatar!
                                           .mediaURL
                                           .minURL
@@ -146,7 +149,7 @@ class MainPageView extends StatelessWidget {
                           ),
                           backgroundColor: Colors.red,
                           textColor: Colors.white,
-                          child: Icon(
+                          child: const Icon(
                             Icons.chat_bubble_rounded,
                           ),
                         ),
@@ -166,8 +169,8 @@ class MainPageView extends StatelessWidget {
                 Obx(
                   () => UserAccountsDrawerHeader(
                     margin: EdgeInsets.zero,
-                    accountName: controller
-                                .currentUserAccounts.value!.user.displayName ==
+                    accountName: controller.currentUserAccounts.value!.user
+                                .value.displayName ==
                             null
                         ? Shimmer.fromColors(
                             baseColor: Get.theme.disabledColor,
@@ -175,63 +178,63 @@ class MainPageView extends StatelessWidget {
                             child: const SizedBox(width: 20),
                           )
                         : Text(
-                            controller
-                                .currentUserAccounts.value!.user.displayName!,
+                            controller.currentUserAccounts.value!.user.value
+                                .displayName!,
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
-                    accountEmail:
-                        controller.currentUserAccounts.value!.user.userMail ==
-                                null
-                            ? Shimmer.fromColors(
-                                baseColor: Get.theme.disabledColor,
-                                highlightColor: Get.theme.highlightColor,
-                                child: const SizedBox(
-                                  width: 20,
-                                ),
-                              )
-                            : Text(
-                                controller
-                                    .currentUserAccounts.value!.user.userMail!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
+                    accountEmail: controller.currentUserAccounts.value!.user
+                                .value.userMail ==
+                            null
+                        ? Shimmer.fromColors(
+                            baseColor: Get.theme.disabledColor,
+                            highlightColor: Get.theme.highlightColor,
+                            child: const SizedBox(
+                              width: 20,
+                            ),
+                          )
+                        : Text(
+                            controller.currentUserAccounts.value!.user.value
+                                .userMail!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                     currentAccountPicture: GestureDetector(
                       onTap: () {
                         Get.back();
                       },
-                      child:
-                          controller.currentUserAccounts.value!.user.avatar ==
-                                  null
-                              ? Shimmer.fromColors(
-                                  baseColor: Get.theme.disabledColor,
-                                  highlightColor: Get.theme.highlightColor,
-                                  child: const CircleAvatar(),
-                                )
-                              : CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundImage: CachedNetworkImageProvider(
-                                    controller.currentUserAccounts.value!.user
-                                        .avatar!.mediaURL.minURL.value,
-                                  ),
-                                ),
+                      child: controller.currentUserAccounts.value!.user.value
+                                  .avatar ==
+                              null
+                          ? Shimmer.fromColors(
+                              baseColor: Get.theme.disabledColor,
+                              highlightColor: Get.theme.highlightColor,
+                              child: const CircleAvatar(),
+                            )
+                          : CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              foregroundImage: CachedNetworkImageProvider(
+                                controller.currentUserAccounts.value!.user.value
+                                    .avatar!.mediaURL.minURL.value,
+                              ),
+                            ),
                     ),
                     currentAccountPictureSize: const Size.square(75),
-                    decoration:
-                        controller.currentUserAccounts.value!.user.banner ==
-                                null
-                            ? null
-                            : BoxDecoration(
-                                image: DecorationImage(
-                                  image: CachedNetworkImageProvider(
-                                    controller.currentUserAccounts.value!.user
-                                        .banner!.mediaURL.minURL.value,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
+                    decoration: controller
+                                .currentUserAccounts.value!.user.value.banner ==
+                            null
+                        ? null
+                        : BoxDecoration(
+                            image: DecorationImage(
+                              image: CachedNetworkImageProvider(
+                                controller.currentUserAccounts.value!.user.value
+                                    .banner!.mediaURL.minURL.value,
                               ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                   ),
                 ),
                 Expanded(
@@ -243,18 +246,18 @@ class MainPageView extends StatelessWidget {
                         Obx(
                           () => Visibility(
                             visible: controller.currentUserAccounts.value!.user
-                                    .role!.roleID ==
+                                    .value.role!.roleID ==
                                 0,
                             child: ListTile(
                               leading: const Icon(Icons.group),
-                              title: const Text("Toplantı"),
+                              title: Text(DrawerKeys.drawerMeeting.tr),
                               onTap: () {},
                             ),
                           ),
                         ),
                         ListTile(
                           leading: const Icon(Icons.article),
-                          title: const Text("Haberler"),
+                          title: Text(DrawerKeys.drawerNews.tr),
                           onTap: () {
                             Get.toNamed("/news", arguments: {
                               "user":
@@ -266,12 +269,12 @@ class MainPageView extends StatelessWidget {
                           leading: const Icon(
                             Icons.group,
                           ),
-                          title: const Text('Gruplarım'),
+                          title: Text(DrawerKeys.drawerMyGroups.tr),
                           onExpansionChanged: (value) async {
                             if (value) {
                               if (!controller.drawermygroup.value) {
-                                await controller.loadMyGroups(
-                                    controller.currentUserAccounts.value!.user);
+                                await controller.loadMyGroups(controller
+                                    .currentUserAccounts.value!.user.value);
                               }
                             }
                           },
@@ -306,12 +309,12 @@ class MainPageView extends StatelessWidget {
                           leading: const Icon(
                             Icons.school,
                           ),
-                          title: const Text('Okullarım'),
+                          title: Text(DrawerKeys.drawerMySchools.tr),
                           onExpansionChanged: (value) async {
                             if (value) {
                               if (!controller.drawermyschool.value) {
-                                await controller.loadMySchools(
-                                    controller.currentUserAccounts.value!.user);
+                                await controller.loadMySchools(controller
+                                    .currentUserAccounts.value!.user.value);
                               }
                             }
                           },
@@ -343,12 +346,12 @@ class MainPageView extends StatelessWidget {
                           leading: const Icon(
                             Icons.local_drink,
                           ),
-                          title: const Text('Yemek'),
+                          title: Text(DrawerKeys.drawerFood.tr),
                           onExpansionChanged: (value) async {
                             if (value) {
                               if (!controller.drawermyfood.value) {
-                                await controller.loadFoodStation(
-                                    controller.currentUserAccounts.value!.user);
+                                await controller.loadFoodStation(controller
+                                    .currentUserAccounts.value!.user.value);
                               }
                             }
                           },
@@ -367,12 +370,12 @@ class MainPageView extends StatelessWidget {
                           leading: const Icon(
                             Icons.videogame_asset_rounded,
                           ),
-                          title: const Text('Oyun'),
+                          title: Text(DrawerKeys.drawerGames.tr),
                           onExpansionChanged: (value) async {
                             if (value) {
                               if (!controller.drawermyfood.value) {
-                                await controller.loadFoodStation(
-                                    controller.currentUserAccounts.value!.user);
+                                await controller.loadFoodStation(controller
+                                    .currentUserAccounts.value!.user.value);
                               }
                             }
                           },
@@ -389,7 +392,7 @@ class MainPageView extends StatelessWidget {
                         ),
                         ListTile(
                           leading: const Icon(Icons.event),
-                          title: const Text("Etkinlikler"),
+                          title: Text(DrawerKeys.drawerEvents.tr),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -404,7 +407,7 @@ class MainPageView extends StatelessWidget {
                         ),
                         ListTile(
                           leading: const Icon(Icons.analytics_rounded),
-                          title: const Text("Anketler"),
+                          title: Text(DrawerKeys.drawerPolls.tr),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -419,7 +422,7 @@ class MainPageView extends StatelessWidget {
                         ),
                         ListTile(
                           leading: const Icon(Icons.assignment_sharp),
-                          title: const Text("Davet Et"),
+                          title: Text(DrawerKeys.drawerInvite.tr),
                           onTap: () {
                             Navigator.push(
                               context,
@@ -434,14 +437,14 @@ class MainPageView extends StatelessWidget {
                         ),
                         ListTile(
                           leading: const Icon(Icons.business_center),
-                          title: const Text("Bize Katıl"),
+                          title: Text(DrawerKeys.drawerJoinUs.tr),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BusinessApplicationsView(
                                   currentUser: controller
-                                      .currentUserAccounts.value!.user,
+                                      .currentUserAccounts.value!.user.value,
                                 ),
                               ),
                             );
@@ -449,18 +452,8 @@ class MainPageView extends StatelessWidget {
                         ),
                         ListTile(
                           leading: const Icon(Icons.settings),
-                          title: const Text("Ayarlar"),
+                          title: Text(DrawerKeys.drawerSettings.tr),
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => SettingsPage(
-                            //       currentUser: controller
-                            //           .currentUserAccounts.value!.user,
-                            //     ),
-                            //   ),
-                            // );
-
                             Get.toNamed("/settings", arguments: {
                               "currentUserAccounts":
                                   controller.currentUserAccounts.value,
@@ -535,7 +528,7 @@ class MainPageView extends StatelessWidget {
               Obx(
                 () => NotificationPage(
                   currentUserAccounts: controller.currentUserAccounts.value!,
-                  scrollController: notificationScrollController,
+                  // scrollController: notificationScrollController,
                 ),
               ),
               Obx(
@@ -621,6 +614,7 @@ class MainPageView extends StatelessWidget {
                                                 ARMOYU
                                                     .appUsers[index]
                                                     .user
+                                                    .value
                                                     .avatar!
                                                     .mediaURL
                                                     .minURL
@@ -628,7 +622,7 @@ class MainPageView extends StatelessWidget {
                                               ),
                                             ),
                                             title: CustomText.costum1(
-                                              ARMOYU.appUsers[index].user
+                                              ARMOYU.appUsers[index].user.value
                                                   .displayName
                                                   .toString(),
                                             ),
@@ -679,8 +673,8 @@ class MainPageView extends StatelessWidget {
                           radius: 12,
                           backgroundColor: Colors.transparent,
                           foregroundImage: CachedNetworkImageProvider(
-                            currentUserAccounts
-                                .user.avatar!.mediaURL.minURL.value,
+                            findCurrentAccountController.currentUserAccounts
+                                .value.user.value.avatar!.mediaURL.minURL.value,
                           ),
                         ),
                       ),

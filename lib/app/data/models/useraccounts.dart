@@ -7,9 +7,10 @@ import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:get/get.dart';
 
 class UserAccounts {
-  User user;
+  Rx<User> user;
   //Sosyal KISIM
   List<Post>? widgetPosts;
   List<StoryList>? widgetStoriescard;
@@ -71,7 +72,7 @@ class UserAccounts {
   // Convert UserAccounts instance to JSON
   Map<String, dynamic> toJson() {
     return {
-      'user': user.toJson(),
+      'user': user.value.toJson(),
       'widgetPosts': widgetPosts?.map((post) => post.toJson()).toList(),
       'widgetStoriescard':
           widgetStoriescard?.map((story) => story.toJson()).toList(),
@@ -106,7 +107,7 @@ class UserAccounts {
   // Convert JSON to UserAccounts instance
   factory UserAccounts.fromJson(Map<String, dynamic> json) {
     return UserAccounts(
-      user: User.fromJson(json['user']),
+      user: User.fromJson(json['user']).obs,
       widgetPosts: (json['widgetPosts'] as List<dynamic>?)
           ?.map((post) => Post.fromJson(post))
           .toList(),
@@ -159,6 +160,6 @@ class UserAccounts {
   }
 
   void updateUser({required User targetUser}) {
-    user.updateUser(targetUser: targetUser);
+    user.value.updateUser(targetUser: targetUser);
   }
 }

@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/controllers/profile_controller.dart';
 import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -30,26 +31,26 @@ class _ProfilePageState extends State<ProfileView>
   Widget build(BuildContext context) {
     super.build(context);
 
-    Map<String, dynamic>? arguments = Get.arguments;
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
 
     //Mevcut Oturum Kullanıcısı Kontrolü Çok Önemli
     late UserAccounts currentUserAccount;
     if (widget.currentUserAccounts != null) {
       currentUserAccount = widget.currentUserAccounts!;
-    } else if (arguments != null) {
-      if (arguments['currentUser'] != null) {
-        UserAccounts aa = arguments['currentUser'];
-        currentUserAccount = aa;
-      } else {
-        throw ("currentUser Girilmemiş");
-      }
+    } else {
+      currentUserAccount =
+          findCurrentAccountController.currentUserAccounts.value;
     }
+
     //Mevcut Oturum Kullanıcısı Kontrolü Çok Önemli
 
     final currentAccountController = Get.find<PagesController>(
-      tag: currentUserAccount.user.userID.toString(),
+      tag: currentUserAccount.user.value.userID.toString(),
     );
-    log("***profile**${currentAccountController.currentUserAccounts.user.displayName}");
+    log("***profile**${currentAccountController.currentUserAccounts.user.value.displayName}");
 
     /////
     String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
@@ -59,7 +60,7 @@ class _ProfilePageState extends State<ProfileView>
 
     final controller = Get.put(
       ProfileController(
-        currentUserAccounts: currentAccountController.currentUserAccounts,
+        // currentUserAccounts: currentAccountController.currentUserAccounts.obs,
         scrollController: widget.profileScrollController,
       ),
       tag: uniqueTag,
@@ -106,8 +107,8 @@ class _ProfilePageState extends State<ProfileView>
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => MediaViewer(
-                          currentUser:
-                              currentAccountController.currentUserAccounts.user,
+                          currentUser: currentAccountController
+                              .currentUserAccounts.user.value,
                           media: [controller.userProfile.value.banner!],
                           initialIndex: 0,
                         ),

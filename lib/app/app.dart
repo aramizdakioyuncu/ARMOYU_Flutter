@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       translationsKeys: AppTranslation.translationKeys,
       // locale: Get.deviceLocale,
       locale: const Locale('en', 'US'),
-      fallbackLocale: const Locale('tr', 'TR'),
+      fallbackLocale: const Locale('en', 'US'),
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,
       navigatorKey: AppCore.navigatorKey,

@@ -6,6 +6,7 @@ import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:crypto/crypto.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/app/Services/API/api_service.dart';
 import 'package:ARMOYU/app/Services/Utility/onesignal.dart';
@@ -54,14 +55,14 @@ class FunctionService {
 
     userdetail.password = password;
 
-    int isUserAccountHas = ARMOYU.appUsers
-        .indexWhere((element) => element.user.userID == userdetail.userID);
+    int isUserAccountHas = ARMOYU.appUsers.indexWhere(
+        (element) => element.user.value.userID == userdetail.userID);
 
     if (isUserAccountHas != -1) {
       log("Zaten Kullanıcı Oturum Açmış!");
       return response;
     }
-    ARMOYU.appUsers.add(UserAccounts(user: userdetail));
+    ARMOYU.appUsers.add(UserAccounts(user: userdetail.obs));
 
     // Kullanıcı listesini SharedPreferences'e kaydetme
     List<String> usersJson =
@@ -112,8 +113,8 @@ class FunctionService {
     Map<String, dynamic> oyuncubilgi = response["icerik"];
 
     UserAccounts userdetail =
-        UserAccounts(user: ARMOYUFunctions.userfetch(oyuncubilgi));
-    userdetail.user.password = password;
+        UserAccounts(user: ARMOYUFunctions.userfetch(oyuncubilgi).obs);
+    userdetail.user.value.password = password;
 
     //İlk defa giriş yapılıyorsa
     if (ARMOYU.appUsers.isEmpty) {
@@ -128,7 +129,7 @@ class FunctionService {
     prefs.setStringList('users', usersJson);
     //
 
-    userdetail.updateUser(targetUser: ARMOYU.appUsers.first.user);
+    userdetail.updateUser(targetUser: ARMOYU.appUsers.first.user.value);
 
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");
@@ -174,7 +175,8 @@ class FunctionService {
 
   Future<Map<String, dynamic>> logOut(int userID) async {
     //Oturumunu Kapat
-    ARMOYU.appUsers.removeWhere((element) => element.user.userID == userID);
+    ARMOYU.appUsers
+        .removeWhere((element) => element.user.value.userID == userID);
     //Oturumunu Kapat Bitiş
 
     // Kullanıcı listesini SharedPreferences'e kaydetme

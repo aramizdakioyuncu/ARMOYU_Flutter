@@ -34,7 +34,7 @@ class SurveyNewPage extends StatelessWidget {
               Obx(
                 () => Media.mediaList(
                   controller.media,
-                  currentUser: currentUserAccounts.user,
+                  currentUser: currentUserAccounts.user.value,
                 ),
               ),
               const Text("Anket Sorusu"),
@@ -224,7 +224,7 @@ class SurveyNewPage extends StatelessWidget {
                   text: "Oluştur",
                   onPressed: () async {
                     FunctionsSurvey f = FunctionsSurvey(
-                      currentUser: currentUserAccounts.user,
+                      currentUser: currentUserAccounts.user.value,
                     );
 
                     if (controller.surveyDate.value == null) {

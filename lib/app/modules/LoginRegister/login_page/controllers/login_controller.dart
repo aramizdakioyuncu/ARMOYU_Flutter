@@ -3,9 +3,11 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,24 +20,33 @@ class LoginPageController extends GetxController {
   late var user = Rxn<User>();
 
   late var accountAdd = false.obs;
-  late var logOut = Rxn<User?>();
   late var currentUser = Rxn<User>();
-
+  late AccountUserController accountController;
   @override
   void onInit() {
     super.onInit();
 
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    currentUser.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
+    accountController = findCurrentAccountController;
+
+    ///
     final Map<String, dynamic> arguments =
         Get.arguments as Map<String, dynamic>;
 
     if (arguments['accountAdd'] != null) {
       accountAdd.value = arguments['accountAdd'] as bool;
     }
-    logOut.value = arguments['logOut'] as User?;
-    currentUser.value = arguments['currentUser'] as User;
+    var logOut = Rx<User?>(null);
+
+    logOut.value = (arguments['logOut']);
 
     if (logOut.value != null) {
-      logOutFunction();
+      logOutFunction(logOut.value!);
     }
 
     if (accountAdd.value) {
@@ -44,9 +55,9 @@ class LoginPageController extends GetxController {
     }
   }
 
-  Future<void> logOutFunction() async {
+  Future<void> logOutFunction(User loggoutAccount) async {
     FunctionService f = FunctionService(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.logOut(logOut.value!.userID!);
+    Map<String, dynamic> response = await f.logOut(loggoutAccount.userID!);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -90,6 +101,7 @@ class LoginPageController extends GetxController {
       loginProcess.value = false;
 
       Get.delete<AppPageController>();
+
       Get.offAndToNamed("/app", arguments: {});
 
       // Get.back();
@@ -119,6 +131,8 @@ class LoginPageController extends GetxController {
     passwordController.value.text = "";
 
     loginProcess.value = false;
+
+    accountController.changeUser(UserAccounts(user: newUser.obs));
 
     Get.off(() => const AppPageView(), arguments: {
       'currentUserAccounts': ARMOYU.appUsers,

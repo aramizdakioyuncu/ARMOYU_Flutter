@@ -1,7 +1,7 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/login_page/controllers/login_controller.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/register_page/views/register_view.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -33,89 +33,106 @@ class LoginpageView extends StatelessWidget {
                 width: 150,
               ),
             ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 20.0),
             CustomTextfields.costum3(
-              title: "Kullanıcı Adı / E-posta",
+              title: LoginKeys.loginKeysUsernameoremail.tr,
               controller: controller.usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
               type: TextInputType.emailAddress,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             CustomTextfields.costum3(
-              title: "Şifreniz",
+              title: LoginKeys.loginKeysPassword.tr,
               controller: controller.passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
-            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      Get.toNamed("/register");
+                    },
+                    child: CustomText.costum1(
+                      LoginKeys.loginKeysHaveyougotaccount.tr,
+                    ),
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () {
+                        Get.toNamed("/ressetpassword");
+                      },
+                      child: CustomText.costum1(
+                        LoginKeys.loginKeysForgotmypassword.tr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             Obx(
               () => CustomButtons.costum1(
-                text: "Giriş Yap",
+                text: LoginKeys.loginKeysLogin.tr,
                 onPressed: () async => await controller.login(
                   currentUser: controller.currentUser.value!,
                 ),
                 loadingStatus: controller.loginProcess,
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            InkWell(
-              onTap: () {
-                Get.toNamed("/ressetpassword");
-              },
-              child: CustomText.costum1("Şifremi Unuttum"),
-            ),
-            IconButton(
-              icon: const Icon(Icons.nightlight), // Sağdaki butonun ikonu
-              onPressed: () {
-                Get.changeThemeMode(
-                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
-                );
-              },
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomText.costum1("Hesabınız yok mu?"),
-                SizedBox(
-                  width: ARMOYU.screenWidth / 40,
-                ),
-                InkWell(
-                  onTap: () {
-                    Get.to(() => const RegisterpageView());
-                  },
-                  child: CustomText.costum1(
-                    "Kayıt Ol",
-                    size: 16,
-                    weight: FontWeight.bold,
-                  ),
-                )
-              ],
-            ),
+            const SizedBox(height: 20),
             Padding(
-              padding: const EdgeInsets.only(top: 15),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  InkWell(
+                    onTap: () async {
+                      if (ARMOYU.securityDetail == "0") {
+                        FunctionService f = FunctionService(
+                          currentUser: controller.currentUser.value!,
+                        );
+                        Map<String, dynamic> response = await f.getappdetail();
+
+                        if (response["durum"] == 0) {
+                          return;
+                        }
+                        ARMOYU.securityDetail = response["aciklamadetay"]
+                            ["projegizliliksozlesmesi"];
+                      }
+
+                      Get.to(
+                        () => TextPage(
+                          texttitle: "Güvenlik Politikası",
+                          textcontent: ARMOYU.securityDetail,
+                        ),
+                      );
+                    },
+                    child: CustomText.costum1(
+                        LoginKeys.loginKeysPrivacyPolicy.tr,
+                        size: 16,
+                        weight: FontWeight.bold),
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomText.costum1("Devam ederek"),
                       InkWell(
                         onTap: () async {
                           if (ARMOYU.securityDetail == "0") {
                             FunctionService f = FunctionService(
-                              currentUser: controller.currentUser.value!,
-                            );
+                                currentUser: controller.currentUser.value!);
                             Map<String, dynamic> response =
                                 await f.getappdetail();
 
                             if (response["durum"] == 0) {
                               return;
                             }
-                            ARMOYU.securityDetail = response["aciklamadetay"]
-                                ["projegizliliksozlesmesi"];
+                            ARMOYU.securityDetail =
+                                response["projegizliliksozlesmesi"];
                           }
 
                           Get.to(
@@ -125,48 +142,29 @@ class LoginpageView extends StatelessWidget {
                             ),
                           );
                         },
-                        child: CustomText.costum1(" Gizlilik Politikasını",
-                            size: 16, weight: FontWeight.bold),
+                        child: CustomText.costum1(
+                          LoginKeys.loginKeysTermsAndConditions.tr,
+                          size: 16,
+                          weight: FontWeight.bold,
+                        ),
                       ),
-                      CustomText.costum1(" ve"),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () async {
-                    if (ARMOYU.securityDetail == "0") {
-                      FunctionService f = FunctionService(
-                          currentUser: controller.currentUser.value!);
-                      Map<String, dynamic> response = await f.getappdetail();
-
-                      if (response["durum"] == 0) {
-                        return;
-                      }
-                      ARMOYU.securityDetail =
-                          response["projegizliliksozlesmesi"];
-                    }
-
-                    Get.to(
-                      () => TextPage(
-                        texttitle: "Güvenlik Politikası",
-                        textcontent: ARMOYU.securityDetail,
-                      ),
-                    );
-                  },
-                  child: CustomText.costum1(
-                    "Hizmet Şartlarımızı/Kullanıcı Politikamızı ",
-                    size: 16,
-                    weight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            CustomText.costum1(
+              LoginKeys.loginKeysacceptanceMessage.tr,
+              align: TextAlign.center,
             ),
-            CustomText.costum1("kabul etmiş olursunuz."),
+            IconButton(
+              icon: const Icon(Icons.nightlight), // Sağdaki butonun ikonu
+              onPressed: () {
+                Get.changeThemeMode(
+                  Get.isDarkMode ? ThemeMode.light : ThemeMode.dark,
+                );
+              },
+            ),
           ],
         ),
       ),

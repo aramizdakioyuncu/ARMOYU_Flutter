@@ -52,7 +52,7 @@ class EventPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MediaViewer(
-                        currentUser: currentUserAccounts.user,
+                        currentUser: currentUserAccounts.user.value,
                         media: [
                           Media(
                             mediaID: 0,
@@ -122,7 +122,7 @@ class EventPage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MediaViewer(
-                                currentUser: currentUserAccounts.user,
+                                currentUser: currentUserAccounts.user.value,
                                 media: [
                                   Media(
                                     mediaID: 0,

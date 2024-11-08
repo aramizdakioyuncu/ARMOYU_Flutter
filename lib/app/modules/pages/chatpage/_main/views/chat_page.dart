@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/_main/controllers/chat_page_controller.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/views/chat_new_page.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,16 +19,21 @@ class ChatPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Controller Çek
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+
     final currentAccountController = Get.find<PagesController>(
-      tag: currentUserAccounts.user.userID.toString(),
+      tag: findCurrentAccountController
+          .currentUserAccounts.value.user.value.userID
+          .toString(),
     );
-    log("***-**${currentAccountController.currentUserAccounts.user.displayName}");
 
     final controller = Get.put(
       ChatPageController(
         currentUserAccounts: currentUserAccounts,
       ),
-      tag: currentUserAccounts.user.userID.toString(),
+      tag: currentUserAccounts.user.value.userID.toString(),
     );
 
     return Scaffold(
@@ -93,7 +99,7 @@ class ChatPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag:
-            "NewChatButton${currentAccountController.currentUserAccounts.user.userID}",
+            "NewChatButton${currentAccountController.currentUserAccounts.user.value.userID}",
         onPressed: () {
           Navigator.push(
             context,

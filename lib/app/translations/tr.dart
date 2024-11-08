@@ -20,6 +20,29 @@ Map<String, String> tr = {
   SettingsKeys.logOut: 'Çıkış Yap',
   SettingsKeys.version: 'Versiyon',
 
+  //Drawer
+  DrawerKeys.drawerMeeting: 'Toplantı',
+  DrawerKeys.drawerNews: 'Haberler',
+  DrawerKeys.drawerMyGroups: 'Gruplarım',
+  DrawerKeys.drawerMySchools: 'Okullarım',
+  DrawerKeys.drawerFood: 'Yemek',
+  DrawerKeys.drawerGames: 'Oyun',
+  DrawerKeys.drawerEvents: 'Etkinlikler',
+  DrawerKeys.drawerPolls: 'Anketler',
+  DrawerKeys.drawerInvite: 'Davet Et',
+  DrawerKeys.drawerJoinUs: 'Bize Katıl',
+  DrawerKeys.drawerSettings: 'Ayarlar',
+
+  //Login
+  LoginKeys.loginKeysUsernameoremail: 'Kullanıcı Adı veya E-posta',
+  LoginKeys.loginKeysPassword: 'Şifre',
+  LoginKeys.loginKeysLogin: 'Giriş Yap',
+  LoginKeys.loginKeysForgotmypassword: 'Şifremi Unuttum',
+  LoginKeys.loginKeysSignup: 'Kayıt Ol',
+  LoginKeys.loginKeysHaveyougotaccount: 'Hesabınız var mı?',
+  LoginKeys.loginKeysPrivacyPolicy: 'Gizlilik Politikası',
+  LoginKeys.loginKeysTermsAndConditions: 'Hizmet Şartları/Kullanıcı Politikası',
+  LoginKeys.loginKeysacceptanceMessage: 'nı kabul etmiş olursunuz.',
   // BlockedListKeys
   BlockedListKeys.noBlockedAccounts: 'Engellenen hesap yok',
   BlockedListKeys.unblock: 'Engel kaldır',
@@ -32,6 +55,7 @@ Map<String, String> tr = {
   DevicePermissionKeys.deviceNotifications: 'Bildirimler',
   DevicePermissionKeys.deviceGranted: 'İzin Verildi',
   DevicePermissionKeys.deviceDenied: 'İzin Verilmedi',
+  DevicePermissionKeys.devicePermanentlyDenied: 'Kalıcı olarak izin verilmedi',
 
   //Data Saver
   DataSaverKeys.useLessCellularData: 'Daha az hücresel veri kullan',

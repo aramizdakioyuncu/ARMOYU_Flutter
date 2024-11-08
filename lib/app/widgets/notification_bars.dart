@@ -1,5 +1,3 @@
-// ignore_for_file: must_be_immutable
-
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/widgets.dart';
@@ -7,7 +5,6 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Social/detail_post_page/views/postdetail_page.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +16,7 @@ import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:get/get.dart';
 import 'detectabletext.dart';
 
+// ignore: must_be_immutable
 class CustomMenusNotificationbars extends StatefulWidget {
   final UserAccounts currentUserAccounts;
   final User user;
@@ -76,25 +74,31 @@ class _CustomMenusNotificationbarsState
                 log(widget.categorydetailID.toString());
 
                 if (widget.categorydetail == "post") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PostDetailPage(
-                        currentUserAccounts: widget.currentUserAccounts,
-                        postID: widget.categorydetailID,
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => PostdetailView(
+                  //       postID: widget.categorydetailID,
+                  //     ),
+                  //   ),
+                  // );
+
+                  Get.toNamed("/social/detail", arguments: {
+                    "postID": widget.categorydetailID,
+                  });
                 } else if (widget.categorydetail == "postyorum") {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PostDetailPage(
-                        currentUserAccounts: widget.currentUserAccounts,
-                        commentID: widget.categorydetailID,
-                      ),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => PostdetailView(
+                  //       commentID: widget.categorydetailID,
+                  //     ),
+                  //   ),
+                  // );
+
+                  Get.toNamed("/social/detail", arguments: {
+                    "commentID": widget.categorydetailID,
+                  });
                 } else if (widget.category == "gruplar") {
                   Get.toNamed("/group/detail", arguments: {
                     'user': widget.currentUserAccounts.user,
@@ -185,8 +189,8 @@ class _CustomMenusNotificationbarsState
 
                                     if (widget.categorydetail == "istek") {
                                       FunctionsProfile f = FunctionsProfile(
-                                        currentUser:
-                                            widget.currentUserAccounts.user,
+                                        currentUser: widget
+                                            .currentUserAccounts.user.value,
                                       );
                                       Map<String, dynamic> response =
                                           await f.friendrequestanswer(
@@ -210,8 +214,8 @@ class _CustomMenusNotificationbarsState
                                       setstatefunction();
 
                                       FunctionsGroup f = FunctionsGroup(
-                                        currentUser:
-                                            widget.currentUserAccounts.user,
+                                        currentUser: widget
+                                            .currentUserAccounts.user.value,
                                       );
                                       Map<String, dynamic> response =
                                           await f.grouprequestanswer(
@@ -243,8 +247,8 @@ class _CustomMenusNotificationbarsState
                                       setstatefunction();
 
                                       FunctionsProfile f = FunctionsProfile(
-                                        currentUser:
-                                            widget.currentUserAccounts.user,
+                                        currentUser: widget
+                                            .currentUserAccounts.user.value,
                                       );
                                       Map<String, dynamic> response =
                                           await f.friendrequestanswer(
@@ -267,8 +271,8 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
                                       FunctionsGroup f = FunctionsGroup(
-                                        currentUser:
-                                            widget.currentUserAccounts.user,
+                                        currentUser: widget
+                                            .currentUserAccounts.user.value,
                                       );
                                       Map<String, dynamic> response =
                                           await f.grouprequestanswer(

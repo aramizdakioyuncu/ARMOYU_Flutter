@@ -65,8 +65,9 @@ class _CustomCardsState extends State<CustomCards> {
     }
     morefetchProcces = true;
     setstatefunction();
-    FunctionService f =
-        FunctionService(currentUser: widget.currentUserAccounts.user);
+    FunctionService f = FunctionService(
+      currentUser: widget.currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = {};
 
     if (widget.title == "POP") {

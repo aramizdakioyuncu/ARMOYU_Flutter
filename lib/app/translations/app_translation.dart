@@ -8,6 +8,32 @@ abstract class AppTranslation {
   };
 }
 
+class DrawerKeys {
+  static const drawerMeeting = 'drawer_meeting';
+  static const drawerNews = 'drawer_news';
+  static const drawerMyGroups = 'drawer_my_groups';
+  static const drawerMySchools = 'drawer_my_schools';
+  static const drawerFood = 'drawer_food';
+  static const drawerGames = 'drawer_games';
+  static const drawerEvents = 'drawer_events';
+  static const drawerPolls = 'drawer_polls';
+  static const drawerInvite = 'drawer_invite';
+  static const drawerJoinUs = 'drawer_join_us';
+  static const drawerSettings = 'drawer_settings';
+}
+
+class LoginKeys {
+  static const loginKeysUsernameoremail = 'loginkeys_username_or_email';
+  static const loginKeysPassword = 'loginkeys_password';
+  static const loginKeysLogin = 'loginkeys_login';
+  static const loginKeysForgotmypassword = 'loginkeys_forgot_my_password';
+  static const loginKeysSignup = 'loginkeys_sign_up';
+  static const loginKeysHaveyougotaccount = 'loginkeys_have_you_got_account';
+  static const loginKeysPrivacyPolicy = 'loginkeys_privacy_policy';
+  static const loginKeysTermsAndConditions = 'loginkeys_terms_and_conditions';
+  static const loginKeysacceptanceMessage = 'acceptance_message';
+}
+
 class SettingsKeys {
   //Settings
   static const currentLanguage = 'current_language';
@@ -44,6 +70,7 @@ class DevicePermissionKeys {
   static const deviceNotifications = 'device_notifications';
   static const deviceGranted = 'device_granted';
   static const deviceDenied = 'device_denied';
+  static const devicePermanentlyDenied = 'device_permanently_denied';
 }
 
 class DataSaverKeys {

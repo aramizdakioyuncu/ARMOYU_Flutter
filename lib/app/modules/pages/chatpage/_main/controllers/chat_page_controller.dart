@@ -32,7 +32,8 @@ class ChatPageController extends GetxController {
     chatcontroller.value.addListener(() {
       String newText = chatcontroller.value.text.toLowerCase();
       // Filtreleme işlemi
-      filteredItems.value = currentUserAccounts.user.chatlist!.where((item) {
+      filteredItems.value =
+          currentUserAccounts.user.value.chatlist!.where((item) {
         return item.user.displayName!.toLowerCase().contains(newText);
       }).toList();
     });
@@ -57,26 +58,29 @@ class ChatPageController extends GetxController {
 
     if (fetchRestart) {
       chatPage.value = 1;
-      currentUserAccounts.user.chatlist = [];
+      currentUserAccounts.user.value.chatlist = [];
     }
 
     if (chatPage.value == 1 && !fetchRestart) {
-      if (currentUserAccounts.user.chatlist != null) {
-        filteredItems.value = currentUserAccounts.user.chatlist!;
+      if (currentUserAccounts.user.value.chatlist != null) {
+        filteredItems.value = currentUserAccounts.user.value.chatlist!;
 
         int pageCount =
-            (currentUserAccounts.user.widgetStoriescard!.length / 30).ceil();
+            (currentUserAccounts.user.value.widgetStoriescard!.length / 30)
+                .ceil();
         log(pageCount.toString());
 
         chatPage.value = pageCount;
         chatPage++;
       } else {
-        currentUserAccounts.user.chatlist = [];
+        currentUserAccounts.user.value.chatlist = [];
       }
     }
 
     chatsearchprocess.value = true;
-    FunctionService f = FunctionService(currentUser: currentUserAccounts.user);
+    FunctionService f = FunctionService(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await f.getchats(chatPage.value);
     if (response["durum"] == 0) {
       chatsearchprocess.value = false;
@@ -106,7 +110,7 @@ class ChatPageController extends GetxController {
         notification = true;
       }
 
-      currentUserAccounts.user.chatlist!.add(
+      currentUserAccounts.user.value.chatlist!.add(
         Chat(
           chatID: 1,
           user: User(
@@ -131,7 +135,7 @@ class ChatPageController extends GetxController {
             messageContext: sonmesaj,
             messageID: 1,
             isMe: response["icerik"][i]["kullid"] ==
-                    currentUserAccounts.user.userID
+                    currentUserAccounts.user.value.userID
                 ? true
                 : false,
           ),
@@ -141,7 +145,7 @@ class ChatPageController extends GetxController {
       );
     }
 
-    filteredItems.value = currentUserAccounts.user.chatlist!;
+    filteredItems.value = currentUserAccounts.user.value.chatlist!;
 
     chatsearchprocess.value = false;
     isFirstFetch.value = false;

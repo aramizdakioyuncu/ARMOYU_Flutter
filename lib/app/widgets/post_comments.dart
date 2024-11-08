@@ -141,7 +141,8 @@ class _WidgetPostComments extends State<WidgetPostComments> {
             GestureDetector(
               onTap: () async {
                 await likeunlikefunction(
-                    currentUser: widget.currentUserAccounts.user);
+                  currentUser: widget.currentUserAccounts.user.value,
+                );
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -154,7 +155,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
               ),
             ),
             Visibility(
-              visible: widget.currentUserAccounts.user.userID ==
+              visible: widget.currentUserAccounts.user.value.userID ==
                   widget.comment.user.userID,
               child: IconButton(
                 onPressed: () async => ARMOYUWidget.showConfirmationDialog(

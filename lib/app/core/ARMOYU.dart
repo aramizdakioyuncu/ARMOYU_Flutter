@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ARMOYU {
   static String appName = "";
@@ -40,7 +41,7 @@ class ARMOYU {
 
   static List<CameraDescription>? cameras;
 
-  static List<UserAccounts> appUsers = [];
+  static var appUsers = <UserAccounts>[].obs;
 
   //Ülkeler ve Şehirler
   static List<Country> countryList = [];

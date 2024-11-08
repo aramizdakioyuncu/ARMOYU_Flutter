@@ -2,7 +2,6 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'package:ARMOYU/app/Core/AppCore.dart';
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
@@ -10,8 +9,6 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/Events/event_page/views/event_page.dart';
-import 'package:ARMOYU/app/modules/Social/detail_post_page/views/postdetail_page.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -63,12 +60,12 @@ class OneSignalApi {
 
     OneSignal.Notifications.requestPermission(true);
 
-    OneSignal.login(currentUserAccounts.user.userName!);
+    OneSignal.login(currentUserAccounts.user.value.userName!);
     OneSignal.User.setLanguage("tr");
     Map<String, dynamic> tags = {
-      "ID": currentUserAccounts.user.userID,
-      "Role": currentUserAccounts.user.role!.name.toString(),
-      "username": currentUserAccounts.user.userName,
+      "ID": currentUserAccounts.user.value.userID,
+      "Role": currentUserAccounts.user.value.role!.name.toString(),
+      "username": currentUserAccounts.user.value.userName,
     };
     OneSignal.User.addTags(tags);
 
@@ -162,15 +159,13 @@ class OneSignalApi {
             userID = element["userID"];
           }
 
-          AppCore.navigatorKey.currentState?.push(
-            MaterialPageRoute(
-              builder: (context) => PostDetailPage(
-                currentUserAccounts:
-                    UserAccounts(user: User(userName: "", password: "")),
-                postID: 11,
-              ),
-            ),
-          );
+          // AppCore.navigatorKey.currentState?.push(
+          //   MaterialPageRoute(
+          //     builder: (context) => PostdetailView(),
+          //   ),
+          // );
+
+          Get.toNamed("/social/detail", arguments: {"postID": 11});
         } else if (responseData["category"].toString() == "event") {
           for (Map<String, dynamic> element in responseData["content"]) {
             avatar = element["avatar"];
@@ -193,7 +188,7 @@ class OneSignalApi {
           Get.to(
             EventPage(
               currentUserAccounts:
-                  UserAccounts(user: User(userID: int.parse(userID))),
+                  UserAccounts(user: User(userID: int.parse(userID)).obs),
             ),
             arguments: {
               "event": Event(

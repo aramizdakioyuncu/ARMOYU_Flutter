@@ -9,7 +9,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/Utility/noconnectionpage/views/noconnection_view.dart';
-import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/get.dart';
@@ -59,14 +59,6 @@ class StartingpageController extends GetxController {
   Future<bool> checkInternetConnectionv2() async {
     // İnternet var mı diye kontrol ediyoruz!
     if (!await AppCore.checkInternetConnection()) {
-      // if (mounted) {
-      //   Navigator.pushReplacement(
-      //     context,
-      //     MaterialPageRoute(
-      //       builder: (context) => const NoConnectionPage(),
-      //     ),
-      //   );
-      // }
       Get.to(() => const NoConnectionpageView());
 
       return false;
@@ -75,6 +67,10 @@ class StartingpageController extends GetxController {
   }
 
   Future<void> staringfunctions() async {
+    // Aktif Kullanıcı Controller
+    final accountController = Get.put(AccountUserController(), permanent: true);
+    // Aktif Kullanıcı Controller
+
     //Platform kontrolü yapıyoruz
     getPlatform();
 
@@ -99,7 +95,7 @@ class StartingpageController extends GetxController {
     //Bellekteki kullanıcı adı ve şifreyi alıyoruz
     final prefs = await SharedPreferences.getInstance();
 
-// Kullanıcı listesini SharedPreferences'den yükleme
+    // Kullanıcı listesini SharedPreferences'den yükleme
     List<String>? usersJson = prefs.getStringList('users');
 
     String? username;
@@ -107,7 +103,7 @@ class StartingpageController extends GetxController {
 
     //Listeye Yükle
     try {
-      ARMOYU.appUsers = usersJson!
+      ARMOYU.appUsers.value = usersJson!
           .map((userJson) => UserAccounts.fromJson(jsonDecode(userJson)))
           .toList();
     } catch (e) {
@@ -115,8 +111,8 @@ class StartingpageController extends GetxController {
     }
 
     if (ARMOYU.appUsers.isNotEmpty) {
-      username = ARMOYU.appUsers.first.user.userName;
-      password = ARMOYU.appUsers.first.user.password;
+      username = ARMOYU.appUsers.first.user.value.userName;
+      password = ARMOYU.appUsers.first.user.value.password;
 
       log("Açık Kullanıcı Hesabı : ${usersJson!.length}");
 
@@ -124,14 +120,14 @@ class StartingpageController extends GetxController {
       for (UserAccounts userInfo in ARMOYU.appUsers) {
         sirasay++;
 
-        log("$sirasay. Ad: ${userInfo.user.displayName}");
-        if (userInfo.user.myFriends == null) {
+        log("$sirasay. Ad: ${userInfo.user.value.displayName}");
+        if (userInfo.user.value.myFriends == null) {
           continue;
         }
-        log("->Arkadaş sayısı: ${userInfo.user.myFriends!.length.toString()}");
+        log("->Arkadaş sayısı: ${userInfo.user.value.myFriends!.length.toString()}");
         int sirasay2 = 0;
 
-        for (User friendslist in userInfo.user.myFriends!) {
+        for (User friendslist in userInfo.user.value.myFriends!) {
           sirasay2++;
 
           log("-->$sirasay2. Ad: ${friendslist.displayName} Son Giriş: ${friendslist.lastloginv2}");
@@ -179,15 +175,7 @@ class StartingpageController extends GetxController {
         return;
       }
 
-      // User newUser = User.fromJson(response["icerik"]);
-
-      if (ARMOYU.appUsers.isNotEmpty) {
-        // ARMOYU.appUsers.first.user = newUser;
-      }
-
-      // Get.to(() => const AppPageView(), arguments: {
-      // });
-
+      accountController.changeUser(ARMOYU.appUsers.first);
       Get.offNamed("/app");
 
       return;
@@ -200,8 +188,9 @@ class StartingpageController extends GetxController {
       }
 
       //internet yok ama önceden giriş yapılmış verileri var
+      accountController.changeUser(ARMOYU.appUsers.first);
 
-      Get.to(() => const AppPageView(), arguments: {
+      Get.toNamed("/app", arguments: {
         'currentUserAccounts': ARMOYU.appUsers,
         'userID': 1,
       });

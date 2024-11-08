@@ -61,7 +61,7 @@ class _ChatPageState extends State<SurveyListPage>
 
     _surveyListProcces = true;
     ClientFunctionSurvey function = ClientFunctionSurvey(
-      currentUser: widget.currentUserAccounts.user,
+      currentUser: widget.currentUserAccounts.user.value,
     );
     List<Survey>? response = await function.fetchsurvey(page: _surveyCounter);
 

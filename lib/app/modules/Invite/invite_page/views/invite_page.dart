@@ -68,7 +68,7 @@ class _EventStatePage extends State<InvitePage>
 
   Future<void> sendmailURL(int userID) async {
     FunctionsProfile f =
-        FunctionsProfile(currentUser: widget.currentUserAccounts.user);
+        FunctionsProfile(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response = await f.sendauthmailURL(userID);
     log(response["durum"].toString());
     if (response["durum"] == 0) {
@@ -93,7 +93,7 @@ class _EventStatePage extends State<InvitePage>
       invitelist.clear();
     }
     FunctionsProfile f =
-        FunctionsProfile(currentUser: widget.currentUserAccounts.user);
+        FunctionsProfile(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response = await f.invitelist(invitePage);
 
     if (response["durum"] == 0) {
@@ -240,7 +240,7 @@ class _EventStatePage extends State<InvitePage>
 
     Future<void> refreshInviteCode() async {
       FunctionsProfile f =
-          FunctionsProfile(currentUser: widget.currentUserAccounts.user);
+          FunctionsProfile(currentUser: widget.currentUserAccounts.user.value);
       Map<String, dynamic> response = await f.invitecoderefresh();
 
       if (response["durum"] == 0) {
@@ -248,7 +248,7 @@ class _EventStatePage extends State<InvitePage>
         return;
       }
 
-      widget.currentUserAccounts.user.invitecode =
+      widget.currentUserAccounts.user.value.invitecode =
           Rx<String>(response["aciklamadetay"]);
     }
 
@@ -300,7 +300,7 @@ class _EventStatePage extends State<InvitePage>
                               child: CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 foregroundImage: CachedNetworkImageProvider(
-                                  widget.currentUserAccounts.user.avatar!
+                                  widget.currentUserAccounts.user.value.avatar!
                                       .mediaURL.normalURL.value,
                                 ),
                                 radius: 25,
@@ -337,7 +337,7 @@ class _EventStatePage extends State<InvitePage>
                                       Clipboard.setData(
                                         ClipboardData(
                                           text: widget.currentUserAccounts.user
-                                              .invitecode!.value
+                                              .value.invitecode!.value
                                               .toString(),
                                         ),
                                       );
@@ -350,7 +350,7 @@ class _EventStatePage extends State<InvitePage>
                                         Obx(
                                           () => Text(
                                             widget.currentUserAccounts.user
-                                                .invitecode!.value,
+                                                .value.invitecode!.value,
                                             style: const TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,

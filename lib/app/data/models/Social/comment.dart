@@ -144,7 +144,7 @@ class Comment {
                 likeCount: likeCount,
                 onTap: (isLiked) async => await postLike(
                     isLiked, setstatefunction,
-                    currentUser: currentUserAccounts.user),
+                    currentUser: currentUserAccounts.user.value),
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     isLiked ? Icons.favorite : Icons.favorite_outline,

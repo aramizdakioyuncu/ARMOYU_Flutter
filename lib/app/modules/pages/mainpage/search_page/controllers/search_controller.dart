@@ -67,7 +67,9 @@ class SearchPageController extends GetxController {
       return;
     }
     eventlistProcces.value = true;
-    FunctionsNews f = FunctionsNews(currentUser: currentUserAccounts.user);
+    FunctionsNews f = FunctionsNews(
+      currentUser: currentUserAccounts.user.value,
+    );
     Map<String, dynamic> response = await f.fetch(1);
     if (response["durum"] == 0) {
       ARMOYUWidget.toastNotification(response["aciklama"].toString());
@@ -137,8 +139,9 @@ class SearchPageController extends GetxController {
       if (text != controller.text) {
         return;
       }
-      FunctionsSearchEngine f =
-          FunctionsSearchEngine(currentUser: currentUserAccounts.user);
+      FunctionsSearchEngine f = FunctionsSearchEngine(
+        currentUser: currentUserAccounts.user.value,
+      );
       Map<String, dynamic> response = await f.searchengine(text, 1);
       if (response["durum"] == 0) {
         log(response["aciklama"]);

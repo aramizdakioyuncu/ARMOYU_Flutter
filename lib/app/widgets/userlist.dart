@@ -45,7 +45,7 @@ class _UserListWidgetState extends State<UserListWidget> {
 
   Future<void> friendrequest() async {
     FunctionsProfile f =
-        FunctionsProfile(currentUser: widget.currentUserAccounts.user);
+        FunctionsProfile(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response = await f.friendrequest(widget.userID);
 
     if (response["durum"] == 0) {
@@ -62,7 +62,7 @@ class _UserListWidgetState extends State<UserListWidget> {
 
   Future<void> removefriend() async {
     FunctionsProfile f =
-        FunctionsProfile(currentUser: widget.currentUserAccounts.user);
+        FunctionsProfile(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response = await f.friendremove(widget.userID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -116,7 +116,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
         Visibility(
           visible: widget.isFriend &&
-              widget.userID != widget.currentUserAccounts.user.userID,
+              widget.userID != widget.currentUserAccounts.user.value.userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(
@@ -128,7 +128,7 @@ class _UserListWidgetState extends State<UserListWidget> {
         ),
         Visibility(
           visible: !widget.isFriend &&
-              widget.userID != widget.currentUserAccounts.user.userID,
+              widget.userID != widget.currentUserAccounts.user.value.userID,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomButtons.costum1(

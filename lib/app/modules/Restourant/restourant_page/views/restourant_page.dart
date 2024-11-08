@@ -31,7 +31,7 @@ class RestourantPageView extends StatelessWidget {
 
     final controller = Get.put(
       RestourantController(
-        currentUser: currentAccountController.currentUserAccount.user,
+        currentUser: currentAccountController.currentUserAccount.user.value,
       ),
     );
     return Scaffold(

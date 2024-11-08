@@ -12,6 +12,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/story.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/storycircle_skeleton.dart';
@@ -21,11 +22,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SocailPageController extends GetxController {
-  final UserAccounts currentUserAccounts;
   final ScrollController scrollController;
 
   SocailPageController({
-    required this.currentUserAccounts,
     required this.scrollController,
   });
 
@@ -44,12 +43,18 @@ class SocailPageController extends GetxController {
 
   var widgetStories = Rx<Widget?>(null);
 
+  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+
   @override
   void onInit() {
     super.onInit();
 
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    currentUserAccounts.value =
+        findCurrentAccountController.currentUserAccounts.value;
+
     final mainController = Get.find<MainPageController>(
-      tag: currentUserAccounts.user.userID.toString(),
+      tag: currentUserAccounts.value.user.value.userID.toString(),
     );
 
     _scrollController = mainController.homepageScrollControllerv2.value;
@@ -87,7 +92,7 @@ class SocailPageController extends GetxController {
     }
 
     if (fetchRestart) {
-      if (currentUserAccounts.user.widgetPosts != null) {
+      if (currentUserAccounts.value.user.value.widgetPosts != null) {
         widgetstoryUpdate();
       } else {
         loadSkeletonpost(story: true);
@@ -96,7 +101,9 @@ class SocailPageController extends GetxController {
 
     fetchStoryStatus.value = true;
 
-    FunctionsStory f = FunctionsStory(currentUser: currentUserAccounts.user);
+    FunctionsStory f = FunctionsStory(
+      currentUser: currentUserAccounts.value.user.value,
+    );
     Map<String, dynamic> response = await f.stories(storypage.value);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -106,14 +113,14 @@ class SocailPageController extends GetxController {
     }
 
     if (storypage.value == 1) {
-      currentUserAccounts.user.widgetStoriescard = [];
+      currentUserAccounts.value.user.value.widgetStoriescard = [];
       if (response["icerik"].length == 0) {
-        currentUserAccounts.user.widgetStoriescard!.add(
+        currentUserAccounts.value.user.value.widgetStoriescard!.add(
           StoryList(
             owner: User(
-              userID: currentUserAccounts.user.userID,
+              userID: currentUserAccounts.value.user.value.userID,
               userName: "Hikayen",
-              avatar: currentUserAccounts.user.avatar,
+              avatar: currentUserAccounts.value.user.value.avatar,
             ),
             story: null,
             isView: true,
@@ -128,13 +135,13 @@ class SocailPageController extends GetxController {
       if (storypage.value == 1) {
         if (i == 0) {
           if (response["icerik"][i]["oyuncu_ID"].toString() !=
-              currentUserAccounts.user.userID.toString()) {
-            currentUserAccounts.user.widgetStoriescard!.add(
+              currentUserAccounts.value.user.value.userID.toString()) {
+            currentUserAccounts.value.user.value.widgetStoriescard!.add(
               StoryList(
                 owner: User(
-                  userID: currentUserAccounts.user.userID,
+                  userID: currentUserAccounts.value.user.value.userID,
                   userName: "Hikayen",
-                  avatar: currentUserAccounts.user.avatar,
+                  avatar: currentUserAccounts.value.user.value.avatar,
                 ),
                 story: null,
                 isView: true,
@@ -172,7 +179,7 @@ class SocailPageController extends GetxController {
         viewstory = true;
       }
 
-      currentUserAccounts.user.widgetStoriescard!.add(
+      currentUserAccounts.value.user.value.widgetStoriescard!.add(
         StoryList(
           owner: User(
             userID: response["icerik"][i]["oyuncu_ID"],
@@ -203,8 +210,8 @@ class SocailPageController extends GetxController {
     if (fetchRestart) {
       postpage.value = 1;
 
-      if (currentUserAccounts.user.widgetPosts != null) {
-        widgetpostUpdate(currentUserAccounts.user.widgetPosts!);
+      if (currentUserAccounts.value.user.value.widgetPosts != null) {
+        widgetpostUpdate(currentUserAccounts.value.user.value.widgetPosts!);
       } else {
         loadSkeletonpost(posts: true);
       }
@@ -212,7 +219,8 @@ class SocailPageController extends GetxController {
 
     fetchPostStatus.value = true;
 
-    FunctionsPosts f = FunctionsPosts(currentUser: currentUserAccounts.user);
+    FunctionsPosts f =
+        FunctionsPosts(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await f.getPosts(postpage.value);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -223,7 +231,7 @@ class SocailPageController extends GetxController {
 
     if (postpage.value == 1) {
       widgetPosts.value = [];
-      currentUserAccounts.user.widgetPosts = [];
+      currentUserAccounts.value.user.value.widgetPosts = [];
     }
 
     List<Post> cachedPostlist = [];
@@ -338,7 +346,7 @@ class SocailPageController extends GetxController {
       );
 
       cachedPostlist.add(post);
-      currentUserAccounts.user.widgetPosts!.add(post);
+      currentUserAccounts.value.user.value.widgetPosts!.add(post);
     }
     widgetpostUpdate(cachedPostlist);
 
@@ -347,12 +355,12 @@ class SocailPageController extends GetxController {
   }
 
   void widgetstoryUpdate() {
-    if (currentUserAccounts.user.widgetStoriescard == null) {
+    if (currentUserAccounts.value.user.value.widgetStoriescard == null) {
       return;
     }
     widgetStories.value = WidgetStorycircle(
-      currentUser: currentUserAccounts.user,
-      content: currentUserAccounts.user.widgetStoriescard!,
+      currentUser: currentUserAccounts.value.user.value,
+      content: currentUserAccounts.value.user.value.widgetStoriescard!,
     );
   }
 
@@ -364,7 +372,7 @@ class SocailPageController extends GetxController {
       //Postu ekle
       widgetPosts.add(
         TwitterPostWidget(
-          currentUserAccounts: currentUserAccounts,
+          currentUserAccounts: currentUserAccounts.value,
           post: postsInfo,
         ),
       );
@@ -373,7 +381,7 @@ class SocailPageController extends GetxController {
       if (counter / 3 == 1 || counter / 12 == 1) {
         widgetPosts.add(
           ARMOYUWidget(
-            currentUserAccounts: currentUserAccounts,
+            currentUserAccounts: currentUserAccounts.value,
             scrollController: ScrollController(),
             content: listPOPCard,
             firstFetch: listPOPCard.isEmpty,
@@ -385,7 +393,7 @@ class SocailPageController extends GetxController {
       if (counter / 8 == 1 || counter / 17 == 1) {
         widgetPosts.add(
           ARMOYUWidget(
-            currentUserAccounts: currentUserAccounts,
+            currentUserAccounts: currentUserAccounts.value,
             scrollController: ScrollController(),
             content: listTPCard,
             firstFetch: listTPCard.isEmpty,
@@ -398,12 +406,12 @@ class SocailPageController extends GetxController {
   Future<void> loadSkeletonpost(
       {bool story = false, bool posts = false}) async {
     if (story) {
-      widgetStories.value =
-          SkeletonStorycircle(currentUser: currentUserAccounts.user, count: 11);
+      widgetStories.value = SkeletonStorycircle(
+          currentUser: currentUserAccounts.value.user.value, count: 11);
     }
 
     if (posts) {
-      currentUserAccounts.user.widgetPosts = [];
+      currentUserAccounts.value.user.value.widgetPosts = [];
       widgetPosts.value = [];
 
       widgetPosts.add(const SkeletonSocailPosts());

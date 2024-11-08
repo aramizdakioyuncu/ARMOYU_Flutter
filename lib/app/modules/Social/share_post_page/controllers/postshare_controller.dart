@@ -1,21 +1,32 @@
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 
 class PostshareController extends GetxController {
-  final User currentUser;
-  PostshareController({
-    required this.currentUser,
-  });
   var postsharetext = TextEditingController().obs;
   var media = <Media>[].obs;
   var postshareProccess = false.obs;
   var key = GlobalKey<FlutterMentionsState>().obs;
   var userLocation = Rx<String?>(null);
+
+  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    currentUserAccounts.value =
+        findCurrentAccountController.currentUserAccounts.value;
+    //* *//
+  }
 
   Future<void> sharePost() async {
     if (postshareProccess.value) {
@@ -23,8 +34,8 @@ class PostshareController extends GetxController {
     }
 
     postshareProccess.value = true;
-    setstatefunction();
-    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
+    FunctionsPosts funct =
+        FunctionsPosts(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await funct.share(
       key.value.currentState!.controller!.text,
       media,
@@ -33,7 +44,6 @@ class PostshareController extends GetxController {
     if (response["durum"] == 0) {
       postsharetext.value.text = response["aciklama"].toString();
       postshareProccess.value = false;
-      setstatefunction();
 
       return;
     }
@@ -41,13 +51,10 @@ class PostshareController extends GetxController {
     if (response["durum"] == 1) {
       postsharetext.value.text = response["aciklama"].toString();
       postshareProccess.value = false;
-      setstatefunction();
 
       Get.back();
     }
   }
-
-  void setstatefunction() {}
 
   Future<Position> determinePosition() async {
     bool serviceEnabled;

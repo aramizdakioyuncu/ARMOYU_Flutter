@@ -1,9 +1,9 @@
-import 'package:ARMOYU/app/modules/Settings/_main/views/settings_view.dart';
+import 'package:ARMOYU/app/modules/Settings/_main/controller/settings_controller.dart';
 import 'package:get/get.dart';
 
 class SetttingsBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<SettingsView>(() => const SettingsView());
+    Get.lazyPut<SettingsController>(() => SettingsController());
   }
 }

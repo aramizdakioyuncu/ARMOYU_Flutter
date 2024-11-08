@@ -7,8 +7,8 @@ import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/Socket/socket.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,20 +31,16 @@ class ChatdetailController extends GetxController {
   void onInit() {
     super.onInit();
 
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+
+    /////
+    currentUserAccounts.value =
+        findCurrentAccountController.currentUserAccounts.value;
+    /////
+
     final Map<String, dynamic> arguments =
         Get.arguments as Map<String, dynamic>;
-
-    UserAccounts currentUser = arguments['CurrentUserAccounts'];
-    final currentAccountController = Get.find<PagesController>(
-      tag: currentUser.user.userID.toString(),
-    );
-
-    log("*****${currentAccountController.currentUserAccounts.user.displayName}");
-
-    /////
-    currentUserAccounts.value = currentAccountController.currentUserAccounts;
-    /////
-
     if (arguments['chat'] != null) {
       chat.value = arguments['chat'];
     }
@@ -63,16 +59,6 @@ class ChatdetailController extends GetxController {
   @override
   void dispose() {
     super.dispose();
-
-    // try {
-    //   receiveportListen.close();
-    //   isolateListen.value!.kill();
-
-    //   receiveportSend.close();
-    //   isolateSend.value!.kill();
-    // } catch (e) {
-    //   log(e.toString());
-    // }
 
     try {
       receiveportListen.close();
@@ -102,12 +88,12 @@ class ChatdetailController extends GetxController {
         Map<String, dynamic> responseData = jsonData;
 
         if (responseData["sender_id"].toString() ==
-            currentUserAccounts.value!.user.userID.toString()) {
+            currentUserAccounts.value!.user.value.userID.toString()) {
           return;
         }
 
         if (responseData["receiver_id"].toString() ==
-            currentUserAccounts.value!.user.userID.toString()) {
+            currentUserAccounts.value!.user.value.userID.toString()) {
           message = responseData["message"].toString();
         }
         chat.value!.messages!.add(
@@ -135,9 +121,9 @@ class ChatdetailController extends GetxController {
     });
 
     ARMOYU_Socket socket2 = ARMOYU_Socket(
-        currentUserAccounts.value!.user.userID.toString(),
-        currentUserAccounts.value!.user.userName!,
-        currentUserAccounts.value!.user.password!,
+        currentUserAccounts.value!.user.value.userID.toString(),
+        currentUserAccounts.value!.user.value.userName!,
+        currentUserAccounts.value!.user.value.password!,
         chat.value!.user.userID.toString());
 
     receiveportSend.value!.listen(
@@ -173,8 +159,9 @@ class ChatdetailController extends GetxController {
   }
 
   Future<void> getchat() async {
-    FunctionService f =
-        FunctionService(currentUser: currentUserAccounts.value!.user);
+    FunctionService f = FunctionService(
+      currentUser: currentUserAccounts.value!.user.value,
+    );
     Map<String, dynamic> response =
         await f.getdeailchats(chat.value!.user.userID!);
     if (response["durum"] == 0) {
@@ -237,7 +224,7 @@ class ChatdetailController extends GetxController {
         messageID: 0,
         isMe: true,
         messageContext: message,
-        user: currentUserAccounts.value!.user,
+        user: currentUserAccounts.value!.user.value,
       ),
     );
     chat.refresh();
@@ -247,11 +234,11 @@ class ChatdetailController extends GetxController {
       messageID: 0,
       isMe: true,
       messageContext: message,
-      user: currentUserAccounts.value!.user,
+      user: currentUserAccounts.value!.user.value,
     );
 
     FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.value!.user,
+      currentUser: currentUserAccounts.value!.user.value,
     );
     Map<String, dynamic> response =
         await f.sendchatmessage(chat.value!.user.userID!, message, "ozel");

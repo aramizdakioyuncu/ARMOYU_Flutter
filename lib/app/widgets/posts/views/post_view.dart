@@ -30,7 +30,7 @@ class TwitterPostWidget extends StatelessWidget {
         post: post,
       ),
       tag:
-          "${currentUserAccounts.user.userID}postUniq${post.postID}-$uniqueTag",
+          "${currentUserAccounts.user.value.userID}postUniq${post.postID}-$uniqueTag",
     );
 
     return Obx(

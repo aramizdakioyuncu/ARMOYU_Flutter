@@ -47,7 +47,7 @@ class _EventlistPage extends State<EventlistPage>
     eventlistProecces = true;
 
     FunctionsEvent f = FunctionsEvent(
-      currentUser: widget.currentUserAccounts.user,
+      currentUser: widget.currentUserAccounts.user.value,
     );
     Map<String, dynamic> response = await f.fetch();
     if (response["durum"] == 0) {

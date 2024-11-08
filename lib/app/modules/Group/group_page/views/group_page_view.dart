@@ -367,8 +367,9 @@ class GroupPageView extends StatelessWidget {
                           return ListTile(
                             onTap: () {
                               PageFunctions functions = PageFunctions(
-                                currentUserAccounts:
-                                    UserAccounts(user: controller.user.value!),
+                                currentUserAccounts: UserAccounts(
+                                  user: controller.user.value!.obs,
+                                ),
                               );
 
                               functions.pushProfilePage(

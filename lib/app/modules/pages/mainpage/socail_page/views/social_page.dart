@@ -1,20 +1,16 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Social/share_post_page/views/postshare_page.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/controllers/socail_page_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SocialPage extends StatefulWidget {
-  final UserAccounts currentUserAccounts;
   final ScrollController homepageScrollController;
 
   const SocialPage({
     super.key,
-    required this.currentUserAccounts,
     required this.homepageScrollController,
   });
 
@@ -29,18 +25,16 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
 
-    final currentAccountController = Get.find<PagesController>(
-      tag: widget.currentUserAccounts.user.userID.toString(),
-    );
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
 
-    log("***Social**${currentAccountController.currentUserAccounts.user.displayName}");
+    log("***Social**${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
 
     final controller = Get.put(
-      SocailPageController(
-        currentUserAccounts: currentAccountController.currentUserAccounts,
-        scrollController: widget.homepageScrollController,
-      ),
+      SocailPageController(scrollController: widget.homepageScrollController),
       tag: "socail-$uniqueTag",
     );
 
@@ -82,15 +76,10 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: "socailshare${widget.currentUserAccounts.user.userID}",
+        heroTag:
+            "socailshare${findCurrentAccountController.currentUserAccounts.value.user.value.userID}",
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => PostSharePage(
-                currentUser: widget.currentUserAccounts.user,
-              ),
-            ),
-          );
+          Get.toNamed("/social/share");
         },
         child: const Icon(Icons.post_add),
       ),

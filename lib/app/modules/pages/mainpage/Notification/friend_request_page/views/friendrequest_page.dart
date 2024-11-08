@@ -1,171 +1,35 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+
+import 'package:ARMOYU/app/modules/pages/mainpage/Notification/friend_request_page/controllers/friendrequest_controller.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/widgets/notification_bars.dart';
+import 'package:get/get.dart';
 
-class NotificationFriendRequestPage extends StatefulWidget {
-  final UserAccounts currentUserAccounts;
-
-  const NotificationFriendRequestPage({
-    super.key,
-    required this.currentUserAccounts,
-  });
-
-  @override
-  State<NotificationFriendRequestPage> createState() => _NotificationPage();
-}
-
-bool _pageproccess = false;
-int _page = 1;
-bool _firstFetchProcces = true;
-List<CustomMenusNotificationbars> widgetNotifications = [];
-
-final ScrollController _scrollController = ScrollController();
-
-class _NotificationPage extends State<NotificationFriendRequestPage>
-    with AutomaticKeepAliveClientMixin<NotificationFriendRequestPage> {
-  @override
-  bool get wantKeepAlive => true;
-  @override
-  void initState() {
-    super.initState();
-    if (_firstFetchProcces) {
-      loadnoifications();
-    }
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent * 0.5) {
-        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
-        _loadMoreData();
-      }
-    });
-  }
-
-  void setstatefunction() {
-    if (mounted) {
-      setstatefunction();
-    }
-  }
-
-  Future<void> _loadMoreData() async {
-    if (!_pageproccess) {
-      await loadnoifications();
-    }
-  }
-
-  Future<void> _handleRefresh() async {
-    setState(() {
-      _page = 1;
-      loadnoifications();
-    });
-  }
-
-  Future<void> loadnoifications() async {
-    if (_pageproccess) {
-      return;
-    }
-    setState(() {
-      _pageproccess = true;
-    });
-
-    FunctionService f =
-        FunctionService(currentUser: widget.currentUserAccounts.user);
-    Map<String, dynamic> response =
-        await f.getnotifications("arkadaslik", "istek", _page);
-
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      _pageproccess = false;
-      _firstFetchProcces = false;
-
-      if (mounted) {
-        setState(() {});
-      }
-
-      return;
-    }
-    if (_page == 1) {
-      widgetNotifications.clear();
-    }
-    if (response["icerik"].length == 0) {
-      _pageproccess = false;
-      _firstFetchProcces = false;
-
-      if (mounted) {
-        setState(() {});
-      }
-
-      return;
-    }
-
-    bool noticiationbuttons = false;
-    for (int i = 0; i < response["icerik"].length; i++) {
-      noticiationbuttons = false;
-
-      if (response["icerik"][i]["bildirimamac"].toString() == "arkadaslik") {
-        if (response["icerik"][i]["bildirimkategori"].toString() == "istek") {
-          noticiationbuttons = true;
-        }
-      } else if (response["icerik"][i]["bildirimamac"].toString() ==
-          "gruplar") {
-        if (response["icerik"][i]["bildirimkategori"].toString() == "davet") {
-          noticiationbuttons = true;
-        }
-      }
-
-      widgetNotifications.add(
-        CustomMenusNotificationbars(
-          currentUserAccounts: widget.currentUserAccounts,
-          user: User(
-            userID: response["icerik"][i]["bildirimgonderenID"],
-            displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
-            avatar: Media(
-              mediaID: response["icerik"][i]["bildirimgonderenID"],
-              mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["bildirimgonderenavatar"],
-                normalURL: response["icerik"][i]["bildirimgonderenavatar"],
-                minURL: response["icerik"][i]["bildirimgonderenavatar"],
-              ),
-            ),
-          ),
-          category: response["icerik"][i]["bildirimamac"],
-          categorydetail: response["icerik"][i]["bildirimkategori"],
-          categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
-          date: response["icerik"][i]["bildirimzaman"],
-          enableButtons: noticiationbuttons,
-          text: response["icerik"][i]["bildirimicerik"],
-        ),
-      );
-
-      setstatefunction();
-    }
-
-    _firstFetchProcces = false;
-    _pageproccess = false;
-    _page++;
-
-    if (mounted) {
-      setState(() {});
-    }
-  }
+class FriendRequestView extends StatelessWidget {
+  const FriendRequestView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+
+    final controller = Get.put(
+      FriendrequestController(),
+      tag: findCurrentAccountController
+          .currentUserAccounts.value.user.value.userID
+          .toString(),
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text("Arkadaşlık İstekleri"),
-        // backgroundColor: ARMOYU.appbarColor,
         actions: [
           IconButton(
             onPressed: () async {
-              _page = 1;
-              await loadnoifications();
+              controller.page.value = 1;
+              await controller.loadnoifications();
             },
             icon: const Icon(Icons.refresh),
           )
@@ -173,32 +37,35 @@ class _NotificationPage extends State<NotificationFriendRequestPage>
       ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        controller: _scrollController,
+        controller: controller.scrollController.value,
         slivers: [
           CupertinoSliverRefreshControl(
-            onRefresh: _handleRefresh,
+            onRefresh: controller.handleRefresh,
           ),
-          widgetNotifications.isEmpty
-              ? SliverFillRemaining(
-                  child: Center(
-                    child: !_firstFetchProcces && !_pageproccess
-                        ? const Text("Arkadaşlık istek kutusu boş")
-                        : const CupertinoActivityIndicator(),
+          Obx(
+            () => controller.widgetNotifications.isEmpty
+                ? SliverFillRemaining(
+                    child: Center(
+                      child: !controller.firstFetchProcces.value &&
+                              !controller.pageproccess.value
+                          ? const Text("Arkadaşlık istek kutusu boş")
+                          : const CupertinoActivityIndicator(),
+                    ),
+                  )
+                : SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: controller.widgetNotifications.length,
+                      (context, index) {
+                        return Column(
+                          children: [
+                            controller.widgetNotifications[index],
+                            const SizedBox(height: 1)
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                )
-              : SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    childCount: widgetNotifications.length,
-                    (context, index) {
-                      return Column(
-                        children: [
-                          widgetNotifications[index],
-                          const SizedBox(height: 1)
-                        ],
-                      );
-                    },
-                  ),
-                )
+          )
         ],
       ),
     );

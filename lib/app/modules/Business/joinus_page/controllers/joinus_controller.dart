@@ -115,15 +115,10 @@ class JoinusController extends GetxController {
     setstatefunction();
   }
 
-  void setstatefunction() {
-    // if (mounted) {
-    //   setState(() {});
-    // }
-  }
+  void setstatefunction() {}
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
 
     if (departmentList.isEmpty) {

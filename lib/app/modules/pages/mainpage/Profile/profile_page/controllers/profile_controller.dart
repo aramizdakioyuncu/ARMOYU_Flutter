@@ -17,7 +17,7 @@ import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/Profile/friends_page/views/friendlist_page.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/detectabletext.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
@@ -33,10 +33,8 @@ import 'package:shimmer/shimmer.dart';
 
 class ProfileController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final UserAccounts currentUserAccounts;
   final ScrollController? scrollController;
   ProfileController({
-    required this.currentUserAccounts,
     this.scrollController,
   });
 
@@ -89,9 +87,17 @@ class ProfileController extends GetxController
     super.onClose();
   }
 
+  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+
   @override
   void onInit() {
     super.onInit();
+
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    currentUserAccounts = findCurrentAccountController.currentUserAccounts;
     if (scrollController != null) {
       profileScrollController.value = scrollController!;
     } else {
@@ -112,7 +118,8 @@ class ProfileController extends GetxController
       if (arguments['profileUser'] != null) {
         log("---başkası-----");
         profileUser.value = arguments['profileUser'];
-        if (profileUser.value!.userID == currentUserAccounts.user.userID) {
+        if (profileUser.value!.userID ==
+            currentUserAccounts.value.user.value.userID) {
           ismyProfile.value = true;
         } else {
           ismyProfile.value = false;
@@ -120,12 +127,12 @@ class ProfileController extends GetxController
       } else {
         log("---ben-----");
         ismyProfile.value = true;
-        profileUser.value = currentUserAccounts.user;
+        profileUser.value = currentUserAccounts.value.user.value;
       }
     } else {
       log("---ben-----");
       ismyProfile.value = true;
-      profileUser.value = currentUserAccounts.user;
+      profileUser.value = currentUserAccounts.value.user.value;
     }
 
     test();
@@ -160,8 +167,9 @@ class ProfileController extends GetxController
     // Navigator.pop(Get.context);
     Get.back();
 
-    FunctionsBlocking f =
-        FunctionsBlocking(currentUser: currentUserAccounts.user);
+    FunctionsBlocking f = FunctionsBlocking(
+      currentUser: currentUserAccounts.value.user.value,
+    );
     Map<String, dynamic> response = await f.add(userProfile.value.userID!);
 
     ARMOYUWidget.toastNotification(response["aciklama"]);
@@ -183,7 +191,9 @@ class ProfileController extends GetxController
     }
     postsfetchproccess.value = true;
 
-    FunctionService f = FunctionService(currentUser: currentUserAccounts.user);
+    FunctionService f = FunctionService(
+      currentUser: currentUserAccounts.value.user.value,
+    );
     Map<String, dynamic> response =
         await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
@@ -312,7 +322,7 @@ class ProfileController extends GetxController
 
       list.value!.add(
         TwitterPostWidget(
-          currentUserAccounts: currentUserAccounts,
+          currentUserAccounts: currentUserAccounts.value,
           post: post,
         ),
       );
@@ -330,7 +340,9 @@ class ProfileController extends GetxController
 
     galleryproccess.value = true;
 
-    FunctionsMedia f = FunctionsMedia(currentUser: currentUserAccounts.user);
+    FunctionsMedia f = FunctionsMedia(
+      currentUser: currentUserAccounts.value.user.value,
+    );
     Map<String, dynamic> response = await f.fetch(userID, "-1", page);
 
     if (response["durum"] == 0) {
@@ -378,7 +390,9 @@ class ProfileController extends GetxController
 
     postsfetchProccessv2.value = true;
 
-    FunctionService f = FunctionService(currentUser: currentUserAccounts.user);
+    FunctionService f = FunctionService(
+      currentUser: currentUserAccounts.value.user.value,
+    );
     Map<String, dynamic> response =
         await f.getprofilePosts(page, userID, category);
     if (response["durum"] == 0) {
@@ -501,7 +515,7 @@ class ProfileController extends GetxController
 
       list.value!.add(
         TwitterPostWidget(
-          currentUserAccounts: currentUserAccounts,
+          currentUserAccounts: currentUserAccounts.value,
           post: post,
         ),
       );
@@ -511,17 +525,18 @@ class ProfileController extends GetxController
   }
 
   Future<void> test({bool myprofilerefresh = false}) async {
-    log("----${profileUser.value!.userID == currentUserAccounts.user.userID}-----");
-    if (profileUser.value!.userID == currentUserAccounts.user.userID) {
+    log("----${profileUser.value!.userID == currentUserAccounts.value.user.value.userID}-----");
+    if (profileUser.value!.userID ==
+        currentUserAccounts.value.user.value.userID) {
       if (myprofilerefresh) {
         FunctionService f =
-            FunctionService(currentUser: currentUserAccounts.user);
+            FunctionService(currentUser: currentUserAccounts.value.user.value);
 
         Map<String, dynamic> response =
-            await f.lookProfile(currentUserAccounts.user.userID!);
+            await f.lookProfile(currentUserAccounts.value.user.value.userID!);
         userProfile.value = ARMOYUFunctions.userfetch(response["icerik"]);
       } else {
-        userProfile.value = currentUserAccounts.user;
+        userProfile.value = currentUserAccounts.value.user.value;
       }
     } else {
       Map<String, dynamic> response = {};
@@ -529,7 +544,7 @@ class ProfileController extends GetxController
         log("->>kullanıcıadına  göre oyuncu bul!");
 
         FunctionService f =
-            FunctionService(currentUser: currentUserAccounts.user);
+            FunctionService(currentUser: currentUserAccounts.value.user.value);
 
         Map<String, dynamic> response =
             await f.lookProfilewithusername(profileUser.value!.userName!);
@@ -592,7 +607,7 @@ class ProfileController extends GetxController
       } else {
         log("->>ID ye göre oyuncu bul!");
         FunctionService f =
-            FunctionService(currentUser: currentUserAccounts.user);
+            FunctionService(currentUser: currentUserAccounts.value.user.value);
         response = await f.lookProfile(profileUser.value!.userID!);
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
@@ -721,8 +736,9 @@ class ProfileController extends GetxController
 
     changeavatarStatus.value = true;
 
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user);
+    FunctionsProfile f = FunctionsProfile(
+      currentUser: currentUserAccounts.value.user.value,
+    );
     Map<String, dynamic> response = await f.defaultavatar();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -732,7 +748,7 @@ class ProfileController extends GetxController
       return;
     }
 
-    currentUserAccounts.user.avatar = Media(
+    currentUserAccounts.value.user.value.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response["aciklamadetay"].toString()),
@@ -764,7 +780,7 @@ class ProfileController extends GetxController
     changebannerStatus.value = true;
 
     FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user);
+        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await f.defaultbanner();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -774,7 +790,7 @@ class ProfileController extends GetxController
       return;
     }
 
-    currentUserAccounts.user.banner = Media(
+    currentUserAccounts.value.user.value.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response["aciklamadetay"].toString()),
@@ -815,7 +831,7 @@ class ProfileController extends GetxController
     changeavatarStatus.value = true;
 
     FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user);
+        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
     Map<String, dynamic> response = await f.changeavatar(imagePath);
@@ -827,7 +843,7 @@ class ProfileController extends GetxController
       return;
     }
 
-    currentUserAccounts.user.avatar = Media(
+    currentUserAccounts.value.user.value.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response["aciklamadetay"].toString()),
@@ -860,7 +876,7 @@ class ProfileController extends GetxController
     changebannerStatus.value = true;
 
     FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user);
+        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
     Map<String, dynamic> response = await f.changebanner(imagePath);
@@ -872,7 +888,7 @@ class ProfileController extends GetxController
 
       return;
     }
-    currentUserAccounts.user.banner = Media(
+    currentUserAccounts.value.user.value.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response["aciklamadetay"].toString()),
@@ -888,7 +904,7 @@ class ProfileController extends GetxController
 
   Future<void> friendrequest() async {
     FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user);
+        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response =
         await f.friendrequest(userProfile.value.userID!);
 
@@ -1098,8 +1114,8 @@ class ProfileController extends GetxController
           MaterialPageRoute(
             builder: (context) => MediaViewer(
               currentUser: Get.find<PagesController>(
-                tag: currentUserAccounts.user.userID.toString(),
-              ).currentUserAccounts.user,
+                tag: currentUserAccounts.value.user.value.userID.toString(),
+              ).currentUserAccounts.value.user.value,
               media: [userProfile.value.avatar!],
               initialIndex: 0,
             ),
@@ -1330,14 +1346,18 @@ class ProfileController extends GetxController
         if (userProfile.value.friendsCount == null) {
           return;
         }
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FriendlistPage(
-              currentUserAccounts: UserAccounts(user: userProfile.value),
-            ),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => FriendlistPage(
+        //       currentUserAccounts.value: UserAccounts(user: userProfile.value),
+        //     ),
+        //   ),
+        // );
+
+        Get.toNamed("profile/friendlist", arguments: {
+          "user": UserAccounts(user: userProfile.value.obs),
+        });
       },
       child: userProfile.value.friendsCount == null
           ? Shimmer.fromColors(
@@ -1391,7 +1411,7 @@ class ProfileController extends GetxController
                 return;
               }
               ARMOYUFunctions functions = ARMOYUFunctions(
-                currentUserAccounts: currentUserAccounts,
+                currentUserAccounts: currentUserAccounts.value,
               );
               functions.selectFavTeam(context, force: true);
             },
@@ -1570,7 +1590,7 @@ class ProfileController extends GetxController
               const SizedBox(height: 20),
               WidgetUtility.specialText(
                 context,
-                currentUserAccounts: currentUserAccounts,
+                currentUserAccounts: currentUserAccounts.value,
                 friendTextLine.value,
               ),
             ],
@@ -1670,7 +1690,7 @@ class ProfileController extends GetxController
           chatNotification: false,
         ).profilesendMessage(
           context,
-          currentUserAccounts: currentUserAccounts,
+          currentUserAccounts: currentUserAccounts.value,
         ),
       );
     }
@@ -1748,7 +1768,7 @@ class ProfileController extends GetxController
                       onTap: () {
                         Navigator.pop(context);
                         ARMOYUFunctions functions = ARMOYUFunctions(
-                          currentUserAccounts: currentUserAccounts,
+                          currentUserAccounts: currentUserAccounts.value,
                         );
                         functions.profileEdit(context, () {});
                       },
@@ -1799,7 +1819,7 @@ class ProfileController extends GetxController
                     child: InkWell(
                       onTap: () async {
                         FunctionsProfile f = FunctionsProfile(
-                          currentUser: currentUserAccounts.user,
+                          currentUser: currentUserAccounts.value.user.value,
                         );
                         Map<String, dynamic> response = await f.friendremove(
                           userProfile.value.userID!,
@@ -1824,7 +1844,7 @@ class ProfileController extends GetxController
                     child: InkWell(
                       onTap: () async {
                         FunctionsProfile f = FunctionsProfile(
-                          currentUser: currentUserAccounts.user,
+                          currentUser: currentUserAccounts.value.user.value,
                         );
                         Map<String, dynamic> response = await f.userdurting(
                           userProfile.value.userID!,

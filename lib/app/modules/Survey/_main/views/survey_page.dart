@@ -40,7 +40,7 @@ class _ChatPageState extends State<SurveyPage>
 
     answerSurveyProccess.value = true;
     FunctionsSurvey f = FunctionsSurvey(
-      currentUser: widget.currentUserAccounts.user,
+      currentUser: widget.currentUserAccounts.user.value,
     );
     Map<String, dynamic> response = await f.answerSurvey(
         widget.survey.surveyID, int.parse(_selectedOption.toString()));
@@ -58,7 +58,7 @@ class _ChatPageState extends State<SurveyPage>
 
   Future<void> refreshSurvey() async {
     ClientFunctionSurvey f = ClientFunctionSurvey(
-      currentUser: widget.currentUserAccounts.user,
+      currentUser: widget.currentUserAccounts.user.value,
     );
     List<Survey>? response =
         await f.fetchsurvey(surveyID: widget.survey.surveyID);
@@ -75,7 +75,7 @@ class _ChatPageState extends State<SurveyPage>
 
   Future<void> deleteSurvey() async {
     FunctionsSurvey f = FunctionsSurvey(
-      currentUser: widget.currentUserAccounts.user,
+      currentUser: widget.currentUserAccounts.user.value,
     );
     Map<String, dynamic> response =
         await f.deleteSurvey(widget.survey.surveyID);
@@ -112,7 +112,7 @@ class _ChatPageState extends State<SurveyPage>
           ),
           Visibility(
             visible: widget.survey.surveyOwner.userID ==
-                widget.currentUserAccounts.user.userID,
+                widget.currentUserAccounts.user.value.userID,
             child: IconButton(
               onPressed: () async => await deleteSurvey(),
               icon: const Icon(
@@ -139,7 +139,7 @@ class _ChatPageState extends State<SurveyPage>
                         context,
                         MaterialPageRoute(
                           builder: (context) => MediaViewer(
-                            currentUser: widget.currentUserAccounts.user,
+                            currentUser: widget.currentUserAccounts.user.value,
                             media: widget.survey.surveyQuestion.questionImages!,
                             initialIndex: index,
                           ),

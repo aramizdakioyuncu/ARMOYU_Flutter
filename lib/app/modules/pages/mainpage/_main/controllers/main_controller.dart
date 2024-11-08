@@ -81,7 +81,7 @@ class MainPageController extends GetxController {
     }
 
     final pagesController = Get.find<PagesController>(
-      tag: currentUserAccount.user.userID.toString(),
+      tag: currentUserAccount.user.value.userID.toString(),
     );
 
     // ((Önemli))
@@ -91,7 +91,7 @@ class MainPageController extends GetxController {
     if (ARMOYU.cameras!.isNotEmpty) {
       mainsocialpages.add(
         CameraScreen(
-          currentUser: currentUserAccounts.value!.user,
+          currentUser: currentUserAccounts.value!.user.value,
           canPop: false,
         ),
       );
@@ -99,10 +99,7 @@ class MainPageController extends GetxController {
     }
 
     mainsocialpages.add(
-      SocialPage(
-        currentUserAccounts: currentUserAccounts.value!,
-        homepageScrollController: homepageScrollControllerv2.value,
-      ),
+      SocialPage(homepageScrollController: homepageScrollControllerv2.value),
     );
 
     //Takımları Çek opsiyonel
@@ -113,7 +110,7 @@ class MainPageController extends GetxController {
     //Grup Oluştur ekle
 
     //Grupları Çek
-    loadMyGroups(currentUserAccounts.value!.user);
+    loadMyGroups(currentUserAccounts.value!.user.value);
   }
 
   void popfunction() {
@@ -469,13 +466,6 @@ class MainPageController extends GetxController {
               "group": group,
               "groupID": group.groupID!,
             });
-            // Get.to(
-            //   () => GroupPage(
-            //     currentUserAccounts: currentUserAccounts.value!,
-            //     group: group,
-            //     groupID: group.groupID!,
-            //   ),
-            // );
           },
         );
       },
@@ -552,7 +542,7 @@ class MainPageController extends GetxController {
             Get.to(
                 RestourantPageView(
                   cafe: foodStation,
-                  currentUser: currentUserAccounts.value!.user,
+                  currentUser: currentUserAccounts.value!.user.value,
                 ),
                 arguments: {
                   "cafe": foodStation,

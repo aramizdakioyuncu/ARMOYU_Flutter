@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/_main/views/pages.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,14 +28,14 @@ class AppPageController extends GetxController {
     }
 
     for (Pages pagaviewInfo in pagesViewList) {
-      log("${pagaviewInfo.currentUserAccounts.user.userID!} -> ${pagaviewInfo.currentUserAccounts.user.displayName!}");
+      log("${pagaviewInfo.currentUserAccounts.user.value.userID!} -> ${pagaviewInfo.currentUserAccounts.user.value.displayName!}");
     }
   }
 
   Future<void> changeAccount(UserAccounts selectedUser) async {
     if (!pagesViewList.any((element) =>
-        element.currentUserAccounts.user.userID! ==
-        selectedUser.user.userID!)) {
+        element.currentUserAccounts.user.value.userID! ==
+        selectedUser.user.value.userID!)) {
       pagesViewList.add(
         Pages(
           currentUserAccounts: selectedUser,
@@ -47,11 +48,15 @@ class AppPageController extends GetxController {
     }
 
     int countPageIndex = pagesViewList.indexWhere((element) =>
-        element.currentUserAccounts.user.userID == selectedUser.user.userID);
+        element.currentUserAccounts.user.value.userID ==
+        selectedUser.user.value.userID);
 
     log("Index Sayaç $countPageIndex");
 
     Get.back();
+
+    final accountController = Get.find<AccountUserController>();
+    accountController.changeUser(UserAccounts(user: selectedUser.user));
 
     pagesController.value.animateToPage(
       countPageIndex,
@@ -61,7 +66,7 @@ class AppPageController extends GetxController {
       curve: Curves.ease,
     );
 
-    await fetchChangedprofiledata(selectedUser.user);
+    await fetchChangedprofiledata(selectedUser.user.value);
   }
 
   Future<void> fetchChangedprofiledata(User user) async {

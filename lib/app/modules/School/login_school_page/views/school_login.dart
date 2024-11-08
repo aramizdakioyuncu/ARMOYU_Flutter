@@ -30,7 +30,7 @@ class SchoolLoginPageView extends StatelessWidget {
     );
     final controller = Get.put(
       SchoolLoginController(
-        currentUser: currentAccountController.currentUserAccount.user,
+        currentUser: currentAccountController.currentUserAccount.user.value,
       ),
     );
     return Scaffold(
