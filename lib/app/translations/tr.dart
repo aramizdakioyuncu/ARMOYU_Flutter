@@ -24,7 +24,9 @@ Map<String, String> tr = {
   DrawerKeys.drawerMeeting: 'Toplantı',
   DrawerKeys.drawerNews: 'Haberler',
   DrawerKeys.drawerMyGroups: 'Gruplarım',
+  DrawerKeys.drawerMyGroupscreate: 'Grup Oluştur',
   DrawerKeys.drawerMySchools: 'Okullarım',
+  DrawerKeys.drawerMySchoolsjoin: 'Okula Katıl',
   DrawerKeys.drawerFood: 'Yemek',
   DrawerKeys.drawerGames: 'Oyun',
   DrawerKeys.drawerEvents: 'Etkinlikler',
@@ -43,6 +45,32 @@ Map<String, String> tr = {
   LoginKeys.loginKeysPrivacyPolicy: 'Gizlilik Politikası',
   LoginKeys.loginKeysTermsAndConditions: 'Hizmet Şartları/Kullanıcı Politikası',
   LoginKeys.loginKeysacceptanceMessage: 'nı kabul etmiş olursunuz.',
+
+  //Register
+  RegisterKeys.registerKeysfirstname: 'Ad',
+  RegisterKeys.registerKeyslastname: 'Soyad',
+  RegisterKeys.registerKeysusername: 'Kullanıcı Adı',
+  RegisterKeys.registerKeysemail: 'E-posta',
+  RegisterKeys.registerKeyspassword: 'Şifre',
+  RegisterKeys.registerKeysrepeatpassword: 'Şifre Tekrarı',
+  RegisterKeys.registerKeysinvitecode: 'Davet Kodu',
+  RegisterKeys.registerKeyssignup: 'Kayıt Ol',
+  RegisterKeys.registerKeyssignin: 'Giriş Yap',
+  RegisterKeys.registerKeysifyouhaveaccount: 'Hesabın varsa',
+
+  //ResetPassword
+  ResetPasswordKeys.resetPasswordKeysusername: 'Kullanıcı Adı',
+  ResetPasswordKeys.resetPasswordKeysemail: 'E-posta',
+  ResetPasswordKeys.resetPasswordKeysifyourememberyourpassword:
+      'Şifreyi hatırlarsan',
+  ResetPasswordKeys.resetPasswordKeyscontinue: 'Devam',
+  ResetPasswordKeys.resetPasswordKeyssignin: 'Giriş Yap',
+  ResetPasswordKeys.resetPasswordKeyscode: 'Code',
+  ResetPasswordKeys.resetPasswordKeyscreatepassword: 'Parola Oluştur',
+  ResetPasswordKeys.resetPasswordKeysrepeatpassword: 'Parola Tekrarı',
+  ResetPasswordKeys.resetPasswordKeysrepeatsendcode: 'Tekrar Kod Gönder',
+  ResetPasswordKeys.resetPasswordKeyssave: 'Kaydet',
+
   // BlockedListKeys
   BlockedListKeys.noBlockedAccounts: 'Engellenen hesap yok',
   BlockedListKeys.unblock: 'Engel kaldır',

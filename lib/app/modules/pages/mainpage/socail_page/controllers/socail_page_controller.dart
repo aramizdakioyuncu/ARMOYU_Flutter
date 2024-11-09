@@ -187,9 +187,9 @@ class SocailPageController extends GetxController {
             avatar: Media(
               mediaID: response["icerik"][i]["oyuncu_ID"],
               mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["oyuncu_avatar"],
-                normalURL: response["icerik"][i]["oyuncu_avatar"],
-                minURL: response["icerik"][i]["oyuncu_avatar"],
+                bigURL: Rx<String>(response["icerik"][i]["oyuncu_avatar"]),
+                normalURL: Rx<String>(response["icerik"][i]["oyuncu_avatar"]),
+                minURL: Rx<String>(response["icerik"][i]["oyuncu_avatar"]),
               ),
             ),
           ),
@@ -359,8 +359,7 @@ class SocailPageController extends GetxController {
       return;
     }
     widgetStories.value = WidgetStorycircle(
-      currentUser: currentUserAccounts.value.user.value,
-      content: currentUserAccounts.value.user.value.widgetStoriescard!,
+      content: currentUserAccounts.value.user.value.widgetStoriescard!.obs,
     );
   }
 

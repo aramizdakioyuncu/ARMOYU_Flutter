@@ -6,11 +6,11 @@ import 'package:ARMOYU/app/data/models/Story/story.dart';
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/modules/Utility/galleryscreen_page.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StoryScreenPage extends StatefulWidget {
   final User currentUser;
@@ -266,13 +266,15 @@ class StoryScreenPageWidget extends State<StoryScreenPage> {
                           .ownerusername ==
                       widget.currentUser.userName) {
                     _stopAnimation();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            GalleryScreen(currentUser: widget.currentUser),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) =>
+                    //         GalleryScreen(currentUser: widget.currentUser),
+                    //   ),
+                    // );
+
+                    Get.toNamed("/gallery");
                   }
                 },
                 child: Container(

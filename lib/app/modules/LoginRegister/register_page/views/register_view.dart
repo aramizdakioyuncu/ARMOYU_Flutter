@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/register_page/controllers/register_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -32,28 +33,28 @@ class RegisterpageView extends StatelessWidget {
               ),
             ),
             CustomTextfields.costum3(
-              title: "Adınız",
+              title: RegisterKeys.registerKeysfirstname.tr,
               controller: controller.nameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
-              title: "Soyadınız",
+              title: RegisterKeys.registerKeyslastname.tr,
               controller: controller.lastnameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
-              title: "Kullanıcı Adınız",
+              title: RegisterKeys.registerKeysusername.tr,
               controller: controller.usernameController,
               isPassword: false,
               preicon: const Icon(Icons.person),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
-              title: "E-posta",
+              title: RegisterKeys.registerKeysemail.tr,
               controller: controller.emailController,
               isPassword: false,
               preicon: const Icon(Icons.email),
@@ -61,14 +62,14 @@ class RegisterpageView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
-              title: "Şifreniz",
+              title: RegisterKeys.registerKeyspassword.tr,
               controller: controller.passwordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
             ),
             const SizedBox(height: 16),
             CustomTextfields.costum3(
-              title: "Şifreniz Tekrar",
+              title: RegisterKeys.registerKeysrepeatpassword.tr,
               controller: controller.rpasswordController,
               isPassword: true,
               preicon: const Icon(Icons.lock_outline),
@@ -80,7 +81,7 @@ class RegisterpageView extends StatelessWidget {
                       children: [
                         Expanded(
                           child: CustomTextfields.costum3(
-                            title: "Davet Kodu",
+                            title: RegisterKeys.registerKeysinvitecode.tr,
                             controller: controller.inviteController,
                             isPassword: false,
                             maxLength: 5,
@@ -114,13 +115,6 @@ class RegisterpageView extends StatelessWidget {
                                 backgroundColor: Colors.white,
                               ),
                             ),
-                      //  const SkeletonAvatar(
-                      //     style: SkeletonAvatarStyle(
-                      //       borderRadius: BorderRadius.all(
-                      //         Radius.circular(30),
-                      //       ),
-                      //     ),
-                      //   ),
                       title: controller.inviteduserdisplayName.value != null
                           ? Text(controller.inviteduserdisplayName.value
                               .toString())
@@ -129,16 +123,11 @@ class RegisterpageView extends StatelessWidget {
                               highlightColor: Get.theme.highlightColor,
                               child: Container(width: 200),
                             ),
-                      // const SkeletonLine(
-                      //     style: SkeletonLineStyle(width: 200),
-                      //   ),
                       trailing: IconButton(
                         onPressed: () {
-                          // setState(() {
                           controller.inviteduserID.value = null;
                           controller.inviteduseravatar.value = null;
                           controller.inviteduserdisplayName.value = null;
-                          // });
                         },
                         icon: const Icon(Icons.close, color: Colors.red),
                       ),
@@ -146,7 +135,7 @@ class RegisterpageView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             CustomButtons.costum1(
-              text: "Kayıt Ol",
+              text: RegisterKeys.registerKeyssignup.tr,
               onPressed: () async => await controller.register(),
               loadingStatus: controller.registerProccess,
             ),
@@ -154,12 +143,14 @@ class RegisterpageView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CustomText.costum1("Hesabınız varsa  "),
+                CustomText.costum1(
+                    RegisterKeys.registerKeysifyouhaveaccount.tr),
+                const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    Get.back();
                   },
-                  child: CustomText.costum1("Giriş Yap"),
+                  child: CustomText.costum1(RegisterKeys.registerKeyssignin.tr),
                 ),
               ],
             ),

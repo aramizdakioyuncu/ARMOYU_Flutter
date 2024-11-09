@@ -63,7 +63,7 @@ class ChatNewController extends GetxController {
     if (chatnewpage.value == 1) {
       newchatList.value = [];
 
-      currentUserAccounts.user.value.myFriends!.value = [];
+      currentUserAccounts.user.value.myFriends = <User>[].obs;
     }
     if (response["icerik"].length == 0) {
       log("Sohbet Arkadaşlarım Sayfa Sonu");

@@ -299,7 +299,12 @@ class Media {
                       child: InkWell(
                         onTap: () {
                           log("media listeden silindi");
-                          list.removeAt(index);
+                          try {
+                            list.removeAt(index);
+                          } catch (e) {
+                            log(e.toString());
+                          }
+
                           list.refresh();
                         },
                         child: Container(

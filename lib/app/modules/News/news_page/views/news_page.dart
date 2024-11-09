@@ -18,43 +18,51 @@ class NewsPageView extends StatelessWidget {
           title: Text(controller.news.value!.newsTitle.toString()),
           actions: [
             IconButton(
-              onPressed: () {
-                controller.fetchnewscontent();
-              },
-              icon: const Icon(Icons.refresh),
+              onPressed: () {},
+              icon: const Icon(Icons.share),
             ),
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              CachedNetworkImage(
+        body: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async {
+                await controller.fetchnewscontent();
+              },
+            ),
+            SliverToBoxAdapter(
+              child: CachedNetworkImage(
                 width: ARMOYU.screenWidth,
                 height: ARMOYU.screenHeight / 5,
                 imageUrl: controller.news.value!.newsImage,
                 fit: BoxFit.cover,
               ),
-              Padding(
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   controller.news.value!.newsTitle,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              Obx(
-                () => controller.newsfetchProcess.value
-                    ? const Center(
-                        child: CupertinoActivityIndicator(),
-                      )
-                    : Padding(
+            ),
+            Obx(
+              () => controller.newsfetchProcess.value
+                  ? const SliverFillRemaining(
+                      child: CupertinoActivityIndicator(),
+                    )
+                  : SliverFillRemaining(
+                      child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Html(
                           data: controller.news.value!.newsContent,
                         ),
                       ),
-              ),
-            ],
-          ),
+                    ),
+            ),
+          ],
         ),
       ),
     );

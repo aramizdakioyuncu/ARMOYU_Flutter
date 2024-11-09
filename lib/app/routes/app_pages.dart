@@ -1,6 +1,7 @@
 import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/resetpassword_module.dart';
 import 'package:ARMOYU/app/modules/Settings/settings_module.dart';
 import 'package:ARMOYU/app/modules/Social/socail_module.dart';
+import 'package:ARMOYU/app/modules/Utility/gallery/gallery_module.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/group_page/module.dart';
@@ -19,17 +20,22 @@ class AppPages {
   static const initial = StartingpageModule.route;
 
   static final routes = [
+    ...AppPageModule.routes,
+
+    //Utils
+    ...GalleryModule.routes,
     ...StartingpageModule.routes,
     ...NoconnectionpageModule.routes,
-    ...AppPageModule.routes,
-    ...ListNewsModule.routes,
-    ...NewsPageModule.routes,
-
+    //Chat
     ...ChatdetailModule.routes,
 
     //Group
     ...GroupCreateModule.routes,
     ...GroupPageModule.routes,
+
+    //News
+    ...ListNewsModule.routes,
+    ...NewsPageModule.routes,
 
     //Login Register Password
     ...LoginRegisterpageModule.routes,

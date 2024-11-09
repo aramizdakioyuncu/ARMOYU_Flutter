@@ -12,7 +12,10 @@ class DrawerKeys {
   static const drawerMeeting = 'drawer_meeting';
   static const drawerNews = 'drawer_news';
   static const drawerMyGroups = 'drawer_my_groups';
+  static const drawerMyGroupscreate = 'drawer_my_groups_create';
   static const drawerMySchools = 'drawer_my_schools';
+  static const drawerMySchoolsjoin = 'drawer_my_schools_join';
+
   static const drawerFood = 'drawer_food';
   static const drawerGames = 'drawer_games';
   static const drawerEvents = 'drawer_events';
@@ -32,6 +35,38 @@ class LoginKeys {
   static const loginKeysPrivacyPolicy = 'loginkeys_privacy_policy';
   static const loginKeysTermsAndConditions = 'loginkeys_terms_and_conditions';
   static const loginKeysacceptanceMessage = 'acceptance_message';
+}
+
+class RegisterKeys {
+  static const registerKeysfirstname = 'registerkeys_first_name';
+  static const registerKeyslastname = 'registerkeys_last_name';
+  static const registerKeysusername = 'registerkeys_username';
+  static const registerKeysemail = 'registerkeys_email';
+  static const registerKeyspassword = 'registerkeys_password';
+  static const registerKeysrepeatpassword = 'registerkeys_repeat_password';
+  static const registerKeysinvitecode = 'registerkeys_repeat_invitecode';
+  static const registerKeyssignup = 'registerkeys_repeat_signup';
+  static const registerKeyssignin = 'registerkeys_repeat_signin';
+  static const registerKeysifyouhaveaccount =
+      'registerkeys_if_you_have_account';
+}
+
+class ResetPasswordKeys {
+  static const resetPasswordKeysusername = 'resetpasswordkeys_username';
+  static const resetPasswordKeysemail = 'resetpasswordkeys_email';
+  static const resetPasswordKeyscontinue = 'resetpasswordkeys_continue';
+  static const resetPasswordKeyssignin = 'resetpasswordkeys_signin';
+  static const resetPasswordKeysifyourememberyourpassword =
+      'resetpasswordkeys_if_you_remember_your_password';
+
+  static const resetPasswordKeyscode = 'resetpasswordkeys_code';
+  static const resetPasswordKeyscreatepassword =
+      'resetpasswordkeys_create_password';
+  static const resetPasswordKeysrepeatpassword =
+      'resetpasswordkeys_repeat_password';
+  static const resetPasswordKeysrepeatsendcode =
+      'resetpasswordkeys_create_repeat_send_code';
+  static const resetPasswordKeyssave = 'resetpasswordkeys_save';
 }
 
 class SettingsKeys {

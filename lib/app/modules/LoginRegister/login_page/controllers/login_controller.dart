@@ -35,15 +35,16 @@ class LoginPageController extends GetxController {
     accountController = findCurrentAccountController;
 
     ///
-    final Map<String, dynamic> arguments =
-        Get.arguments as Map<String, dynamic>;
 
-    if (arguments['accountAdd'] != null) {
-      accountAdd.value = arguments['accountAdd'] as bool;
-    }
     var logOut = Rx<User?>(null);
+    final Map<String, dynamic>? arguments = Get.arguments;
 
-    logOut.value = (arguments['logOut']);
+    if (arguments != null) {
+      if (arguments['accountAdd'] != null) {
+        accountAdd.value = arguments['accountAdd'] as bool;
+      }
+      logOut.value = (arguments['logOut']);
+    }
 
     if (logOut.value != null) {
       logOutFunction(logOut.value!);

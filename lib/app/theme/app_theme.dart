@@ -34,6 +34,7 @@ final ThemeData appDarkThemeData = ThemeData.dark().copyWith(
     Colors.amber,
   )),
   inputDecorationTheme: InputDecorationTheme(
+    border: InputBorder.none,
     iconColor: Colors.white,
     prefixIconColor: Colors.white,
     fillColor: Colors.grey.shade900,
@@ -168,6 +169,7 @@ final ThemeData appLightThemeData = ThemeData.light().copyWith(
     Colors.amber,
   )),
   inputDecorationTheme: InputDecorationTheme(
+    border: InputBorder.none,
     iconColor: Colors.grey.shade900,
     prefixIconColor: Colors.grey.shade900,
     fillColor: Colors.grey.shade300,

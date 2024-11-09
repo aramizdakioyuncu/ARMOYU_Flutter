@@ -288,7 +288,7 @@ class MainPageView extends StatelessWidget {
                                   color: Colors.blue,
                                 ),
                               ),
-                              title: const Text("Grup Oluştur"),
+                              title: Text(DrawerKeys.drawerMyGroupscreate.tr),
                               onTap: () {
                                 Get.toNamed("/group/create", arguments: {
                                   "user":
@@ -325,7 +325,7 @@ class MainPageView extends StatelessWidget {
                                 child: const Icon(Icons.add,
                                     size: 30, color: Colors.blue),
                               ),
-                              title: const Text("Okula Katıl"),
+                              title: Text(DrawerKeys.drawerMySchoolsjoin.tr),
                               onTap: () {
                                 Get.to(const SchoolLoginPageView(), arguments: {
                                   "currentUser": controller

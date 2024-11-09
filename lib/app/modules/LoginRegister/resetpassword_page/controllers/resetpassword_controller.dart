@@ -97,7 +97,7 @@ class ResetpasswordController extends GetxController {
       return;
     }
 
-    passwordtimer = response["aciklamadetay"];
+    passwordtimer.value = response["aciklamadetay"];
     step1.value = false;
     step2.value = true;
     resetpasswordProcess.value = false;

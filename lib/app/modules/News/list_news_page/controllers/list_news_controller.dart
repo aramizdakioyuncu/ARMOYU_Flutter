@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/functions/API_Functions/news.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,10 +13,12 @@ class ListNewsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final Map<String, dynamic> arguments =
-        Get.arguments as Map<String, dynamic>;
-
-    user.value = arguments['user'] as User;
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    user.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
 
     if (newsList.isEmpty) {
       getnewslist();

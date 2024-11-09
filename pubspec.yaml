@@ -62,7 +62,6 @@ dependencies:
   video_player: ^2.8.3
   chewie: ^1.7.5
   wakelock_plus: ^1.1.6
-  # skeletons: ^0.0.3
   shimmer: ^3.0.0
   flutter_html: ^3.0.0-beta.2
   html: ^0.15.4
@@ -79,6 +78,9 @@ dependencies:
   qr_flutter: ^4.1.0
   get: ^4.6.6
   armoyu_services: ^1.0.0+3
+  
+  share_plus: ^10.1.2
+  marquee: ^2.3.0
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/_main/controllers/chat_page_controller.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/views/chat_new_page.dart';
@@ -48,20 +47,13 @@ class ChatPage extends StatelessWidget {
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
             ),
             title: controller.searchStatus.value
-                ? Container(
+                ? SizedBox(
                     height: 45,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      color: ARMOYU.bodyColor,
-                    ),
                     child: TextField(
                       controller: controller.chatcontroller.value,
+                      autofocus: true,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 20,
-                        ),
                         hintText: 'Ara',
                       ),
                     ),
@@ -73,6 +65,9 @@ class ChatPage extends StatelessWidget {
                 onPressed: () {
                   controller.searchStatus.value =
                       !controller.searchStatus.value;
+                  if (!controller.searchStatus.value) {
+                    controller.chatcontroller.value.text = "";
+                  }
                 },
               ),
             ],
@@ -89,12 +84,37 @@ class ChatPage extends StatelessWidget {
               await controller.handleRefresh();
             },
           ),
-          Obx(
-            () => controller.chatListWidget(
-              context,
-              currentAccountController.currentUserAccounts,
+          SliverToBoxAdapter(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Obx(
+                () => Row(
+                  children: [
+                    controller.chatmyfriendsNotes(findCurrentAccountController
+                        .currentUserAccounts.value.user.value),
+                    ...List.generate(
+                      findCurrentAccountController.currentUserAccounts.value
+                                  .user.value.myFriends ==
+                              null
+                          ? 0
+                          : findCurrentAccountController.currentUserAccounts
+                              .value.user.value.myFriends!.length,
+                      (index) {
+                        return controller.chatmyfriendsNotes(
+                            findCurrentAccountController.currentUserAccounts
+                                .value.user.value.myFriends![index]);
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
-          )
+          ),
+          SliverFillRemaining(
+            child: Obx(
+              () => controller.chatListWidget(),
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -111,11 +131,7 @@ class ChatPage extends StatelessWidget {
             ),
           );
         },
-        backgroundColor: ARMOYU.buttonColor,
-        child: const Icon(
-          Icons.chat,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.chat),
       ),
     );
   }

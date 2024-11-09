@@ -24,7 +24,10 @@ Map<String, String> en = {
   DrawerKeys.drawerMeeting: 'Meeting',
   DrawerKeys.drawerNews: 'News',
   DrawerKeys.drawerMyGroups: 'My Groups',
+  DrawerKeys.drawerMyGroupscreate: 'Create Group',
   DrawerKeys.drawerMySchools: 'My Schools',
+  DrawerKeys.drawerMySchoolsjoin: 'Join School',
+
   DrawerKeys.drawerFood: 'Food',
   DrawerKeys.drawerGames: 'Games',
   DrawerKeys.drawerEvents: 'Events',
@@ -44,6 +47,31 @@ Map<String, String> en = {
   LoginKeys.loginKeysTermsAndConditions: 'Terms and Conditions/User Policy',
   LoginKeys.loginKeysacceptanceMessage:
       'By continuing, you accept the Terms and Conditions and Privacy Policy.',
+
+  //Register
+  RegisterKeys.registerKeysfirstname: 'First Name',
+  RegisterKeys.registerKeyslastname: 'Last Name',
+  RegisterKeys.registerKeysusername: 'Username',
+  RegisterKeys.registerKeysemail: 'E-mail',
+  RegisterKeys.registerKeyspassword: 'Password',
+  RegisterKeys.registerKeysrepeatpassword: 'Re Password',
+  RegisterKeys.registerKeysinvitecode: 'Invite Code',
+  RegisterKeys.registerKeyssignup: 'Sign Up',
+  RegisterKeys.registerKeyssignin: 'Sign In',
+  RegisterKeys.registerKeysifyouhaveaccount: 'İf you have account',
+
+  //ResetPassword
+  ResetPasswordKeys.resetPasswordKeysusername: 'Username',
+  ResetPasswordKeys.resetPasswordKeysemail: 'E-mail',
+  ResetPasswordKeys.resetPasswordKeysifyourememberyourpassword:
+      'If you remember your password',
+  ResetPasswordKeys.resetPasswordKeyscontinue: 'Continue',
+  ResetPasswordKeys.resetPasswordKeyssignin: 'Sign In',
+  ResetPasswordKeys.resetPasswordKeyscode: 'Code',
+  ResetPasswordKeys.resetPasswordKeyscreatepassword: 'Create Password',
+  ResetPasswordKeys.resetPasswordKeysrepeatpassword: 'Repeat Password',
+  ResetPasswordKeys.resetPasswordKeysrepeatsendcode: 'Repeat Send Code',
+  ResetPasswordKeys.resetPasswordKeyssave: 'Save',
 
   // BlockedListKeys
   BlockedListKeys.noBlockedAccounts: 'No blocked accounts',

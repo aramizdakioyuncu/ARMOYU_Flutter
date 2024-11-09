@@ -1,11 +1,11 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/controllers/chat_new_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,21 +44,13 @@ class ChatNewPage extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 45,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  color: ARMOYU.bodyColor,
-                ),
-                child: TextField(
-                  controller: controller.newchatcontroller.value,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: 20,
-                    ),
-                    hintText: 'Ara',
+              child: SizedBox(
+                child: CustomTextfields.costum3(
+                  controller: controller.newchatcontroller,
+                  placeholder: "Ara",
+                  preicon: const Icon(
+                    Icons.search,
+                    size: 20,
                   ),
                 ),
               ),
@@ -67,7 +59,10 @@ class ChatNewPage extends StatelessWidget {
           Obx(
             () => controller.filteredItems.isEmpty
                 ? const SliverFillRemaining(
-                    child: Center(child: Text("Oops! Bulunamadı!😂")))
+                    child: Center(
+                      child: Text("Oops! Bulunamadı!😂"),
+                    ),
+                  )
                 : SliverList(
                     delegate: SliverChildBuilderDelegate(
                       childCount: controller.filteredItems.length,

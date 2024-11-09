@@ -137,10 +137,7 @@ class StartingpageController extends GetxController {
 
     //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
     if (username == null || password == null) {
-      Get.offNamed(
-        "/login",
-        arguments: {"currentUser": User(userName: "", password: "")},
-      );
+      Get.offNamed("/login");
 
       return;
     }
@@ -168,10 +165,7 @@ class StartingpageController extends GetxController {
       }
 
       if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
-        Get.offNamed(
-          "/login",
-          arguments: {"currentUser": User(userName: "", password: "")},
-        );
+        Get.offNamed("/login");
         return;
       }
 
@@ -198,10 +192,7 @@ class StartingpageController extends GetxController {
       return;
     }
 
-    Get.offNamed(
-      "/login",
-      arguments: {"currentUser": User(userName: "", password: "")},
-    );
+    Get.offNamed("/login");
     return;
   }
 

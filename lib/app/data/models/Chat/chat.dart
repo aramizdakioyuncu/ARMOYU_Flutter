@@ -55,37 +55,28 @@ class Chat {
   }
 
   Widget listtilechat(context, {required UserAccounts currentUserAccounts}) {
-    return Column(
-      children: [
-        ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
-          leading: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            foregroundImage: CachedNetworkImageProvider(
-              user.avatar!.mediaURL.minURL.value,
-            ),
-          ),
-          tileColor: chatNotification ? Colors.red.shade900 : Colors.black,
-          title: CustomText.costum1(user.displayName!),
-          subtitle: lastmessage == null
-              ? const Text("")
-              : Text(lastmessage!.messageContext),
-          trailing: chatType == "ozel"
-              ? const Icon(Icons.person)
-              : const Icon(Icons.people_alt),
-          onTap: () {
-            Get.toNamed(
-              "/chat/detail",
-              arguments: {
-                "chat": this,
-                "CurrentUserAccounts": currentUserAccounts
-              },
-            );
-          },
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
+      leading: CircleAvatar(
+        backgroundColor: Colors.transparent,
+        foregroundImage: CachedNetworkImageProvider(
+          user.avatar!.mediaURL.minURL.value,
         ),
-        const SizedBox(height: 1)
-      ],
+      ),
+      tileColor: chatNotification ? Colors.red.shade900 : null,
+      title: CustomText.costum1(user.displayName!),
+      subtitle: lastmessage == null
+          ? const Text("")
+          : Text(lastmessage!.messageContext),
+      trailing: chatType == "ozel"
+          ? const Icon(Icons.person)
+          : const Icon(Icons.people_alt),
+      onTap: () {
+        Get.toNamed(
+          "/chat/detail",
+          arguments: {"chat": this, "CurrentUserAccounts": currentUserAccounts},
+        );
+      },
     );
   }
 

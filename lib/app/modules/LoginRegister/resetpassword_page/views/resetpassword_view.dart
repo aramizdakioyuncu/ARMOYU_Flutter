@@ -1,4 +1,5 @@
 import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/controllers/resetpassword_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -6,9 +7,7 @@ import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:get/get.dart';
 
 class ResetPasswordpageView extends StatelessWidget {
-  const ResetPasswordpageView({
-    super.key,
-  });
+  const ResetPasswordpageView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +28,7 @@ class ResetPasswordpageView extends StatelessWidget {
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: AssetImage(
-                            'assets/images/armoyu512.png'), // Analog görselinizin yolunu ekleyin
+                        image: AssetImage('assets/images/armoyu512.png'),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -41,14 +39,14 @@ class ResetPasswordpageView extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomTextfields.costum3(
-                          title: "Kullanıcı Adı",
+                          title: ResetPasswordKeys.resetPasswordKeysusername.tr,
                           controller: controller.usernameController,
                           isPassword: false,
                           preicon: const Icon(Icons.person),
                         ),
                         const SizedBox(height: 16),
                         CustomTextfields.costum3(
-                          title: "E-posta",
+                          title: ResetPasswordKeys.resetPasswordKeysemail.tr,
                           controller: controller.emailController,
                           isPassword: false,
                           preicon: const Icon(Icons.email),
@@ -89,7 +87,7 @@ class ResetPasswordpageView extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         CustomButtons.costum1(
-                          text: "Devam et",
+                          text: ResetPasswordKeys.resetPasswordKeyscontinue.tr,
                           onPressed: controller.forgotmypassword,
                           loadingStatus: controller.resetpasswordProcess,
                         ),
@@ -97,17 +95,20 @@ class ResetPasswordpageView extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Şifreyi hatırladıysan ",
-                              style: TextStyle(color: Colors.white),
+                            Text(
+                              ResetPasswordKeys
+                                  .resetPasswordKeysifyourememberyourpassword
+                                  .tr,
+                              style: const TextStyle(color: Colors.white),
                             ),
+                            const SizedBox(width: 5),
                             InkWell(
                               onTap: () {
-                                Navigator.of(context).pop();
+                                Get.back();
                               },
-                              child: const Text(
-                                "Giriş Yap",
-                                style: TextStyle(
+                              child: Text(
+                                ResetPasswordKeys.resetPasswordKeyssignin.tr,
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -144,21 +145,24 @@ class ResetPasswordpageView extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         CustomTextfields.number(
-                          placeholder: "Kod",
+                          placeholder:
+                              ResetPasswordKeys.resetPasswordKeyscode.tr,
                           controller: controller.codeController.value,
                           length: 6,
                           icon: const Icon(Icons.sms),
                         ),
                         const SizedBox(height: 16),
                         CustomTextfields.costum3(
-                          title: "Şifre",
+                          title: ResetPasswordKeys
+                              .resetPasswordKeyscreatepassword.tr,
                           controller: controller.passwordController,
                           isPassword: true,
                           preicon: const Icon(Icons.lock_outline),
                         ),
                         const SizedBox(height: 16),
                         CustomTextfields.costum3(
-                            title: "Şifre Tekrar",
+                            title: ResetPasswordKeys
+                                .resetPasswordKeysrepeatpassword.tr,
                             controller: controller.repasswordController,
                             isPassword: true,
                             preicon: const Icon(Icons.lock_outline)),
@@ -169,7 +173,8 @@ class ResetPasswordpageView extends StatelessWidget {
                             Visibility(
                               visible: controller.passwordtimer.value != 0,
                               child: CustomButtons.costum1(
-                                text: "Kaydet",
+                                text:
+                                    ResetPasswordKeys.resetPasswordKeyssave.tr,
                                 onPressed: controller.forgotmypassworddone,
                                 loadingStatus:
                                     controller.resetpasswordauthProcess,
@@ -178,7 +183,8 @@ class ResetPasswordpageView extends StatelessWidget {
                             Visibility(
                               visible: controller.passwordtimer.value == 0,
                               child: CustomButtons.costum1(
-                                text: "Tekrar Kod Gönder",
+                                text: ResetPasswordKeys
+                                    .resetPasswordKeysrepeatsendcode.tr,
                                 onPressed: controller.forgotmypassword,
                                 loadingStatus: controller.resetpasswordProcess,
                               ),
