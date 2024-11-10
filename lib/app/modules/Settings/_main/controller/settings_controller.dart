@@ -15,44 +15,43 @@ import 'package:get/get.dart';
 class SettingsController extends GetxController {
   var settingsController = TextEditingController().obs;
 
-  var selectedLanguage = "".obs;
   var listSettings = <WidgetSettings>[
     WidgetSettings(
       listtileIcon: Icons.phone_android_rounded,
-      listtileTitle: (SettingsKeys.devicePermissions.tr).obs,
+      listtileTitle: SettingsKeys.devicePermissions.obs,
       onTap: () {
         Get.toNamed("/settings/devicepermission");
       },
     ),
     WidgetSettings(
       listtileIcon: Icons.download_rounded,
-      listtileTitle: (SettingsKeys.downloadAndArchive.tr).obs,
+      listtileTitle: (SettingsKeys.downloadAndArchive).obs,
       onTap: () {},
     ),
     WidgetSettings(
       listtileIcon: Icons.network_wifi_3_bar_rounded,
-      listtileTitle: (SettingsKeys.dataSaver.tr).obs,
+      listtileTitle: (SettingsKeys.dataSaver).obs,
       onTap: () {
         Get.toNamed("/settings/datasaver");
       },
     ),
     WidgetSettings(
       listtileIcon: Icons.language,
-      listtileTitle: (SettingsKeys.languages.tr).obs,
+      listtileTitle: (SettingsKeys.languages).obs,
       onTap: () {
         Get.toNamed("/settings/languages");
       },
     ),
     WidgetSettings(
       listtileIcon: Icons.notifications_active,
-      listtileTitle: (SettingsKeys.notifications.tr).obs,
+      listtileTitle: (SettingsKeys.notifications).obs,
       onTap: () {
         Get.toNamed("/settings/notifications");
       },
     ),
     WidgetSettings(
       listtileIcon: Icons.block,
-      listtileTitle: (SettingsKeys.blockedList.tr).obs,
+      listtileTitle: (SettingsKeys.blockedList).obs,
       onTap: () {
         Get.toNamed("/settings/blockedlist");
       },
@@ -97,26 +96,24 @@ class SettingsController extends GetxController {
     //* *//
     currentUserAccounts = findCurrentAccountController.currentUserAccounts;
 
-    selectedLanguage.value = SettingsKeys.currentLanguage.tr;
-
     listSettingssupport.value = [
       WidgetSettings(
         listtileIcon: Icons.help,
-        listtileTitle: (SettingsKeys.help.tr).obs,
+        listtileTitle: (SettingsKeys.help).obs,
         onTap: () {
           Get.toNamed("/settings/help");
         },
       ),
       WidgetSettings(
         listtileIcon: Icons.person,
-        listtileTitle: (SettingsKeys.accountStatus.tr).obs,
+        listtileTitle: (SettingsKeys.accountStatus).obs,
         onTap: () {
           Get.toNamed("/settings/accountstatus");
         },
       ),
       WidgetSettings(
         listtileIcon: Icons.info,
-        listtileTitle: (SettingsKeys.about.tr).obs,
+        listtileTitle: (SettingsKeys.about).obs,
         onTap: () {
           Get.toNamed("/settings/about");
         },

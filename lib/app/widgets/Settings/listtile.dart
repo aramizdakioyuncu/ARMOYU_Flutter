@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WidgetSettings {
-  final Rx<String> listtileTitle;
+  Rx<String> listtileTitle;
   Rx<String>? tralingText;
   final IconData listtileIcon;
   final dynamic onTap;
@@ -18,7 +18,7 @@ class WidgetSettings {
     return Obx(
       () => ListTile(
         leading: Icon(listtileIcon),
-        title: Text(listtileTitle.value),
+        title: Text("$listtileTitle".tr),
         tileColor: Get.theme.scaffoldBackgroundColor,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

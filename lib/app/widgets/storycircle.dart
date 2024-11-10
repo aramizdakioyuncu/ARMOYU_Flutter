@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
-import 'package:ARMOYU/app/modules/Story/screen_story_page/views/storyscreen_page.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -64,38 +64,20 @@ class WidgetStorycircle extends StatelessWidget {
                   onTap: () {
                     if (cardData.owner.userID == currentUser.value.userID) {
                       if (ishasstory) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => StoryScreenPage(
-                              currentUser: currentUser.value,
-                              storyList: content,
-                              storyIndex: index,
-                            ),
-                          ),
-                        );
+                        Get.toNamed("/story", arguments: {
+                          "storyList": content,
+                          "storyIndex": index,
+                        });
+
                         return;
                       }
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => GalleryScreen(
-                      //       currentUser: currentUser.value,
-                      //     ),
-                      //   ),
-                      // );
+
                       Get.toNamed("/gallery");
                     } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => StoryScreenPage(
-                            currentUser: currentUser.value,
-                            storyList: content,
-                            storyIndex: index,
-                          ),
-                        ),
-                      );
+                      Get.toNamed("/story/screen", arguments: {
+                        "storyList": content,
+                        "storyIndex": index,
+                      });
 
                       //Basılınca görüntülendi efekti ver
                       content[index].isView = true;
@@ -143,7 +125,7 @@ class WidgetStorycircle extends StatelessWidget {
                       const SizedBox(height: 2),
                       CustomText.costum1(
                         cardData.owner.userID == currentUser.value.userID
-                            ? "Hikayen"
+                            ? SocialKeys.socialStory.tr
                             : cardData.owner.userName!,
                         size: 11,
                       ),

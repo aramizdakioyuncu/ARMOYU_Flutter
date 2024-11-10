@@ -142,7 +142,7 @@ class WidgetUtility {
         if (selectedMonth.length == 1) {
           selectedMonth = "0$selectedMonth";
         }
-        String selectedDate = "$selectedDay.$selectedMonth.$selectedYear";
+        var selectedDate = "$selectedDay.$selectedMonth.$selectedYear".obs;
 
         return Container(
           height: 250,
@@ -154,9 +154,9 @@ class WidgetUtility {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
-                    onChanged(selectedDate);
+                    onChanged(selectedDate.value);
                     setstatefunction();
-                    Navigator.pop(context);
+                    Get.back();
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(8.0),
@@ -187,6 +187,9 @@ class WidgetUtility {
                       ),
                       onSelectedItemChanged: (value) {
                         selectedYear = yearList[value].values.first;
+
+                        selectedDate.value =
+                            "$selectedDay.$selectedMonth.$selectedYear";
                       },
                     ),
                   ),
@@ -205,9 +208,13 @@ class WidgetUtility {
 
                         // dayList.clear();
                         dayList = List.generate(
-                            findDaysInMonth(int.parse(selectedYear),
-                                int.parse(selectedMonth)),
-                            (index) => {index + 1: (index + 1).toString()});
+                          findDaysInMonth(int.parse(selectedYear),
+                              int.parse(selectedMonth)),
+                          (index) => {index + 1: (index + 1).toString()},
+                        );
+
+                        selectedDate.value =
+                            "$selectedDay.$selectedMonth.$selectedYear";
                       },
                     ),
                   ),
@@ -226,6 +233,9 @@ class WidgetUtility {
                       onSelectedItemChanged: (value) {
                         Map<int, String> dayMap = dayList[value];
                         selectedDay = dayMap.keys.first.toString();
+
+                        selectedDate.value =
+                            "$selectedDay.$selectedMonth.$selectedYear";
                       },
                     ),
                   ),
@@ -257,30 +267,27 @@ class WidgetUtility {
 
   //CupertioTimeSelector
   static Future cupertinoTimepicker({
-    required BuildContext context,
     required Function(String) onChanged,
-    required Function setstatefunction,
   }) {
-    String hour = "00";
-    String minute = "00";
-
+    var hour = "00".obs;
+    var minute = "00".obs;
+    var selectedTime = "${hour.value}:${minute.value}".obs;
     return showCupertinoModalPopup(
       // barrierDismissible: false,
-      context: context,
+      context: Get.context!,
       builder: (BuildContext context) {
-        List<Map<int, String>> hourList =
-            List.generate(24, (index) => {index: (index).toString()});
+        var hourList =
+            List.generate(24, (index) => {index: (index).toString()}).obs;
 
-        List<Map<int, String>> minuteList =
-            List.generate(60, (index) => {index: (index).toString()});
+        var minuteList =
+            List.generate(60, (index) => {index: (index).toString()}).obs;
 
-        if (hour.length == 1) {
-          hour = "0$hour";
+        if (hour.value.length == 1) {
+          hour.value = "0$hour";
         }
-        if (minute.length == 1) {
-          minute = "0$minute";
+        if (minute.value.length == 1) {
+          minute.value = "0$minute";
         }
-        String selectedTime = "$hour:$minute";
 
         return Container(
           height: 250,
@@ -292,19 +299,21 @@ class WidgetUtility {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
-                    onChanged(selectedTime);
-                    setstatefunction();
-                    Navigator.pop(context);
+                    onChanged(selectedTime.value);
+
+                    log(selectedTime.value.toString());
+                    Get.back();
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(8.0),
                     child: Text(
                       "Bitti",
                       style: TextStyle(
-                          color: Colors.lightBlue,
-                          fontSize: 18,
-                          fontWeight: FontWeight.normal,
-                          decoration: TextDecoration.none),
+                        color: Colors.lightBlue,
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                        decoration: TextDecoration.none,
+                      ),
                     ),
                   ),
                 ),
@@ -312,7 +321,7 @@ class WidgetUtility {
               Row(
                 children: [
                   SizedBox(
-                    width: ARMOYU.screenWidth / 2,
+                    width: Get.width / 2,
                     height: 200,
                     child: CupertinoPicker(
                       looping: true,
@@ -329,12 +338,13 @@ class WidgetUtility {
                         },
                       ),
                       onSelectedItemChanged: (value) {
-                        hour = hourList[value].values.first;
+                        hour.value = hourList[value].values.first;
+                        selectedTime.value = "${hour.value}:${minute.value}";
                       },
                     ),
                   ),
                   SizedBox(
-                    width: ARMOYU.screenWidth / 2,
+                    width: Get.width / 2,
                     height: 150,
                     child: CupertinoPicker(
                       looping: true,
@@ -349,7 +359,8 @@ class WidgetUtility {
                         }
                       }),
                       onSelectedItemChanged: (value) {
-                        minute = minuteList[value].values.first;
+                        minute.value = minuteList[value].values.first;
+                        selectedTime.value = "${hour.value}:${minute.value}";
                       },
                     ),
                   ),
@@ -366,7 +377,6 @@ class WidgetUtility {
     required BuildContext context,
     required title,
     required Function(int, String) onChanged,
-    Function? setstatefunction,
     required List<Map<int, String>> list,
     bool looping = false,
   }) {
@@ -395,9 +405,6 @@ class WidgetUtility {
                   onTap: () {
                     onChanged(selectedItemID - 1, selectedItem);
 
-                    if (setstatefunction != null) {
-                      setstatefunction();
-                    }
                     Navigator.pop(context);
                   },
                   child: const Padding(
@@ -436,10 +443,6 @@ class WidgetUtility {
                         selectedItem = list[value].values.first.toString();
                         //
                         onChanged(selectedItemID - 1, selectedItem);
-
-                        if (setstatefunction != null) {
-                          setstatefunction();
-                        }
                       },
                     ),
                   ),

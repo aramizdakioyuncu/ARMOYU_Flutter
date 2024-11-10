@@ -6,6 +6,7 @@ import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -165,19 +166,20 @@ class ChatPageController extends GetxController {
   // Listeyi döndüren widget (ListView.builder)
   Widget chatListWidget() {
     if (filteredItems.value == null) {
-      return const CupertinoActivityIndicator();
+      return const SliverFillRemaining(child: CupertinoActivityIndicator());
     } else if (filteredItems.value!.isEmpty) {
-      return !isFirstFetch.value && !chatsearchprocess.value
-          ? const Center(
-              child: Text("Sohbet Geçmişi Boş"),
-            )
-          : const CupertinoActivityIndicator();
+      return SliverFillRemaining(
+        child: !isFirstFetch.value && !chatsearchprocess.value
+            ? const Center(
+                child: Text("Sohbet Geçmişi Boş"),
+              )
+            : const CupertinoActivityIndicator(),
+      );
     } else {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
-          itemCount: filteredItems.value!.length,
-          itemBuilder: (BuildContext context, int index) {
+      return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          childCount: filteredItems.value!.length,
+          (context, index) {
             return buildChatListTile(context, index, currentUserAccounts);
           },
         ),
@@ -402,7 +404,7 @@ class ChatPageController extends GetxController {
 
     return GestureDetector(
       onTap: () {
-        notecreate();
+        isMe ? notecreate() : null;
       },
       child: Container(
         width: 100,
@@ -427,7 +429,7 @@ class ChatPageController extends GetxController {
                   ),
                   child: SizedBox(
                     child: Text(
-                      isMe ? "Notun" : user.displayName!,
+                      isMe ? ChatKeys.chatyournote.tr : user.displayName!,
                       maxLines: 1,
                       style: TextStyle(
                         fontSize: 12,

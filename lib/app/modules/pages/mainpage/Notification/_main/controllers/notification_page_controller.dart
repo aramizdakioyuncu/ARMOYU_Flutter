@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/notification_bars.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/cupertino.dart';
@@ -160,8 +161,9 @@ class NotificationPageController extends GetxController {
             leading: const Icon(
               Icons.person_add_rounded,
             ),
-            title: CustomText.costum1("Arkadaşlık İstekleri"),
-            subtitle: CustomText.costum1("Arkadaşlık isteklerini gözden geçir"),
+            title: CustomText.costum1(NotificationKeys.friendRequests.tr),
+            subtitle:
+                CustomText.costum1(NotificationKeys.reviewFriendRequests.tr),
             trailing: Badge(
               isLabelVisible:
                   currentUserAccounts.friendRequestCount == 0 ? false : true,
@@ -185,9 +187,9 @@ class NotificationPageController extends GetxController {
             leading: const Icon(
               Icons.groups_2,
             ),
-            title: CustomText.costum1("Grup İstekleri"),
+            title: CustomText.costum1(NotificationKeys.groupRequests.tr),
             subtitle: CustomText.costum1(
-              "Grup isteklerini gözden geçir",
+              NotificationKeys.reviewGroupRequests.tr,
             ),
             trailing: Badge(
               isLabelVisible:

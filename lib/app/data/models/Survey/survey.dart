@@ -1,10 +1,10 @@
 import 'package:ARMOYU/app/data/models/Survey/answer.dart';
 import 'package:ARMOYU/app/data/models/Survey/question.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Survey/_main/views/survey_page.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Survey {
   final int surveyID;
@@ -33,19 +33,10 @@ class Survey {
     required this.surveyRemainingTime,
   });
 
-  Widget surveyList(BuildContext context,
-      {required UserAccounts currentUserAccounts}) {
+  Widget surveyList(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SurveyPage(
-              currentUserAccounts: currentUserAccounts,
-              survey: this,
-            ),
-          ),
-        );
+        Get.toNamed("/poll/detail", arguments: {"survey": this});
       },
       child: Container(
         padding: const EdgeInsets.all(10),
@@ -168,7 +159,7 @@ class Survey {
                             const SizedBox(width: 5),
                             Text(
                               surveyRemainingTime == ""
-                                  ? "Süresi Bitti"
+                                  ? PollKeys.pollExpired.tr
                                   : surveyRemainingTime,
                               style: TextStyle(
                                 fontSize: 14,
@@ -200,7 +191,9 @@ class Survey {
                             ),
                             const SizedBox(width: 5),
                             Text(
-                              didIVote ? 'Oylandı' : 'Oylanmadı',
+                              didIVote
+                                  ? PollKeys.pollVoted.tr
+                                  : PollKeys.pollnotVoted.tr,
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,

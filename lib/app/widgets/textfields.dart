@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/API_Functions/search.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Mention/mention.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -231,7 +232,7 @@ class CustomTextfields {
           key.refresh();
         });
       },
-      decoration: const InputDecoration(hintText: 'Bir şeyler yaz'),
+      decoration: InputDecoration(hintText: SocialKeys.socialwritesomething.tr),
       mentions: [
         WidgetMention.poplementions(),
         WidgetMention.hashtag(),

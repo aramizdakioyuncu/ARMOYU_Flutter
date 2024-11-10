@@ -1,5 +1,4 @@
-// ignore_for_file: deprecated_member_use, file_names
-
+// ignore_for_file: file_names
 import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:camera/camera.dart';
@@ -34,10 +33,8 @@ class ARMOYU {
   // static Color baseColor = Colors.grey.shade300;
   // static Color highlightColor = Colors.grey.shade100;
 
-  static double get screenWidth =>
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
-  static double get screenHeight =>
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.height;
+  static double get screenWidth => Get.width;
+  static double get screenHeight => Get.height;
 
   static List<CameraDescription>? cameras;
 

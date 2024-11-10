@@ -5,7 +5,7 @@ import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
-import 'package:ARMOYU/app/modules/Utility/text_page.dart';
+import 'package:ARMOYU/app/modules/utils/text_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

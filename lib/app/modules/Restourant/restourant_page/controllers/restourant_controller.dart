@@ -4,18 +4,24 @@ import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/station.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/functions/API_Functions/station.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
 class RestourantController extends GetxController {
-  final User currentUser;
-  RestourantController({
-    required this.currentUser,
-  });
   var cafe = Rx<Station?>(null);
+
+  late var currentUser = Rxn<User>();
+
   @override
   void onInit() {
     super.onInit();
 
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    currentUser.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
     Map<String, dynamic> arguments = Get.arguments;
 
     cafe.value ??= arguments["cafe"];
@@ -32,7 +38,7 @@ class RestourantController extends GetxController {
     }
     fetchEquipmentProcess.value = true;
 
-    FunctionsStation f = FunctionsStation(currentUser: currentUser);
+    FunctionsStation f = FunctionsStation(currentUser: currentUser.value!);
     Map<String, dynamic> response =
         await f.fetchEquipments(cafe.value!.stationID);
     if (response["durum"] == 0) {

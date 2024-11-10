@@ -30,7 +30,7 @@ class SettingsView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: CustomText.costum1('Ayarlar'),
+          title: CustomText.costum1(SettingsKeys.settings.tr),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -51,7 +51,7 @@ class SettingsView extends StatelessWidget {
                     title: CustomText.costum1(findCurrentAccountController
                         .currentUserAccounts.value.user.value.displayName!),
                     subtitle: CustomText.costum1(
-                        "Hatalı Giriş: ${findCurrentAccountController.currentUserAccounts.value.user.value.lastfaillogin}"),
+                        "${SettingsKeys.lastFailedLogin.tr}: ${findCurrentAccountController.currentUserAccounts.value.user.value.lastfaillogin}"),
                     onTap: () {
                       Get.toNamed("/settings/account");
                     },
@@ -76,13 +76,13 @@ class SettingsView extends StatelessWidget {
                       ),
                       child: TextField(
                         controller: controller.settingsController.value,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          prefixIcon: Icon(
+                          prefixIcon: const Icon(
                             Icons.search,
                             size: 20,
                           ),
-                          hintText: 'Ara',
+                          hintText: CommonKeys.search.tr,
                         ),
                       ),
                     ),

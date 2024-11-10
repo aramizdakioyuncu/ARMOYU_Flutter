@@ -8,7 +8,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Events/event_page/views/event_page.dart';
+import 'package:ARMOYU/app/modules/Events/event_page/views/event_view.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -186,7 +186,7 @@ class OneSignalApi {
           // );
 
           Get.to(
-            EventPage(
+            EventView(
               currentUserAccounts:
                   UserAccounts(user: User(userID: int.parse(userID)).obs),
             ),

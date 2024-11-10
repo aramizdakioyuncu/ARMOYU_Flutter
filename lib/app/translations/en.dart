@@ -1,10 +1,128 @@
 import 'package:ARMOYU/app/translations/app_translation.dart';
 
 Map<String, String> en = {
-  SettingsKeys.currentLanguage: 'English',
-  SettingsKeys.hello: 'Hello World',
+  TranslateKeys.currentLanguage: 'English',
+
+  //Common
+  CommonKeys.search: "Search",
+  CommonKeys.empty: "Empty",
+  CommonKeys.join: "Join",
+  CommonKeys.leave: "Leave",
+  CommonKeys.cancel: "Cancel",
+  CommonKeys.submit: "Submit",
+  CommonKeys.create: "Create",
+  CommonKeys.share: "Share",
+
+  //Social
+  SocialKeys.socialStory: 'Your Story',
+  SocialKeys.socialLiked: 'and #NUMBER# person liked',
+
+  SocialKeys.socialAddFavorite: 'Add to favorites',
+  SocialKeys.socialReport: 'Report',
+  SocialKeys.socialBlock: 'Block User',
+  SocialKeys.socialedit: 'Edit Post',
+  SocialKeys.socialdelete: 'Delete Post',
+
+  SocialKeys.socialShare: 'Share Post',
+  SocialKeys.socialwritesomething: 'Write Something',
+
+  //Notification
+  NotificationKeys.friendRequests: 'Friend Request',
+  NotificationKeys.reviewFriendRequests: 'Review friend requests',
+  NotificationKeys.groupRequests: 'Group Requests',
+  NotificationKeys.reviewGroupRequests: 'Review group requests',
+
+  //Profile
+
+  ProfileKeys.profilerefresh: 'Refresh Profile',
+  ProfileKeys.profileEdit: 'Edit Profile',
+  ProfileKeys.profilecopylink: 'Copy Profile Link',
+  ProfileKeys.profileblock: 'Block User',
+  ProfileKeys.profilereport: 'Report Profile',
+  ProfileKeys.profileremovefriend: 'Remove from Friends',
+  ProfileKeys.profilepoke: 'Poke',
+
+  ProfileKeys.profilePost: 'Post',
+  ProfileKeys.profilefriend: 'Friend',
+  ProfileKeys.profileaward: 'Award',
+
+  ProfileKeys.profilePosts: 'Posts',
+  ProfileKeys.profileMedia: 'Media',
+  ProfileKeys.profileMentions: 'Mention',
+
+  //Chat
+  ChatKeys.chat: 'Chats',
+  ChatKeys.chatyournote: 'Your Note',
+  ChatKeys.chatnewchat: 'New Chat',
+
+  //Group
+  GroupKeys.createGroup: 'Create Group',
+  GroupKeys.groupName: 'Group Name',
+  GroupKeys.groupShortname: 'Group Shortname',
+
+  //School
+  SchoolKeys.joinSchool: 'Join School',
+  SchoolKeys.schoolPassword: 'Password',
+  SchoolKeys.schoolJoin: 'Join',
+
+  //Food
+  FoodKeys.orderExplain: 'Please scan at the checkout to place your order.',
+  FoodKeys.foodProduct: 'Product',
+  FoodKeys.foodPrice: 'Price',
+
+  //Poll
+
+  PollKeys.createPoll: 'Create Poll',
+  PollKeys.pollquestion: 'Poll Question',
+  PollKeys.pollanswers: 'Poll Answers',
+  PollKeys.pollOption: 'Option',
+  PollKeys.pollAddOption: 'Add Option',
+
+  PollKeys.selectHour: 'Select Hour',
+  PollKeys.selectDate: 'Select Date',
+
+  PollKeys.selectPollMultipleChoice: 'Multiple Chocie',
+  PollKeys.selectPollCheckboxes: 'Check Boxes',
+  PollKeys.selectPollShortAnswer: 'Short Answer',
+
+  PollKeys.pollExpired: 'Expired',
+  PollKeys.pollVoted: 'Voted',
+  PollKeys.pollnotVoted: 'Not Voted',
+
+  //Invite
+  InviteKeys.normalAccount: 'Normal Account',
+  InviteKeys.verifiedAccount: 'Verified Account',
+  InviteKeys.sendVerificationCode: 'Send Verification Code',
+
+  // JoinUs
+  JoinUsKeys.phoneNumberRegistered:
+      'Phone number must be registered in the system.',
+  JoinUsKeys.profilePhoto:
+      'Profile photo must be different from the default logo.',
+  JoinUsKeys.noPenalty: 'No penalties have been applied.',
+  JoinUsKeys.noProvocation: 'Must not have provoked others.',
+
+  JoinUsKeys.selectAnItem: 'Select an item',
+  JoinUsKeys.selectAPosition: 'Select a position',
+  JoinUsKeys.whyJoinTheTeam: 'Why do you want to join the team?',
+  JoinUsKeys.whyChooseThisPermission: 'Why did you choose this permission?',
+  JoinUsKeys.howManyDaysPerWeek: 'How many days per week can you dedicate?',
+
+  //Event
+  EventKeys.eventRules: 'Rules',
+  EventKeys.eventcoordinator: 'Coordinator',
+  EventKeys.eventdescriptions: 'Descriptions',
+  EventKeys.eventParticipationEndedExplain:
+      'The participation period for the event has ended. If you think this is a mistake, please contact the authorities.',
+  EventKeys.alreadyJoinedEventWithDeadline:
+      'You have already joined the event. To cancel, the deadline is 30 minutes before the event starts.',
+  EventKeys.readAndAgreeRules:
+      'I have read and understood the rules and accept them',
+  //Settings
   SettingsKeys.translation: 'Translation',
   SettingsKeys.settings: 'Settings',
+  SettingsKeys.lastFailedLogin: 'Failed Login',
+
   SettingsKeys.applicationAndMedia: 'Application and Media',
   SettingsKeys.devicePermissions: 'Device Permissions',
   SettingsKeys.downloadAndArchive: 'Download and Archive',

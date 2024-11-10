@@ -4,14 +4,14 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/pages/_main/views/pages.dart';
+import 'package:ARMOYU/app/modules/pages/_main/views/pages_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppPageController extends GetxController {
   late UserAccounts currentUserAccounts;
-  var pagesViewList = <Pages>[].obs; // Reaktif liste
+  var pagesViewList = <PagesView>[].obs; // Reaktif liste
   var pagesController = PageController(initialPage: 0).obs;
 
   @override
@@ -21,13 +21,13 @@ class AppPageController extends GetxController {
     // Tüm hesapları aktif et
     for (var element in ARMOYU.appUsers) {
       pagesViewList.add(
-        Pages(
+        PagesView(
           currentUserAccounts: element,
         ),
       );
     }
 
-    for (Pages pagaviewInfo in pagesViewList) {
+    for (PagesView pagaviewInfo in pagesViewList) {
       log("${pagaviewInfo.currentUserAccounts.user.value.userID!} -> ${pagaviewInfo.currentUserAccounts.user.value.displayName!}");
     }
   }
@@ -37,7 +37,7 @@ class AppPageController extends GetxController {
         element.currentUserAccounts.user.value.userID! ==
         selectedUser.user.value.userID!)) {
       pagesViewList.add(
-        Pages(
+        PagesView(
           currentUserAccounts: selectedUser,
         ),
       );

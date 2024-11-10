@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/controllers/chat_new_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -31,7 +32,7 @@ class ChatNewPage extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Yeni Sohbet"),
+        title: Text(ChatKeys.chatnewchat.tr),
       ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -47,7 +48,7 @@ class ChatNewPage extends StatelessWidget {
               child: SizedBox(
                 child: CustomTextfields.costum3(
                   controller: controller.newchatcontroller,
-                  placeholder: "Ara",
+                  placeholder: CommonKeys.search.tr,
                   preicon: const Icon(
                     Icons.search,
                     size: 20,

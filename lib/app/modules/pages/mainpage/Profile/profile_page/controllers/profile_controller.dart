@@ -15,9 +15,10 @@ import 'package:ARMOYU/app/functions/API_Functions/media.dart';
 import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
+import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/detectabletext.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
@@ -972,8 +973,8 @@ class ProfileController extends GetxController
             child: CupertinoActivityIndicator(),
           )
         : widgetPosts.value!.isEmpty
-            ? const Center(
-                child: Text("Boş"),
+            ? Center(
+                child: Text(CommonKeys.empty.tr),
               )
             : NotificationListener<ScrollNotification>(
                 onNotification: handleScrollNotification,
@@ -1082,8 +1083,8 @@ class ProfileController extends GetxController
     return firstFetchTaggedPost.value || widgetTaggedPosts.value == null
         ? const Center(child: CupertinoActivityIndicator())
         : widgetTaggedPosts.value!.isEmpty
-            ? const Center(
-                child: Text("Boş"),
+            ? Center(
+                child: Text(CommonKeys.empty.tr),
               )
             : NotificationListener<ScrollNotification>(
                 onNotification: handleScrollNotificationTagged,
@@ -1333,7 +1334,7 @@ class ProfileController extends GetxController
         children: [
           CustomText.costum1(userProfile.value.postsCount.toString(),
               weight: FontWeight.bold),
-          CustomText.costum1("Gönderi"),
+          CustomText.costum1(ProfileKeys.profilePost.tr),
         ],
       );
     }
@@ -1346,14 +1347,6 @@ class ProfileController extends GetxController
         if (userProfile.value.friendsCount == null) {
           return;
         }
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => FriendlistPage(
-        //       currentUserAccounts.value: UserAccounts(user: userProfile.value),
-        //     ),
-        //   ),
-        // );
 
         Get.toNamed("profile/friendlist", arguments: {
           "user": UserAccounts(user: userProfile.value.obs),
@@ -1369,7 +1362,7 @@ class ProfileController extends GetxController
               children: [
                 CustomText.costum1(userProfile.value.friendsCount.toString(),
                     weight: FontWeight.bold),
-                CustomText.costum1("Arkadaş"),
+                CustomText.costum1(ProfileKeys.profilefriend.tr),
               ],
             ),
     );
@@ -1392,7 +1385,7 @@ class ProfileController extends GetxController
         children: [
           CustomText.costum1(userProfile.value.awardsCount.toString(),
               weight: FontWeight.bold),
-          CustomText.costum1("Ödül"),
+          CustomText.costum1(ProfileKeys.profileaward.tr),
         ],
       );
     }
@@ -1756,7 +1749,7 @@ class ProfileController extends GetxController
                   ),
                   ListTile(
                     leading: const Icon(Icons.refresh),
-                    title: const Text("Profili Yenile"),
+                    title: Text(ProfileKeys.profilerefresh.tr),
                     onTap: () async {
                       Navigator.pop(context);
                       await handleRefresh(myProfileRefresh: true);
@@ -1772,17 +1765,17 @@ class ProfileController extends GetxController
                         );
                         functions.profileEdit(context, () {});
                       },
-                      child: const ListTile(
-                        leading: Icon(Icons.edit),
-                        title: Text("Profili Düzenle"),
+                      child: ListTile(
+                        leading: const Icon(Icons.edit),
+                        title: Text(ProfileKeys.profileEdit.tr),
                       ),
                     ),
                   ),
                   InkWell(
                     onTap: () {},
-                    child: const ListTile(
-                      leading: Icon(Icons.content_copy),
-                      title: Text("Profil linkini kopyala."),
+                    child: ListTile(
+                      leading: const Icon(Icons.content_copy),
+                      title: Text(ProfileKeys.profilecopylink.tr),
                     ),
                   ),
                   const Divider(),
@@ -1790,13 +1783,13 @@ class ProfileController extends GetxController
                     visible: !ismyProfile.value,
                     child: InkWell(
                       onTap: () => userblockingfunction(),
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.red,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.person_off_outlined,
                           color: Colors.red,
                         ),
-                        title: Text("Kullanıcıyı Engelle."),
+                        title: Text(ProfileKeys.profileblock.tr),
                       ),
                     ),
                   ),
@@ -1804,13 +1797,13 @@ class ProfileController extends GetxController
                     visible: !ismyProfile.value,
                     child: InkWell(
                       onTap: () {},
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.red,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.flag_outlined,
                           color: Colors.red,
                         ),
-                        title: Text("Profili bildir."),
+                        title: Text(ProfileKeys.profilereport.tr),
                       ),
                     ),
                   ),
@@ -1829,13 +1822,13 @@ class ProfileController extends GetxController
                           return;
                         }
                       },
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.red,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.person_remove,
                           color: Colors.pink,
                         ),
-                        title: Text("Arkadaşlıktan Çıkar."),
+                        title: Text(ProfileKeys.profileremovefriend.tr),
                       ),
                     ),
                   ),
@@ -1856,13 +1849,13 @@ class ProfileController extends GetxController
                           return;
                         }
                       },
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.orange,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.local_fire_department,
                           color: Colors.pink,
                         ),
-                        title: Text("Profili Dürt."),
+                        title: Text(ProfileKeys.profilepoke.tr),
                       ),
                     ),
                   ),

@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/functions/API_Functions/joinus.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class JoinusController extends GetxController {
-  final User currentUser;
-  JoinusController({required this.currentUser});
-
   var departmentList = <Map<int, dynamic>>[].obs;
   var departmentdetailList = <Map<int, dynamic>>[].obs;
   var filtereddepartmentdetailList = <Map<int, dynamic>>[].obs;
@@ -23,6 +21,21 @@ class JoinusController extends GetxController {
   var positionID = Rx<int?>(null);
   var departmentabout = Rx<String>("");
   var requestProccess = false.obs;
+  late var currentUser = Rxn<User>();
+
+  @override
+  void onInit() {
+    super.onInit();
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    currentUser.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
+    if (departmentList.isEmpty) {
+      fetchdepartmentInfo();
+    }
+  }
 
   Future<void> requestjoinfunction() async {
     if (positionID.value == null) {
@@ -54,9 +67,8 @@ class JoinusController extends GetxController {
       return;
     }
     requestProccess.value = true;
-    setstatefunction();
 
-    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser);
+    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.requestjoindepartment(
         positionID.value!,
         whyjointheteamController.value.text,
@@ -69,7 +81,7 @@ class JoinusController extends GetxController {
       ARMOYUWidget.stackbarNotification(Get.context!, response["aciklama"]);
 
       requestProccess.value = false;
-      setstatefunction();
+
       return;
     }
 
@@ -77,7 +89,7 @@ class JoinusController extends GetxController {
   }
 
   Future<void> fetchdepartmentInfo() async {
-    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser);
+    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.fetchdepartment();
 
     if (response["durum"] == 0) {
@@ -111,18 +123,6 @@ class JoinusController extends GetxController {
           "about": departmentInfo["about"],
         }
       });
-    }
-    setstatefunction();
-  }
-
-  void setstatefunction() {}
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    if (departmentList.isEmpty) {
-      fetchdepartmentInfo();
     }
   }
 }

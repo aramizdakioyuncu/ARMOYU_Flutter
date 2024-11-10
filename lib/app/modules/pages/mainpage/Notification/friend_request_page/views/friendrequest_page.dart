@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/friend_request_page/controllers/friendrequest_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,7 @@ class FriendRequestView extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Arkadaşlık İstekleri"),
+        title: Text(NotificationKeys.friendRequests.tr),
         actions: [
           IconButton(
             onPressed: () async {
@@ -48,7 +49,7 @@ class FriendRequestView extends StatelessWidget {
                     child: Center(
                       child: !controller.firstFetchProcces.value &&
                               !controller.pageproccess.value
-                          ? const Text("Arkadaşlık istek kutusu boş")
+                          ? Text(CommonKeys.empty.tr)
                           : const CupertinoActivityIndicator(),
                     ),
                   )

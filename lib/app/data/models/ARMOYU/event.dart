@@ -2,7 +2,7 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Events/event_page/views/event_page.dart';
+import 'package:ARMOYU/app/modules/Events/event_page/views/event_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,7 +78,7 @@ class Event {
             // );
 
             Get.to(
-              EventPage(currentUserAccounts: currentUserAccounts),
+              EventView(currentUserAccounts: currentUserAccounts),
               arguments: {
                 "event": this,
               },

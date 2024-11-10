@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/group_request_page/controllers/grouprequest_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,7 +26,7 @@ class GrouprequestView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Grup İstekleri"),
+        title: Text(NotificationKeys.groupRequests.tr),
         actions: [
           IconButton(
             onPressed: () async {
@@ -43,7 +44,7 @@ class GrouprequestView extends StatelessWidget {
               ? Center(
                   child: !controller.firstFetchProcces.value &&
                           !controller.postpageproccess.value
-                      ? const Text("Grup istek kutusu boş")
+                      ? Text(CommonKeys.empty.tr)
                       : const CupertinoActivityIndicator(),
                 )
               : ListView.builder(

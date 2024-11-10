@@ -39,7 +39,7 @@ class LanguagesSettingsView extends StatelessWidget {
                         Get.updateLocale(const Locale('en', 'US'));
                       }
                     },
-                    selected: SettingsKeys.currentLanguage.tr ==
+                    selected: TranslateKeys.currentLanguage.tr ==
                         languageshort.first.value,
                   );
                 },

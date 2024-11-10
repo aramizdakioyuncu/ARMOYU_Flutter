@@ -13,6 +13,7 @@ import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/story.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/storycircle_skeleton.dart';
@@ -119,7 +120,7 @@ class SocailPageController extends GetxController {
           StoryList(
             owner: User(
               userID: currentUserAccounts.value.user.value.userID,
-              userName: "Hikayen",
+              userName: SocialKeys.socialStory.tr,
               avatar: currentUserAccounts.value.user.value.avatar,
             ),
             story: null,
@@ -140,7 +141,7 @@ class SocailPageController extends GetxController {
               StoryList(
                 owner: User(
                   userID: currentUserAccounts.value.user.value.userID,
-                  userName: "Hikayen",
+                  userName: SocialKeys.socialStory.tr,
                   avatar: currentUserAccounts.value.user.value.avatar,
                 ),
                 story: null,

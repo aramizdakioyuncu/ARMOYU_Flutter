@@ -183,7 +183,7 @@ class EventController extends GetxController {
         ),
         groupName: element["group_name"],
         groupshortName: element["group_shortname"],
-        groupUsers: groupUsers,
+        groupUsers: groupUsers.obs,
       );
       groupParticipant.add(g);
     }

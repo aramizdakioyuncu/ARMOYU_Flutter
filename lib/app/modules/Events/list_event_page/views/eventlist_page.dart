@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -113,7 +114,7 @@ class _EventlistPage extends State<EventlistPage>
     super.build(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Etkinlikler'),
+        title: Text(DrawerKeys.drawerEvents.tr),
       ),
       body: CustomScrollView(
         slivers: [

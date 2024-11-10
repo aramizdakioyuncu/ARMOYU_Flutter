@@ -4,8 +4,8 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/modules/Social/share_post_page/controllers/postshare_controller.dart';
-import 'package:ARMOYU/app/modules/Utility/camera_screen_page.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,7 @@ class PostshareView extends StatelessWidget {
     final controller = Get.put(PostshareController());
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Paylaşım Yap"),
+        title: Text(SocialKeys.socialShare.tr),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -43,7 +43,7 @@ class PostshareView extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: ARMOYU.screenWidth,
+                width: Get.width,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -136,16 +136,11 @@ class PostshareView extends StatelessWidget {
                     if (ARMOYU.cameras!.isNotEmpty)
                       IconButton(
                         onPressed: () async {
-                          final List<Media> photo = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CameraScreen(
-                                currentUser: findCurrentAccountController
-                                    .currentUserAccounts.value.user.value,
-                                canPop: true,
-                              ),
-                            ),
-                          );
+                          final List<Media> photo =
+                              await Get.toNamed("/camera", arguments: {
+                            "canPop": true,
+                          });
+
                           for (var element in photo) {
                             log(element.mediaURL.minURL.value);
                           }
@@ -177,7 +172,7 @@ class PostshareView extends StatelessWidget {
                   children: [
                     Obx(
                       () => CustomButtons.costum1(
-                        text: "Paylaş",
+                        text: CommonKeys.share.tr,
                         onPressed: controller.sharePost,
                         loadingStatus: controller.postshareProccess,
                       ),

@@ -7,7 +7,7 @@ import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/API_Functions/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Story/publish_story_page/views/storypublish_page.dart';
-import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
+import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';

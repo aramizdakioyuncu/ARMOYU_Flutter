@@ -24,7 +24,8 @@ class BlockedlistSettingsController extends GetxController {
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     //* *//
-
+    currentUserAccounts.value =
+        findCurrentAccountController.currentUserAccounts.value;
     if (isFirstProcces.value) {
       getblockedlist();
     }

@@ -2,9 +2,10 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/controllers/profile_controller.dart';
-import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
+import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -341,15 +342,16 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
         tabs: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText.costum1('Paylaşımlar', size: 15.0),
+            child: CustomText.costum1(ProfileKeys.profilePosts.tr, size: 15.0),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText.costum1('Medya', size: 15.0),
+            child: CustomText.costum1(ProfileKeys.profileMedia.tr, size: 15.0),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: CustomText.costum1('Etiketlenmeler', size: 15.0),
+            child:
+                CustomText.costum1(ProfileKeys.profileMentions.tr, size: 15.0),
           )
         ],
       ),

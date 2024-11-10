@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:get/get.dart';
 
 class Group {
   int? groupID;
@@ -11,7 +12,7 @@ class Group {
   Media? groupBanner;
   String? groupType;
   String? groupURL;
-  List<User>? groupUsers;
+  RxList<User>? groupUsers;
   int? groupUsersCount;
   bool? joinStatus;
 
@@ -67,9 +68,8 @@ class Group {
       groupType: json['groupType'],
       groupURL: json['groupURL'],
       groupUsers: json['groupUsers'] != null
-          ? (json['groupUsers'] as List<dynamic>)
-              .map((user) => User.fromJson(user))
-              .toList()
+          ? List<User>.from(
+              json['groupUsers'].map((user) => User.fromJson(user))).obs
           : null,
       groupUsersCount: json['groupUsersCount'],
       joinStatus: json['joinStatus'],

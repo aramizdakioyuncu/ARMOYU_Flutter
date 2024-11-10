@@ -12,9 +12,7 @@ import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/API_Functions/station.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/Restourant/restourant_page/views/restourant_page.dart';
-import 'package:ARMOYU/app/modules/School/school_page/views/school_page.dart';
-import 'package:ARMOYU/app/modules/Utility/camera_screen_page.dart';
+import 'package:ARMOYU/app/modules/utils/camera/views/camera_view.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -90,10 +88,7 @@ class MainPageController extends GetxController {
 
     if (ARMOYU.cameras!.isNotEmpty) {
       mainsocialpages.add(
-        CameraScreen(
-          currentUser: currentUserAccounts.value!.user.value,
-          canPop: false,
-        ),
+        const CameraView(),
       );
       socailinitpage.value = 1;
     }
@@ -461,7 +456,7 @@ class MainPageController extends GetxController {
           ),
           title: Text(group.groupName!),
           onTap: () {
-            Get.toNamed("/group", arguments: {
+            Get.toNamed("/group/detail", arguments: {
               "currentUserAccounts": currentUserAccounts.value!,
               "group": group,
               "groupID": group.groupID!,
@@ -499,8 +494,13 @@ class MainPageController extends GetxController {
           ),
           title: Text(school.schoolName!),
           onTap: () {
-            Get.to(const SchoolPageView(), arguments: {
-              "user": currentUserAccounts.value!.user,
+            // Get.to(const SchoolPageView(), arguments: {
+            //   "user": currentUserAccounts.value!.user,
+            //   "school": school,
+            //   "schoolID": school.schoolID!,
+            // });
+
+            Get.toNamed("/school", arguments: {
               "school": school,
               "schoolID": school.schoolID!,
             });
@@ -539,15 +539,10 @@ class MainPageController extends GetxController {
             // Restoran sayfasına yönlendirme işlemleri yapılabilir
             // Get.to(() => RestourantPage(cafe: foodStation, currentUser: currentUser));
 
-            Get.to(
-                RestourantPageView(
-                  cafe: foodStation,
-                  currentUser: currentUserAccounts.value!.user.value,
-                ),
-                arguments: {
-                  "cafe": foodStation,
-                  "currentUser": currentUserAccounts.value!.user,
-                });
+            Get.toNamed("/restourant", arguments: {
+              "cafe": foodStation,
+              "currentUser": currentUserAccounts.value!.user.value,
+            });
           },
         );
       },
@@ -580,8 +575,7 @@ class MainPageController extends GetxController {
           ),
           title: Text(gameStation.name),
           onTap: () {
-            // Burada sayfa yönlendirme işlemleri yapılabilir
-            // Get.to(() => RestourantPage(cafe: gameStation, currentUser: currentUser));
+            Get.toNamed("/restourant", arguments: {"cafe": gameStation});
           },
         );
       },

@@ -2,12 +2,14 @@ import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/posts/controllers/post_controller.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 
 class TwitterPostWidget extends StatelessWidget {
   final UserAccounts currentUserAccounts;
@@ -228,7 +230,15 @@ class TwitterPostWidget extends StatelessWidget {
                       ),
                     ),
                     const Spacer(),
-                    const Icon(Icons.share_outlined, color: Colors.grey),
+                    IconButton(
+                      onPressed: () async {
+                        await Share.share(
+                          'https://aramizdakioyuncu.com/?sosyal1=${post.postID}',
+                        );
+                      },
+                      icon: const Icon(Icons.share_outlined),
+                      color: Colors.grey,
+                    ),
                   ],
                 ),
               ),
@@ -286,7 +296,7 @@ class TwitterPostWidget extends StatelessWidget {
                                           context,
                                           currentUserAccounts:
                                               currentUserAccounts,
-                                          "@${controller.postInfo.value.firstthreelike[0].user.userName.toString()} ${controller.postInfo.value.likesCount - 1 > 0 ? "ve ${controller.postInfo.value.likesCount - 1} kişi" : ""} beğendi",
+                                          "@${controller.postInfo.value.firstthreelike[0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) == 0 ? "liked" : SocialKeys.socialLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
                                         ),
                                       ),
                                     )

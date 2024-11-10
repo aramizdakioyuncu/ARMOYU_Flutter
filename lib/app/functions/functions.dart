@@ -616,7 +616,6 @@ class ARMOYUFunctions {
                                                 );
                                               });
                                             },
-                                            setstatefunction: setstatefunction,
                                             list:
                                                 ARMOYU.countryList.map((item) {
                                               return {
@@ -643,7 +642,6 @@ class ARMOYUFunctions {
                                               provinceIndex = selectedIndex;
                                               province = selectedValue;
                                             },
-                                            setstatefunction: setstatefunction,
                                             list: ARMOYU
                                                 .countryList[countryIndex!]
                                                 .provinceList!

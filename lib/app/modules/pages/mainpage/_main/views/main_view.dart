@@ -2,14 +2,10 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/modules/Business/applications_page/views/applications_page.dart';
 import 'package:ARMOYU/app/modules/Events/list_event_page/views/eventlist_page.dart';
-import 'package:ARMOYU/app/modules/Invite/invite_page/views/invite_page.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_page.dart';
-import 'package:ARMOYU/app/modules/School/login_school_page/views/school_login.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
-import 'package:ARMOYU/app/modules/Survey/list_survey_page/views/surveylist_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
@@ -23,8 +19,8 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../Notification/_main/views/notification_page.dart';
 
-class MainPageView extends StatelessWidget {
-  const MainPageView({super.key});
+class MainView extends StatelessWidget {
+  const MainView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -122,12 +118,12 @@ class MainPageView extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 18,
                         ),
-                        decoration: const InputDecoration(
-                          prefixIcon: Icon(
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
                             Icons.search,
                             size: 18,
                           ),
-                          hintText: 'Ara',
+                          hintText: CommonKeys.search.tr,
                           border: InputBorder.none,
                         ),
                       ),
@@ -327,10 +323,11 @@ class MainPageView extends StatelessWidget {
                               ),
                               title: Text(DrawerKeys.drawerMySchoolsjoin.tr),
                               onTap: () {
-                                Get.to(const SchoolLoginPageView(), arguments: {
-                                  "currentUser": controller
-                                      .currentUserAccounts.value!.user,
-                                });
+                                // Get.to(const SchoolLoginPageView(), arguments: {
+                                //   "currentUser": controller
+                                //       .currentUserAccounts.value!.user,
+                                // });
+                                Get.toNamed("/school/login");
                               },
                             ),
                             Obx(
@@ -409,45 +406,30 @@ class MainPageView extends StatelessWidget {
                           leading: const Icon(Icons.analytics_rounded),
                           title: Text(DrawerKeys.drawerPolls.tr),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SurveyListPage(
-                                  currentUserAccounts:
-                                      controller.currentUserAccounts.value!,
-                                ),
-                              ),
-                            );
+                            Get.toNamed("/poll");
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.assignment_sharp),
                           title: Text(DrawerKeys.drawerInvite.tr),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => InvitePage(
-                                  currentUserAccounts:
-                                      controller.currentUserAccounts.value!,
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => InvitePage(
+                            //       currentUserAccounts:
+                            //           controller.currentUserAccounts.value!,
+                            //     ),
+                            //   ),
+                            // );
+                            Get.toNamed("/invite");
                           },
                         ),
                         ListTile(
                           leading: const Icon(Icons.business_center),
                           title: Text(DrawerKeys.drawerJoinUs.tr),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BusinessApplicationsView(
-                                  currentUser: controller
-                                      .currentUserAccounts.value!.user.value,
-                                ),
-                              ),
-                            );
+                            Get.toNamed("/applications");
                           },
                         ),
                         ListTile(

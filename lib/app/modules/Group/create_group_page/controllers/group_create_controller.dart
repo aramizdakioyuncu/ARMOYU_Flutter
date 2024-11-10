@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/functions/API_Functions/category.dart';
 import 'package:ARMOYU/app/functions/API_Functions/group.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -32,10 +33,13 @@ class GroupCreateController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    final Map<String, dynamic> arguments =
-        Get.arguments as Map<String, dynamic>;
 
-    user.value = arguments['user'] as User;
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    user.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
 
     groupcreaterequest("gruplar", cupertinolist);
     groupdetailfetch("E-spor", cupertinolist2);

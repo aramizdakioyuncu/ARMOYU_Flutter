@@ -8,6 +8,156 @@ abstract class AppTranslation {
   };
 }
 
+class TranslateKeys {
+  static const currentLanguage = 'current_language';
+}
+
+class CommonKeys {
+  static const search = 'search';
+  static const empty = 'empty';
+  static const join = 'join';
+  static const leave = 'leave';
+  static const cancel = 'cancel';
+  static const submit = 'submit';
+  static const create = 'create';
+  static const share = 'share';
+}
+
+//Social
+class SocialKeys {
+  static const socialStory = 'social_story';
+  static const socialLiked = 'social_liked';
+
+  static const socialAddFavorite = 'social_add_favorite';
+  static const socialReport = 'social_report';
+  static const socialBlock = 'social_block';
+  static const socialedit = 'social_edit';
+  static const socialdelete = 'social_delete';
+
+  static const socialShare = 'social_share';
+  static const socialwritesomething = 'social_write_something';
+}
+
+class NotificationKeys {
+  static const friendRequests = 'friend_requests';
+  static const reviewFriendRequests = 'review_friend_requests';
+  static const groupRequests = 'group_requests';
+  static const reviewGroupRequests = 'review_group_requests';
+}
+
+class ProfileKeys {
+  static const profilerefresh = 'profile_refresh';
+  static const profileEdit = 'profile_edit';
+  static const profilecopylink = 'profile_copy_link';
+  static const profileblock = 'profile_block';
+  static const profilereport = 'profile_report';
+  static const profileremovefriend = 'profile_eemove_friend';
+  static const profilepoke = 'profile_poke';
+
+  static const profilePost = 'profile_post';
+  static const profilefriend = 'profile_friend';
+  static const profileaward = 'profile_award';
+
+  static const profilePosts = 'profile_posts';
+  static const profileMedia = 'profile_media';
+  static const profileMentions = 'profile_mentions';
+}
+
+class ChatKeys {
+  static const chat = 'chat';
+  static const chatyournote = 'chat_your_note';
+  static const chatnewchat = 'chat_new_chat';
+}
+
+class GroupKeys {
+  static const createGroup = 'create_group';
+  static const groupName = 'group_name';
+  static const groupShortname = 'group_short_name';
+}
+
+class SchoolKeys {
+  static const joinSchool = 'join_school';
+  static const schoolPassword = 'school_password';
+  static const schoolJoin = 'school_join';
+}
+
+class FoodKeys {
+  static const orderExplain = 'order_explain';
+  static const foodProduct = 'food_product';
+  static const foodPrice = 'food_price';
+}
+
+class PollKeys {
+  static const createPoll = 'create_poll';
+  static const pollquestion = 'poll_question';
+  static const pollanswers = 'poll_answers';
+  static const pollOption = 'poll_option';
+  static const pollAddOption = 'poll_add_option';
+
+  static const selectHour = 'select_hour';
+  static const selectDate = 'select_date';
+  static const selectPollMultipleChoice = 'select_poll_multiple_chocie';
+  static const selectPollCheckboxes = 'select_poll_check_boxes';
+  static const selectPollShortAnswer = 'select_poll_short_answer';
+
+  static const pollExpired = 'poll_expired';
+  static const pollVoted = 'poll_voted';
+  static const pollnotVoted = 'poll_not_voted';
+}
+
+class InviteKeys {
+  static const normalAccount = 'normal_account';
+  static const verifiedAccount = 'verified_account';
+  static const sendVerificationCode = 'send_verification_code';
+}
+
+class JoinUsKeys {
+  static const phoneNumberRegistered = 'phone_number_registered';
+  static const profilePhoto = 'profile_photo';
+  static const noPenalty = 'no_penalty';
+  static const noProvocation = 'no_provocation';
+
+  static const selectAnItem = 'select_an_item';
+  static const selectAPosition = 'select_a_position';
+  static const whyJoinTheTeam = 'why_join_the_team';
+  static const whyChooseThisPermission = 'why_choose_this_permission';
+  static const howManyDaysPerWeek = 'how_many_days_per_week';
+}
+
+class EventKeys {
+  static const eventRules = 'event_rules';
+  static const eventcoordinator = 'event_coordinator';
+  static const eventdescriptions = 'event_description';
+  static const eventParticipationEndedExplain =
+      'event_participation_ended_explain';
+  static const alreadyJoinedEventWithDeadline =
+      'already_joined_event_with_deadline';
+
+  static const readAndAgreeRules = 'read_and_agree_rules';
+}
+
+class SettingsKeys {
+  //Settings
+  static const translation = 'translation';
+  static const settings = 'settings';
+  static const lastFailedLogin = 'last_failed_login';
+
+  static const applicationAndMedia = 'application_and_media';
+  static const devicePermissions = 'device_permissions';
+  static const downloadAndArchive = 'download_and_archive';
+  static const dataSaver = 'data_saver';
+  static const languages = 'languages';
+  static const notifications = 'notifications';
+  static const blockedList = 'blocked_list';
+  static const moreInformationAndSupport = 'more_information_and_support';
+  static const help = 'help';
+  static const accountStatus = 'account_status';
+  static const about = 'about';
+  static const addAccount = 'add_account';
+  static const logOut = 'log_out';
+  static const version = 'version';
+}
+
 class DrawerKeys {
   static const drawerMeeting = 'drawer_meeting';
   static const drawerNews = 'drawer_news';
@@ -67,28 +217,6 @@ class ResetPasswordKeys {
   static const resetPasswordKeysrepeatsendcode =
       'resetpasswordkeys_create_repeat_send_code';
   static const resetPasswordKeyssave = 'resetpasswordkeys_save';
-}
-
-class SettingsKeys {
-  //Settings
-  static const currentLanguage = 'current_language';
-  static const hello = 'hello';
-  static const translation = 'translation';
-  static const settings = 'settings';
-  static const applicationAndMedia = 'application_and_media';
-  static const devicePermissions = 'device_permissions';
-  static const downloadAndArchive = 'download_and_archive';
-  static const dataSaver = 'data_saver';
-  static const languages = 'languages';
-  static const notifications = 'notifications';
-  static const blockedList = 'blocked_list';
-  static const moreInformationAndSupport = 'more_information_and_support';
-  static const help = 'help';
-  static const accountStatus = 'account_status';
-  static const about = 'about';
-  static const addAccount = 'add_account';
-  static const logOut = 'log_out';
-  static const version = 'version';
 }
 
 class BlockedListKeys {

@@ -4,6 +4,7 @@ import 'package:ARMOYU/app/modules/pages/chatpage/_main/controllers/chat_page_co
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/views/chat_new_page.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,13 +53,13 @@ class ChatPage extends StatelessWidget {
                     child: TextField(
                       controller: controller.chatcontroller.value,
                       autofocus: true,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Ara',
+                        hintText: CommonKeys.search.tr,
                       ),
                     ),
                   )
-                : const Text("Sohbetler"),
+                : Text(ChatKeys.chat.tr),
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.search),
@@ -75,7 +76,6 @@ class ChatPage extends StatelessWidget {
         ),
       ),
       body: CustomScrollView(
-        //Allways olduğu zaman her zaman oluyor lakin androidde çalışmıyor
         physics: const BouncingScrollPhysics(),
         controller: controller.chatScrollController.value,
         slivers: [
@@ -90,8 +90,10 @@ class ChatPage extends StatelessWidget {
               child: Obx(
                 () => Row(
                   children: [
-                    controller.chatmyfriendsNotes(findCurrentAccountController
-                        .currentUserAccounts.value.user.value),
+                    controller.chatmyfriendsNotes(
+                      findCurrentAccountController
+                          .currentUserAccounts.value.user.value,
+                    ),
                     ...List.generate(
                       findCurrentAccountController.currentUserAccounts.value
                                   .user.value.myFriends ==
@@ -101,8 +103,9 @@ class ChatPage extends StatelessWidget {
                               .value.user.value.myFriends!.length,
                       (index) {
                         return controller.chatmyfriendsNotes(
-                            findCurrentAccountController.currentUserAccounts
-                                .value.user.value.myFriends![index]);
+                          findCurrentAccountController.currentUserAccounts.value
+                              .user.value.myFriends![index],
+                        );
                       },
                     ),
                   ],
@@ -110,10 +113,8 @@ class ChatPage extends StatelessWidget {
               ),
             ),
           ),
-          SliverFillRemaining(
-            child: Obx(
-              () => controller.chatListWidget(),
-            ),
+          Obx(
+            () => controller.chatListWidget(),
           ),
         ],
       ),

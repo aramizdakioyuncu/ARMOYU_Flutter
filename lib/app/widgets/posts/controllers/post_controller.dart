@@ -10,7 +10,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/functions/Client_Functions/profile.dart';
-import 'package:ARMOYU/app/modules/Utility/newphotoviewer.dart';
+import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/likers.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
@@ -552,11 +553,11 @@ class PostController extends GetxController {
                         }
                         log(response["aciklama"]);
                       },
-                      child: const ListTile(
-                        leading: Icon(
+                      child: ListTile(
+                        leading: const Icon(
                           Icons.star_rate_sharp,
                         ),
-                        title: Text("Favorilere Ekle"),
+                        title: Text(SocialKeys.socialAddFavorite.tr),
                       ),
                     ),
                   ),
@@ -565,11 +566,11 @@ class PostController extends GetxController {
                         currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () async {},
-                      child: const ListTile(
-                        leading: Icon(
+                      child: ListTile(
+                        leading: const Icon(
                           Icons.edit_note_sharp,
                         ),
-                        title: Text("Paylaşımı Düzenle."),
+                        title: Text(SocialKeys.socialedit.tr),
                       ),
                     ),
                   ),
@@ -582,13 +583,13 @@ class PostController extends GetxController {
                         currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () {},
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.red,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.flag,
                           color: Colors.red,
                         ),
-                        title: Text("Şikayet Et."),
+                        title: Text(SocialKeys.socialReport.tr),
                       ),
                     ),
                   ),
@@ -610,13 +611,13 @@ class PostController extends GetxController {
                           ),
                         );
                       },
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.red,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.person_off_outlined,
                           color: Colors.red,
                         ),
-                        title: Text("Kullanıcıyı Engelle."),
+                        title: Text(SocialKeys.socialBlock.tr),
                       ),
                     ),
                   ),
@@ -628,13 +629,13 @@ class PostController extends GetxController {
                         context,
                         accept: removepost,
                       ),
-                      child: const ListTile(
+                      child: ListTile(
                         textColor: Colors.red,
-                        leading: Icon(
+                        leading: const Icon(
                           Icons.delete,
                           color: Colors.red,
                         ),
-                        title: Text("Paylaşımı Sil."),
+                        title: Text(SocialKeys.socialdelete.tr),
                       ),
                     ),
                   ),

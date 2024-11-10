@@ -1,10 +1,126 @@
 import 'package:ARMOYU/app/translations/app_translation.dart';
 
 Map<String, String> tr = {
-  SettingsKeys.currentLanguage: 'Türkçe',
-  SettingsKeys.hello: 'Merhaba Dünya',
+  TranslateKeys.currentLanguage: 'Türkçe',
+
+  //Common
+  CommonKeys.search: "Ara",
+  CommonKeys.empty: "Boş",
+  CommonKeys.join: "Katıl",
+  CommonKeys.leave: "Ayrıl",
+  CommonKeys.cancel: "Vazgeç",
+  CommonKeys.submit: 'Gönder',
+  CommonKeys.create: 'Oluştur',
+  CommonKeys.share: "Paylaş",
+
+  //Social
+  SocialKeys.socialStory: 'Hikayen',
+  SocialKeys.socialLiked: 've #NUMBER# kişi beğendi',
+
+  SocialKeys.socialAddFavorite: 'Favorilere Ekle',
+  SocialKeys.socialReport: 'Şikayet Et',
+  SocialKeys.socialBlock: 'Kullanıcıyı Engelle',
+  SocialKeys.socialedit: 'Paylaşımı Düzenle',
+  SocialKeys.socialdelete: 'Paylaşımı Sil',
+
+  SocialKeys.socialShare: 'Paylaşım Yap',
+  SocialKeys.socialwritesomething: 'Bir Şeyler Yaz',
+
+  //Notification
+  NotificationKeys.friendRequests: 'Arkadaşlık İstekleri',
+  NotificationKeys.reviewFriendRequests: 'Arkadaşlık isteklerini gözden geçir',
+  NotificationKeys.groupRequests: 'Grup İstekleri',
+  NotificationKeys.reviewGroupRequests: 'Grup isteklerini gözden geçir',
+
+  //Profile
+  ProfileKeys.profilerefresh: 'Profili Yenile',
+  ProfileKeys.profileEdit: 'Profili Düzenle',
+
+  ProfileKeys.profilecopylink: 'Profil Linkini Kopyala',
+  ProfileKeys.profileblock: 'Profili Engelle',
+  ProfileKeys.profilereport: 'Profili Bildir',
+  ProfileKeys.profileremovefriend: 'Arkadaşlıktan Çıkar',
+  ProfileKeys.profilepoke: 'Dürt',
+
+  ProfileKeys.profilePost: 'Gönderi',
+  ProfileKeys.profilefriend: 'Arkadaş',
+  ProfileKeys.profileaward: 'Ödül',
+
+  ProfileKeys.profilePosts: 'Paylaşımlar',
+  ProfileKeys.profileMedia: 'Medya',
+  ProfileKeys.profileMentions: 'Etiketlenmeler',
+
+  //Chat
+  ChatKeys.chat: 'Sohbetler',
+  ChatKeys.chatyournote: 'Notun',
+  ChatKeys.chatnewchat: 'Yeni Sohbet',
+
+  //Group
+  GroupKeys.createGroup: 'Grup Oluştur',
+  GroupKeys.groupName: 'Grup Adı',
+  GroupKeys.groupShortname: 'Grup Kısa Adı',
+
+  //School
+  SchoolKeys.joinSchool: 'Okula Katıl',
+  SchoolKeys.schoolPassword: 'Parola',
+  SchoolKeys.schoolJoin: 'Katıl',
+
+  //Food
+  FoodKeys.orderExplain: 'Siparişinizi vermek için kasada okutun.',
+  FoodKeys.foodProduct: 'Ürün',
+  FoodKeys.foodPrice: 'Fiyat',
+
+  //Poll
+  PollKeys.createPoll: 'Anket Oluştur',
+  PollKeys.pollquestion: 'Anket Sorusu',
+  PollKeys.pollanswers: 'Anket Cevapları',
+  PollKeys.pollOption: 'Seçenek',
+  PollKeys.pollAddOption: 'Seçenek Ekle',
+
+  PollKeys.selectHour: 'Saat Seç',
+  PollKeys.selectDate: 'Tarih Seç',
+
+  PollKeys.selectPollMultipleChoice: 'Çoktan Seçmeli',
+  PollKeys.selectPollCheckboxes: 'Onay Kutuları',
+  PollKeys.selectPollShortAnswer: 'Kısa Yanıt',
+
+  PollKeys.pollExpired: 'Süresi Bitti',
+  PollKeys.pollVoted: 'Oylandı',
+  PollKeys.pollnotVoted: 'Oylanmadı',
+
+  //Invite
+  InviteKeys.normalAccount: 'Normal Hesap',
+  InviteKeys.verifiedAccount: 'Doğrulanmış Hesap',
+  InviteKeys.sendVerificationCode: 'Doğrulama Kodu Gönder',
+
+  // JoinUs
+  JoinUsKeys.phoneNumberRegistered:
+      'Cep telefon numarasını sisteme kayıt etmiş olmak.',
+  JoinUsKeys.profilePhoto: 'Profil fotoğrafı varsayılan logodan farklı olmak.',
+  JoinUsKeys.noPenalty: 'Hiç ceza almamış olmak.',
+  JoinUsKeys.noProvocation: 'İnsanları kışkırtmamış olmak.',
+
+  JoinUsKeys.selectAnItem: 'Bir öğe seçin',
+  JoinUsKeys.selectAPosition: 'Bir pozisyon seçin',
+  JoinUsKeys.whyJoinTheTeam: 'Neden ekibe katılmak istiyorsunuz?',
+  JoinUsKeys.whyChooseThisPermission: 'Neden bu yetkiyi seçtiniz?',
+  JoinUsKeys.howManyDaysPerWeek: 'Haftada kaç gün ayırabilirsiniz?',
+
+  //Event
+  EventKeys.eventRules: 'Kurallar',
+  EventKeys.eventcoordinator: 'Yetkili',
+  EventKeys.eventdescriptions: 'Açıklamalar',
+  EventKeys.eventParticipationEndedExplain:
+      'Etkinliğe katılım süresi sona erdi. Eğer bir yanlışlık olduğunu düşünüyorsanız lütfen yetkililer ile iletişime geçiniz.',
+  EventKeys.alreadyJoinedEventWithDeadline:
+      'Etkinliğe zaten katıldınız. Vazgeçmek için en son süre etkinlikten 30 dakika öncedir.',
+  EventKeys.readAndAgreeRules: 'Kuralları okudum ve anladım, kabul ediyorum',
+
+  //Settings
   SettingsKeys.translation: 'Çeviri',
   SettingsKeys.settings: 'Ayarlar',
+  SettingsKeys.lastFailedLogin: 'Hatalı Giriş',
+
   SettingsKeys.applicationAndMedia: 'Uygulama ve Medya',
   SettingsKeys.devicePermissions: 'Cihaz İzinleri',
   SettingsKeys.downloadAndArchive: 'İndirme ve Arşivleme',

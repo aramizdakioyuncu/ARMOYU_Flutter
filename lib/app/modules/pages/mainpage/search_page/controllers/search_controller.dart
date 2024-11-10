@@ -9,7 +9,6 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/news.dart';
 import 'package:ARMOYU/app/functions/API_Functions/search.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/modules/School/school_page/views/school_page.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -201,10 +200,15 @@ class SearchPageController extends GetxController {
                   //   ),
                   // );
                 } else if (response["icerik"][i]["turu"] == "okullar") {
-                  Get.to(const SchoolPageView(), arguments: {
-                    "user": currentUserAccounts.user,
+                  // Get.to(const SchoolPageView(), arguments: {
+                  //   "user": currentUserAccounts.user,
+                  //   "schoolID": response["icerik"][i]["ID"],
+                  // });
+
+                  Get.toNamed("/school", arguments: {
                     "schoolID": response["icerik"][i]["ID"],
                   });
+
                   // Navigator.of(Get.context!).push(
                   //   MaterialPageRoute(
                   //     builder: (context) => SchoolPageView(
