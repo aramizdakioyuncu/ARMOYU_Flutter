@@ -12,10 +12,38 @@ Map<String, String> tr = {
   CommonKeys.submit: 'Gönder',
   CommonKeys.create: 'Oluştur',
   CommonKeys.share: "Paylaş",
+  CommonKeys.update: 'Güncelle',
 
+  CommonKeys.accept: 'Kabul Et',
+  CommonKeys.decline: 'Reddet',
+
+  CommonKeys.online: 'Çevrimiçi',
+  CommonKeys.offline: 'Çevrimdışı',
+
+  CommonKeys.calling: 'Aranıyor',
+
+  CommonKeys.second: 'Saniye',
+  CommonKeys.minute: 'Dakika',
+  CommonKeys.hour: 'Saat',
+
+  CommonKeys.day: 'Gün',
+  CommonKeys.month: 'Ay',
+  CommonKeys.year: 'Yıl',
+
+  CommonKeys.everyone: 'Herkes',
+  CommonKeys.friends: 'Arkadaşlar',
   //Social
   SocialKeys.socialStory: 'Hikayen',
-  SocialKeys.socialLiked: 've #NUMBER# kişi beğendi',
+
+  SocialKeys.socialandnumberpersonLiked: 've #NUMBER# kişi beğendi',
+  SocialKeys.socialLiked: 'beğendi',
+  SocialKeys.socialViewAllComments: 'Yorumların tamamını gör',
+
+  SocialKeys.socialComments: 'Yorumlar',
+  SocialKeys.socialWriteFirstComment: 'ilk yorumu sen yaz',
+  SocialKeys.socialWriteComment: 'Yorum yaz',
+
+  SocialKeys.socialLikers: 'Beğenenler',
 
   SocialKeys.socialAddFavorite: 'Favorilere Ekle',
   SocialKeys.socialReport: 'Şikayet Et',
@@ -50,10 +78,26 @@ Map<String, String> tr = {
   ProfileKeys.profileMedia: 'Medya',
   ProfileKeys.profileMentions: 'Etiketlenmeler',
 
+  ProfileKeys.profilefirstname: 'Ad',
+  ProfileKeys.profilelastname: 'Soyad',
+  ProfileKeys.profileaboutme: 'Hakkımda',
+  ProfileKeys.profileemail: 'E-posta',
+  ProfileKeys.profilelocation: 'Konum',
+  ProfileKeys.profilebirthdate: 'Doğum Tarihi',
+  ProfileKeys.profilephonenumber: 'Telefon Numarası',
+  ProfileKeys.profilecheckpassword: 'Şifreyi Kontrol Et',
+
+  ProfileKeys.profileselectcountry: 'Ülke Seç',
+  ProfileKeys.profileselectcity: 'Şehir Seç',
+
   //Chat
   ChatKeys.chat: 'Sohbetler',
   ChatKeys.chatyournote: 'Notun',
+  ChatKeys.chatshareasong: 'Bir şarkı paylaş',
   ChatKeys.chatnewchat: 'Yeni Sohbet',
+  ChatKeys.chatwritemessage: 'Mesaj yaz',
+
+  ChatKeys.chatTargetAudience: 'Hedef Kitle',
 
   //Group
   GroupKeys.createGroup: 'Grup Oluştur',

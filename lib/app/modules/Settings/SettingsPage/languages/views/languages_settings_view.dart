@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -28,7 +29,14 @@ class LanguagesSettingsView extends StatelessWidget {
                       .value
                       .entries;
                   return ListTile(
-                    leading: const Icon(Icons.language),
+                    // leading: const Icon(Icons.language),
+                    leading: CountryFlag.fromCountryCode(
+                      language == 'en'
+                          ? 'us'
+                          : language == 'ar'
+                              ? 'SA'
+                              : language,
+                    ),
                     title: Text(
                       languageshort.first.value,
                     ),
@@ -37,6 +45,12 @@ class LanguagesSettingsView extends StatelessWidget {
                         Get.updateLocale(const Locale('tr', 'TR'));
                       } else if (language == 'en') {
                         Get.updateLocale(const Locale('en', 'US'));
+                      } else if (language == 'ar') {
+                        Get.updateLocale(const Locale('ar', 'AE'));
+                      } else if (language == 'de') {
+                        Get.updateLocale(const Locale('de', 'DE'));
+                      } else if (language == 'ru') {
+                        Get.updateLocale(const Locale('ru', 'RU'));
                       }
                     },
                     selected: TranslateKeys.currentLanguage.tr ==

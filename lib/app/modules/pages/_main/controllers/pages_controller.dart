@@ -34,8 +34,10 @@ class PagesController extends GetxController {
     super.onInit();
 
     currentUserAccount = currentUserAccounts;
+
+    //Önbellek İşlemleri
     siteMessage();
-    _timerFunction();
+    timerFunction();
   }
 
   @override
@@ -44,7 +46,7 @@ class PagesController extends GetxController {
     someCondition.value = true;
   }
 
-  void _timerFunction() {
+  void timerFunction() {
     Timer.periodic(const Duration(seconds: 10), (timer) async {
       //Önbelleğe al
       saveCacheData();
@@ -61,9 +63,15 @@ class PagesController extends GetxController {
     // Kullanıcı listesini SharedPreferences'e kaydetme
     log("-> Önbellekleme İşlemi");
     final prefs = await SharedPreferences.getInstance();
-    List<String> usersJson =
-        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-    prefs.setStringList('users', usersJson);
+
+    try {
+      List<String> usersJson =
+          ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+      prefs.setStringList('users', usersJson);
+    } catch (e) {
+      log("Ön Bellek Hatası: ${e.toString()}");
+    }
+
     //
   }
 

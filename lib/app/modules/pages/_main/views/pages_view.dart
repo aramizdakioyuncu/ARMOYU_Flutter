@@ -17,7 +17,7 @@ class PagesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log("***1**${currentUserAccounts.user.value.displayName}**1***");
+    log("*****${currentUserAccounts.user.value.displayName}*****");
 
     //Controller Çek
     final findCurrentAccountController = Get.find<AccountUserController>();

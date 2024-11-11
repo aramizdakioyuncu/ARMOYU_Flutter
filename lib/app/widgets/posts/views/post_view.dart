@@ -101,7 +101,15 @@ class TwitterPostWidget extends StatelessWidget {
                                 const SizedBox(width: 5),
                                 Obx(
                                   () => CustomText.costum1(
-                                    controller.postInfo.value.postDate,
+                                    controller.postInfo.value.postDate
+                                        .replaceAll(
+                                            'Saniye', CommonKeys.second.tr)
+                                        .replaceAll(
+                                            'Dakika', CommonKeys.minute.tr)
+                                        .replaceAll('Saat', CommonKeys.hour.tr)
+                                        .replaceAll('Gün', CommonKeys.day.tr)
+                                        .replaceAll('Ay', CommonKeys.month.tr)
+                                        .replaceAll('Yıl', CommonKeys.year.tr),
                                     weight: FontWeight.normal,
                                     color: Get.theme.primaryColor
                                         .withOpacity(0.69),
@@ -296,7 +304,7 @@ class TwitterPostWidget extends StatelessWidget {
                                           context,
                                           currentUserAccounts:
                                               currentUserAccounts,
-                                          "@${controller.postInfo.value.firstthreelike[0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) == 0 ? "liked" : SocialKeys.socialLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
+                                          "@${controller.postInfo.value.firstthreelike[0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) == 0 ? SocialKeys.socialLiked.tr : SocialKeys.socialandnumberpersonLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
                                         ),
                                       ),
                                     )
@@ -331,7 +339,7 @@ class TwitterPostWidget extends StatelessWidget {
                             onTap: () => controller
                                 .postcomments(controller.postInfo.value.postID),
                             child: CustomText.costum1(
-                              "${controller.postInfo.value.commentsCount} yorumun tamamını gör",
+                              "${controller.postInfo.value.commentsCount} ${SocialKeys.socialViewAllComments.tr}",
                               color: Get.theme.primaryColor.withOpacity(0.8),
                             ),
                           ),

@@ -12,10 +12,38 @@ Map<String, String> en = {
   CommonKeys.submit: "Submit",
   CommonKeys.create: "Create",
   CommonKeys.share: "Share",
+  CommonKeys.update: 'Update',
+
+  CommonKeys.accept: 'Accept',
+  CommonKeys.decline: 'Decline',
+
+  CommonKeys.online: 'Online',
+  CommonKeys.offline: 'Offline',
+
+  CommonKeys.calling: 'Calling',
+
+  CommonKeys.second: 'Second',
+  CommonKeys.minute: 'Minute',
+  CommonKeys.hour: 'Hour',
+
+  CommonKeys.day: 'Day',
+  CommonKeys.month: 'Month',
+  CommonKeys.year: 'Year',
+
+  CommonKeys.everyone: 'Everyone',
+  CommonKeys.friends: 'Friends',
 
   //Social
   SocialKeys.socialStory: 'Your Story',
-  SocialKeys.socialLiked: 'and #NUMBER# person liked',
+  SocialKeys.socialandnumberpersonLiked: 'and #NUMBER# person liked',
+  SocialKeys.socialLiked: 'liked',
+  SocialKeys.socialViewAllComments: 'View all comments',
+
+  SocialKeys.socialComments: 'Comments',
+  SocialKeys.socialWriteFirstComment: 'Write first comment',
+  SocialKeys.socialWriteComment: 'Write comment',
+
+  SocialKeys.socialLikers: 'Likers',
 
   SocialKeys.socialAddFavorite: 'Add to favorites',
   SocialKeys.socialReport: 'Report',
@@ -50,10 +78,26 @@ Map<String, String> en = {
   ProfileKeys.profileMedia: 'Media',
   ProfileKeys.profileMentions: 'Mention',
 
+  ProfileKeys.profilefirstname: 'First Name',
+  ProfileKeys.profilelastname: 'Last Name',
+  ProfileKeys.profileaboutme: 'About Me',
+  ProfileKeys.profileemail: 'Email',
+  ProfileKeys.profilelocation: 'Location',
+  ProfileKeys.profilebirthdate: 'Birth Date',
+  ProfileKeys.profilephonenumber: 'Phone Number',
+  ProfileKeys.profilecheckpassword: 'Check Password',
+
+  ProfileKeys.profileselectcountry: 'Select Country',
+  ProfileKeys.profileselectcity: 'Select City',
+
   //Chat
   ChatKeys.chat: 'Chats',
   ChatKeys.chatyournote: 'Your Note',
+  ChatKeys.chatshareasong: 'Share a song',
   ChatKeys.chatnewchat: 'New Chat',
+  ChatKeys.chatwritemessage: 'Write message',
+
+  ChatKeys.chatTargetAudience: 'Target audience',
 
   //Group
   GroupKeys.createGroup: 'Create Group',

@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -45,7 +46,7 @@ class _ChaCallPageState extends State<ChatCallPage>
   void initState() {
     super.initState();
 
-    callingtext.text = "Aranıyor...";
+    callingtext.text = "${CommonKeys.calling.tr}...";
     _stopwatch.start();
     microphoneStart();
   }

@@ -1,10 +1,16 @@
+import 'package:ARMOYU/app/translations/ar.dart';
+import 'package:ARMOYU/app/translations/de.dart';
 import 'package:ARMOYU/app/translations/en.dart';
+import 'package:ARMOYU/app/translations/ru.dart';
 import 'package:ARMOYU/app/translations/tr.dart';
 
 abstract class AppTranslation {
   static Map<String, Map<String, String>> translationKeys = {
     'en': en,
     'tr': tr,
+    'ar': ar,
+    'de': de,
+    'ru': ru,
   };
 }
 
@@ -21,12 +27,39 @@ class CommonKeys {
   static const submit = 'submit';
   static const create = 'create';
   static const share = 'share';
+  static const update = 'update';
+
+  static const accept = 'accept';
+  static const decline = 'decline';
+
+  static const online = 'online';
+  static const offline = 'offline';
+
+  static const calling = 'calling';
+
+  static const second = 'second';
+  static const minute = 'minute';
+  static const hour = 'hour';
+
+  static const day = 'day';
+  static const month = 'month';
+  static const year = 'year';
+
+  static const everyone = 'everyone';
+  static const friends = 'friends';
 }
 
 //Social
 class SocialKeys {
   static const socialStory = 'social_story';
+  static const socialandnumberpersonLiked = 'social_and_number_person_Liked';
   static const socialLiked = 'social_liked';
+  static const socialViewAllComments = 'social_view_all_comments';
+  static const socialComments = 'socail_comments';
+  static const socialWriteFirstComment = 'social_write_first_comment';
+  static const socialWriteComment = 'social_write_comment';
+
+  static const socialLikers = 'social_likers';
 
   static const socialAddFavorite = 'social_add_favorite';
   static const socialReport = 'social_report';
@@ -61,12 +94,29 @@ class ProfileKeys {
   static const profilePosts = 'profile_posts';
   static const profileMedia = 'profile_media';
   static const profileMentions = 'profile_mentions';
+
+  static const profilefirstname = 'profile_firstname';
+  static const profilelastname = 'profile_lastname';
+  static const profileaboutme = 'profile_about_me';
+  static const profileemail = 'profile_email';
+  static const profilelocation = 'profile_location';
+  static const profilebirthdate = 'profile_birthdate';
+  static const profilephonenumber = 'profile_phone_number';
+  static const profilecheckpassword = 'profile_check_password';
+
+  static const profileselectcountry = 'profile_select_country';
+  static const profileselectcity = 'profile_select_city';
 }
 
 class ChatKeys {
   static const chat = 'chat';
   static const chatyournote = 'chat_your_note';
+  static const chatshareasong = 'chat_share_a_song';
   static const chatnewchat = 'chat_new_chat';
+
+  static const chatwritemessage = 'chat_write_message';
+
+  static const chatTargetAudience = 'chat_target_audience';
 }
 
 class GroupKeys {

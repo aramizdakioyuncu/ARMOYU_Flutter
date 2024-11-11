@@ -10,6 +10,7 @@ import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/services/socketio_services.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class StartingpageController extends GetxController {
   var connectionstatus = ''.obs;
   var connectionProcess = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    log("Anasayfaya Hoşgeldiniz");
+
+    staringfunctions();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    log("Anasayfadan Çıktınız");
+  }
 
   getFlutterInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -70,6 +86,10 @@ class StartingpageController extends GetxController {
     // Aktif Kullanıcı Controller
     final accountController = Get.put(AccountUserController(), permanent: true);
     // Aktif Kullanıcı Controller
+
+    //Socket Bağlantısı
+    Get.put(SocketioController(), permanent: true);
+    //Socket Bağlantısı
 
     //Platform kontrolü yapıyoruz
     getPlatform();
@@ -194,20 +214,5 @@ class StartingpageController extends GetxController {
 
     Get.offNamed("/login");
     return;
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-
-    log("Anasayfaya Hoşgeldiniz");
-
-    staringfunctions();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-    log("Anasayfadan Çıktınız");
   }
 }

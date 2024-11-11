@@ -386,8 +386,8 @@ class WidgetUtility {
       list.insert(0, {0: title});
     }
 
-    int selectedItemID = 0;
-    String selectedItem = list[0].values.first.toString();
+    var selectedItemID = 0.obs;
+    var selectedItem = list[0].values.first.toString().obs;
 
     return showCupertinoModalPopup(
       // barrierDismissible: false,
@@ -403,7 +403,7 @@ class WidgetUtility {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
-                    onChanged(selectedItemID - 1, selectedItem);
+                    onChanged(selectedItemID.value - 1, selectedItem.value);
 
                     Navigator.pop(context);
                   },
@@ -439,10 +439,11 @@ class WidgetUtility {
                       }),
                       onSelectedItemChanged: (value) {
                         //
-                        selectedItemID = value;
-                        selectedItem = list[value].values.first.toString();
+                        selectedItemID.value = value;
+                        selectedItem.value =
+                            list[value].values.first.toString();
                         //
-                        onChanged(selectedItemID - 1, selectedItem);
+                        onChanged(selectedItemID.value - 1, selectedItem.value);
                       },
                     ),
                   ),

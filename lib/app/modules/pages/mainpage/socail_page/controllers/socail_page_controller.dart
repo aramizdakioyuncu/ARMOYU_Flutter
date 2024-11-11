@@ -114,7 +114,8 @@ class SocailPageController extends GetxController {
     }
 
     if (storypage.value == 1) {
-      currentUserAccounts.value.user.value.widgetStoriescard = [];
+      currentUserAccounts.value.user.value.widgetStoriescard =
+          <StoryList>[].obs;
       if (response["icerik"].length == 0) {
         currentUserAccounts.value.user.value.widgetStoriescard!.add(
           StoryList(
@@ -199,6 +200,7 @@ class SocailPageController extends GetxController {
         ),
       );
     }
+    currentUserAccounts.value.user.value.widgetStoriescard!.refresh();
     widgetstoryUpdate();
 
     fetchStoryStatus.value = false;
@@ -232,7 +234,7 @@ class SocailPageController extends GetxController {
 
     if (postpage.value == 1) {
       widgetPosts.value = [];
-      currentUserAccounts.value.user.value.widgetPosts = [];
+      currentUserAccounts.value.user.value.widgetPosts = <Post>[].obs;
     }
 
     List<Post> cachedPostlist = [];
@@ -349,6 +351,8 @@ class SocailPageController extends GetxController {
       cachedPostlist.add(post);
       currentUserAccounts.value.user.value.widgetPosts!.add(post);
     }
+    currentUserAccounts.value.user.value.widgetPosts!.refresh();
+
     widgetpostUpdate(cachedPostlist);
 
     fetchPostStatus.value = false;
@@ -360,7 +364,7 @@ class SocailPageController extends GetxController {
       return;
     }
     widgetStories.value = WidgetStorycircle(
-      content: currentUserAccounts.value.user.value.widgetStoriescard!.obs,
+      content: currentUserAccounts.value.user.value.widgetStoriescard!,
     );
   }
 
@@ -411,7 +415,7 @@ class SocailPageController extends GetxController {
     }
 
     if (posts) {
-      currentUserAccounts.value.user.value.widgetPosts = [];
+      currentUserAccounts.value.user.value.widgetPosts = <Post>[].obs;
       widgetPosts.value = [];
 
       widgetPosts.add(const SkeletonSocailPosts());
@@ -429,6 +433,7 @@ class SocailPageController extends GetxController {
       widgetPosts.add(const SkeletonSocailPosts());
       widgetPosts.add(const SkeletonSocailPosts());
       widgetPosts.add(const SkeletonSocailPosts());
+      currentUserAccounts.value.user.value.widgetPosts!.refresh();
     }
   }
 

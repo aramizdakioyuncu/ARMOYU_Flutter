@@ -3,19 +3,15 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatNewController extends GetxController {
-  final UserAccounts currentUserAccounts;
-  ChatNewController({required this.currentUserAccounts});
-
   var newchatList = <Chat>[].obs;
 
-  var filteredItems = <User>[].obs; // Filtrelenmiş liste
-
+  var filteredItems = Rxn<List<User>>();
   var newchatcontroller = TextEditingController().obs;
 
   var chatScrollController = ScrollController().obs;
@@ -24,95 +20,20 @@ class ChatNewController extends GetxController {
   var chatFriendsprocess = false.obs;
   var isFirstFetch = true.obs;
 
-  Future<void> getchatfriendlist({
-    bool fecthRestart = false,
-  }) async {
-    if (fecthRestart) {
-      chatnewpage.value = 1;
-      chatFriendsprocess.value = false;
-    }
-
-    if (chatFriendsprocess.value) {
-      return;
-    }
-
-    chatFriendsprocess.value = true;
-    isFirstFetch.value = false;
-
-    if (!fecthRestart && currentUserAccounts.user.value.myFriends != null) {
-      int pageCount =
-          (currentUserAccounts.user.value.myFriends!.length / 50).ceil();
-      log(pageCount.toString());
-
-      chatnewpage.value = pageCount;
-      chatnewpage++;
-    }
-
-    FunctionsProfile f = FunctionsProfile(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await f.friendlist(
-        currentUserAccounts.user.value.userID!, chatnewpage.value);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      chatFriendsprocess.value = false;
-      await getchatfriendlist();
-      return;
-    }
-
-    if (chatnewpage.value == 1) {
-      newchatList.value = [];
-
-      currentUserAccounts.user.value.myFriends = <User>[].obs;
-    }
-    if (response["icerik"].length == 0) {
-      log("Sohbet Arkadaşlarım Sayfa Sonu");
-
-      chatFriendsprocess.value = true;
-      isFirstFetch.value = false;
-
-      return;
-    }
-    for (int i = 0; i < response["icerik"].length; i++) {
-      currentUserAccounts.user.value.myFriends!.add(
-        User(
-          userID: response["icerik"][i]["oyuncuID"],
-          userName: response["icerik"][i]["oyuncukullaniciad"],
-          displayName: response["icerik"][i]["oyuncuad"],
-          status: response["icerik"][i]["oyuncudurum"] == 1 ? true : false,
-          level: response["icerik"][i]["oyunculevel"],
-          lastlogin: response["icerik"][i]["songiris"] != null
-              ? Rx<String>(response["icerik"][i]["songiris"])
-              : null,
-          lastloginv2: response["icerik"][i]["songiris"] != null
-              ? Rx<String>(response["icerik"][i]["songiris"])
-              : null,
-          ismyFriend:
-              response["icerik"][i]["oyuncuarkadasdurum"] == 1 ? true : false,
-          avatar: Media(
-            mediaID: response["icerik"][i]["oyuncuID"],
-            mediaURL: MediaURL(
-              bigURL: Rx<String>(response["icerik"][i]["oyuncuavatar"]),
-              normalURL: Rx<String>(response["icerik"][i]["oyuncufakavatar"]),
-              minURL: Rx<String>(response["icerik"][i]["oyuncuminnakavatar"]),
-            ),
-          ),
-        ),
-      );
-    }
-
-    filteredItems.value = currentUserAccounts.user.value.myFriends!;
-    chatnewpage++;
-    chatFriendsprocess.value = false;
-  }
+  late var currentUser = Rxn<User>();
 
   @override
   void onInit() {
     super.onInit();
+
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    currentUser.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
     if (isFirstFetch.value) {
-      if (currentUserAccounts.user.value.myFriends != null) {
-        if (currentUserAccounts.user.value.myFriends!.isNotEmpty) {
-          filteredItems.value = currentUserAccounts.user.value.myFriends!;
+      if (currentUser.value!.myFriends != null) {
+        if (currentUser.value!.myFriends!.isNotEmpty) {
+          filteredItems.value = currentUser.value!.myFriends!;
         } else {
           getchatfriendlist();
         }
@@ -132,11 +53,96 @@ class ChatNewController extends GetxController {
     newchatcontroller.value.addListener(() {
       String newText = newchatcontroller.value.text.toLowerCase();
       // Filtreleme işlemi
-      filteredItems.value =
-          currentUserAccounts.user.value.myFriends!.where((item) {
+      filteredItems.value = (currentUser.value!.myFriends!.where((item) {
         return item.displayName!.toLowerCase().contains(newText);
         // return item.user.displayName!.toLowerCase().contains(newText);
-      }).toList();
+      }).toList());
     });
+  }
+
+  Future<void> getchatfriendlist({
+    bool fecthRestart = false,
+  }) async {
+    if (fecthRestart) {
+      chatnewpage.value = 1;
+      chatFriendsprocess.value = false;
+    }
+
+    if (chatFriendsprocess.value) {
+      return;
+    }
+
+    chatFriendsprocess.value = true;
+    isFirstFetch.value = false;
+
+    if (!fecthRestart && currentUser.value!.myFriends != null) {
+      int pageCount = (currentUser.value!.myFriends!.length / 50).ceil();
+      log(pageCount.toString());
+
+      chatnewpage.value = pageCount;
+      chatnewpage++;
+    }
+
+    FunctionsProfile f = FunctionsProfile(
+      currentUser: currentUser.value!,
+    );
+    Map<String, dynamic> response = await f.friendlist(
+      currentUser.value!.userID!,
+      chatnewpage.value,
+    );
+    if (response["durum"] == 0) {
+      log(response["aciklama"]);
+      chatFriendsprocess.value = false;
+      await getchatfriendlist();
+      return;
+    }
+
+    if (chatnewpage.value == 1) {
+      newchatList.value = [];
+
+      currentUser.value!.myFriends = <User>[].obs;
+    }
+    if (response["icerik"].length == 0) {
+      log("Sohbet Arkadaşlarım Sayfa Sonu");
+
+      chatFriendsprocess.value = true;
+      isFirstFetch.value = false;
+
+      return;
+    }
+    for (int i = 0; i < response["icerik"].length; i++) {
+      currentUser.value!.myFriends!.add(
+        User(
+          userID: response["icerik"][i]["oyuncuID"],
+          userName: response["icerik"][i]["oyuncukullaniciad"],
+          displayName: response["icerik"][i]["oyuncuad"],
+          status: response["icerik"][i]["oyuncudurum"] == 1 ? true : false,
+          level: response["icerik"][i]["oyunculevel"],
+          lastlogin: response["icerik"][i]["songiris"] != null
+              ? Rx<String>(response["icerik"][i]["songiris"])
+              : null,
+          lastloginv2: response["icerik"][i]["songiris"] != null
+              ? Rx<String>(response["icerik"][i]["songiris"])
+              : null,
+          ismyFriend: response["icerik"][i]["oyuncuarkadasdurum"] == 1
+              ? true.obs
+              : false.obs,
+          avatar: Media(
+            mediaID: response["icerik"][i]["oyuncuID"],
+            mediaURL: MediaURL(
+              bigURL: Rx<String>(response["icerik"][i]["oyuncuavatar"]),
+              normalURL: Rx<String>(response["icerik"][i]["oyuncufakavatar"]),
+              minURL: Rx<String>(response["icerik"][i]["oyuncuminnakavatar"]),
+            ),
+          ),
+        ),
+      );
+    }
+
+    filteredItems.value = currentUser.value!.myFriends;
+    chatnewpage++;
+    chatFriendsprocess.value = false;
+
+    currentUser.refresh();
   }
 }

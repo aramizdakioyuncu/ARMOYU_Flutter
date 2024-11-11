@@ -81,6 +81,8 @@ dependencies:
   
   share_plus: ^10.1.2
   marquee: ^2.3.0
+  socket_io_client: ^3.0.0
+  country_flags: ^3.0.0
 
 dev_dependencies:
   flutter_test:

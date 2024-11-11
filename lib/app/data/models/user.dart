@@ -54,7 +54,7 @@ class User {
   Team? favTeam;
 
   bool? status;
-  bool? ismyFriend;
+  Rx<bool>? ismyFriend;
 
   // //Arkadaşlarım
 
@@ -62,7 +62,7 @@ class User {
   RxList<User>? mycloseFriends;
 
   // //ARAÇ GEREÇ
-  List<Chat>? chatlist = [];
+  RxList<Chat>? chatlist;
 
   // //Gruplarım & Okullarım & İşyerlerim
   List<Group>? myGroups = [];
@@ -70,8 +70,8 @@ class User {
   List<Station>? myStations = [];
 
   //Sosyal KISIM
-  List<Post>? widgetPosts;
-  List<StoryList>? widgetStoriescard;
+  RxList<Post>? widgetPosts;
+  RxList<StoryList>? widgetStoriescard;
 
   User({
     this.userID,
@@ -157,31 +157,43 @@ class User {
                 minURL: Rx<String>(json['banner']['media_minURL']),
               ),
             ),
-      myFriends: json['myfriends'] != null
-          ? List<User>.from(json['myfriends']
-              .map((friendJson) => User.fromJson(friendJson))).obs
-          : null,
-      chatlist: json['chatlist'] != null
-          ? List<Chat>.from(
-              json['chatlist'].map((friendJson) => Chat.fromJson(friendJson)))
-          : null,
-      myGroups: json['myGroups'] != null
-          ? List<Group>.from(
-              json['myGroups'].map((friendJson) => Group.fromJson(friendJson)))
-          : null,
+      myFriends: json['myfriends'] == null
+          ? null
+          : (json['myfriends'] as List<dynamic>?)
+              ?.map((friendJson) => User.fromJson(friendJson))
+              .toList()
+              .obs,
+      chatlist: json['chatlist'] == null
+          ? null
+          : (json['chatlist'] as List<dynamic>?)
+              ?.map((chatlist) => Chat.fromJson(chatlist))
+              .toList()
+              .obs,
+      myGroups: json['myGroups'] == null
+          ? null
+          : (json['myGroups'] as List<dynamic>?)
+              ?.map((myGroups) => Group.fromJson(myGroups))
+              .toList()
+              .obs,
       lastlogin:
           json['lastlogin'] == null ? null : (json['lastlogin'] as String).obs,
       lastloginv2: json['lastloginv2'] == null
           ? null
           : (json['lastloginv2'] as String).obs,
-      widgetPosts: json['widgetposts'] != null
-          ? List<Post>.from(
-              json['widgetposts'].map((postJson) => Post.fromJson(postJson)))
-          : null,
-      widgetStoriescard: json['widgetstoriescard'] != null
-          ? List<StoryList>.from(json['widgetstoriescard']
-              .map((storylistJson) => StoryList.fromJson(storylistJson)))
-          : null,
+      widgetPosts: json['widgetposts'] == null
+          ? null
+          : (json['widgetposts'] as List<dynamic>?)
+              ?.map((chatlist) => Post.fromJson(chatlist))
+              .toList()
+              .obs,
+      widgetStoriescard: json['widgetstoriescard'] == null
+          ? null
+          : (json['widgetstoriescard'] as List<dynamic>?)
+              ?.map((storylistJson) => StoryList.fromJson(storylistJson))
+              .toList()
+              .obs,
+      ismyFriend:
+          json['ismyFriend'] == null ? null : (json['ismyFriend'] as bool).obs,
     );
   }
 
@@ -231,6 +243,7 @@ class User {
       'widgetposts': widgetPosts?.map((posts) => posts.toJson()).toList(),
       'widgetstoriescard':
           widgetStoriescard?.map((stories) => stories.toJson()).toList(),
+      'ismyFriend': ismyFriend?.value
     };
   }
 

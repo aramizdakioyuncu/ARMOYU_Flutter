@@ -30,9 +30,7 @@ class ChatPage extends StatelessWidget {
     );
 
     final controller = Get.put(
-      ChatPageController(
-        currentUserAccounts: currentUserAccounts,
-      ),
+      ChatPageController(),
       tag: currentUserAccounts.user.value.userID.toString(),
     );
 
@@ -114,7 +112,31 @@ class ChatPage extends StatelessWidget {
             ),
           ),
           Obx(
-            () => controller.chatListWidget(),
+            () => controller.filteredItems.value == null
+                ? const SliverFillRemaining(
+                    child: CupertinoActivityIndicator(),
+                  )
+                : controller.filteredItems.value!.isEmpty
+                    ? SliverFillRemaining(
+                        child: !controller.isFirstFetch.value &&
+                                !controller.chatsearchprocess.value
+                            ? Center(
+                                child: Text(CommonKeys.empty.tr),
+                              )
+                            : const CupertinoActivityIndicator(),
+                      )
+                    : SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          childCount: controller.filteredItems.value!.length,
+                          (context, index) {
+                            return controller.filteredItems.value![index]
+                                .listtilechat(
+                              context,
+                              currentUserAccounts: currentUserAccounts,
+                            );
+                          },
+                        ),
+                      ),
           ),
         ],
       ),

@@ -1,14 +1,12 @@
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:isolate';
 
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/services/Socket/socket.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/services/socketio_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,17 +14,12 @@ class ChatdetailController extends GetxController {
   var messageController = TextEditingController().obs;
   var scrollController = ScrollController().obs;
 
-  Rxn<Isolate> isolateListen = Rxn<Isolate>();
-  Rxn<ReceivePort> receiveportListen = Rxn<ReceivePort>();
-
-  Rxn<Isolate> isolateSend = Rxn<Isolate>();
-  Rxn<ReceivePort> receiveportSend = Rxn<ReceivePort>();
-
   var isUserOnline = false.obs;
 
   late Rxn<Chat> chat = Rxn<Chat>();
   late Rxn<UserAccounts> currentUserAccounts = Rxn<UserAccounts>();
-
+  //Socket Güncelle
+  var socketio = Get.find<SocketioController>();
   @override
   void onInit() {
     super.onInit();
@@ -46,115 +39,18 @@ class ChatdetailController extends GetxController {
     }
 
     chat.value!.chatNotification = false;
-    chat.value!.messages ??= [];
+    chat.value!.messages ??= <ChatMessage>[].obs;
     if (chat.value!.messages!.isEmpty) {
-      getchat().then((_) {
-        isolatestart();
-      });
-    } else {
-      isolatestart();
-    }
+      getchat().then((_) {});
+    } else {}
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    try {
-      receiveportListen.close();
-      isolateListen.value?.kill();
-      receiveportSend.close();
-      isolateSend.value?.kill();
-    } catch (e) {
+    try {} catch (e) {
       log("Dispose Error: $e");
-    }
-  }
-
-  void isolatestart() async {
-    receiveportListen.value = ReceivePort();
-
-    receiveportSend.value = ReceivePort();
-
-    isolateListen.value = await Isolate.spawn(socketListenMessage, [
-      receiveportListen.value!.sendPort,
-      currentUserAccounts.value!.user,
-      chat.value!.user.userID.toString()
-    ]);
-
-    receiveportListen.value!.listen((message) async {
-      try {
-        var jsonData = jsonDecode(utf8.decode(message.codeUnits));
-
-        Map<String, dynamic> responseData = jsonData;
-
-        if (responseData["sender_id"].toString() ==
-            currentUserAccounts.value!.user.value.userID.toString()) {
-          return;
-        }
-
-        if (responseData["receiver_id"].toString() ==
-            currentUserAccounts.value!.user.value.userID.toString()) {
-          message = responseData["message"].toString();
-        }
-        chat.value!.messages!.add(
-          ChatMessage(
-            messageID: 0,
-            isMe: false,
-            messageContext: message,
-            user: chat.value!.user,
-          ),
-        );
-        chat.refresh();
-
-        //SonMesajı güncelle
-        chat.value!.lastmessage = ChatMessage(
-          messageID: 0,
-          isMe: false,
-          messageContext: message,
-          user: chat.value!.user,
-        );
-
-        log(message);
-      } catch (e) {
-        log("json hatası");
-      }
-    });
-
-    ARMOYU_Socket socket2 = ARMOYU_Socket(
-        currentUserAccounts.value!.user.value.userID.toString(),
-        currentUserAccounts.value!.user.value.userName!,
-        currentUserAccounts.value!.user.value.password!,
-        chat.value!.user.userID.toString());
-
-    receiveportSend.value!.listen(
-      (message) {
-        log("Send: $message");
-        if (message != "") {
-          socket2.sendMessage(receiveportListen.value!.sendPort, message);
-        }
-      },
-    );
-  }
-
-  static Future<void> socketListenMessage(List<dynamic> arguments) async {
-    final SendPort sendPort = arguments.first;
-    final User user = arguments[1];
-    final String receiverID = arguments.last;
-    log("${user.userID} >>>> $receiverID");
-
-    try {
-      ARMOYU_Socket socket2 = ARMOYU_Socket(
-        user.userID.toString(),
-        user.userName!,
-        user.password!,
-        receiverID,
-      );
-      socket2.receiveMessages(sendPort);
-
-      log("asd");
-    } catch (e) {
-      log(e.toString());
-      log("asd!!!");
     }
   }
 
@@ -173,16 +69,9 @@ class ChatdetailController extends GetxController {
       return;
     }
 
-    log("------");
-
     var ismee = true.obs;
-    // if (mounted) {
-    chat.value!.messages = [];
-    // }
+    chat.value!.messages!.value = <ChatMessage>[].obs;
 
-    log(response["icerik"].length.toString());
-
-    log(chat.value!.messages!.length.toString());
     for (dynamic element in response["icerik"]) {
       try {
         if (element["sohbetkim"] == "ben") {
@@ -196,16 +85,24 @@ class ChatdetailController extends GetxController {
             messageID: 0,
             isMe: ismee.value,
             messageContext: element["mesajicerik"],
-            user: chat.value!.user,
+            user: User(
+              userID: chat.value!.user.userID,
+              avatar: chat.value!.user.avatar,
+              displayName: chat.value!.user.displayName,
+            ),
           ),
         );
         chat.refresh();
         //SonMesajı güncelle
-        chat.value!.lastmessage = ChatMessage(
+        chat.value!.lastmessage!.value = ChatMessage(
           messageID: 0,
           isMe: ismee.value,
           messageContext: element["mesajicerik"],
-          user: chat.value!.user,
+          user: User(
+            userID: chat.value!.user.userID,
+            avatar: chat.value!.user.avatar,
+            displayName: chat.value!.user.displayName,
+          ),
         );
       } catch (e) {
         log("Sohbet getirilemedi! : $e");
@@ -214,27 +111,50 @@ class ChatdetailController extends GetxController {
   }
 
   sendMessage() async {
+    String message = messageController.value.text;
+
     if (messageController.value.text == "") {
       return;
     }
-    String message = messageController.value.text;
+
     messageController.value.text = "";
     chat.value!.messages!.add(
       ChatMessage(
         messageID: 0,
         isMe: true,
         messageContext: message,
-        user: currentUserAccounts.value!.user.value,
+        user: User(
+          userID: currentUserAccounts.value!.user.value.userID,
+          avatar: currentUserAccounts.value!.user.value.avatar,
+          displayName: currentUserAccounts.value!.user.value.displayName,
+        ),
       ),
     );
-    chat.refresh();
 
-    //SonMesajı güncelle
+    // // //Son Mesajı güncelle
     chat.value!.lastmessage = ChatMessage(
       messageID: 0,
       isMe: true,
       messageContext: message,
-      user: currentUserAccounts.value!.user.value,
+      user: User(
+        userID: currentUserAccounts.value!.user.value.userID,
+        avatar: currentUserAccounts.value!.user.value.avatar,
+        displayName: currentUserAccounts.value!.user.value.displayName,
+      ),
+    ).obs;
+
+    socketio.sendMessage(
+      ChatMessage(
+        messageID: 0,
+        isMe: true,
+        messageContext: message,
+        user: User(
+          userID: currentUserAccounts.value!.user.value.userID,
+          avatar: currentUserAccounts.value!.user.value.avatar,
+          displayName: currentUserAccounts.value!.user.value.displayName,
+        ),
+      ),
+      chat.value!.user.userID,
     );
 
     FunctionService f = FunctionService(
@@ -246,8 +166,6 @@ class ChatdetailController extends GetxController {
       log(response["aciklama"]);
       return;
     }
-
-    receiveportSend.value!.sendPort.send(message);
   }
 
   // ListView.builder yapısını burada tanımlıyoruz

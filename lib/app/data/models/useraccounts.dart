@@ -18,7 +18,7 @@ class UserAccounts {
 
   List<Post>? lastsharingpost;
 
-  List<Chat>? chatList = [];
+  RxList<Chat>? chatList = <Chat>[].obs;
   List<News>? newsList = [];
 
   List<User>? searchList = [];
@@ -120,9 +120,10 @@ class UserAccounts {
       lastsharingpost: (json['lastsharingpost'] as List<dynamic>?)
           ?.map((post) => Post.fromJson(post))
           .toList(),
-      chatList: (json['chatList'] as List<dynamic>?)
-          ?.map((chat) => Chat.fromJson(chat))
-          .toList(),
+      chatList: json['chatList'] != null
+          ? List<Chat>.from(json['chatList']
+              .map((friendJson) => Chat.fromJson(friendJson))).obs
+          : null,
       newsList: (json['newsList'] as List<dynamic>?)
           ?.map((news) => News.fromJson(news))
           .toList(),

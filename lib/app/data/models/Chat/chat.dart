@@ -10,8 +10,8 @@ import 'package:get/get.dart';
 class Chat {
   final int? chatID;
   final User user;
-  ChatMessage? lastmessage;
-  List<ChatMessage>? messages;
+  Rx<ChatMessage>? lastmessage;
+  RxList<ChatMessage>? messages;
   final String? chatType;
   bool chatNotification;
 
@@ -41,14 +41,13 @@ class Chat {
     return Chat(
       chatID: json['chatID'],
       user: User.fromJson(json['user']),
-      lastmessage: json['lastmessage'] != null
-          ? ChatMessage.fromJson(json['lastmessage'])
-          : null,
-      messages: json['messages'] != null
-          ? (json['messages'] as List<dynamic>)
-              .map((message) => ChatMessage.fromJson(message))
-              .toList()
-          : null,
+      lastmessage: json['lastmessage'] == null
+          ? null
+          : (json['lastmessage'] as ChatMessage).obs,
+      messages: (json['messages'] as List<dynamic>?)
+          ?.map((member) => ChatMessage.fromJson(member))
+          .toList()
+          .obs,
       chatType: json['chatType'],
       chatNotification: json['chatNotification'],
     );
@@ -67,7 +66,9 @@ class Chat {
       title: CustomText.costum1(user.displayName!),
       subtitle: lastmessage == null
           ? const Text("")
-          : Text(lastmessage!.messageContext),
+          : Text(
+              lastmessage!.value.messageContext,
+            ),
       trailing: chatType == "ozel"
           ? const Icon(Icons.person)
           : const Icon(Icons.people_alt),

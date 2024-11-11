@@ -154,6 +154,8 @@ class PostController extends GetxController {
       postInfo.value.comments!.add(comment);
       fetchCommentStatus.value = false;
     }
+
+    postInfo.refresh();
   }
 
   Future<void> getcommentslikes(int postID, {bool fetchRestart = false}) async {
@@ -250,7 +252,9 @@ class PostController extends GetxController {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  CustomText.costum1("YORUMLAR"),
+                  CustomText.costum1(
+                    SocialKeys.socialComments.tr.toUpperCase(),
+                  ),
                   const SizedBox(height: 5),
                   const Divider(),
                   Expanded(
@@ -282,7 +286,7 @@ class PostController extends GetxController {
                                 )
                               : postInfo.value.comments!.isEmpty
                                   ? CustomText.costum1(
-                                      "Yorum yok ilk yorumu sen yaz.")
+                                      SocialKeys.socialWriteFirstComment.tr)
                                   : ListView.builder(
                                       itemCount:
                                           postInfo.value.comments!.length,
@@ -299,72 +303,78 @@ class PostController extends GetxController {
                       ),
                     ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          foregroundImage: CachedNetworkImageProvider(
-                            currentUserAccounts
-                                .user.value.avatar!.mediaURL.minURL.value,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(Get.context!).viewInsets.bottom,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            foregroundImage: CachedNetworkImageProvider(
+                              currentUserAccounts
+                                  .user.value.avatar!.mediaURL.minURL.value,
+                            ),
+                            radius: 20,
                           ),
-                          radius: 20,
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.all(5),
-                          height: 55,
-                          child: Center(
-                            child: Container(
-                              padding: const EdgeInsets.only(left: 5),
-                              decoration: BoxDecoration(
-                                color: Get.theme.scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: TextField(
-                                controller: controllerMessage.value,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                                decoration: const InputDecoration(
-                                  hintText: 'Mesaj yaz',
-                                  border: InputBorder.none,
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.all(5),
+                            height: 55,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.only(left: 5),
+                                decoration: BoxDecoration(
+                                  color: Get.theme.scaffoldBackgroundColor,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: TextField(
+                                  controller: controllerMessage.value,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                  decoration: InputDecoration(
+                                    hintText: SocialKeys.socialWriteComment.tr,
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(5.0),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            FunctionsPosts funct = FunctionsPosts(
-                              currentUser: currentUserAccounts.user.value,
-                            );
-                            Map<String, dynamic> response =
-                                await funct.createcomment(postInfo.value.postID,
-                                    controllerMessage.value.text);
-                            if (response["durum"] == 0) {
-                              ARMOYUWidget.toastNotification(
-                                  response["aciklama"].toString());
-                              return;
-                            }
-                            await getcommentsfetch(
-                              postInfo.value.postID,
-                              fetchRestart: true,
-                            );
-                            controllerMessage.value.text = "";
-                          },
-                          child: const Icon(
-                            Icons.send,
-                            size: 16,
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              FunctionsPosts funct = FunctionsPosts(
+                                currentUser: currentUserAccounts.user.value,
+                              );
+                              Map<String, dynamic> response =
+                                  await funct.createcomment(
+                                      postInfo.value.postID,
+                                      controllerMessage.value.text);
+                              if (response["durum"] == 0) {
+                                ARMOYUWidget.toastNotification(
+                                    response["aciklama"].toString());
+                                return;
+                              }
+                              await getcommentsfetch(
+                                postInfo.value.postID,
+                                fetchRestart: true,
+                              );
+                              controllerMessage.value.text = "";
+                            },
+                            child: const Icon(
+                              Icons.send,
+                              size: 16,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -460,7 +470,9 @@ class PostController extends GetxController {
               child: Column(
                 children: [
                   const SizedBox(height: 10),
-                  const Text("BEĞENENLER"),
+                  Text(
+                    SocialKeys.socialLikers.tr.toUpperCase(),
+                  ),
                   const SizedBox(height: 5),
                   const Divider(),
                   Expanded(

@@ -6,17 +6,14 @@ import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
 
 class ChatPageController extends GetxController {
-  final UserAccounts currentUserAccounts;
-  ChatPageController({required this.currentUserAccounts});
-
   var chatPage = 1.obs;
   var chatsearchprocess = false.obs;
   var isFirstFetch = true.obs;
@@ -24,10 +21,17 @@ class ChatPageController extends GetxController {
   var chatcontroller = TextEditingController().obs;
   var chatScrollController = ScrollController().obs;
   var searchStatus = false.obs;
+  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
 
   @override
   void onInit() {
     super.onInit();
+
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    currentUserAccounts = findCurrentAccountController.currentUserAccounts;
 
     if (isFirstFetch.value) {
       getchat();
@@ -37,7 +41,7 @@ class ChatPageController extends GetxController {
       String newText = chatcontroller.value.text.toLowerCase();
       // Filtreleme işlemi
       filteredItems.value =
-          currentUserAccounts.user.value.chatlist!.where((item) {
+          currentUserAccounts.value.user.value.chatlist!.where((item) {
         return item.user.displayName!.toLowerCase().contains(newText);
       }).toList();
     });
@@ -62,28 +66,29 @@ class ChatPageController extends GetxController {
 
     if (fetchRestart) {
       chatPage.value = 1;
-      currentUserAccounts.user.value.chatlist = [];
+      currentUserAccounts.value.user.value.chatlist = <Chat>[].obs;
     }
 
     if (chatPage.value == 1 && !fetchRestart) {
-      if (currentUserAccounts.user.value.chatlist != null) {
-        filteredItems.value = currentUserAccounts.user.value.chatlist!;
+      if (currentUserAccounts.value.user.value.chatlist != null) {
+        filteredItems.value = currentUserAccounts.value.user.value.chatlist!;
 
         int pageCount =
-            (currentUserAccounts.user.value.widgetStoriescard!.length / 30)
+            (currentUserAccounts.value.user.value.widgetStoriescard!.length /
+                    30)
                 .ceil();
         log(pageCount.toString());
 
         chatPage.value = pageCount;
         chatPage++;
       } else {
-        currentUserAccounts.user.value.chatlist = [];
+        currentUserAccounts.value.user.value.chatlist = <Chat>[].obs;
       }
     }
 
     chatsearchprocess.value = true;
     FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.user.value,
+      currentUser: currentUserAccounts.value.user.value,
     );
     Map<String, dynamic> response = await f.getchats(chatPage.value);
     if (response["durum"] == 0) {
@@ -104,33 +109,31 @@ class ChatPageController extends GetxController {
 
       return;
     }
-    for (int i = 0; i < response["icerik"].length; i++) {
-      String sonmesaj = response["icerik"][i]["sonmesaj"].toString();
+
+    for (var element in response["icerik"]) {
+      String sonmesaj = element["sonmesaj"].toString();
       if (sonmesaj == "null") {
         sonmesaj = "";
       }
       bool notification = false;
-      if (response["icerik"][i]["bildirim"] == 1) {
+      if (element["bildirim"] == 1) {
         notification = true;
       }
-
-      currentUserAccounts.user.value.chatlist!.add(
+      currentUserAccounts.value.user.value.chatlist ?? <Chat>[];
+      currentUserAccounts.value.user.value.chatlist!.add(
         Chat(
           chatID: 1,
           user: User(
-            userID: response["icerik"][i]["kullid"],
-            displayName: response["icerik"][i]["adisoyadi"],
-            lastlogin: Rx<String>(response["icerik"][i]["songiris"]),
-            lastloginv2: Rx<String>(response["icerik"][i]["songiris"]),
+            userID: element["kullid"],
+            displayName: element["adisoyadi"],
+            lastlogin: Rx<String>(element["songiris"]),
+            lastloginv2: Rx<String>(element["songiris"]),
             avatar: Media(
-              mediaID: response["icerik"][i]["kullid"],
+              mediaID: element["kullid"],
               mediaURL: MediaURL(
-                bigURL: Rx<String>(
-                    response["icerik"][i]["chatImage"]["media_bigURL"]),
-                normalURL:
-                    Rx<String>(response["icerik"][i]["chatImage"]["media_URL"]),
-                minURL: Rx<String>(
-                    response["icerik"][i]["chatImage"]["media_minURL"]),
+                bigURL: Rx<String>(element["chatImage"]["media_bigURL"]),
+                normalURL: Rx<String>(element["chatImage"]["media_URL"]),
+                minURL: Rx<String>(element["chatImage"]["media_minURL"]),
               ),
             ),
           ),
@@ -138,53 +141,24 @@ class ChatPageController extends GetxController {
             user: User(userID: 1, avatar: null, displayName: ""),
             messageContext: sonmesaj,
             messageID: 1,
-            isMe: response["icerik"][i]["kullid"] ==
-                    currentUserAccounts.user.value.userID
-                ? true
-                : false,
-          ),
-          chatType: response["icerik"][i]["sohbetturu"],
+            isMe:
+                element["kullid"] == currentUserAccounts.value.user.value.userID
+                    ? true
+                    : false,
+          ).obs,
+          chatType: element["sohbetturu"],
           chatNotification: notification,
         ),
       );
     }
 
-    filteredItems.value = currentUserAccounts.user.value.chatlist!;
+    filteredItems.value = currentUserAccounts.value.user.value.chatlist!;
+
+    filteredItems.refresh();
 
     chatsearchprocess.value = false;
     isFirstFetch.value = false;
     chatPage++;
-  }
-
-  // ListView.builder'da kullanılacak list item'ını dönen metod
-  Widget buildChatListTile(
-      BuildContext context, int index, UserAccounts currentUserAccounts) {
-    final item = filteredItems.value![index];
-    return item.listtilechat(context, currentUserAccounts: currentUserAccounts);
-  }
-
-  // Listeyi döndüren widget (ListView.builder)
-  Widget chatListWidget() {
-    if (filteredItems.value == null) {
-      return const SliverFillRemaining(child: CupertinoActivityIndicator());
-    } else if (filteredItems.value!.isEmpty) {
-      return SliverFillRemaining(
-        child: !isFirstFetch.value && !chatsearchprocess.value
-            ? const Center(
-                child: Text("Sohbet Geçmişi Boş"),
-              )
-            : const CupertinoActivityIndicator(),
-      );
-    } else {
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          childCount: filteredItems.value!.length,
-          (context, index) {
-            return buildChatListTile(context, index, currentUserAccounts);
-          },
-        ),
-      );
-    }
   }
 
   //Notes
@@ -219,7 +193,7 @@ class ChatPageController extends GetxController {
                                 log("");
                               },
                         child: Text(
-                          'Paylaş',
+                          CommonKeys.share.tr,
                           style: TextStyle(
                             color: textcontroller.value.text == ""
                                 ? Colors.grey
@@ -244,7 +218,7 @@ class ChatPageController extends GetxController {
                                   radius: 50,
                                   backgroundColor: Colors.transparent,
                                   foregroundImage: CachedNetworkImageProvider(
-                                    currentUserAccounts.user.value.avatar!
+                                    currentUserAccounts.value.user.value.avatar!
                                         .mediaURL.minURL.value,
                                   ),
                                 ),
@@ -270,7 +244,7 @@ class ChatPageController extends GetxController {
                                         minLines: 1,
                                         controller: textcontroller.value,
                                         decoration: InputDecoration(
-                                          hintText: 'Bir şarkı paylaş',
+                                          hintText: ChatKeys.chatshareasong.tr,
                                           hintStyle: TextStyle(
                                             fontSize: 12,
                                             color: Get.theme.primaryColor
@@ -364,9 +338,9 @@ class ChatPageController extends GetxController {
                                 size: 12,
                               ),
                               const SizedBox(width: 2),
-                              const Text("Hedef Kitle:"),
+                              Text(ChatKeys.chatTargetAudience.tr),
                               const SizedBox(width: 2),
-                              const Text("Herkes"),
+                              Text(CommonKeys.everyone.tr),
                               Icon(
                                 Icons.keyboard_arrow_down_rounded,
                                 color: Get.theme.primaryColor.withOpacity(0.8),
@@ -389,9 +363,9 @@ class ChatPageController extends GetxController {
   Widget chatmyfriendsNotes(User user) {
     var haveSong = false;
     var havetext = false;
-
     var isMe = false;
-    if (user == currentUserAccounts.user.value) {
+
+    if (user.userID == currentUserAccounts.value.user.value.userID) {
       isMe = true;
       havetext = false;
       haveSong = false;
@@ -500,7 +474,7 @@ class ChatPageController extends GetxController {
                                   ? !isMe
                                       ? Container()
                                       : Text(
-                                          "bir şarkı paylaş",
+                                          ChatKeys.chatshareasong.tr,
                                           maxLines: 2,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(

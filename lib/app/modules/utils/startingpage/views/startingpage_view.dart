@@ -11,7 +11,6 @@ class StartingpageView extends StatelessWidget {
     final StartingpageController controller = Get.put(StartingpageController());
 
     return Scaffold(
-      // backgroundColor: ARMOYU.appbarColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

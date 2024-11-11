@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/services/socketio_services.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -137,6 +138,11 @@ class FunctionService {
         currentUserAccounts: userdetail,
       );
     }
+
+    //Socket Güncelle
+    var socketio = Get.find<SocketioController>();
+    socketio.registerUser(userdetail.user.value);
+    //Socket Güncelle
 
     Map<String, dynamic> jsonData = {
       'durum': 1,

@@ -15,6 +15,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/Services/API/api_service.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
@@ -367,9 +368,9 @@ class ARMOYUFunctions {
       int countryID, selectedIndex, setstatefunction) async {
     if (ARMOYU.countryList[selectedIndex].provinceList != null) {
       if (ARMOYU.countryList[selectedIndex].provinceList!.isNotEmpty) {
-        provinceSelectStatus = true;
+        provinceSelectStatus.value = true;
       } else {
-        provinceSelectStatus = false;
+        provinceSelectStatus.value = false;
       }
       return;
     }
@@ -382,7 +383,7 @@ class ARMOYUFunctions {
     }
 
     if (response["icerik"].length == 0) {
-      provinceSelectStatus = false;
+      provinceSelectStatus.value = false;
       return;
     }
     List<Province> provinceList = [];
@@ -402,14 +403,14 @@ class ARMOYUFunctions {
     ARMOYU.countryList.elementAt(selectedIndex).provinceList = provinceList;
 
     if (provinceList.isNotEmpty) {
-      provinceSelectStatus = true;
+      provinceSelectStatus.value = true;
     } else {
-      provinceSelectStatus = false;
+      provinceSelectStatus.value = false;
     }
     setstatefunction();
   }
 
-  static bool provinceSelectStatus = false;
+  static Rx<bool> provinceSelectStatus = false.obs;
 
   void profileEdit(BuildContext context, Function setstatefunction) {
     FocusNode myFocusPassword = FocusNode();
@@ -430,23 +431,24 @@ class ARMOYUFunctions {
     birthday.value.text =
         currentUserAccounts.user.value.birthdayDate.toString();
 
-    String country = "Ülke Seçim";
+    var country = (ProfileKeys.profileselectcountry.tr).obs;
     int? countryIndex = 0;
+
     if (currentUserAccounts.user.value.country != null) {
-      country = currentUserAccounts.user.value.country!.name;
+      country.value = currentUserAccounts.user.value.country!.name;
       countryIndex = currentUserAccounts.user.value.country!.countryID;
     }
 
-    String province = "İl Seçim";
+    var province = (ProfileKeys.profileselectcity.tr).obs;
     int? provinceIndex = 0;
     if (currentUserAccounts.user.value.province != null) {
-      province = currentUserAccounts.user.value.province!.name;
+      province.value = currentUserAccounts.user.value.province!.name;
       provinceIndex = currentUserAccounts.user.value.province!.provinceID;
     }
 
     if (ARMOYU.countryList.isNotEmpty) {
       if (ARMOYU.countryList[countryIndex].provinceList != null) {
-        provinceSelectStatus = true;
+        provinceSelectStatus.value = true;
         setstatefunction();
       }
     }
@@ -483,7 +485,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Ad",
+                                  ProfileKeys.profilefirstname.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -505,7 +507,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Soyad",
+                                  ProfileKeys.profilelastname.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -527,7 +529,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Hakkımda",
+                                  ProfileKeys.profileaboutme.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -552,7 +554,7 @@ class ARMOYUFunctions {
                                 child: SizedBox(
                                   width: 100,
                                   child: CustomText.costum1(
-                                    "E-posta",
+                                    ProfileKeys.profileemail.tr,
                                     weight: FontWeight.bold,
                                   ),
                                 ),
@@ -575,7 +577,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Konum",
+                                  ProfileKeys.profilelocation.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -584,76 +586,84 @@ class ARMOYUFunctions {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Expanded(
-                                      child: CustomButtons.costum1(
-                                        text: country,
-                                        onPressed: () {
-                                          WidgetUtility.cupertinoselector(
-                                            context: context,
-                                            title: "Ülke Seçim",
-                                            onChanged:
-                                                (selectedIndex, selectedValue) {
-                                              if (selectedIndex == -1) {
-                                                return;
-                                              }
-                                              provinceSelectStatus = false;
-                                              province = "İl Seçim";
-                                              country = selectedValue;
-                                              countryIndex = selectedIndex;
+                                      child: Obx(
+                                        () => CustomButtons.costum1(
+                                          text: country.value,
+                                          onPressed: () {
+                                            WidgetUtility.cupertinoselector(
+                                              context: context,
+                                              title: ProfileKeys
+                                                  .profileselectcountry.tr,
+                                              onChanged: (selectedIndex,
+                                                  selectedValue) {
+                                                if (selectedIndex == -1) {
+                                                  return;
+                                                }
+                                                provinceSelectStatus.value =
+                                                    false;
+                                                province.value = ProfileKeys
+                                                    .profileselectcity.tr;
+                                                country.value = selectedValue;
+                                                countryIndex = selectedIndex;
 
-                                              int countryID = ARMOYU
-                                                  .countryList[selectedIndex]
-                                                  .countryID;
+                                                int countryID = ARMOYU
+                                                    .countryList[selectedIndex]
+                                                    .countryID;
 
-                                              searchTimer?.cancel();
-                                              searchTimer = Timer(
-                                                  const Duration(
-                                                      milliseconds: 1000),
-                                                  () async {
-                                                await fetchProvince(
-                                                  countryID,
-                                                  selectedIndex,
-                                                  setstatefunction,
-                                                );
-                                              });
-                                            },
-                                            list:
-                                                ARMOYU.countryList.map((item) {
-                                              return {
-                                                item.countryID:
-                                                    item.name.toString(),
-                                              };
-                                            }).toList(),
-                                          );
-                                        },
-                                        loadingStatus: false.obs,
+                                                searchTimer?.cancel();
+                                                searchTimer = Timer(
+                                                    const Duration(
+                                                        milliseconds: 1000),
+                                                    () async {
+                                                  await fetchProvince(
+                                                    countryID,
+                                                    selectedIndex,
+                                                    setstatefunction,
+                                                  );
+                                                });
+                                              },
+                                              list: ARMOYU.countryList
+                                                  .map((item) {
+                                                return {
+                                                  item.countryID:
+                                                      item.name.toString(),
+                                                };
+                                              }).toList(),
+                                            );
+                                          },
+                                          loadingStatus: false.obs,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 10),
                                     Expanded(
-                                      child: CustomButtons.costum1(
-                                        text: province,
-                                        enabled: provinceSelectStatus,
-                                        onPressed: () {
-                                          WidgetUtility.cupertinoselector(
-                                            context: context,
-                                            title: "İl Seçim",
-                                            onChanged:
-                                                (selectedIndex, selectedValue) {
-                                              provinceIndex = selectedIndex;
-                                              province = selectedValue;
-                                            },
-                                            list: ARMOYU
-                                                .countryList[countryIndex!]
-                                                .provinceList!
-                                                .map((item) {
-                                              return {
-                                                item.provinceID:
-                                                    item.name.toString(),
-                                              };
-                                            }).toList(),
-                                          );
-                                        },
-                                        loadingStatus: false.obs,
+                                      child: Obx(
+                                        () => CustomButtons.costum1(
+                                          text: province.value,
+                                          enabled: provinceSelectStatus.value,
+                                          onPressed: () {
+                                            WidgetUtility.cupertinoselector(
+                                              context: context,
+                                              title: ProfileKeys
+                                                  .profileselectcity.tr,
+                                              onChanged: (selectedIndex,
+                                                  selectedValue) {
+                                                provinceIndex = selectedIndex;
+                                                province.value = selectedValue;
+                                              },
+                                              list: ARMOYU
+                                                  .countryList[countryIndex!]
+                                                  .provinceList!
+                                                  .map((item) {
+                                                return {
+                                                  item.provinceID:
+                                                      item.name.toString(),
+                                                };
+                                              }).toList(),
+                                            );
+                                          },
+                                          loadingStatus: false.obs,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -670,7 +680,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Doğum Tarihi",
+                                  ProfileKeys.profilebirthdate.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -700,7 +710,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Cep Telefon",
+                                  ProfileKeys.profilephonenumber.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -724,7 +734,7 @@ class ARMOYUFunctions {
                               SizedBox(
                                 width: 100,
                                 child: CustomText.costum1(
-                                  "Parola Kontrolü",
+                                  ProfileKeys.profilecheckpassword.tr,
                                   weight: FontWeight.bold,
                                 ),
                               ),
@@ -740,7 +750,7 @@ class ARMOYUFunctions {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CustomButtons.costum1(
-                            text: "Güncelle",
+                            text: CommonKeys.update.tr,
                             onPressed: () async {
                               String cleanedphoneNumber = phoneNumber.value.text
                                   .replaceAll(RegExp(r'[()\s]'), '');

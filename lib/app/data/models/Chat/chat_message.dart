@@ -85,8 +85,9 @@ class ChatMessage {
                         ),
                       ),
                     ),
-                    const Visibility(
-                      child: Positioned(
+                    Visibility(
+                      visible: isMe,
+                      child: const Positioned(
                         bottom: -3,
                         right: 0,
                         child: Icon(

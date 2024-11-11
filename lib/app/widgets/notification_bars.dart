@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -74,28 +75,10 @@ class _CustomMenusNotificationbarsState
                 log(widget.categorydetailID.toString());
 
                 if (widget.categorydetail == "post") {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => PostdetailView(
-                  //       postID: widget.categorydetailID,
-                  //     ),
-                  //   ),
-                  // );
-
                   Get.toNamed("/social/detail", arguments: {
                     "postID": widget.categorydetailID,
                   });
                 } else if (widget.categorydetail == "postyorum") {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => PostdetailView(
-                  //       commentID: widget.categorydetailID,
-                  //     ),
-                  //   ),
-                  // );
-
                   Get.toNamed("/social/detail", arguments: {
                     "commentID": widget.categorydetailID,
                   });
@@ -104,29 +87,8 @@ class _CustomMenusNotificationbarsState
                     'user': widget.currentUserAccounts.user,
                     'group': Group(groupID: widget.categorydetailID)
                   });
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => GroupPage(
-                  //       currentUserAccounts: widget.currentUserAccounts,
-                  //       groupID: widget.categorydetailID,
-                  //     ),
-                  //   ),
-                  // );
                 } else if (widget.category == "arkadaslik") {
                   if (widget.categorydetail == "kabul") {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => ProfilePage(
-                    //       currentUserAccounts: widget.currentUserAccounts,
-                    //       profileUser: User(userID: widget.user.userID),
-                    //       ismyProfile: false,
-                    //       scrollController: ScrollController(),
-                    //     ),
-                    //   ),
-                    // );
-
                     Get.to("/profile", arguments: {
                       "profileUser": User(userID: widget.user.userID),
                     });
@@ -168,7 +130,13 @@ class _CustomMenusNotificationbarsState
                               weight: FontWeight.bold,
                             ),
                             const Spacer(),
-                            CustomText.costum1(widget.date),
+                            CustomText.costum1(widget.date
+                                .replaceAll('Saniye', CommonKeys.second.tr)
+                                .replaceAll('Dakika', CommonKeys.minute.tr)
+                                .replaceAll('Saat', CommonKeys.hour.tr)
+                                .replaceAll('Gün', CommonKeys.day.tr)
+                                .replaceAll('Ay', CommonKeys.month.tr)
+                                .replaceAll('Yıl', CommonKeys.year.tr)),
                           ],
                         ),
                         CustomDedectabletext.costum1(widget.text, 2, 15),
@@ -179,7 +147,7 @@ class _CustomMenusNotificationbarsState
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomButtons.costum1(
-                                text: "Kabul ET",
+                                text: CommonKeys.accept.tr,
                                 onPressed: () async {
                                   if (widget.category == "arkadaslik") {
                                     widget.natificationisVisible = false;
@@ -237,7 +205,7 @@ class _CustomMenusNotificationbarsState
                               ),
                               const SizedBox(width: 16),
                               CustomButtons.costum1(
-                                text: "Reddet",
+                                text: CommonKeys.decline.tr,
                                 onPressed: () async {
                                   if (widget.category == "arkadaslik") {
                                     if (widget.categorydetail == "istek") {

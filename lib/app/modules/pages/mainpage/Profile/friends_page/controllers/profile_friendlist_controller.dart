@@ -26,21 +26,27 @@ class ProfileFriendlistController extends GetxController {
 
     Map<String, dynamic> arguments = Get.arguments;
     UserAccounts userInfo = arguments["user"];
+
+    // if (userInfo.user.value.userID ==
+    //     currentUserAccounts.value.user.value.userID) {
+    //   user.value = currentUserAccounts.value;
+    // } else {
+    //   user.value = userInfo;
+    // }
     user.value = userInfo;
 
-    if (user.value.user.value.myFriends != null) {}
-    fetchfriend(pagecounter.value);
+    fetchfriend();
     firstproccessStatus.value = true;
 
     scrollController.value.addListener(() {
       if (scrollController.value.position.pixels ==
           scrollController.value.position.maxScrollExtent) {
-        fetchfriend(pagecounter.value);
+        fetchfriend();
       }
     });
   }
 
-  fetchfriend(int page) async {
+  fetchfriend({bool refreshfetch = false}) async {
     if (proccessStatus.value) {
       return;
     }
@@ -51,13 +57,16 @@ class ProfileFriendlistController extends GetxController {
     FunctionsProfile f =
         FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response =
-        await f.friendlist(user.value.user.value.userID!, page);
+        await f.friendlist(user.value.user.value.userID!, pagecounter.value);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
     }
-
+    if (refreshfetch || pagecounter.value == 1) {
+      pagecounter.value = 1;
+      user.value.user.value.myFriends = RxList([]);
+    }
     user.value.user.value.myFriends ??= RxList([]);
 
     for (var element in response["icerik"]) {
@@ -85,8 +94,10 @@ class ProfileFriendlistController extends GetxController {
             minURL: Rx<String>(minavatar),
           ),
         ),
-        userName: userlogin,
-        ismyFriend: isFriendStatus.value,
+        userName: "$userlogin",
+        ismyFriend: isFriendStatus,
+
+        // ismyFriend: false.obs,
       );
 
       // Arkadaş listesine ekleme

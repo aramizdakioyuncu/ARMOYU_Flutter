@@ -1,8 +1,10 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/call_chat_page/views/chatcall_page.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/controllers/chatdetail_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,12 @@ class ChatDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ChatdetailController());
+    final Map<String, dynamic> arguments =
+        Get.arguments as Map<String, dynamic>;
+    Chat chat = arguments['chat'];
+
+    final controller =
+        Get.put(ChatdetailController(), tag: chat.user.userID.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +47,17 @@ class ChatDetailView extends StatelessWidget {
                         controller.chat.value!.user.lastloginv2 == null
                             ? ""
                             : controller.chat.value!.user.lastloginv2
-                                .toString(),
+                                .toString()
+                                .toString()
+                                .replaceAll('Saniye', CommonKeys.second.tr)
+                                .replaceAll('Dakika', CommonKeys.minute.tr)
+                                .replaceAll('Saat', CommonKeys.hour.tr)
+                                .replaceAll('Gün', CommonKeys.day.tr)
+                                .replaceAll('Ay', CommonKeys.month.tr)
+                                .replaceAll('Yıl', CommonKeys.year.tr)
+                                .replaceAll('Çevrimiçi', CommonKeys.online.tr)
+                                .replaceAll(
+                                    'Çevrimdışı', CommonKeys.offline.tr),
                         style: TextStyle(
                           fontSize: 10,
                           color: controller.chat.value!.user.lastloginv2
@@ -166,10 +183,10 @@ class ChatDetailView extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 18,
                                 ),
-                                decoration: const InputDecoration(
-                                  hintText: 'Mesaj yaz',
+                                decoration: InputDecoration(
+                                  hintText: ChatKeys.chatwritemessage.tr,
                                   border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(
+                                  contentPadding: const EdgeInsets.symmetric(
                                     horizontal: 10,
                                     vertical: 5,
                                   ),
