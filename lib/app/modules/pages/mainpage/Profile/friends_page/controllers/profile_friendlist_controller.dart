@@ -94,7 +94,7 @@ class ProfileFriendlistController extends GetxController {
             minURL: Rx<String>(minavatar),
           ),
         ),
-        userName: "$userlogin",
+        userName: userlogin,
         ismyFriend: isFriendStatus,
 
         // ismyFriend: false.obs,
