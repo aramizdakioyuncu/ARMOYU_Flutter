@@ -6,14 +6,12 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/app.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PagesController extends GetxController {
-  final UserAccounts currentUserAccounts;
-  PagesController({required this.currentUserAccounts});
-
   late UserAccounts currentUserAccount;
 
   var someCondition = false.obs;
@@ -33,7 +31,12 @@ class PagesController extends GetxController {
   void onInit() {
     super.onInit();
 
-    currentUserAccount = currentUserAccounts;
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+
+    currentUserAccount = findCurrentAccountController.currentUserAccounts.value;
 
     //Önbellek İşlemleri
     siteMessage();
@@ -64,13 +67,10 @@ class PagesController extends GetxController {
     log("-> Önbellekleme İşlemi");
     final prefs = await SharedPreferences.getInstance();
 
-    try {
-      List<String> usersJson =
-          ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-      prefs.setStringList('users', usersJson);
-    } catch (e) {
-      log("Ön Bellek Hatası: ${e.toString()}");
-    }
+    List<String> usersJson =
+        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+    prefs.setStringList('users', usersJson);
+    log("-> Önbellekleme İşlemi -- <<TAMAMLANDI>>");
 
     //
   }

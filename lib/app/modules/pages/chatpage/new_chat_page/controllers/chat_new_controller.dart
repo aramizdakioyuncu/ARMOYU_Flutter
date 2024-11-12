@@ -98,7 +98,7 @@ class ChatNewController extends GetxController {
     }
 
     if (chatnewpage.value == 1) {
-      newchatList.value = [];
+      newchatList.value = <Chat>[].obs;
 
       currentUser.value!.myFriends = <User>[].obs;
     }
@@ -140,7 +140,7 @@ class ChatNewController extends GetxController {
     }
 
     filteredItems.value = currentUser.value!.myFriends;
-    chatnewpage++;
+    chatnewpage.value++;
     chatFriendsprocess.value = false;
 
     currentUser.refresh();

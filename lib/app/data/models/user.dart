@@ -183,7 +183,7 @@ class User {
       widgetPosts: json['widgetposts'] == null
           ? null
           : (json['widgetposts'] as List<dynamic>?)
-              ?.map((chatlist) => Post.fromJson(chatlist))
+              ?.map((widgetpost) => Post.fromJson(widgetpost))
               .toList()
               .obs,
       widgetStoriescard: json['widgetstoriescard'] == null

@@ -51,9 +51,6 @@ class SocketioController extends GetxController {
 
       currentUserAccounts.value =
           findCurrentAccountController.currentUserAccounts.value;
-
-      currentUserAccounts.value =
-          findCurrentAccountController.currentUserAccounts.value;
     });
   }
 
@@ -166,14 +163,17 @@ class SocketioController extends GetxController {
       ChatMessage chat = ChatMessage(
         messageID: 0,
         messageContext: chatData.messageContext,
-        user: chatData.user,
+        user: User(
+          displayName: chatData.user.displayName,
+          avatar: chatData.user.avatar,
+        ),
         isMe: false,
       );
       if (!chatisthere) {
         currentUserAccounts.value.user.value.chatlist!.add(
           Chat(
             user: chatData.user,
-            chatNotification: false,
+            chatNotification: false.obs,
             lastmessage: chat.obs,
             messages: <ChatMessage>[].obs,
           ),
@@ -187,8 +187,11 @@ class SocketioController extends GetxController {
       a.messages ??= <ChatMessage>[].obs;
       a.messages!.add(chat);
       //Son mesajı görünümü güncelle
-      a.lastmessage!.value = chat;
-
+      a.lastmessage ??= Rx<ChatMessage>(chat);
+      if (a.lastmessage != null) {
+        a.lastmessage!.value = chat;
+      }
+      a.chatNotification = true.obs;
       currentUserAccounts.value.user.value.chatlist!.refresh();
     });
 

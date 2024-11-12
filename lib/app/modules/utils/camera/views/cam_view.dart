@@ -1,21 +1,22 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/modules/utils/camera/controllers/camera_controller.dart';
+import 'package:ARMOYU/app/modules/utils/camera/controllers/cam_controller.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:camera/camera.dart' as cam;
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-class CameraView extends StatelessWidget {
-  const CameraView({super.key});
+class CamView extends StatelessWidget {
+  const CamView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CameraController());
+    final controller = Get.find<CamController>();
+
     return PopScope(
       canPop: false,
       child: Obx(
@@ -34,28 +35,38 @@ class CameraView extends StatelessWidget {
                             width: Get.width,
                             child: controller.viewMedia.value == null
                                 ? controller.filterColor.value != null
-                                    ? FittedBox(
-                                        fit: BoxFit.cover,
-                                        child: SizedBox(
-                                          width: controller.cameraController
-                                              .value!.value.previewSize!.height,
-                                          height: controller.cameraController
-                                              .value!.value.previewSize!.width,
-                                          child: ColorFiltered(
-                                            colorFilter: ColorFilter.mode(
-                                              controller.filterColor.value!
-                                                  .withOpacity(
-                                                0.5,
+                                    ? controller.cameraController.value == null
+                                        ? null
+                                        : FittedBox(
+                                            fit: BoxFit.cover,
+                                            child: SizedBox(
+                                              width: controller
+                                                  .cameraController
+                                                  .value!
+                                                  .value
+                                                  .previewSize!
+                                                  .height,
+                                              height: controller
+                                                  .cameraController
+                                                  .value!
+                                                  .value
+                                                  .previewSize!
+                                                  .width,
+                                              child: ColorFiltered(
+                                                colorFilter: ColorFilter.mode(
+                                                  controller.filterColor.value!
+                                                      .withOpacity(
+                                                    0.5,
+                                                  ),
+                                                  BlendMode.color,
+                                                ),
+                                                child: CameraPreview(
+                                                  controller
+                                                      .cameraController.value!,
+                                                ),
                                               ),
-                                              BlendMode.color,
                                             ),
-                                            child: cam.CameraPreview(
-                                              controller
-                                                  .cameraController.value!,
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                          )
                                     : GestureDetector(
                                         onDoubleTap: () =>
                                             controller.changeCamera(),
@@ -73,19 +84,19 @@ class CameraView extends StatelessWidget {
 
                                           log(newScale.toString());
 
-                                          if (controller.maxZoom.value! <
+                                          if (controller.maxZoom!.value <
                                               newScale) {
                                             controller.currentZoom =
-                                                controller.maxZoom.value!;
+                                                controller.maxZoom!.value;
                                             controller.cameraController.value!
                                                 .setZoomLevel(
                                                     controller.currentZoom);
                                             return;
                                           }
-                                          if (controller.minZoom.value! >
+                                          if (controller.minZoom!.value >
                                               newScale) {
                                             controller.currentZoom =
-                                                controller.minZoom.value!;
+                                                controller.minZoom!.value;
                                             controller.cameraController.value!
                                                 .setZoomLevel(
                                                     controller.currentZoom);
@@ -97,27 +108,32 @@ class CameraView extends StatelessWidget {
                                               .setZoomLevel(
                                                   controller.currentZoom);
                                         },
-                                        child: FittedBox(
-                                          fit: BoxFit.cover,
-                                          child: SizedBox(
-                                            width: controller
-                                                .cameraController
-                                                .value!
-                                                .value
-                                                .previewSize!
-                                                .height,
-                                            height: controller
-                                                .cameraController
-                                                .value!
-                                                .value
-                                                .previewSize!
-                                                .width,
-                                            child: cam.CameraPreview(
-                                              controller
-                                                  .cameraController.value!,
-                                            ),
-                                          ),
-                                        ),
+                                        child:
+                                            controller.cameraController.value ==
+                                                    null
+                                                ? null
+                                                : FittedBox(
+                                                    fit: BoxFit.cover,
+                                                    child: SizedBox(
+                                                      width: controller
+                                                          .cameraController
+                                                          .value!
+                                                          .value
+                                                          .previewSize!
+                                                          .height,
+                                                      height: controller
+                                                          .cameraController
+                                                          .value!
+                                                          .value
+                                                          .previewSize!
+                                                          .width,
+                                                      child: CameraPreview(
+                                                        controller
+                                                            .cameraController
+                                                            .value!,
+                                                      ),
+                                                    ),
+                                                  ),
                                       )
                                 : Image.file(
                                     File(
@@ -256,77 +272,81 @@ class CameraView extends StatelessWidget {
                           ),
                         ),
                         Obx(
-                          () => Positioned(
-                            bottom: 60,
-                            width: Get.width,
-                            child: SizedBox(
-                              height: 70,
-                              child: PageView.builder(
-                                controller:
-                                    controller.camfiltercontroller.value,
-                                physics: controller.takePictureProcess.value
-                                    ? const NeverScrollableScrollPhysics()
-                                    : const AlwaysScrollableScrollPhysics(),
-                                scrollDirection: Axis.horizontal,
-                                itemCount: controller.camfilter.length,
-                                onPageChanged: (value) {
-                                  controller.filterpage.value = value;
-                                  controller.camfilter[value].isSelected = true;
+                          () => controller.cameraController.value == null
+                              ? Container()
+                              : Positioned(
+                                  bottom: 60,
+                                  width: Get.width,
+                                  child: SizedBox(
+                                    height: 70,
+                                    child: PageView.builder(
+                                      controller:
+                                          controller.camfiltercontroller.value,
+                                      physics: controller
+                                              .takePictureProcess.value
+                                          ? const NeverScrollableScrollPhysics()
+                                          : const AlwaysScrollableScrollPhysics(),
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: controller.camfilter.length,
+                                      onPageChanged: (value) {
+                                        controller.filterpage.value = value;
+                                        controller.camfilter[value].isSelected =
+                                            true;
 
-                                  try {
-                                    controller.camfilter[value - 1].isSelected =
-                                        false;
-                                  } catch (e) {
-                                    log(e.toString());
-                                  }
-                                  try {
-                                    controller.camfilter[value + 1].isSelected =
-                                        false;
-                                  } catch (e) {
-                                    log(e.toString());
-                                  }
+                                        try {
+                                          controller.camfilter[value - 1]
+                                              .isSelected = false;
+                                        } catch (e) {
+                                          log(e.toString());
+                                        }
+                                        try {
+                                          controller.camfilter[value + 1]
+                                              .isSelected = false;
+                                        } catch (e) {
+                                          log(e.toString());
+                                        }
 
-                                  if (controller.camfilter[value].color !=
-                                      null) {
-                                    controller.filterColor.value =
-                                        controller.camfilter[value].color;
-                                  } else {
-                                    controller.filterColor.value = null;
-                                  }
+                                        if (controller.camfilter[value].color !=
+                                            null) {
+                                          controller.filterColor.value =
+                                              controller.camfilter[value].color;
+                                        } else {
+                                          controller.filterColor.value = null;
+                                        }
 
-                                  if (controller.camfilter[value].isImage! &&
-                                      controller.camfilter[value].media !=
-                                          null) {
-                                    controller.viewMedia.value = controller
-                                        .camfilter[value]
-                                        .media!
-                                        .mediaURL
-                                        .normalURL
-                                        .value;
-                                  } else {
-                                    controller.viewMedia.value = null;
-                                  }
-                                  controller.camfilter.refresh();
-                                  controller.filterpage.refresh();
-                                  controller.viewMedia.refresh();
-                                },
-                                itemBuilder: (context, index) {
-                                  if (index == controller.filterpage.value) {
-                                    controller.camfilter[index].isSelected =
-                                        true;
-                                  }
-                                  return Center(
-                                    child: controller.camfilter[index]
-                                        .filterWidget(
-                                      context,
-                                      controller.camfiltercontroller.value,
-                                      index,
+                                        if (controller
+                                                .camfilter[value].isImage! &&
+                                            controller.camfilter[value].media !=
+                                                null) {
+                                          controller.viewMedia.value =
+                                              controller.camfilter[value].media!
+                                                  .mediaURL.normalURL.value;
+                                        } else {
+                                          controller.viewMedia.value = null;
+                                        }
+                                        controller.camfilter.refresh();
+                                        controller.filterpage.refresh();
+                                        controller.viewMedia.refresh();
+                                      },
+                                      itemBuilder: (context, index) {
+                                        if (index ==
+                                            controller.filterpage.value) {
+                                          controller.camfilter[index]
+                                              .isSelected = true;
+                                        }
+                                        return Center(
+                                          child: controller.camfilter[index]
+                                              .filterWidget(
+                                            context,
+                                            controller
+                                                .camfiltercontroller.value,
+                                            index,
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
+                                  ),
+                                ),
                         ),
                       ],
                     ),

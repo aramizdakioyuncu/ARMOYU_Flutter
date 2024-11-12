@@ -98,10 +98,8 @@ class ChatNewPage extends StatelessWidget {
                                       "chat": Chat(
                                         user: controller
                                             .filteredItems.value![index],
-                                        chatNotification: false,
-                                      ),
-                                      "CurrentUserAccounts":
-                                          currentUserAccounts,
+                                        chatNotification: false.obs,
+                                      )
                                     });
                                   },
                                 ),

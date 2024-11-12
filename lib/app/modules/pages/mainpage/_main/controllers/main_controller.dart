@@ -12,9 +12,9 @@ import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/API_Functions/station.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/modules/utils/camera/views/camera_view.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
+import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +69,8 @@ class MainPageController extends GetxController {
 
   var widgetGameStation = Rxn<List<Station>>(null);
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   late Function(int) changePageFunction;
   @override
   void onInit() {
@@ -87,9 +89,7 @@ class MainPageController extends GetxController {
     currentUserAccounts.value = currentUserAccount;
 
     if (ARMOYU.cameras!.isNotEmpty) {
-      mainsocialpages.add(
-        const CameraView(),
-      );
+      mainsocialpages.add(const CamView());
       socailinitpage.value = 1;
     }
 
@@ -106,6 +106,11 @@ class MainPageController extends GetxController {
 
     //Grupları Çek
     loadMyGroups(currentUserAccounts.value!.user.value);
+  }
+
+  void openDrawer() {
+    // Scaffold.of(Get.context!).openDrawer();
+    scaffoldKey.currentState?.openDrawer();
   }
 
   void popfunction() {
@@ -259,7 +264,7 @@ class MainPageController extends GetxController {
         groupName: element['group_name'],
         groupshortName: element['group_shortname'],
         groupUsersCount: element['group_usercount'],
-        joinStatus: element['group_joinstatus'] == 1 ? true : false,
+        joinStatus: element['group_joinstatus'] == 1 ? true.obs : false.obs,
         description: element['group_description'],
         groupSocial: GroupSocial(
           discord: element['group_social']['group_discord'],

@@ -7,7 +7,7 @@ import 'package:ARMOYU/app/modules/Settings/settings_module.dart';
 import 'package:ARMOYU/app/modules/Social/socail_module.dart';
 import 'package:ARMOYU/app/modules/Story/story_module.dart';
 import 'package:ARMOYU/app/modules/poll/poll_module.dart';
-import 'package:ARMOYU/app/modules/utils/camera/camera_module.dart';
+import 'package:ARMOYU/app/modules/utils/camera/cam_module.dart';
 import 'package:ARMOYU/app/modules/utils/gallery/gallery_module.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/module.dart';
 import 'package:ARMOYU/app/modules/Group/group_module.dart';
@@ -29,7 +29,7 @@ class AppPages {
     ...AppPageModule.routes,
 
     //Camera
-    ...CameraModule.routes,
+    ...CamModule.routes,
 
     //Utils
     ...GalleryModule.routes,

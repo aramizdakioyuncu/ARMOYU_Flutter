@@ -3,10 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage {
-  final int messageID;
-  final String messageContext;
-  final User user;
-  final bool isMe;
+  int messageID;
+  String messageContext;
+  User user;
+  bool isMe;
 
   ChatMessage({
     required this.messageID,

@@ -106,7 +106,7 @@ class OneSignalApi {
           Get.toNamed("/chat/detail", arguments: {
             "chat": Chat(
               user: User(userID: int.parse(userID)),
-              chatNotification: false,
+              chatNotification: false.obs,
             ),
           });
         } else if (responseData["category"].toString() == "profile") {

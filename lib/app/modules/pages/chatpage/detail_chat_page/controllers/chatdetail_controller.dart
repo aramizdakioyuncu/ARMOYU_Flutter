@@ -38,11 +38,10 @@ class ChatdetailController extends GetxController {
       chat.value = arguments['chat'];
     }
 
-    chat.value!.chatNotification = false;
     chat.value!.messages ??= <ChatMessage>[].obs;
     if (chat.value!.messages!.isEmpty) {
       getchat().then((_) {});
-    } else {}
+    }
   }
 
   @override
@@ -157,6 +156,7 @@ class ChatdetailController extends GetxController {
       chat.value!.user.userID,
     );
 
+    currentUserAccounts.value!.user.value.chatlist!.refresh();
     FunctionService f = FunctionService(
       currentUser: currentUserAccounts.value!.user.value,
     );

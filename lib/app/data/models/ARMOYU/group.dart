@@ -14,7 +14,7 @@ class Group {
   String? groupURL;
   RxList<User>? groupUsers;
   int? groupUsersCount;
-  bool? joinStatus;
+  Rx<bool>? joinStatus;
 
   GroupSocial? groupSocial;
   GroupRoles? myRole;
@@ -48,7 +48,7 @@ class Group {
       'groupURL': groupURL,
       'groupUsers': groupUsers?.map((user) => user.toJson()).toList(),
       'groupUsersCount': groupUsersCount,
-      'joinStatus': joinStatus,
+      'joinStatus': joinStatus?.value,
       'groupSocial': groupSocial?.toJson(),
       'myRole': myRole?.toJson(),
     };
@@ -72,7 +72,8 @@ class Group {
               json['groupUsers'].map((user) => User.fromJson(user))).obs
           : null,
       groupUsersCount: json['groupUsersCount'],
-      joinStatus: json['joinStatus'],
+      joinStatus:
+          json['joinStatus'] == null ? null : (json['joinStatus'] as bool).obs,
       groupSocial: json['groupSocial'] != null
           ? GroupSocial.fromJson(json['groupSocial'])
           : null,

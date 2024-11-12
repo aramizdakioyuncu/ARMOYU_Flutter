@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/controllers/socail_page_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
+import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,6 +41,7 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
     );
 
     return Scaffold(
+      appBar: AppbarWidget.custom(),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         controller: controller.scrollController,
@@ -83,6 +86,7 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
         },
         child: const Icon(Icons.post_add),
       ),
+      bottomNavigationBar: BottomnavigationBar.custom1(),
     );
   }
 }

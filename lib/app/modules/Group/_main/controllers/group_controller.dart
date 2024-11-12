@@ -146,7 +146,8 @@ class GroupController extends GetxController {
       groupshortName: response["icerik"]["group_shortname"],
       groupURL: response["icerik"]["group_URL"],
       groupType: "",
-      joinStatus: response["icerik"]['group_joinstatus'] == 1 ? true : false,
+      joinStatus:
+          response["icerik"]['group_joinstatus'] == 1 ? true.obs : false.obs,
       description: response["icerik"]["group_description"],
       groupSocial: GroupSocial(
         discord: response["icerik"]['group_social']['group_discord'].toString(),
@@ -264,7 +265,7 @@ class GroupController extends GetxController {
       description: groupdescription.value.text,
       discordInvite: socialdiscord.value.text,
       webLINK: socialweb.value.text,
-      joinStatus: group.value!.joinStatus!,
+      joinStatus: group.value!.joinStatus!.value,
     );
 
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
@@ -441,7 +442,9 @@ class GroupController extends GetxController {
     String text,
   ) async {
     if (controller.text == "" || controller.text.isEmpty) {
-      searchTimer.value!.cancel();
+      if (searchTimer.value != null) {
+        searchTimer.value!.cancel();
+      }
 
       searchUserList.clear();
       return;
@@ -484,9 +487,9 @@ class GroupController extends GetxController {
             avatar: Media(
               mediaID: 11,
               mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["avatar"],
-                normalURL: response["icerik"][i]["avatar"],
-                minURL: response["icerik"][i]["avatar"],
+                bigURL: Rx<String>(response["icerik"][i]["avatar"]),
+                normalURL: Rx<String>(response["icerik"][i]["avatar"]),
+                minURL: Rx<String>(response["icerik"][i]["avatar"]),
               ),
             ),
           ),

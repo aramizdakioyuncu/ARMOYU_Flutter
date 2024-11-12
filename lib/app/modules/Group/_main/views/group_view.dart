@@ -676,9 +676,11 @@ class GroupView extends StatelessWidget {
                         controller.group.value!.joinStatus == null
                             ? Container()
                             : Switch(
-                                value: controller.group.value!.joinStatus!,
+                                value:
+                                    controller.group.value!.joinStatus!.value,
                                 onChanged: (value) {
-                                  controller.group.value!.joinStatus = value;
+                                  controller.group.value!.joinStatus!.value =
+                                      value;
                                 },
                               ),
                       ],

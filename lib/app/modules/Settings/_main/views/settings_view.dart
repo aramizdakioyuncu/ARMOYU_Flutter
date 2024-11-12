@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/Settings/_main/controller/settings_controller.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -18,12 +17,6 @@ class SettingsView extends StatelessWidget {
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     //* *//
-    final currentAccountController = Get.find<PagesController>(
-      tag: findCurrentAccountController
-          .currentUserAccounts.value.user.value.userID
-          .toString(),
-    );
-    log("***-**${currentAccountController.currentUserAccounts.user.value.displayName}");
 
     final controller = Get.put(SettingsController());
 

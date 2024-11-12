@@ -8,9 +8,8 @@ import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:camera/camera.dart' as cam;
 
-class CameraController extends GetxController {
+class CamController extends GetxController {
   var camScreen = 0.obs;
   var filterpage = 0.obs;
   var takePictureProcess = false.obs;
@@ -33,23 +32,20 @@ class CameraController extends GetxController {
 
   var initializeControllerFuture = Rxn<Future<void>>();
 
-  late Rxn<double> maxZoom;
-  late Rxn<double> minZoom;
+  Rx<double>? maxZoom;
+  Rx<double>? minZoom;
 
   var savemediaProcess = false.obs;
 
   var isfirstProcess = true.obs;
 
-  late var user = Rxn<User>();
+  var user = Rxn<User>();
 
   var canPop = false.obs;
 
-  late Rxn<cam.CameraController> cameraController = Rxn<cam.CameraController>();
+  var cameraController = Rxn<CameraController>(null);
 
-  @override
-  void onInit() {
-    super.onInit();
-
+  void startcamservice() {
     //* *//
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
@@ -59,7 +55,9 @@ class CameraController extends GetxController {
     canPop.value = false;
     if (Get.arguments != null) {
       Map<String, dynamic> arguments = Get.arguments;
-      canPop.value = arguments['canPop'];
+      if (arguments['canPop'] != null) {
+        canPop.value = arguments['canPop'];
+      }
     }
 
     //kamera Ayarlamaları
@@ -168,10 +166,11 @@ class CameraController extends GetxController {
     }
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-    cameraController.value!.dispose();
+  void stopcamservice() {
+    if (cameraController.value != null) {
+      cameraController.value!.dispose();
+      cameraController.value = null;
+    }
   }
 
   Future<void> initializeCamera() async {
@@ -179,15 +178,15 @@ class CameraController extends GetxController {
       final cameras = await availableCameras();
 
       if (cameras.isNotEmpty) {
-        cameraController.value = cam.CameraController(
+        cameraController.value = CameraController(
           cameras[camScreen.value],
           ResolutionPreset.high,
           enableAudio: true,
         );
         await cameraController.value!.initialize();
 
-        maxZoom.value = await cameraController.value!.getMaxZoomLevel();
-        minZoom.value = await cameraController.value!.getMinZoomLevel();
+        maxZoom = (await cameraController.value!.getMaxZoomLevel()).obs;
+        minZoom = (await cameraController.value!.getMinZoomLevel()).obs;
 
         cameraController.value!.setZoomLevel(currentZoom);
       } else {
@@ -269,6 +268,8 @@ class CameraController extends GetxController {
     } else {
       camScreen.value = 1;
     }
+
+    initializeControllerFuture.value = initializeCamera();
 
     initializeCamera();
   }

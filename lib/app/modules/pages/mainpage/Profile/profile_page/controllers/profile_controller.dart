@@ -16,7 +16,6 @@ import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -1114,9 +1113,7 @@ class ProfileController extends GetxController
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MediaViewer(
-              currentUser: Get.find<PagesController>(
-                tag: currentUserAccounts.value.user.value.userID.toString(),
-              ).currentUserAccounts.value.user.value,
+              currentUser: currentUserAccounts.value.user.value,
               media: [userProfile.value.avatar!],
               initialIndex: 0,
             ),
@@ -1680,7 +1677,7 @@ class ProfileController extends GetxController
       return Expanded(
         child: Chat(
           user: userProfile.value,
-          chatNotification: false,
+          chatNotification: false.obs,
         ).profilesendMessage(
           context,
           currentUserAccounts: currentUserAccounts.value,

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/_main/controllers/chat_page_controller.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/new_chat_page/views/chat_new_page.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
@@ -10,12 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ChatPage extends StatelessWidget {
-  final UserAccounts currentUserAccounts;
-
-  const ChatPage({
-    super.key,
-    required this.currentUserAccounts,
-  });
+  const ChatPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +25,9 @@ class ChatPage extends StatelessWidget {
 
     final controller = Get.put(
       ChatPageController(),
-      tag: currentUserAccounts.user.value.userID.toString(),
+      tag: findCurrentAccountController
+          .currentUserAccounts.value.user.value.userID
+          .toString(),
     );
 
     return Scaffold(
@@ -129,10 +125,14 @@ class ChatPage extends StatelessWidget {
                         delegate: SliverChildBuilderDelegate(
                           childCount: controller.filteredItems.value!.length,
                           (context, index) {
-                            return controller.filteredItems.value![index]
-                                .listtilechat(
-                              context,
-                              currentUserAccounts: currentUserAccounts,
+                            return Obx(
+                              () => controller.filteredItems.value![index]
+                                  .listtilechat(
+                                context,
+                                currentUserAccounts:
+                                    findCurrentAccountController
+                                        .currentUserAccounts.value,
+                              ),
                             );
                           },
                         ),
@@ -142,14 +142,14 @@ class ChatPage extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag:
-            "NewChatButton${currentAccountController.currentUserAccounts.user.value.userID}",
+            "NewChatButton${currentAccountController.currentUserAccount.user.value.userID}",
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ChatNewPage(
                 currentUserAccounts:
-                    currentAccountController.currentUserAccounts,
+                    currentAccountController.currentUserAccount,
               ),
             ),
           );

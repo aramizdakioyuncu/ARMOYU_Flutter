@@ -5,7 +5,6 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/_main/views/pages_view.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -17,56 +16,54 @@ class AppPageController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-
     // Tüm hesapları aktif et
-    for (var element in ARMOYU.appUsers) {
-      pagesViewList.add(
-        PagesView(
-          currentUserAccounts: element,
-        ),
-      );
-    }
+    // for (var element in ARMOYU.appUsers) {
+    //   pagesViewList.add(const PagesView());
+    // }
+    pagesViewList.addAll(
+        List.generate(ARMOYU.appUsers.length, (_) => const PagesView()));
 
-    for (PagesView pagaviewInfo in pagesViewList) {
-      log("${pagaviewInfo.currentUserAccounts.user.value.userID!} -> ${pagaviewInfo.currentUserAccounts.user.value.displayName!}");
-    }
+    // for (PagesView pagaviewInfo in pagesViewList) {
+    //   log("${pagaviewInfo.currentUserAccounts.user.value.userID!} -> ${pagaviewInfo.currentUserAccounts.user.value.displayName!}");
+    // }
   }
 
   Future<void> changeAccount(UserAccounts selectedUser) async {
-    if (!pagesViewList.any((element) =>
-        element.currentUserAccounts.user.value.userID! ==
-        selectedUser.user.value.userID!)) {
-      pagesViewList.add(
-        PagesView(
-          currentUserAccounts: selectedUser,
-        ),
-      );
-      log("Aktif Hesap Sayısı:${pagesViewList.length - 1} -> ${pagesViewList.length}");
-      update();
-    } else {
-      log("Aktif Hesap Sayısı: ${pagesViewList.length}");
-    }
+    // if (!pagesViewList.any(
+    //   (element) =>
+    //       element.currentUserAccounts.user.value.userID! ==
+    //       selectedUser.user.value.userID!,
+    // )) {
+    //   pagesViewList.add(const PagesView());
 
-    int countPageIndex = pagesViewList.indexWhere((element) =>
-        element.currentUserAccounts.user.value.userID ==
-        selectedUser.user.value.userID);
+    //   log("Aktif Hesap Sayısı:${pagesViewList.length - 1} -> ${pagesViewList.length}");
+    //   update();
+    // } else {
+    //   log("Aktif Hesap Sayısı: ${pagesViewList.length}");
+    // }
 
-    log("Index Sayaç $countPageIndex");
+    // int countPageIndex = pagesViewList.indexWhere(
+    //   (element) =>
+    //       element.currentUserAccounts.user.value.userID ==
+    //       selectedUser.user.value.userID,
+    // );
 
-    Get.back();
+    // log("Index Sayaç $countPageIndex");
 
-    final accountController = Get.find<AccountUserController>();
-    accountController.changeUser(UserAccounts(user: selectedUser.user));
+    // Get.back();
 
-    pagesController.value.animateToPage(
-      countPageIndex,
-      duration: const Duration(
-        milliseconds: 300,
-      ),
-      curve: Curves.ease,
-    );
+    // final accountController = Get.find<AccountUserController>();
+    // accountController.changeUser(UserAccounts(user: selectedUser.user));
 
-    await fetchChangedprofiledata(selectedUser.user.value);
+    // pagesController.value.animateToPage(
+    //   countPageIndex,
+    //   duration: const Duration(
+    //     milliseconds: 300,
+    //   ),
+    //   curve: Curves.ease,
+    // );
+
+    // await fetchChangedprofiledata(selectedUser.user.value);
   }
 
   Future<void> fetchChangedprofiledata(User user) async {

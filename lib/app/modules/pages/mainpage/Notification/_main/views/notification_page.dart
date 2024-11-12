@@ -1,5 +1,7 @@
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/_main/controllers/notification_page_controller.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
+import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,6 +34,7 @@ class _NotificationPage extends State<NotificationPage>
     );
 //
     return Scaffold(
+      appBar: AppbarWidget.custom(),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         controller: controller.scrollController.value,
@@ -44,6 +47,7 @@ class _NotificationPage extends State<NotificationPage>
           ),
         ],
       ),
+      bottomNavigationBar: BottomnavigationBar.custom1(),
     );
   }
 }

@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/views/main_view.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
@@ -9,22 +7,18 @@ import 'package:ARMOYU/app/modules/pages/chatpage/_main/views/chat_page.dart';
 import 'package:get/get.dart';
 
 class PagesView extends StatelessWidget {
-  final UserAccounts currentUserAccounts;
-  const PagesView({
-    super.key,
-    required this.currentUserAccounts,
-  });
+  const PagesView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    log("*****${currentUserAccounts.user.value.displayName}*****");
-
     //Controller Çek
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     final controller = Get.put(
-      PagesController(currentUserAccounts: currentUserAccounts),
-      tag: currentUserAccounts.user.value.userID.toString(),
+      PagesController(),
+      tag: findCurrentAccountController
+          .currentUserAccounts.value.user.value.userID
+          .toString(),
     );
 
     // ignore: deprecated_member_use
@@ -39,11 +33,9 @@ class PagesView extends StatelessWidget {
         body: PageView(
           controller: controller.pageController,
           physics: const NeverScrollableScrollPhysics(),
-          children: [
-            const MainView(),
-            ChatPage(
-              currentUserAccounts: currentUserAccounts,
-            ),
+          children: const [
+            MainView(),
+            ChatPage(),
           ],
         ),
       ),

@@ -6,6 +6,8 @@ import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart
 
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/controllers/search_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
+import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,7 +41,7 @@ class _SearchPagePage extends State<SearchPage>
     final currentAccountController = Get.find<PagesController>(
       tag: widget.currentUserAccounts.user.value.userID.toString(),
     );
-    log("*****${currentAccountController.currentUserAccounts.user.value.displayName}");
+    log("*****${currentAccountController.currentUserAccount.user.value.displayName}");
 
     final mainpagecontroller = Get.find<MainPageController>(
       tag: widget.currentUserAccounts.user.value.userID.toString(),
@@ -47,13 +49,14 @@ class _SearchPagePage extends State<SearchPage>
 
     final controller = Get.put(
       SearchPageController(
-        currentUserAccounts: currentAccountController.currentUserAccounts,
+        currentUserAccounts: currentAccountController.currentUserAccount,
         searchController: mainpagecontroller.appbarSearchTextController.value,
       ),
       tag: widget.currentUserAccounts.user.value.userID.toString(),
     );
 
     return Scaffold(
+      appBar: AppbarWidget.custom(),
       body: Obx(
         () => controller.widgetSearch.isNotEmpty
             ? ListView.builder(
@@ -207,6 +210,7 @@ class _SearchPagePage extends State<SearchPage>
                 ),
               ),
       ),
+      bottomNavigationBar: BottomnavigationBar.custom1(),
     );
   }
 }

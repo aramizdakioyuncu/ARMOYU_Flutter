@@ -138,7 +138,7 @@ class ChatPageController extends GetxController {
             ),
           ),
           lastmessage: ChatMessage(
-            user: User(userID: 1, avatar: null, displayName: ""),
+            user: User(userID: element["kullid"]),
             messageContext: sonmesaj,
             messageID: 1,
             isMe:
@@ -147,7 +147,7 @@ class ChatPageController extends GetxController {
                     : false,
           ).obs,
           chatType: element["sohbetturu"],
-          chatNotification: notification,
+          chatNotification: notification.obs,
         ),
       );
     }

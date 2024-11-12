@@ -8,12 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Chat {
-  final int? chatID;
-  final User user;
+  int? chatID;
+  User user;
   Rx<ChatMessage>? lastmessage;
   RxList<ChatMessage>? messages;
-  final String? chatType;
-  bool chatNotification;
+  String? chatType;
+  Rx<bool> chatNotification;
 
   Chat({
     this.chatID,
@@ -29,10 +29,10 @@ class Chat {
     return {
       'chatID': chatID,
       'user': user.toJson(),
-      'lastmessage': lastmessage?.toJson(),
+      'lastmessage': lastmessage?.value.toJson(),
       'messages': messages?.map((message) => message.toJson()).toList(),
       'chatType': chatType,
-      'chatNotification': chatNotification,
+      'chatNotification': chatNotification.value,
     };
   }
 
@@ -43,13 +43,15 @@ class Chat {
       user: User.fromJson(json['user']),
       lastmessage: json['lastmessage'] == null
           ? null
-          : (json['lastmessage'] as ChatMessage).obs,
-      messages: (json['messages'] as List<dynamic>?)
-          ?.map((member) => ChatMessage.fromJson(member))
-          .toList()
-          .obs,
+          : ChatMessage.fromJson(json['lastmessage']).obs,
+      messages: json['messages'] == null
+          ? null
+          : (json['messages'] as List<dynamic>?)
+              ?.map((member) => ChatMessage.fromJson(member))
+              .toList()
+              .obs,
       chatType: json['chatType'],
-      chatNotification: json['chatNotification'],
+      chatNotification: (json['chatNotification'] as bool).obs,
     );
   }
 
@@ -61,18 +63,49 @@ class Chat {
         foregroundImage: CachedNetworkImageProvider(
           user.avatar!.mediaURL.minURL.value,
         ),
+        radius: 28,
       ),
-      tileColor: chatNotification ? Colors.red.shade900 : null,
+      tileColor: chatNotification.value ? Colors.red.shade900 : null,
       title: CustomText.costum1(user.displayName!),
       subtitle: lastmessage == null
           ? const Text("")
-          : Text(
-              lastmessage!.value.messageContext,
+          : Row(
+              children: [
+                Expanded(
+                  child: RichText(
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                      children: [
+                        if (lastmessage!.value.isMe)
+                          const WidgetSpan(
+                            child: Icon(
+                              Icons.done_all,
+                              color: Color.fromRGBO(116, 243, 20, 1),
+                              size: 14,
+                            ),
+                          ),
+                        if (lastmessage!.value.isMe)
+                          const WidgetSpan(
+                            child: SizedBox(width: 5),
+                          ),
+                        TextSpan(
+                          text: lastmessage!.value.messageContext,
+                          style: TextStyle(
+                            color: Get.theme.primaryColor.withOpacity(0.8),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
       trailing: chatType == "ozel"
           ? const Icon(Icons.person)
           : const Icon(Icons.people_alt),
       onTap: () {
+        chatNotification.value = false;
         Get.toNamed(
           "/chat/detail",
           arguments: {"chat": this, "CurrentUserAccounts": currentUserAccounts},

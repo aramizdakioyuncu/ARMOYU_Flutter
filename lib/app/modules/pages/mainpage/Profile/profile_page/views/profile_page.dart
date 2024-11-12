@@ -6,6 +6,8 @@ import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
+import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,7 +53,7 @@ class _ProfilePageState extends State<ProfileView>
     final currentAccountController = Get.find<PagesController>(
       tag: currentUserAccount.user.value.userID.toString(),
     );
-    log("***profile**${currentAccountController.currentUserAccounts.user.value.displayName}");
+    log("***profile**${currentAccountController.currentUserAccount.user.value.displayName}");
 
     /////
     String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
@@ -69,6 +71,8 @@ class _ProfilePageState extends State<ProfileView>
 
     return Scaffold(
       // backgroundColor: ARMOYU.backgroundcolor,
+      appBar: controller.ismyProfile.value ? AppbarWidget.custom() : null,
+
       body: NestedScrollView(
         controller: controller.profileScrollController.value,
         physics: const BouncingScrollPhysics(
@@ -109,7 +113,7 @@ class _ProfilePageState extends State<ProfileView>
                       MaterialPageRoute(
                         builder: (context) => MediaViewer(
                           currentUser: currentAccountController
-                              .currentUserAccounts.user.value,
+                              .currentUserAccount.user.value,
                           media: [controller.userProfile.value.banner!],
                           initialIndex: 0,
                         ),
@@ -317,6 +321,8 @@ class _ProfilePageState extends State<ProfileView>
           ],
         ),
       ),
+      bottomNavigationBar:
+          controller.ismyProfile.value ? BottomnavigationBar.custom1() : null,
     );
   }
 }
