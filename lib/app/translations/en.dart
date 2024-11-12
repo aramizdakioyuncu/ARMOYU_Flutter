@@ -13,6 +13,9 @@ Map<String, String> en = {
   CommonKeys.create: "Create",
   CommonKeys.share: "Share",
   CommonKeys.update: 'Update',
+  CommonKeys.save: 'Save',
+  CommonKeys.change: 'Change',
+  CommonKeys.invite: 'Invite',
 
   CommonKeys.accept: 'Accept',
   CommonKeys.decline: 'Decline',
@@ -103,6 +106,16 @@ Map<String, String> en = {
   GroupKeys.createGroup: 'Create Group',
   GroupKeys.groupName: 'Group Name',
   GroupKeys.groupShortname: 'Group Shortname',
+
+  GroupKeys.groupkickuser: 'Group kick user',
+  GroupKeys.groupInviteuser: 'Group invite user',
+  GroupKeys.groupInviteNumberuserSelected: 'Selected number of invited users',
+  GroupKeys.groupMember: 'Group member',
+  GroupKeys.groupLogo: 'Group logo',
+  GroupKeys.groupbanner: 'Group banner',
+  GroupKeys.groupdescription: 'Group description',
+  GroupKeys.groupwebsite: 'Group website',
+  GroupKeys.groupisJoinable: 'Group is joinable',
 
   //School
   SchoolKeys.joinSchool: 'Join School',

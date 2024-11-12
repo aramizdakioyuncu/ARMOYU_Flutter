@@ -13,6 +13,9 @@ Map<String, String> ar = {
   CommonKeys.create: "إنشاء",
   CommonKeys.share: "مشاركة",
   CommonKeys.update: 'تحديث',
+  CommonKeys.save: 'حفظ',
+  CommonKeys.change: 'تغيير',
+  CommonKeys.invite: 'دعوة',
 
   CommonKeys.accept: 'قبول',
   CommonKeys.decline: 'رفض',
@@ -103,6 +106,16 @@ Map<String, String> ar = {
   GroupKeys.createGroup: 'إنشاء مجموعة',
   GroupKeys.groupName: 'اسم المجموعة',
   GroupKeys.groupShortname: 'الاسم المختصر للمجموعة',
+
+  GroupKeys.groupkickuser: 'طرد المستخدم من المجموعة',
+  GroupKeys.groupInviteuser: 'دعوة المستخدم إلى المجموعة',
+  GroupKeys.groupInviteNumberuserSelected: 'عدد المستخدمين المدعوين تم اختياره',
+  GroupKeys.groupMember: 'عضو المجموعة',
+  GroupKeys.groupLogo: 'شعار المجموعة',
+  GroupKeys.groupbanner: 'لافتة المجموعة',
+  GroupKeys.groupdescription: 'وصف المجموعة',
+  GroupKeys.groupwebsite: 'موقع المجموعة',
+  GroupKeys.groupisJoinable: 'هل يمكن الانضمام إلى المجموعة',
 
   //School
   SchoolKeys.joinSchool: 'انضم إلى المدرسة',

@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/Group/_main/controllers/group_controller.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -499,89 +500,83 @@ class GroupView extends StatelessWidget {
               ),
 
               SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              CustomText.costum1("Oyuncu davet Et"),
-                              const SizedBox(
-                                width: 2,
-                              ),
-                              CustomText.costum1(
-                                  "(${controller.selectedUsers.length} Oyuncu Seçildi)"),
-                            ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: CustomTextfields.costum3(
+                              controller: controller.searchuser,
+                            ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CustomButtons.costum1(
+                              text: CommonKeys.invite.tr,
+                              onPressed: controller.inviteuserfunction,
+                              enabled: controller.selectedUsers.isNotEmpty
+                                  ? true
+                                  : false,
+                              loadingStatus: controller.inviteuserStatus,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: CustomText.costum1(
+                          "(${controller.selectedUsers.length} ${GroupKeys.groupInviteNumberuserSelected.tr})",
                         ),
                       ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: CustomTextfields.costum3(
-                            controller: controller.searchuser,
+                      ...List.generate(controller.searchUserList.length,
+                          (index) {
+                        return ListTile(
+                          contentPadding: const EdgeInsets.all(0),
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.transparent,
+                            foregroundImage: CachedNetworkImageProvider(
+                              controller.searchUserList[index].avatar!.mediaURL
+                                  .minURL.value,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CustomButtons.costum1(
-                            text: "Davet Et",
-                            onPressed: controller.inviteuserfunction,
-                            enabled: controller.selectedUsers.isNotEmpty
-                                ? true
-                                : false,
-                            loadingStatus: controller.inviteuserStatus,
+                          title: CustomText.costum1(
+                            controller.searchUserList[index].displayName!,
                           ),
-                        ),
-                      ],
-                    ),
-                    ...List.generate(controller.searchUserList.length, (index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          foregroundImage: CachedNetworkImageProvider(
-                            controller.searchUserList[index].avatar!.mediaURL
-                                .minURL.value,
-                          ),
-                        ),
-                        title: CustomText.costum1(
-                          controller.searchUserList[index].displayName!,
-                        ),
-                        trailing: controller.group.value!.groupUsers!.any(
-                                (element) =>
-                                    element.userID ==
-                                    controller.searchUserList[index].userID)
-                            ? CustomText.costum1("Grup Üyesi")
-                            : Checkbox(
-                                value: controller.selectedUsers.any((element) =>
-                                    element.userID ==
-                                    controller.searchUserList[index].userID),
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    controller.selectedUsers
-                                        .add(controller.searchUserList[index]);
-                                  } else {
-                                    controller.selectedUsers.removeWhere(
-                                        (element) =>
-                                            element.userID ==
-                                            controller
-                                                .searchUserList[index].userID);
-                                  }
-                                  log(controller.selectedUsers.length
-                                      .toString());
+                          trailing: controller.group.value!.groupUsers!.any(
+                                  (element) =>
+                                      element.userID ==
+                                      controller.searchUserList[index].userID)
+                              ? CustomText.costum1(GroupKeys.groupMember.tr)
+                              : Checkbox(
+                                  value: controller.selectedUsers.any(
+                                      (element) =>
+                                          element.userID ==
+                                          controller
+                                              .searchUserList[index].userID),
+                                  onChanged: (value) {
+                                    if (value == true) {
+                                      controller.selectedUsers.add(
+                                          controller.searchUserList[index]);
+                                    } else {
+                                      controller.selectedUsers.removeWhere(
+                                          (element) =>
+                                              element.userID ==
+                                              controller.searchUserList[index]
+                                                  .userID);
+                                    }
+                                    log(controller.selectedUsers.length
+                                        .toString());
 
-                                  () {}();
-                                },
-                              ),
-                      );
-                    }),
-                  ],
+                                    () {}();
+                                  },
+                                ),
+                        );
+                      }),
+                    ],
+                  ),
                 ),
               ),
               SingleChildScrollView(
@@ -590,7 +585,7 @@ class GroupView extends StatelessWidget {
                     Row(
                       children: [
                         CustomText.costum1(
-                          "Grup Logosu",
+                          GroupKeys.groupLogo.tr,
                         )
                       ],
                     ),
@@ -615,14 +610,14 @@ class GroupView extends StatelessWidget {
                           ),
                     const SizedBox(height: 10),
                     CustomButtons.costum1(
-                      text: "Değiştir",
+                      text: CommonKeys.change.tr,
                       onPressed: controller.changegrouplogo,
                       loadingStatus: controller.changegrouplogoStatus,
                     ),
                     Row(
                       children: [
                         CustomText.costum1(
-                          "Arkaplan Görseli",
+                          GroupKeys.groupbanner.tr,
                         ),
                       ],
                     ),
@@ -634,11 +629,6 @@ class GroupView extends StatelessWidget {
                               height: 100,
                             ),
                           )
-                        // const SkeletonItem(
-                        //     child: SizedBox(
-                        //       height: 100,
-                        //     ),
-                        //   )
                         : Container(
                             height: 100,
                             decoration: BoxDecoration(
@@ -649,29 +639,30 @@ class GroupView extends StatelessWidget {
                               )),
                             ),
                           ),
+                    const SizedBox(height: 10),
                     CustomButtons.costum1(
-                      text: "Değiştir",
+                      text: CommonKeys.change.tr,
                       onPressed: controller.changegroupbanner,
                       loadingStatus: controller.changegroupbannerStatus,
                     ),
                     CustomTextfields.costum3(
                       controller: controller.groupname,
-                      title: "Grup Adı",
+                      title: GroupKeys.groupName.tr,
                     ),
                     const SizedBox(height: 20),
                     CustomTextfields.costum3(
                       controller: controller.groupshortname,
-                      title: "Grup Etiketi",
+                      title: GroupKeys.groupShortname.tr,
                     ),
                     const SizedBox(height: 20),
                     CustomTextfields.costum3(
                       controller: controller.groupdescription,
-                      title: "Grup Açıklaması",
+                      title: GroupKeys.groupdescription.tr,
                     ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        CustomText.costum1("Alım Durumu"),
+                        CustomText.costum1(GroupKeys.groupisJoinable.tr),
                         const Spacer(),
                         controller.group.value!.joinStatus == null
                             ? Container()
@@ -688,16 +679,16 @@ class GroupView extends StatelessWidget {
                     const SizedBox(height: 20),
                     CustomTextfields.costum3(
                       controller: controller.socialdiscord,
-                      title: "Discord Davet Linki",
+                      title: "Discord",
                     ),
                     const SizedBox(height: 20),
                     CustomTextfields.costum3(
                       controller: controller.socialweb,
-                      title: "Web sitesi",
+                      title: GroupKeys.groupwebsite.tr,
                     ),
                     const SizedBox(height: 20),
                     CustomButtons.costum1(
-                      text: "Kaydet",
+                      text: CommonKeys.save.tr,
                       onPressed: controller.groupdetailSave,
                       loadingStatus: controller.groupdetailSaveproccess,
                     ),

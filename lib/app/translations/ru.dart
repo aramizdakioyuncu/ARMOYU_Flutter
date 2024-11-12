@@ -13,6 +13,9 @@ Map<String, String> ru = {
   CommonKeys.create: "Создать",
   CommonKeys.share: "Поделиться",
   CommonKeys.update: 'Обновить',
+  CommonKeys.save: 'сохранить',
+  CommonKeys.change: 'изменить',
+  CommonKeys.invite: 'Пригласить',
 
   CommonKeys.accept: 'Принять',
   CommonKeys.decline: 'Отклонить',
@@ -103,6 +106,17 @@ Map<String, String> ru = {
   GroupKeys.createGroup: 'Создать группу',
   GroupKeys.groupName: 'Название группы',
   GroupKeys.groupShortname: 'Краткое название группы',
+
+  GroupKeys.groupkickuser: 'Удалить пользователя из группы',
+  GroupKeys.groupInviteuser: 'Пригласить пользователя в группу',
+  GroupKeys.groupInviteNumberuserSelected:
+      'Выбранное количество приглашённых пользователей',
+  GroupKeys.groupMember: 'Член группы',
+  GroupKeys.groupLogo: 'Логотип группы',
+  GroupKeys.groupbanner: 'Баннер группы',
+  GroupKeys.groupdescription: 'Описание группы',
+  GroupKeys.groupwebsite: 'Веб-сайт группы',
+  GroupKeys.groupisJoinable: 'Группа доступна для присоединения',
 
   //School
   SchoolKeys.joinSchool: 'Присоединиться к школе',

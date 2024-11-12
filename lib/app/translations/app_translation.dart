@@ -28,6 +28,9 @@ class CommonKeys {
   static const create = 'create';
   static const share = 'share';
   static const update = 'update';
+  static const save = 'save';
+  static const change = 'change';
+  static const invite = 'invite';
 
   static const accept = 'accept';
   static const decline = 'decline';
@@ -123,6 +126,16 @@ class GroupKeys {
   static const createGroup = 'create_group';
   static const groupName = 'group_name';
   static const groupShortname = 'group_short_name';
+
+  static const groupkickuser = 'group_kick_user';
+  static const groupInviteuser = 'group_invite_user';
+  static const groupInviteNumberuserSelected = 'group_number_user_selected';
+  static const groupMember = 'group_member';
+  static const groupLogo = 'group_logo';
+  static const groupbanner = 'group_banner';
+  static const groupdescription = 'group_description';
+  static const groupwebsite = 'group_website';
+  static const groupisJoinable = 'group_isJoinable';
 }
 
 class SchoolKeys {

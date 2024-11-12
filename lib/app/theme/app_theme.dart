@@ -30,9 +30,9 @@ final ThemeData appDarkThemeData = ThemeData.dark().copyWith(
     fillColor: WidgetStatePropertyAll(Colors.red),
   ),
   checkboxTheme: const CheckboxThemeData(
-      checkColor: WidgetStatePropertyAll(
-    Colors.amber,
-  )),
+    fillColor: WidgetStatePropertyAll(Colors.black26),
+    checkColor: WidgetStatePropertyAll(Colors.red),
+  ),
   inputDecorationTheme: InputDecorationTheme(
     border: InputBorder.none,
     iconColor: Colors.white,
@@ -165,9 +165,9 @@ final ThemeData appLightThemeData = ThemeData.light().copyWith(
     fillColor: WidgetStatePropertyAll(Colors.red),
   ),
   checkboxTheme: const CheckboxThemeData(
-      checkColor: WidgetStatePropertyAll(
-    Colors.amber,
-  )),
+    fillColor: WidgetStatePropertyAll(Colors.black26),
+    checkColor: WidgetStatePropertyAll(Colors.red),
+  ),
   inputDecorationTheme: InputDecorationTheme(
     border: InputBorder.none,
     iconColor: Colors.grey.shade900,

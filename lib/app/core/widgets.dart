@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/widgets/cards.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -68,8 +67,6 @@ class ARMOYUWidget {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: ARMOYU.bodyColor,
-      textColor: ARMOYU.color,
       fontSize: 14.0,
     );
   }

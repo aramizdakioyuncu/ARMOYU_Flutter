@@ -13,6 +13,9 @@ Map<String, String> tr = {
   CommonKeys.create: 'Oluştur',
   CommonKeys.share: "Paylaş",
   CommonKeys.update: 'Güncelle',
+  CommonKeys.save: 'Kaydet',
+  CommonKeys.change: 'Değiştir',
+  CommonKeys.invite: 'Davet Et',
 
   CommonKeys.accept: 'Kabul Et',
   CommonKeys.decline: 'Reddet',
@@ -103,6 +106,16 @@ Map<String, String> tr = {
   GroupKeys.createGroup: 'Grup Oluştur',
   GroupKeys.groupName: 'Grup Adı',
   GroupKeys.groupShortname: 'Grup Kısa Adı',
+
+  GroupKeys.groupkickuser: 'Kullanıcıyı gruptan at',
+  GroupKeys.groupInviteuser: 'Kullanıcıyı gruba davet et',
+  GroupKeys.groupInviteNumberuserSelected: 'Seçilen kullanıcı sayısı',
+  GroupKeys.groupMember: 'Grup Üyesi',
+  GroupKeys.groupLogo: 'Grup Logosu',
+  GroupKeys.groupbanner: 'Grup Banner\'ı',
+  GroupKeys.groupdescription: 'Grup Açıklaması',
+  GroupKeys.groupwebsite: 'Grup Web Sitesi',
+  GroupKeys.groupisJoinable: 'Grup Alım',
 
   //School
   SchoolKeys.joinSchool: 'Okula Katıl',
