@@ -54,7 +54,7 @@ class FunctionService {
 
     User userdetail = ARMOYUFunctions.userfetch(oyuncubilgi);
 
-    userdetail.password = password;
+    userdetail.password = password.obs;
 
     int isUserAccountHas = ARMOYU.appUsers.indexWhere(
         (element) => element.user.value.userID == userdetail.userID);
@@ -115,7 +115,7 @@ class FunctionService {
 
     UserAccounts userdetail =
         UserAccounts(user: ARMOYUFunctions.userfetch(oyuncubilgi).obs);
-    userdetail.user.value.password = password;
+    userdetail.user.value.password = password.obs;
 
     //İlk defa giriş yapılıyorsa
     if (ARMOYU.appUsers.isEmpty) {

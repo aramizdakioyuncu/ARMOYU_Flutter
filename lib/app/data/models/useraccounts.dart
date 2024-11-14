@@ -29,13 +29,13 @@ class UserAccounts {
   List<School>? lastviewschoolsList = [];
   List<Station>? lastviewstationsList = [];
 
-  int chatNotificationCount = 0;
-  int surveyNotificationCount = 0;
-  int eventsNotificationCount = 0;
-  int downloadableCount = 0;
+  Rx<int> chatNotificationCount = Rx<int>(0);
+  Rx<int> surveyNotificationCount = Rx<int>(0);
+  Rx<int> eventsNotificationCount = Rx<int>(0);
+  Rx<int> downloadableCount = Rx<int>(0);
 
-  int friendRequestCount = 0;
-  int groupInviteCount = 0;
+  Rx<int> friendRequestCount = Rx<int>(0);
+  Rx<int> groupInviteCount = Rx<int>(0);
 
   //Takım Seçme işlemleri
   List<Team>? favoriteteams = [];
@@ -56,16 +56,27 @@ class UserAccounts {
     this.lastviewgroupsList,
     this.lastviewschoolsList,
     this.lastviewstationsList,
-    this.chatNotificationCount = 0,
-    this.surveyNotificationCount = 0,
-    this.eventsNotificationCount = 0,
-    this.downloadableCount = 0,
-    this.friendRequestCount = 0,
-    this.groupInviteCount = 0,
+    // this.chatNotificationCount = 0,
+    // this.surveyNotificationCount = 0,
+    // this.eventsNotificationCount = 0,
+    // this.downloadableCount = 0,
+    // this.friendRequestCount,
+    // this.groupInviteCount,
     this.favoriteteams,
     this.favTeam,
     this.favteamRequest = false,
-  });
+    Rx<int>? chatNotificationCount,
+    Rx<int>? friendRequestCount,
+    Rx<int>? surveyNotificationCount,
+    Rx<int>? eventsNotificationCount,
+    Rx<int>? downloadableCount,
+    Rx<int>? groupInviteCount,
+  })  : chatNotificationCount = chatNotificationCount ?? Rx<int>(0),
+        surveyNotificationCount = surveyNotificationCount ?? Rx<int>(0),
+        eventsNotificationCount = eventsNotificationCount ?? Rx<int>(0),
+        downloadableCount = downloadableCount ?? Rx<int>(0),
+        friendRequestCount = friendRequestCount ?? Rx<int>(0),
+        groupInviteCount = groupInviteCount ?? Rx<int>(0);
 
   get value => null;
 
@@ -92,12 +103,12 @@ class UserAccounts {
           lastviewschoolsList?.map((school) => school.toJson()).toList(),
       'lastviewstationsList':
           lastviewstationsList?.map((station) => station.toJson()).toList(),
-      'chatNotificationCount': chatNotificationCount,
-      'surveyNotificationCount': surveyNotificationCount,
-      'eventsNotificationCount': eventsNotificationCount,
-      'downloadableCount': downloadableCount,
-      'friendRequestCount': friendRequestCount,
-      'groupInviteCount': groupInviteCount,
+      'chatNotificationCount': chatNotificationCount.value,
+      'surveyNotificationCount': surveyNotificationCount.value,
+      'eventsNotificationCount': eventsNotificationCount.value,
+      'downloadableCount': downloadableCount.value,
+      'friendRequestCount': friendRequestCount.value,
+      'groupInviteCount': groupInviteCount.value,
       'favoriteteams': favoriteteams?.map((team) => team.toJson()).toList(),
       'favTeam': favTeam,
       'favteamRequest': favteamRequest,
@@ -147,12 +158,12 @@ class UserAccounts {
       lastviewstationsList: (json['lastviewstationsList'] as List<dynamic>?)
           ?.map((station) => Station.fromJson(station))
           .toList(),
-      chatNotificationCount: json['chatNotificationCount'] ?? 0,
-      surveyNotificationCount: json['surveyNotificationCount'] ?? 0,
-      eventsNotificationCount: json['eventsNotificationCount'] ?? 0,
-      downloadableCount: json['downloadableCount'] ?? 0,
-      friendRequestCount: json['friendRequestCount'] ?? 0,
-      groupInviteCount: json['groupInviteCount'] ?? 0,
+      chatNotificationCount: Rx<int>(json['chatNotificationCount']),
+      surveyNotificationCount: Rx<int>(json['surveyNotificationCount']),
+      eventsNotificationCount: Rx<int>(json['eventsNotificationCount']),
+      downloadableCount: Rx<int>(json['downloadableCount']),
+      friendRequestCount: Rx<int>(json['friendRequestCount']),
+      groupInviteCount: Rx<int>(json['groupInviteCount']),
       favoriteteams: (json['favoriteteams'] as List<dynamic>?)
               ?.map((team) => Team.fromJson(team))
               .toList() ??

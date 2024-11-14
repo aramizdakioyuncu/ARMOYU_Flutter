@@ -35,7 +35,7 @@ class CustomText {
       TextSpan(
         children: [
           TextSpan(
-            text: user.displayName,
+            text: user.displayName!.value,
             style: const TextStyle(
               // color: ARMOYU.textColor,
               fontWeight: FontWeight.bold,
@@ -43,7 +43,7 @@ class CustomText {
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 PageFunctions functions =
-                    PageFunctions(currentUserAccounts: currentUserAccounts);
+                    PageFunctions(currentUser: currentUserAccounts.user.value);
                 functions.pushProfilePage(
                   context,
                   User(
@@ -73,7 +73,7 @@ class CustomText {
         child: InkWell(
           onTap: () {
             PageFunctions functions =
-                PageFunctions(currentUserAccounts: currentUserAccounts);
+                PageFunctions(currentUser: currentUserAccounts.user.value);
 
             functions.pushProfilePage(
               context,

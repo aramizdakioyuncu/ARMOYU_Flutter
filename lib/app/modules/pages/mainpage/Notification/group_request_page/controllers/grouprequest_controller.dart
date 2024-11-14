@@ -104,7 +104,8 @@ class GrouprequestController extends GetxController {
           currentUserAccounts: currentUserAccounts.value,
           user: User(
             userID: response["icerik"][i]["bildirimgonderenID"],
-            displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
+            displayName:
+                Rx<String>(response["icerik"][i]["bildirimgonderenadsoyad"]),
             avatar: Media(
               mediaID: response["icerik"][i]["bildirimgonderenID"],
               mediaURL: MediaURL(

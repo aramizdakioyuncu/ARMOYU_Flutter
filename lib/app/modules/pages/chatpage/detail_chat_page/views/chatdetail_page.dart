@@ -31,7 +31,7 @@ class ChatDetailView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomText.costum1(
-              controller.chat.value!.user.displayName!,
+              controller.chat.value!.user.displayName!.value,
               size: 17,
               weight: FontWeight.bold,
             ),
@@ -80,8 +80,7 @@ class ChatDetailView extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     PageFunctions functions = PageFunctions(
-                      currentUserAccounts:
-                          controller.currentUserAccounts.value!,
+                      currentUser: controller.currentUserAccounts.value!.value,
                     );
                     functions.pushProfilePage(
                       context,

@@ -113,7 +113,8 @@ class NotificationPageController extends GetxController {
           currentUserAccounts: currentUserAccounts,
           user: User(
             userID: response["icerik"][i]["bildirimgonderenID"],
-            displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
+            displayName:
+                Rx<String>(response["icerik"][i]["bildirimgonderenadsoyad"]),
             avatar: Media(
               mediaID: response["icerik"][i]["bildirimgonderenID"],
               mediaURL: MediaURL(
@@ -165,13 +166,14 @@ class NotificationPageController extends GetxController {
             subtitle:
                 CustomText.costum1(NotificationKeys.reviewFriendRequests.tr),
             trailing: Badge(
-              isLabelVisible:
-                  currentUserAccounts.friendRequestCount == 0 ? false : true,
+              isLabelVisible: currentUserAccounts.friendRequestCount.value == 0
+                  ? false
+                  : true,
               label: Text(currentUserAccounts.friendRequestCount.toString()),
               backgroundColor: Colors.red,
               textColor: Colors.white,
               child: Icon(
-                currentUserAccounts.friendRequestCount == 0
+                currentUserAccounts.friendRequestCount.value == 0
                     ? Icons.notifications
                     : Icons.notifications_active,
                 color: Colors.white,
@@ -192,13 +194,14 @@ class NotificationPageController extends GetxController {
               NotificationKeys.reviewGroupRequests.tr,
             ),
             trailing: Badge(
-              isLabelVisible:
-                  currentUserAccounts.groupInviteCount == 0 ? false : true,
+              isLabelVisible: currentUserAccounts.groupInviteCount.value == 0
+                  ? false
+                  : true,
               label: Text(currentUserAccounts.groupInviteCount.toString()),
               backgroundColor: Colors.red,
               textColor: Colors.white,
               child: Icon(
-                currentUserAccounts.groupInviteCount == 0
+                currentUserAccounts.groupInviteCount.value == 0
                     ? Icons.notifications
                     : Icons.notifications_active,
                 color: Colors.white,

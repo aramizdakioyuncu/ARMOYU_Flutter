@@ -35,8 +35,8 @@ class RegisterpageController extends GetxController {
     inviteCodeProcces.value = true;
     // });
 
-    FunctionsLoginRegister f =
-        FunctionsLoginRegister(currentUser: User(userName: "0", password: "0"));
+    FunctionsLoginRegister f = FunctionsLoginRegister(
+        currentUser: User(userName: "0".obs, password: "0".obs));
     Map<String, dynamic> response = await f.inviteCodeTest(code);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -92,7 +92,7 @@ class RegisterpageController extends GetxController {
     }
 
     FunctionService f =
-        FunctionService(currentUser: User(userName: "", password: ""));
+        FunctionService(currentUser: User(userName: "".obs, password: "".obs));
     Map<String, dynamic> response = await f.register(
         username, name, lastname, email, password, rpassword, inviteCode);
 

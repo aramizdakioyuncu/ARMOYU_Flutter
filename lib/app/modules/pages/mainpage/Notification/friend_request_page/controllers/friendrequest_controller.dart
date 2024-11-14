@@ -105,13 +105,17 @@ class FriendrequestController extends GetxController {
           currentUserAccounts: currentUserAccounts.value,
           user: User(
             userID: response["icerik"][i]["bildirimgonderenID"],
-            displayName: response["icerik"][i]["bildirimgonderenadsoyad"],
+            displayName:
+                Rx<String>(response["icerik"][i]["bildirimgonderenadsoyad"]),
             avatar: Media(
               mediaID: response["icerik"][i]["bildirimgonderenID"],
               mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["bildirimgonderenavatar"],
-                normalURL: response["icerik"][i]["bildirimgonderenavatar"],
-                minURL: response["icerik"][i]["bildirimgonderenavatar"],
+                bigURL:
+                    Rx<String>(response["icerik"][i]["bildirimgonderenavatar"]),
+                normalURL:
+                    Rx<String>(response["icerik"][i]["bildirimgonderenavatar"]),
+                minURL:
+                    Rx<String>(response["icerik"][i]["bildirimgonderenavatar"]),
               ),
             ),
           ),

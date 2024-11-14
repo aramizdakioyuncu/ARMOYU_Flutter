@@ -67,10 +67,15 @@ class PagesController extends GetxController {
     log("-> Önbellekleme İşlemi");
     final prefs = await SharedPreferences.getInstance();
 
-    List<String> usersJson =
-        ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-    prefs.setStringList('users', usersJson);
-    log("-> Önbellekleme İşlemi -- <<TAMAMLANDI>>");
+    try {
+      List<String> usersJson =
+          ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+      prefs.setStringList('users', usersJson);
+      log("-> Önbellekleme İşlemi -- <<TAMAMLANDI>>");
+    } catch (e) {
+      log("-> Önbellekleme HATASI HATASI HATASI");
+      log(e.toString());
+    }
 
     //
   }
@@ -103,17 +108,19 @@ class PagesController extends GetxController {
     try {
       ARMOYU.onlineMembersCount = response["icerik"]["cevrimicikac"];
       ARMOYU.totalPlayerCount = response["icerik"]["mevcutoyuncu"];
-      currentUserAccount.chatNotificationCount =
+      currentUserAccount.chatNotificationCount.value =
           response["icerik"]["sohbetbildirim"];
-      currentUserAccount.surveyNotificationCount =
+      currentUserAccount.surveyNotificationCount.value =
           response["icerik"]["mevcutanket"];
-      currentUserAccount.eventsNotificationCount =
+      currentUserAccount.eventsNotificationCount.value =
           response["icerik"]["mevcutetkinlik"];
-      currentUserAccount.downloadableCount = response["icerik"]["indirmeler"];
+      currentUserAccount.downloadableCount.value =
+          response["icerik"]["indirmeler"];
 
-      currentUserAccount.friendRequestCount =
+      currentUserAccount.friendRequestCount.value =
           response["icerik"]["arkadaslikistekleri"];
-      currentUserAccount.groupInviteCount = response["icerik"]["grupistekleri"];
+      currentUserAccount.groupInviteCount.value =
+          response["icerik"]["grupistekleri"];
     } catch (e) {
       log(e.toString());
     }

@@ -29,7 +29,7 @@ class StoryScreenView extends StatelessWidget {
                           .value[controller.storyIndex.value!]
                           .story![controller.initialStoryIndex.value]
                           .ownerusername ==
-                      controller.currentUser.value!.userName) {
+                      controller.currentUser.value!.userName!.value) {
                     controller.stopAnimation();
 
                     Get.toNamed("/gallery");
@@ -62,7 +62,7 @@ class StoryScreenView extends StatelessWidget {
                                   .value[controller.storyIndex.value!]
                                   .story![controller.initialStoryIndex.value]
                                   .ownerusername ==
-                              controller.currentUser.value!.userName
+                              controller.currentUser.value!.userName!.value
                           ? Container(
                               height: 12,
                               width: 12,
@@ -91,10 +91,10 @@ class StoryScreenView extends StatelessWidget {
                               .value[controller.storyIndex.value!]
                               .story![controller.initialStoryIndex.value]
                               .ownerusername ==
-                          controller.currentUser.value!.userName
+                          controller.currentUser.value!.userName!.value
                       ? "Hikayen"
                       : controller.storyList.value[controller.storyIndex.value!]
-                          .owner.userName!,
+                          .owner.userName!.value,
                   style: const TextStyle(fontSize: 13),
                 ),
               ),
@@ -310,7 +310,7 @@ class StoryScreenView extends StatelessWidget {
                               ),
                               if (controller.storyList.value[indexstoryList]
                                       .story![index].ownerusername !=
-                                  controller.currentUser.value!.userName!)
+                                  controller.currentUser.value!.userName!.value)
                                 Row(
                                   children: <Widget>[
                                     Padding(

@@ -36,8 +36,8 @@ class NoconnectionapageController extends GetxController {
             .map((userJson) => UserAccounts.fromJson(jsonDecode(userJson)))
             .toList();
         for (var element in usersJson) {
-          username = ARMOYU.appUsers.first.user.value.userName;
-          password = ARMOYU.appUsers.first.user.value.password;
+          username = ARMOYU.appUsers.first.user.value.userName!.value;
+          password = ARMOYU.appUsers.first.user.value.password!.value;
           log(element.toString());
         }
       }
@@ -57,7 +57,7 @@ class NoconnectionapageController extends GetxController {
         // }
         Get.offNamed(
           "/Login",
-          arguments: {"currentUser": User(userName: "", password: "")},
+          arguments: {"currentUser": User(userName: "".obs, password: "".obs)},
         );
 
         // setState(() {
@@ -66,8 +66,8 @@ class NoconnectionapageController extends GetxController {
         // });
         return;
       }
-      FunctionService f =
-          FunctionService(currentUser: User(userName: "", password: ""));
+      FunctionService f = FunctionService(
+          currentUser: User(userName: "".obs, password: "".obs));
 
       Map<String, dynamic> response =
           await f.login(username.toString(), password.toString(), true);
@@ -90,7 +90,9 @@ class NoconnectionapageController extends GetxController {
 
           Get.offNamed(
             "/Login",
-            arguments: {"currentUser": User(userName: "", password: "")},
+            arguments: {
+              "currentUser": User(userName: "".obs, password: "".obs)
+            },
           );
           // setState(() {
           isConnected.value = false;

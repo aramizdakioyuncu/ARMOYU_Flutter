@@ -85,7 +85,7 @@ class ProfileFriendlistController extends GetxController {
 
       User userfetch = User(
         userID: userID,
-        displayName: displayname,
+        displayName: displayname.obs,
         avatar: Media(
           mediaID: userID,
           mediaURL: MediaURL(
@@ -94,7 +94,7 @@ class ProfileFriendlistController extends GetxController {
             minURL: Rx<String>(minavatar),
           ),
         ),
-        userName: userlogin,
+        userName: userlogin.obs,
         ismyFriend: isFriendStatus,
 
         // ismyFriend: false.obs,

@@ -52,7 +52,7 @@ class TwitterPostWidget extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     PageFunctions functions = PageFunctions(
-                      currentUserAccounts: currentUserAccounts,
+                      currentUser: currentUserAccounts.user.value,
                     );
 
                     functions.pushProfilePage(
@@ -85,7 +85,8 @@ class TwitterPostWidget extends StatelessWidget {
                               children: [
                                 Obx(
                                   () => CustomText.costum1(
-                                    controller.postInfo.value.owner.userName!,
+                                    controller
+                                        .postInfo.value.owner.userName!.value,
                                     size: 16,
                                     weight: FontWeight.bold,
                                   ),

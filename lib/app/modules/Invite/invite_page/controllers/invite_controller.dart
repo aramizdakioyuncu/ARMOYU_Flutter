@@ -109,8 +109,9 @@ class InviteController extends GetxController {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
           onTap: () {
-            PageFunctions functions =
-                PageFunctions(currentUserAccounts: currentUserAccounts.value!);
+            PageFunctions functions = PageFunctions(
+              currentUser: currentUserAccounts.value!.user.value,
+            );
             functions.pushProfilePage(
               Get.context!,
               User(

@@ -101,7 +101,8 @@ class _CustomMenusNotificationbarsState
                   InkWell(
                     onTap: () {
                       PageFunctions functions = PageFunctions(
-                          currentUserAccounts: widget.currentUserAccounts);
+                        currentUser: widget.currentUserAccounts.user.value,
+                      );
                       functions.pushProfilePage(
                         context,
                         User(
@@ -126,7 +127,7 @@ class _CustomMenusNotificationbarsState
                         Row(
                           children: [
                             CustomText.costum1(
-                              widget.user.displayName!,
+                              widget.user.displayName!.value,
                               weight: FontWeight.bold,
                             ),
                             const Spacer(),
@@ -152,7 +153,11 @@ class _CustomMenusNotificationbarsState
                                   if (widget.category == "arkadaslik") {
                                     widget.natificationisVisible = false;
                                     widget.currentUserAccounts
-                                        .friendRequestCount--;
+                                            .friendRequestCount.value ==
+                                        widget.currentUserAccounts
+                                                .friendRequestCount.value -
+                                            1;
+
                                     setstatefunction();
 
                                     if (widget.categorydetail == "istek") {
@@ -167,17 +172,31 @@ class _CustomMenusNotificationbarsState
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
                                         widget.natificationisVisible = true;
+                                        // widget.currentUserAccounts
+                                        //     .friendRequestCount++;
                                         widget.currentUserAccounts
-                                            .friendRequestCount++;
-
+                                            .friendRequestCount.value = widget
+                                                .currentUserAccounts
+                                                .friendRequestCount
+                                                .value +
+                                            1;
+                                        1;
                                         setstatefunction();
                                         return;
                                       }
                                     }
                                   } else if (widget.category == "gruplar") {
                                     if (widget.categorydetail == "davet") {
+                                      // widget.currentUserAccounts
+                                      //     .groupInviteCount--;
+
                                       widget.currentUserAccounts
-                                          .groupInviteCount--;
+                                          .groupInviteCount.value = widget
+                                              .currentUserAccounts
+                                              .groupInviteCount
+                                              .value -
+                                          1;
+
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
@@ -191,8 +210,16 @@ class _CustomMenusNotificationbarsState
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
+                                        // widget.currentUserAccounts
+                                        //     .groupInviteCount++;
+
                                         widget.currentUserAccounts
-                                            .groupInviteCount++;
+                                            .groupInviteCount.value = widget
+                                                .currentUserAccounts
+                                                .groupInviteCount
+                                                .value +
+                                            1;
+
                                         widget.natificationisVisible = true;
                                         setstatefunction();
 
@@ -209,8 +236,14 @@ class _CustomMenusNotificationbarsState
                                 onPressed: () async {
                                   if (widget.category == "arkadaslik") {
                                     if (widget.categorydetail == "istek") {
+                                      // widget.currentUserAccounts
+                                      //     .friendRequestCount--;
                                       widget.currentUserAccounts
-                                          .friendRequestCount--;
+                                          .friendRequestCount.value = widget
+                                              .currentUserAccounts
+                                              .friendRequestCount
+                                              .value -
+                                          1;
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
@@ -224,8 +257,16 @@ class _CustomMenusNotificationbarsState
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
+                                        // widget.currentUserAccounts
+                                        //     .friendRequestCount++;
+
                                         widget.currentUserAccounts
-                                            .friendRequestCount++;
+                                            .friendRequestCount.value = widget
+                                                .currentUserAccounts
+                                                .friendRequestCount
+                                                .value +
+                                            1;
+
                                         widget.natificationisVisible = true;
 
                                         setstatefunction();
@@ -234,8 +275,15 @@ class _CustomMenusNotificationbarsState
                                     }
                                   } else if (widget.category == "gruplar") {
                                     if (widget.categorydetail == "davet") {
+                                      // widget.currentUserAccounts
+                                      //     .groupInviteCount--;
+
                                       widget.currentUserAccounts
-                                          .groupInviteCount--;
+                                          .groupInviteCount.value = widget
+                                              .currentUserAccounts
+                                              .groupInviteCount
+                                              .value -
+                                          1;
                                       widget.natificationisVisible = false;
                                       setstatefunction();
                                       FunctionsGroup f = FunctionsGroup(
@@ -248,8 +296,15 @@ class _CustomMenusNotificationbarsState
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
+                                        // widget.currentUserAccounts
+                                        //     .groupInviteCount++;
+
                                         widget.currentUserAccounts
-                                            .groupInviteCount++;
+                                            .groupInviteCount.value = widget
+                                                .currentUserAccounts
+                                                .groupInviteCount
+                                                .value +
+                                            1;
                                         widget.natificationisVisible = true;
 
                                         setstatefunction();

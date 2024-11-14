@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names, unused_local_variable
-
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/app/core/api.dart';
@@ -8,7 +6,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Events/event_page/views/event_view.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
@@ -60,7 +58,7 @@ class OneSignalApi {
 
     OneSignal.Notifications.requestPermission(true);
 
-    OneSignal.login(currentUserAccounts.user.value.userName!);
+    OneSignal.login(currentUserAccounts.user.value.userName!.value);
     OneSignal.User.setLanguage("tr");
     Map<String, dynamic> tags = {
       "ID": currentUserAccounts.user.value.userID,
@@ -72,6 +70,11 @@ class OneSignalApi {
     OneSignal.Location.setShared(true);
 
     OneSignal.Notifications.addClickListener((event) {
+      final findCurrentAccountController = Get.find<AccountUserController>();
+
+      findCurrentAccountController.currentUserAccounts.value.user.value;
+
+      log("${findCurrentAccountController.currentUserAccounts.value.user.value.userName}--------");
       try {
         String jsonAdditionalData =
             json.encode(event.notification.additionalData);
@@ -80,122 +83,52 @@ class OneSignalApi {
         log(event.notification.additionalData.toString());
 
         log("Kategori: ${responseData["category"]}");
-        String avatar = "";
-        String displayname = "";
-        String userID = "";
+
+        String? userID;
         if (responseData["category"].toString() == "chat") {
           for (Map<String, dynamic> element in responseData["content"]) {
-            avatar = element["avatar"];
-            displayname = element["displayname"];
             userID = element["userID"];
           }
 
           // AppCore.navigatorKey.currentState?.push(
-          //   MaterialPageRoute(
-          //     builder: (context) => ChatDetailPage(
-          //       currentUserAccounts:
-          //           UserAccounts(user: User(userName: "", password: "")),
-          //       chat: Chat(
-          //         user: User(userID: int.parse(userID)),
-          //         chatNotification: false,
-          //       ),
-          //     ),
-          //   ),
-          // );
 
-          Get.toNamed("/chat/detail", arguments: {
-            "chat": Chat(
-              user: User(userID: int.parse(userID)),
-              chatNotification: false.obs,
-            ),
-          });
+          // Get.toNamed("/chat/detail", arguments: {
+          //   "chat": Chat(
+          //     user: User(userID: int.parse(userID!)),
+          //     chatNotification: false.obs,
+          //   ),
+          // });
         } else if (responseData["category"].toString() == "profile") {
           for (Map<String, dynamic> element in responseData["content"]) {
-            avatar = element["avatar"];
-            displayname = element["displayname"];
             userID = element["userID"];
           }
 
-          // AppCore.navigatorKey.currentState?.push(
-          //   MaterialPageRoute(
-          //     builder: (context) => ProfilePage(
-          //       currentUserAccounts: currentUserAccounts,
-          //       profileUser: User(userID: int.parse(userID)),
-          //       ismyProfile: false,
-          //       scrollController: ScrollController(),
-          //     ),
-          //   ),
-          // );
-
-          Get.to("/profile", arguments: {
-            "profileUser": User(userID: int.parse(userID)),
-          });
+          // Get.toNamed("/profile", arguments: {
+          //   "profileUser": User(userID: int.parse(userID!)),
+          // });
         } else if (responseData["category"].toString() == "group") {
           for (Map<String, dynamic> element in responseData["content"]) {
-            avatar = element["avatar"];
-            displayname = element["displayname"];
             userID = element["userID"];
           }
 
-          // AppCore.navigatorKey.currentState?.push(
-          //   MaterialPageRoute(
-          //     builder: (context) => GroupPage(
-          //       groupID: 1,
-          //       group: Group(),
-          //       currentUserAccounts:
-          //           UserAccounts(user: (User(userID: int.parse(userID)))),
-          //     ),
-          //   ),
-          // );
-
-          Get.toNamed("/group/detail", arguments: {
-            'user': User(userID: int.parse(userID)),
-            'group': Group(groupID: 1)
-          });
+          // Get.toNamed("/group/detail", arguments: {
+          //   'user': User(userID: int.parse(userID!)),
+          //   'group': Group(groupID: 1)
+          // });
         } else if (responseData["category"].toString() == "post") {
           for (Map<String, dynamic> element in responseData["content"]) {
-            avatar = element["avatar"];
-            displayname = element["displayname"];
             userID = element["userID"];
           }
 
-          // AppCore.navigatorKey.currentState?.push(
-          //   MaterialPageRoute(
-          //     builder: (context) => PostdetailView(),
-          //   ),
-          // );
-
-          Get.toNamed("/social/detail", arguments: {"postID": 11});
+          // Get.toNamed("/social/detail", arguments: {"postID": 11});
         } else if (responseData["category"].toString() == "event") {
           for (Map<String, dynamic> element in responseData["content"]) {
-            avatar = element["avatar"];
-            displayname = element["displayname"];
             userID = element["userID"];
           }
 
-          // AppCore.navigatorKey.currentState?.push(
-          //   MaterialPageRoute(
-          //     builder: (context) => EventPage(
-          //       event: Event(
-          //         eventID: 1,
-          //       ),
-          //       currentUserAccounts:
-          //           UserAccounts(user: User(userID: int.parse(userID))),
-          //     ),
-          //   ),
-          // );
-
-          Get.to(
-            EventView(
-              currentUserAccounts:
-                  UserAccounts(user: User(userID: int.parse(userID)).obs),
-            ),
-            arguments: {
-              "event": Event(
-                eventID: 1,
-              ),
-            },
-          );
+          // Get.toNamed("/event/detail", arguments: {
+          //   "event": Event(eventID: 1),
+          // });
         }
       } catch (e) {
         log("JSON Decode Hatası: $e");

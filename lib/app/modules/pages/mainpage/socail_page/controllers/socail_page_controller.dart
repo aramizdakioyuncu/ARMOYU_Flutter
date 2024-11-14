@@ -121,7 +121,7 @@ class SocailPageController extends GetxController {
           StoryList(
             owner: User(
               userID: currentUserAccounts.value.user.value.userID,
-              userName: SocialKeys.socialStory.tr,
+              userName: (SocialKeys.socialStory.tr).obs,
               avatar: currentUserAccounts.value.user.value.avatar,
             ),
             story: null,
@@ -142,7 +142,7 @@ class SocailPageController extends GetxController {
               StoryList(
                 owner: User(
                   userID: currentUserAccounts.value.user.value.userID,
-                  userName: SocialKeys.socialStory.tr,
+                  userName: (SocialKeys.socialStory.tr).obs,
                   avatar: currentUserAccounts.value.user.value.avatar,
                 ),
                 story: null,
@@ -267,8 +267,8 @@ class SocailPageController extends GetxController {
               likeID: firstthreelike["begeni_ID"],
               user: User(
                 userID: firstthreelike["ID"],
-                displayName: firstthreelike["adsoyad"],
-                userName: firstthreelike["kullaniciadi"],
+                displayName: Rx<String>(firstthreelike["adsoyad"]),
+                userName: Rx<String>(firstthreelike["kullaniciadi"]),
                 avatar: Media(
                   mediaID: firstthreelike["ID"],
                   mediaURL: MediaURL(
@@ -288,8 +288,8 @@ class SocailPageController extends GetxController {
               postID: firstthreecomment["paylasimID"],
               user: User(
                 userID: firstthreecomment["yorumcuid"],
-                displayName: firstthreecomment["yorumcuadsoyad"],
-                userName: firstthreecomment["yorumcukullaniciad"],
+                displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
+                userName: Rx<String>(firstthreecomment["yorumcukullaniciad"]),
                 avatar: Media(
                   mediaID: firstthreecomment["yorumcuid"],
                   mediaURL: MediaURL(
@@ -333,7 +333,7 @@ class SocailPageController extends GetxController {
         media: media,
         owner: User(
           userID: response["icerik"][i]["sahipID"],
-          userName: response["icerik"][i]["sahipad"],
+          userName: Rx<String>(response["icerik"][i]["sahipad"]),
           avatar: Media(
             mediaID: response["icerik"][i]["sahipID"],
             mediaURL: MediaURL(

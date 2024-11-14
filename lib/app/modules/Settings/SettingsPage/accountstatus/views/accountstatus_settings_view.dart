@@ -41,8 +41,8 @@ class AccountstatusSettingsView extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CustomText.costum1(
-                        findCurrentAccountController
-                            .currentUserAccounts.value.user.value.displayName!,
+                        findCurrentAccountController.currentUserAccounts.value
+                            .user.value.displayName!.value,
                         weight: FontWeight.bold,
                         size: 22),
                   ),

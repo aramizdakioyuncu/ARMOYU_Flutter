@@ -86,7 +86,7 @@ class FunctionsGroup {
     Map<String, String> formData = {"grupID": "$groupID"};
 
     for (int i = 0; i < userList.length; i++) {
-      formData['users[$i]'] = userList[i].userName!;
+      formData['users[$i]'] = userList[i].userName!.value;
     }
 
     Map<String, dynamic> jsonData =

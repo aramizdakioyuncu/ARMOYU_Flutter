@@ -3,8 +3,7 @@ import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Events/event_page/controllers/event_controller.dart';
+import 'package:ARMOYU/app/modules/Events/event_detail_page/controllers/event_controller.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -16,18 +15,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 class EventView extends StatelessWidget {
-  final UserAccounts currentUserAccounts;
-
-  const EventView({
-    super.key,
-    required this.currentUserAccounts,
-  });
+  const EventView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(EventController(
-      currentUserAccounts: currentUserAccounts,
-    ));
+    final controller = Get.put(EventController());
     return Scaffold(
       backgroundColor: Get.theme.scaffoldBackgroundColor,
       appBar: AppBar(
@@ -35,6 +27,7 @@ class EventView extends StatelessWidget {
         // backgroundColor: ARMOYU.appbarColor,
       ),
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           CupertinoSliverRefreshControl(
             onRefresh: () async {
@@ -53,7 +46,7 @@ class EventView extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MediaViewer(
-                        currentUser: currentUserAccounts.user.value,
+                        currentUser: controller.currentUser.value!,
                         media: [
                           Media(
                             mediaID: 0,
@@ -123,7 +116,7 @@ class EventView extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MediaViewer(
-                                currentUser: currentUserAccounts.user.value,
+                                currentUser: controller.currentUser.value!,
                                 media: [
                                   Media(
                                     mediaID: 0,
@@ -254,7 +247,8 @@ class EventView extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     PageFunctions functions = PageFunctions(
-                                      currentUserAccounts: currentUserAccounts,
+                                      currentUser:
+                                          controller.currentUser.value!,
                                     );
                                     functions.pushProfilePage(
                                       context,
@@ -282,8 +276,10 @@ class EventView extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(height: 5),
-                                CustomText.costum1(controller.event.value!
-                                    .eventorganizer![index].displayName!),
+                                CustomText.costum1(
+                                  controller.event.value!.eventorganizer![index]
+                                      .displayName!.value,
+                                ),
                                 CustomText.costum1(
                                   EventKeys.eventcoordinator.tr,
                                 ),
@@ -371,9 +367,8 @@ class EventView extends StatelessWidget {
                                               onTap: () {
                                                 Get.toNamed("group/detail",
                                                     arguments: {
-                                                      "user":
-                                                          currentUserAccounts
-                                                              .user,
+                                                      "user": controller
+                                                          .currentUser.value!,
                                                       "group": Group(
                                                         groupID: controller
                                                             .event
@@ -513,8 +508,10 @@ class EventView extends StatelessWidget {
                                                           PageFunctions
                                                               functions =
                                                               PageFunctions(
-                                                            currentUserAccounts:
-                                                                currentUserAccounts,
+                                                            currentUser:
+                                                                controller
+                                                                    .currentUser
+                                                                    .value!,
                                                           );
 
                                                           functions
@@ -656,7 +653,8 @@ class EventView extends StatelessWidget {
                                   ),
                                   onTap: () {
                                     PageFunctions functions = PageFunctions(
-                                      currentUserAccounts: currentUserAccounts,
+                                      currentUser:
+                                          controller.currentUser.value!,
                                     );
 
                                     functions.pushProfilePage(

@@ -52,13 +52,14 @@ class WidgetUtility {
                 ..onTap = () {
                   // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
                   log('Tapped on username: $username');
-                  PageFunctions functions =
-                      PageFunctions(currentUserAccounts: currentUserAccounts);
+                  PageFunctions functions = PageFunctions(
+                    currentUser: currentUserAccounts.user.value,
+                  );
 
                   functions.pushProfilePage(
                     context,
                     User(
-                      userName: username.substring(1),
+                      userName: username.substring(1).obs,
                     ),
                     ScrollController(),
                   );

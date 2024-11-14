@@ -137,7 +137,7 @@ class PostController extends GetxController {
         postID: postID,
         user: User(
           userID: userID,
-          displayName: displayname,
+          displayName: displayname.obs,
           avatar: Media(
             mediaID: userID,
             mediaURL: MediaURL(
@@ -193,7 +193,7 @@ class PostController extends GetxController {
           likeID: 1,
           user: User(
             userID: userID,
-            displayName: displayname,
+            displayName: displayname.obs,
             avatar: Media(
               mediaID: userID,
               mediaURL: MediaURL(

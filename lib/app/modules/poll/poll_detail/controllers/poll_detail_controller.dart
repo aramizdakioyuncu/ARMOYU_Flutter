@@ -109,7 +109,8 @@ class PollDetailController extends GetxController {
           surveyOptions: surveyOptions,
           surveyOwner: User(
             userID: element["survey_owner"]["owner_ID"],
-            displayName: element["survey_owner"]["owner_displayname"],
+            displayName:
+                Rx<String>(element["survey_owner"]["owner_displayname"]),
             avatar: Media(
               mediaID: element["survey_ID"],
               mediaURL: MediaURL(

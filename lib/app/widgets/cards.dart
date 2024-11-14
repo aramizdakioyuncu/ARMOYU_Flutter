@@ -136,7 +136,7 @@ class _CustomCardsState extends State<CustomCards> {
             borderRadius: BorderRadius.circular(15),
             onTap: () {
               PageFunctions functions = PageFunctions(
-                currentUserAccounts: widget.currentUserAccounts,
+                currentUser: widget.currentUserAccounts.user.value,
               );
               functions.pushProfilePage(
                 context,

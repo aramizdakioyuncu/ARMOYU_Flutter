@@ -88,14 +88,15 @@ class ARMOYUWidget {
                 if (decline != null) {
                   decline();
                 }
-                Navigator.of(context).pop();
+                Get.back();
               },
             ),
             TextButton(
               child: CustomText.costum1('Onayla'),
               onPressed: () {
                 accept();
-                Navigator.of(context).pop();
+
+                Get.back();
               },
             ),
           ],

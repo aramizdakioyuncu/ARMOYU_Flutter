@@ -89,13 +89,13 @@ class AppbarWidget {
                 () => IconButton(
                   icon: Badge(
                     isLabelVisible: controller.currentUserAccounts.value!
-                                .chatNotificationCount !=
+                                .chatNotificationCount.value !=
                             0
                         ? true
                         : false,
                     label: Text(
-                      controller
-                          .currentUserAccounts.value!.chatNotificationCount
+                      controller.currentUserAccounts.value!
+                          .chatNotificationCount.value
                           .toString(),
                     ),
                     backgroundColor: Colors.red,

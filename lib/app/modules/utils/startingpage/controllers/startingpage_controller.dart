@@ -131,8 +131,8 @@ class StartingpageController extends GetxController {
     }
 
     if (ARMOYU.appUsers.isNotEmpty) {
-      username = ARMOYU.appUsers.first.user.value.userName;
-      password = ARMOYU.appUsers.first.user.value.password;
+      username = ARMOYU.appUsers.first.user.value.userName!.value;
+      password = ARMOYU.appUsers.first.user.value.password!.value;
 
       log("Açık Kullanıcı Hesabı : ${usersJson!.length}");
 
@@ -169,8 +169,8 @@ class StartingpageController extends GetxController {
       }
     }
 
-    FunctionService f =
-        FunctionService(currentUser: User(displayName: "", password: ""));
+    FunctionService f = FunctionService(
+        currentUser: User(displayName: "".obs, password: "".obs));
     Map<String, dynamic> response = await f.login(
       username.toString(),
       password.toString(),

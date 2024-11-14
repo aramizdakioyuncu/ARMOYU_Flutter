@@ -66,7 +66,7 @@ class Chat {
         radius: 28,
       ),
       tileColor: chatNotification.value ? Colors.red.shade900 : null,
-      title: CustomText.costum1(user.displayName!),
+      title: CustomText.costum1(user.displayName!.value),
       subtitle: lastmessage == null
           ? const Text("")
           : Row(

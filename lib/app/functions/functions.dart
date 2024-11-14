@@ -36,11 +36,11 @@ class ARMOYUFunctions {
   static User userfetch(response) {
     return User(
       userID: response["playerID"],
-      userName: response["username"],
-      firstName: response["firstName"],
-      lastName: response["lastName"],
-      displayName: response["displayName"],
-      userMail: response["detailInfo"]["email"],
+      userName: Rx<String>(response["username"]),
+      firstName: Rx<String>(response["firstName"]),
+      lastName: Rx<String>(response["lastName"]),
+      displayName: Rx<String>(response["displayName"]),
+      userMail: Rx<String>(response["detailInfo"]["email"]),
       aboutme: Rx<String>(response["detailInfo"]["about"]),
       avatar: Media(
         mediaID: response["avatar"]["media_ID"],
@@ -80,9 +80,9 @@ class ARMOYUFunctions {
               name: response["job"]["job_name"],
               shortName: response["job"]["job_shortName"],
             ),
-      level: response["level"],
-      levelColor: response["levelColor"],
-      xp: response["levelXP"],
+      level: Rx<int>(response["level"]),
+      levelColor: Rx<String>(response["levelColor"]),
+      xp: Rx<String>(response["levelXP"]),
       awardsCount: response["detailInfo"]["awards"],
       postsCount: response["detailInfo"]["posts"],
       friendsCount: response["detailInfo"]["friends"],
@@ -93,7 +93,7 @@ class ARMOYUFunctions {
               name: response["detailInfo"]["country"]["country_name"],
               countryCode: response["detailInfo"]["country"]["country_code"],
               phoneCode: response["detailInfo"]["country"]["country_phoneCode"],
-            ),
+            ).obs,
       province: response["detailInfo"]["province"] == null
           ? null
           : Province(
@@ -103,15 +103,15 @@ class ARMOYUFunctions {
                   ["province_plateCode"],
               phoneCode: response["detailInfo"]["province"]
                   ["province_phoneCode"],
-            ),
+            ).obs,
       registerDate: response["registeredDateV2"],
       role: Role(
         roleID: response["roleID"],
         name: response["roleName"],
         color: response["roleColor"],
       ),
-      birthdayDate: response["detailInfo"]["birthdayDate"],
-      phoneNumber: response["detailInfo"]["phoneNumber"],
+      birthdayDate: Rxn<String>(response["detailInfo"]["birthdayDate"]),
+      phoneNumber: Rxn<String>(response["detailInfo"]["phoneNumber"]),
       favTeam: response["favTeam"] != null
           ? Team(
               teamID: response["favTeam"]["team_ID"],
@@ -353,9 +353,9 @@ class ARMOYUFunctions {
 
       if (currentUserAccounts.user.value.country != null) {
         if (country["country_ID"] ==
-            currentUserAccounts.user.value.country!.countryID) {
+            currentUserAccounts.user.value.country!.value.countryID) {
           fetchProvince(
-            currentUserAccounts.user.value.country!.countryID,
+            currentUserAccounts.user.value.country!.value.countryID,
             ARMOYU.countryList.length - 1,
             setstatefunction,
           );
@@ -435,15 +435,15 @@ class ARMOYUFunctions {
     int? countryIndex = 0;
 
     if (currentUserAccounts.user.value.country != null) {
-      country.value = currentUserAccounts.user.value.country!.name;
-      countryIndex = currentUserAccounts.user.value.country!.countryID;
+      country.value = currentUserAccounts.user.value.country!.value.name;
+      countryIndex = currentUserAccounts.user.value.country!.value.countryID;
     }
 
     var province = (ProfileKeys.profileselectcity.tr).obs;
     int? provinceIndex = 0;
     if (currentUserAccounts.user.value.province != null) {
-      province.value = currentUserAccounts.user.value.province!.name;
-      provinceIndex = currentUserAccounts.user.value.province!.provinceID;
+      province.value = currentUserAccounts.user.value.province!.value.name;
+      provinceIndex = currentUserAccounts.user.value.province!.value.provinceID;
     }
 
     if (ARMOYU.countryList.isNotEmpty) {
@@ -492,7 +492,7 @@ class ARMOYUFunctions {
                               Expanded(
                                 child: CustomTextfields.costum3(
                                   placeholder: currentUserAccounts
-                                      .user.value.displayName,
+                                      .user.value.displayName!.value,
                                   controller: firstName,
                                 ),
                               )
@@ -514,7 +514,7 @@ class ARMOYUFunctions {
                               Expanded(
                                 child: CustomTextfields.costum3(
                                   placeholder: currentUserAccounts
-                                      .user.value.displayName,
+                                      .user.value.displayName!.value,
                                   controller: lastName,
                                 ),
                               )
@@ -561,8 +561,8 @@ class ARMOYUFunctions {
                               ),
                               Expanded(
                                 child: CustomTextfields.costum3(
-                                  placeholder:
-                                      currentUserAccounts.user.value.userMail,
+                                  placeholder: currentUserAccounts
+                                      .user.value.userMail!.value,
                                   controller: email,
                                 ),
                               )
@@ -749,125 +749,137 @@ class ARMOYUFunctions {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: CustomButtons.costum1(
-                            text: CommonKeys.update.tr,
-                            onPressed: () async {
-                              String cleanedphoneNumber = phoneNumber.value.text
-                                  .replaceAll(RegExp(r'[()\s]'), '');
+                          child: Obx(
+                            () => CustomButtons.costum1(
+                              text: CommonKeys.update.tr,
+                              onPressed: () async {
+                                if (passwordControl.value.text == "") {
+                                  ARMOYUWidget.toastNotification(
+                                      "Parola doğrulamasını yapınız!");
 
-                              List<String> words =
-                                  birthday.value.text.split(".");
-                              if (words.isEmpty) {
-                                return;
-                              }
-                              String newDate =
-                                  "${words[2]}-${words[1]}-${words[0]}";
+                                  myFocusPassword.requestFocus();
+                                  return;
+                                }
 
-                              String countryID = "";
-                              countryID = ARMOYU
-                                  .countryList[countryIndex!].countryID
-                                  .toString();
+                                String cleanedphoneNumber = phoneNumber
+                                    .value.text
+                                    .replaceAll(RegExp(r'[()\s]'), '');
 
-                              String provinceID = "";
-                              if (ARMOYU.countryList[countryIndex!]
-                                      .provinceList !=
-                                  null) {
-                                provinceID = ARMOYU.countryList[countryIndex!]
-                                    .provinceList![provinceIndex!].provinceID
+                                List<String> words =
+                                    birthday.value.text.split(".");
+                                if (words.isEmpty) {
+                                  return;
+                                }
+                                String newDate =
+                                    "${words[2]}-${words[1]}-${words[0]}";
+
+                                String countryID = "";
+                                countryID = ARMOYU
+                                    .countryList[countryIndex!].countryID
                                     .toString();
-                              }
 
-                              log(firstName.value.text);
-                              log(lastName.value.text);
+                                String provinceID = "";
+                                if (ARMOYU.countryList[countryIndex!]
+                                        .provinceList !=
+                                    null) {
+                                  provinceID = ARMOYU.countryList[countryIndex!]
+                                      .provinceList![provinceIndex!].provinceID
+                                      .toString();
+                                }
 
-                              log(aboutme.value.text);
+                                log(firstName.value.text);
+                                log(lastName.value.text);
 
-                              log(email.value.text);
-                              log(countryID.toString());
-                              log(provinceID.toString());
-                              log(newDate);
-                              log(cleanedphoneNumber);
-                              log(passwordControl.value.text);
+                                log(aboutme.value.text);
 
-                              if (passwordControl.value.text == "") {
+                                log(email.value.text);
+                                log(countryID.toString());
+                                log(provinceID.toString());
+                                log(newDate);
+                                log(cleanedphoneNumber);
+                                log(passwordControl.value.text);
+
+                                if (profileeditProcess.value) {
+                                  return;
+                                }
+                                profileeditProcess.value = true;
+                                setstatefunction();
+
+                                FunctionsProfile f = FunctionsProfile(
+                                  currentUser: currentUserAccounts.user.value,
+                                );
+                                Map<String, dynamic> response =
+                                    await f.saveprofiledetails(
+                                  firstname: firstName.value.text,
+                                  lastname: lastName.value.text,
+                                  aboutme: aboutme.value.text,
+                                  email: email.value.text,
+                                  countryID: countryID.toString(),
+                                  provinceID: provinceID.toString(),
+                                  birthday: newDate,
+                                  phoneNumber: cleanedphoneNumber,
+                                  passwordControl: passwordControl.value.text,
+                                );
+
+                                profileeditProcess.value = false;
+                                setstatefunction();
+                                if (response["durum"] == 0) {
+                                  log(response["aciklama"]);
+                                  ARMOYUWidget.toastNotification(
+                                      response["aciklama"].toString());
+                                  return;
+                                }
+                                currentUserAccounts.user.value.firstName!
+                                    .value = firstName.value.text;
+                                currentUserAccounts.user.value.lastName!.value =
+                                    lastName.value.text;
+                                currentUserAccounts
+                                        .user.value.displayName!.value =
+                                    "${firstName.value.text} ${lastName.value.text}";
+
+                                currentUserAccounts.user.value.aboutme!.value =
+                                    aboutme.value.text;
+                                currentUserAccounts.user.value.userMail =
+                                    email.value.text.obs;
+                                currentUserAccounts.user.value.country!.value =
+                                    Country(
+                                  countryID: int.parse(countryID),
+                                  name: ARMOYU.countryList[countryIndex!].name,
+                                  countryCode: ARMOYU
+                                      .countryList[countryIndex!].countryCode,
+                                  phoneCode: ARMOYU
+                                      .countryList[countryIndex!].phoneCode,
+                                );
+                                currentUserAccounts.user.value.province =
+                                    provinceID == ""
+                                        ? null
+                                        : Province(
+                                            provinceID: int.parse(provinceID),
+                                            name: ARMOYU
+                                                .countryList[countryIndex!]
+                                                .provinceList![provinceIndex!]
+                                                .name,
+                                            plateCode: ARMOYU
+                                                .countryList[countryIndex!]
+                                                .provinceList![provinceIndex!]
+                                                .plateCode,
+                                            phoneCode: ARMOYU
+                                                .countryList[countryIndex!]
+                                                .provinceList![provinceIndex!]
+                                                .phoneCode,
+                                          ).obs;
+                                currentUserAccounts.user.value.phoneNumber!
+                                    .value = cleanedphoneNumber;
+                                currentUserAccounts.user.value.birthdayDate!
+                                    .value = birthday.value.text;
+
                                 ARMOYUWidget.toastNotification(
-                                    "Parola doğrulamasını yapınız!");
-
-                                myFocusPassword.requestFocus();
-                                return;
-                              }
-
-                              if (profileeditProcess.value) {
-                                return;
-                              }
-                              profileeditProcess = true.obs;
-                              setstatefunction();
-
-                              FunctionsProfile f = FunctionsProfile(
-                                currentUser: currentUserAccounts.user.value,
-                              );
-                              Map<String, dynamic> response =
-                                  await f.saveprofiledetails(
-                                firstname: firstName.value.text,
-                                lastname: lastName.value.text,
-                                aboutme: aboutme.value.text,
-                                email: email.value.text,
-                                countryID: countryID.toString(),
-                                provinceID: provinceID.toString(),
-                                birthday: newDate,
-                                phoneNumber: cleanedphoneNumber,
-                                passwordControl: passwordControl.value.text,
-                              );
-
-                              profileeditProcess.value = false;
-                              setstatefunction();
-                              if (response["durum"] == 0) {
-                                log(response["aciklama"]);
-                                ARMOYUWidget.toastNotification(
-                                    response["aciklama"].toString());
-                                return;
-                              }
-                              currentUserAccounts.user.value.firstName =
-                                  firstName.value.text;
-                              currentUserAccounts.user.value.lastName =
-                                  lastName.value.text;
-                              currentUserAccounts.user.value.displayName =
-                                  "${firstName.value.text} ${lastName.value.text}";
-
-                              currentUserAccounts.user.value.aboutme!.value =
-                                  aboutme.value.text;
-                              currentUserAccounts.user.value.userMail =
-                                  email.value.text;
-                              currentUserAccounts.user.value.country = Country(
-                                countryID: int.parse(countryID),
-                                name: ARMOYU.countryList[countryIndex!].name,
-                                countryCode: ARMOYU
-                                    .countryList[countryIndex!].countryCode,
-                                phoneCode:
-                                    ARMOYU.countryList[countryIndex!].phoneCode,
-                              );
-                              currentUserAccounts.user.value.province =
-                                  Province(
-                                provinceID: int.parse(provinceID),
-                                name: ARMOYU.countryList[countryIndex!]
-                                    .provinceList![provinceIndex!].name,
-                                plateCode: ARMOYU.countryList[countryIndex!]
-                                    .provinceList![provinceIndex!].plateCode,
-                                phoneCode: ARMOYU.countryList[countryIndex!]
-                                    .provinceList![provinceIndex!].phoneCode,
-                              );
-                              currentUserAccounts.user.value.phoneNumber =
-                                  cleanedphoneNumber;
-                              currentUserAccounts.user.value.birthdayDate =
-                                  birthday.value.text;
-
-                              ARMOYUWidget.toastNotification(
-                                  response["aciklama"].toString());
-                              if (context.mounted) {
-                                Navigator.pop(context);
-                              }
-                            },
-                            loadingStatus: profileeditProcess,
+                                  response["aciklama"].toString(),
+                                );
+                                Get.back();
+                              },
+                              loadingStatus: profileeditProcess,
+                            ),
                           ),
                         ),
                       ],

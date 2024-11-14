@@ -46,7 +46,7 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
       leading: InkWell(
         onTap: () {
           PageFunctions functions = PageFunctions(
-            currentUserAccounts: widget.currentUserAccounts,
+            currentUser: widget.currentUserAccounts.user.value,
           );
           functions.pushProfilePage(
             context,
@@ -67,7 +67,7 @@ class _TwitterPostWidgetStat3e extends State<LikersListWidget> {
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(widget.user.displayName!),
+          Text(widget.user.displayName!.value),
           Text(
             widget.date,
             style: TextStyle(

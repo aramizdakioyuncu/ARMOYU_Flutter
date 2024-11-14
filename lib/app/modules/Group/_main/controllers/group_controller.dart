@@ -212,8 +212,8 @@ class GroupController extends GetxController {
       group.value!.groupUsers!.add(
         User(
           userID: users["player_ID"],
-          displayName: users["player_displayname"],
-          userName: users["player_userlogin"],
+          displayName: Rx<String>(users["player_displayname"]),
+          userName: Rx<String>(users["player_userlogin"]),
           avatar: Media(
             mediaID: 0,
             mediaURL: MediaURL(

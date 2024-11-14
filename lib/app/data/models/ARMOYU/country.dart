@@ -2,9 +2,9 @@ import 'package:ARMOYU/app/data/models/ARMOYU/province.dart';
 
 class Country {
   final int countryID;
-  final String name;
-  final String countryCode;
-  final int phoneCode;
+  String name;
+  String countryCode;
+  int phoneCode;
   List<Province>? provinceList;
 
   Country({
@@ -12,5 +12,26 @@ class Country {
     required this.name,
     required this.countryCode,
     required this.phoneCode,
+    this.provinceList,
   });
+
+  factory Country.fromJson(Map<String, dynamic> json) {
+    return Country(
+      countryID: json['countryID'],
+      name: json['name'],
+      countryCode: json['countryCode'],
+      phoneCode: json['phoneCode'],
+      provinceList: json['provinceList'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'countryID': countryID,
+      'name': name,
+      'countryCode': countryCode,
+      'phoneCode': phoneCode,
+      'provinceList': provinceList,
+    };
+  }
 }

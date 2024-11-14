@@ -3,7 +3,6 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/Group/_main/controllers/group_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -368,9 +367,7 @@ class GroupView extends StatelessWidget {
                               return ListTile(
                                 onTap: () {
                                   PageFunctions functions = PageFunctions(
-                                    currentUserAccounts: UserAccounts(
-                                      user: controller.user.value!.obs,
-                                    ),
+                                    currentUser: controller.user.value!,
                                   );
 
                                   functions.pushProfilePage(
@@ -543,7 +540,7 @@ class GroupView extends StatelessWidget {
                             ),
                           ),
                           title: CustomText.costum1(
-                            controller.searchUserList[index].displayName!,
+                            controller.searchUserList[index].displayName!.value,
                           ),
                           trailing: controller.group.value!.groupUsers!.any(
                                   (element) =>

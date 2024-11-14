@@ -231,7 +231,7 @@ class SocketioController extends GetxController {
   void registerUser(User user) {
     log("Kullanıcı Register Kaydı");
     socket.emit('REGISTER', {
-      'name': user.userName,
+      'name': user.userName?.value,
       'clientId': user.toJson(),
     });
   }

@@ -80,7 +80,7 @@ class ResetpasswordController extends GetxController {
     resetpasswordProcess.value = true;
 
     FunctionService f =
-        FunctionService(currentUser: User(userName: "", password: ""));
+        FunctionService(currentUser: User(userName: "".obs, password: "".obs));
     Map<String, dynamic> response = await f.forgotpassword(
       usernameController.value.text,
       emailController.value.text,
@@ -134,7 +134,7 @@ class ResetpasswordController extends GetxController {
     }
 
     FunctionService f =
-        FunctionService(currentUser: User(userName: "", password: ""));
+        FunctionService(currentUser: User(userName: "".obs, password: "".obs));
     Map<String, dynamic> response = await f.forgotpassworddone(
       // yeniformat,
       usernameController.value.text,

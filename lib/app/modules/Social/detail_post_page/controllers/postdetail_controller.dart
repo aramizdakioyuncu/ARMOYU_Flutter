@@ -55,7 +55,7 @@ class PostdetailController extends GetxController {
             postID: postID,
             user: User(
               userID: userID,
-              displayName: displayname,
+              displayName: displayname.obs,
               avatar: Media(
                 mediaID: userID,
                 mediaURL: MediaURL(
@@ -129,8 +129,8 @@ class PostdetailController extends GetxController {
             likeID: firstthreelike["begeni_ID"],
             user: User(
               userID: firstthreelike["ID"],
-              displayName: firstthreelike["adsoyad"],
-              userName: firstthreelike["kullaniciadi"],
+              displayName: Rx<String>(firstthreelike["adsoyad"]),
+              userName: Rx<String>(firstthreelike["kullaniciadi"]),
               avatar: Media(
                 mediaID: firstthreelike["ID"],
                 mediaURL: MediaURL(
@@ -151,7 +151,7 @@ class PostdetailController extends GetxController {
             postID: firstthreecomment["paylasimID"],
             user: User(
               userID: firstthreecomment["yorumcuid"],
-              displayName: firstthreecomment["yorumcuadsoyad"],
+              displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
               avatar: Media(
                 mediaID: firstthreecomment["yorumcuid"],
                 mediaURL: MediaURL(
@@ -179,7 +179,7 @@ class PostdetailController extends GetxController {
       media: media,
       owner: User(
         userID: response["icerik"][0]["sahipID"],
-        userName: response["icerik"][0]["sahipad"],
+        userName: Rx<String>(response["icerik"][0]["sahipad"]),
         avatar: Media(
           mediaID: response["icerik"][0]["sahipID"],
           mediaURL: MediaURL(

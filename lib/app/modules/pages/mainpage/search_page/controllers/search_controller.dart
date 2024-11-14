@@ -177,8 +177,9 @@ class SearchPageController extends GetxController {
                       : const Icon(Icons.groups),
               onTap: () {
                 if (response["icerik"][i]["turu"] == "oyuncu") {
-                  PageFunctions functions =
-                      PageFunctions(currentUserAccounts: currentUserAccounts);
+                  PageFunctions functions = PageFunctions(
+                    currentUser: currentUserAccounts.user.value,
+                  );
                   functions.pushProfilePage(
                     Get.context!,
                     User(
@@ -188,34 +189,13 @@ class SearchPageController extends GetxController {
                   );
                 } else if (response["icerik"][i]["turu"] == "gruplar") {
                   Get.toNamed("/group/detail", arguments: {
-                    "user": currentUserAccounts.user,
+                    "user": currentUserAccounts.user.value,
                     "group": Group(groupID: response["icerik"][i]["ID"]),
                   });
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => GroupPage(
-                  //       currentUserAccounts: widget.currentUserAccounts,
-                  //       groupID: response["icerik"][i]["ID"],
-                  //     ),
-                  //   ),
-                  // );
                 } else if (response["icerik"][i]["turu"] == "okullar") {
-                  // Get.to(const SchoolPageView(), arguments: {
-                  //   "user": currentUserAccounts.user,
-                  //   "schoolID": response["icerik"][i]["ID"],
-                  // });
-
                   Get.toNamed("/school", arguments: {
                     "schoolID": response["icerik"][i]["ID"],
                   });
-
-                  // Navigator.of(Get.context!).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => SchoolPageView(
-                  //         currentUser: currentUserAccounts.user,
-                  //         schoolID: response["icerik"][i]["ID"]),
-                  //   ),
-                  // );
                 }
               },
             ),

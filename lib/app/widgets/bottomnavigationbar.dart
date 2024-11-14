@@ -39,15 +39,16 @@ class BottomnavigationBar {
           ),
           BottomNavigationBarItem(
             icon: Badge(
-              isLabelVisible:
-                  (pagesController.currentUserAccounts.value!.groupInviteCount +
-                          pagesController
-                              .currentUserAccounts.value!.friendRequestCount) >
-                      0,
+              isLabelVisible: (pagesController
+                          .currentUserAccounts.value!.groupInviteCount.value +
+                      pagesController.currentUserAccounts.value!
+                          .friendRequestCount.value) >
+                  0,
               label: Text(
-                (pagesController.currentUserAccounts.value!.groupInviteCount +
-                        pagesController
-                            .currentUserAccounts.value!.friendRequestCount)
+                (pagesController
+                            .currentUserAccounts.value!.groupInviteCount.value +
+                        pagesController.currentUserAccounts.value!
+                            .friendRequestCount.value)
                     .toString(),
               ),
               textColor: Colors.white,

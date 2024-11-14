@@ -1,4 +1,5 @@
 import 'package:ARMOYU/app/modules/Business/bussiness_module.dart';
+import 'package:ARMOYU/app/modules/Events/event_module.dart';
 import 'package:ARMOYU/app/modules/Invite/invite_page/invite_module.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/resetpassword_module.dart';
 import 'package:ARMOYU/app/modules/Restourant/restourant_page/restourant_module.dart';
@@ -30,6 +31,9 @@ class AppPages {
 
     //Camera
     ...CamModule.routes,
+
+    //Event
+    ...EventModule.routes,
 
     //Utils
     ...GalleryModule.routes,

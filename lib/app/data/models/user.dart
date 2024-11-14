@@ -17,18 +17,18 @@ import 'package:get/get.dart';
 
 class User {
   int? userID = -1;
-  String? userName = "0";
-  String? firstName = "";
-  String? lastName = "";
-  String? password = "0";
-  String? displayName = "";
+  Rx<String>? userName = "0".obs;
+  Rx<String>? firstName = "".obs;
+  Rx<String>? lastName = "".obs;
+  Rx<String>? password = "0".obs;
+  Rx<String>? displayName = "".obs;
   Media? avatar;
   Media? banner;
 
-  String? userMail = "";
+  Rx<String>? userMail = "".obs;
 
-  Country? country;
-  Province? province;
+  Rx<Country>? country;
+  Rx<Province>? province;
   String? registerDate = "";
   Job? job;
   Role? role;
@@ -40,17 +40,17 @@ class User {
   Rx<String>? lastloginv2 = "".obs;
   Rx<String>? lastfaillogin = "".obs;
 
-  int? level = 0;
-  String? levelColor;
-  String? xp;
+  Rx<int>? level = 0.obs;
+  Rx<String>? levelColor;
+  Rx<String>? xp;
 
   int? friendsCount = 0;
 
   int? postsCount = 0;
   int? awardsCount = 0;
 
-  String? phoneNumber;
-  String? birthdayDate;
+  Rxn<String>? phoneNumber;
+  Rxn<String>? birthdayDate;
   Team? favTeam;
 
   bool? status;
@@ -119,14 +119,33 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       userID: json['userID'],
-      userName: json['username'],
-      password: json['password'],
-      displayName: json['displayname'],
+      userName:
+          json['username'] == null ? null : (json['username'] as String).obs,
+      firstName:
+          json['firstname'] == null ? null : (json['firstname'] as String).obs,
+      lastName:
+          json['lastname'] == null ? null : (json['lastname'] as String).obs,
+      password:
+          json['password'] == null ? null : (json['password'] as String).obs,
+      displayName: json['displayname'] == null
+          ? null
+          : (json['displayname'] as String).obs,
       aboutme: json['aboutme'] == null ? null : (json['aboutme'] as String).obs,
-      level: json['level'],
-      xp: json['xp'],
-      levelColor: json['levelcolor'],
-      userMail: json['usermail'],
+      level: json['level'] == null ? null : (json['level'] as int).obs,
+      levelColor: json['levelcolor'] == null
+          ? null
+          : (json['levelcolor'] as String).obs,
+      xp: json['xp'] == null ? null : (json['xp'] as String).obs,
+      phoneNumber: Rxn<String>(json['phoneNumber']),
+      birthdayDate: Rxn<String>(json['birthdayDate']),
+      userMail:
+          json['usermail'] == null ? null : (json['usermail'] as String).obs,
+      country: json['country'] == null
+          ? null
+          : Country.fromJson(json['country']).obs,
+      province: json['province'] == null
+          ? null
+          : Province.fromJson(json['province']).obs,
       role: json['role'] == null
           ? null
           : Role(
@@ -201,14 +220,20 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'userID': userID,
-      'username': userName,
-      'password': password,
-      'displayname': displayName,
+      'username': userName?.value,
+      'firstname': firstName?.value,
+      'lastname': lastName?.value,
+      'password': password?.value,
+      'displayname': displayName?.value,
       'aboutme': aboutme?.value,
-      'level': level,
-      'xp': xp,
-      'levelcolor': levelColor,
-      'usermail': userMail,
+      'level': level?.value,
+      'xp': xp?.value,
+      'phoneNumber': phoneNumber?.value,
+      'birthdayDate': birthdayDate?.value,
+      'levelcolor': levelColor?.value,
+      'usermail': userMail?.value,
+      'country': country?.value.toJson(),
+      'province': province?.value.toJson(),
       'role': role != null
           ? {
               'roleID': role!.roleID,
@@ -344,7 +369,7 @@ class User {
         foregroundImage:
             CachedNetworkImageProvider(avatar!.mediaURL.minURL.value),
       ),
-      title: CustomText.costum1(displayName!, weight: FontWeight.bold),
+      title: CustomText.costum1(displayName!.value, weight: FontWeight.bold),
       trailing: isLiked
           ? const Icon(
               Icons.favorite,

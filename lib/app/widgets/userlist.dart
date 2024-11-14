@@ -86,7 +86,8 @@ class _UserListWidgetState extends State<UserListWidget> {
           child: GestureDetector(
             onTap: () {
               PageFunctions functions = PageFunctions(
-                  currentUserAccounts: widget.currentUserAccounts);
+                currentUser: widget.currentUserAccounts.user.value,
+              );
 
               functions.pushProfilePage(
                 context,

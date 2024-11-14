@@ -126,7 +126,7 @@ class WidgetStorycircle extends StatelessWidget {
                       CustomText.costum1(
                         cardData.owner.userID == currentUser.value.userID
                             ? SocialKeys.socialStory.tr
-                            : cardData.owner.userName!,
+                            : cardData.owner.userName!.value,
                         size: 11,
                       ),
                     ],

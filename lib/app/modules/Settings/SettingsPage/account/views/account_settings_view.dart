@@ -1,4 +1,5 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,7 +15,6 @@ class AccountsettingsView extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Container(color: ARMOYU.bodyColor, height: 1),
           Column(
             children: [
               ListTile(
@@ -68,6 +68,17 @@ class AccountsettingsView extends StatelessWidget {
                     Icon(Icons.arrow_forward_ios_outlined, size: 17),
                   ],
                 ),
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+                title: CustomText.costum1("Hesap Sil", color: Colors.red),
+                onTap: () {
+                  ARMOYUWidget.toastNotification(
+                      "Hesabınız en kısa sürede silinecektir");
+                },
               ),
             ],
           ),

@@ -1,8 +1,6 @@
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/Events/event_page/views/event_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,7 +47,7 @@ class Event {
     this.location,
   });
 
-  Widget eventListWidget(context, {required UserAccounts currentUserAccounts}) {
+  Widget eventListWidget(context, {required User currentUser}) {
     Color participantsColor = Colors.red;
     if (participantsCurrent! / participantsLimit! < 0.75) {
       participantsColor = Colors.orange;
@@ -67,18 +65,8 @@ class Event {
         color: Get.theme.cardColor,
         child: InkWell(
           onTap: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(
-            //     builder: (context) => EventPage(
-            //       currentUserAccounts: currentUserAccounts,
-            //       event: this,
-            //     ),
-            //   ),
-            // );
-
-            Get.to(
-              EventView(currentUserAccounts: currentUserAccounts),
+            Get.toNamed(
+              "/event/detail",
               arguments: {
                 "event": this,
               },

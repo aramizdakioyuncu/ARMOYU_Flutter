@@ -61,11 +61,11 @@ class ProfileFriendlistView extends StatelessWidget {
                           userID: controller
                               .user.value.user.value.myFriends![index].userID!,
                           displayname: controller.user.value.user.value
-                              .myFriends![index].displayName!,
+                              .myFriends![index].displayName!.value,
                           profileImageUrl: controller.user.value.user.value
                               .myFriends![index].avatar!.mediaURL.minURL.value,
                           username: controller.user.value.user.value
-                              .myFriends![index].userName!,
+                              .myFriends![index].userName!.value,
                           isFriend: controller.user.value.user.value
                               .myFriends![index].ismyFriend!.value,
                         );

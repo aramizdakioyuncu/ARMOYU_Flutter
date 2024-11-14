@@ -120,7 +120,7 @@ class _ChaCallPageState extends State<ChatCallPage>
                       children: [
                         const SizedBox(height: 20),
                         Text(
-                          widget.user.displayName!,
+                          widget.user.displayName!.value,
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),

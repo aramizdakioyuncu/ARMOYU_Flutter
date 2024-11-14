@@ -8,17 +8,11 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/API_Functions/event.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
 class EventController extends GetxController {
-  final UserAccounts currentUserAccounts;
-
-  EventController({
-    required this.currentUserAccounts,
-  });
-
   var event = Rx<Event?>(null);
   var didijoin = false.obs;
 
@@ -38,10 +32,18 @@ class EventController extends GetxController {
 
   var date = "".obs;
   var time = "".obs;
+  late var currentUser = Rxn<User>();
 
   @override
   void onInit() {
     super.onInit();
+
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    currentUser.value =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
 
     Map<String, dynamic> arguments = Get.arguments;
 
@@ -71,7 +73,7 @@ class EventController extends GetxController {
     fetcheventdetailProcess.value = true;
 
     FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUserAccounts.user.value,
+      currentUser: currentUser.value!,
     );
     Map<String, dynamic> response = await f.detailfetch(eventID);
     if (response["durum"] == 0) {
@@ -124,7 +126,7 @@ class EventController extends GetxController {
     }
     fetchParticipantProccess.value = true;
     FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUserAccounts.user.value,
+      currentUser: currentUser.value!,
     );
     Map<String, dynamic> response = await f.participantList(eventID);
     if (response["durum"] == 0) {
@@ -190,15 +192,15 @@ class EventController extends GetxController {
 
     //Bireysel Katılımcılar
     for (var element in response["icerik"]["participant_players"]) {
-      if (element["player_ID"] == currentUserAccounts.user.value.userID) {
+      if (element["player_ID"] == currentUser.value!) {
         didijoin.value = true;
       }
 
       userParticipant.add(
         User(
           userID: element["player_ID"],
-          displayName: element["player_name"],
-          userName: element["player_username"],
+          displayName: Rx<String>(element["player_name"]),
+          userName: Rx<String>(element["player_username"]),
           avatar: Media(
             mediaID: element["player_ID"],
             mediaURL: MediaURL(
@@ -226,8 +228,7 @@ class EventController extends GetxController {
 
     joineventProccess.value = true;
 
-    FunctionsEvent f =
-        FunctionsEvent(currentUser: currentUserAccounts.user.value);
+    FunctionsEvent f = FunctionsEvent(currentUser: currentUser.value!);
     Map<String, dynamic> response =
         await f.joinOrleave(event.value!.eventID, true);
     if (response["durum"] == 0) {
@@ -243,7 +244,7 @@ class EventController extends GetxController {
     joineventProccess.value = true;
 
     FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUserAccounts.user.value,
+      currentUser: currentUser.value!,
     );
     Map<String, dynamic> response =
         await f.joinOrleave(event.value!.eventID, false);

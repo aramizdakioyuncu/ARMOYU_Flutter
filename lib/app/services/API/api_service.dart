@@ -28,8 +28,8 @@ class ApiService {
     String passwordURL = "0";
 
     if (user.userMail != null && user.password != null) {
-      usernameURL = user.userName!;
-      passwordURL = user.password!;
+      usernameURL = user.userName!.value;
+      passwordURL = user.password!.value;
     }
 
     if (username != null) {

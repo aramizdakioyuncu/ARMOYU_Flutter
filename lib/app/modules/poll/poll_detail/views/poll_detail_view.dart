@@ -3,6 +3,7 @@ import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,10 +38,16 @@ class PollDetailView extends StatelessWidget {
           )
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await controller.refreshSurvey();
+            },
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
               height: Get.height / 3,
               child: Obx(
                 () => ListView.builder(
@@ -78,9 +85,13 @@ class PollDetailView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            Obx(
-              () => Padding(
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 10),
+          ),
+          Obx(
+            () => SliverToBoxAdapter(
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: [
@@ -234,8 +245,8 @@ class PollDetailView extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

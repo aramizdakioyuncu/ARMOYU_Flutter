@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/modules/Events/list_event_page/views/eventlist_page.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/Notification/_main/views/notification_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:ARMOYU/app/Services/Utility/barcode.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../Notification/_main/views/notification_page.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -80,7 +79,7 @@ class MainView extends StatelessWidget {
                           )
                         : Text(
                             controller.currentUserAccounts.value!.user.value
-                                .displayName!,
+                                .displayName!.value,
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -97,7 +96,7 @@ class MainView extends StatelessWidget {
                           )
                         : Text(
                             controller.currentUserAccounts.value!.user.value
-                                .userMail!,
+                                .userMail!.value,
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -296,15 +295,14 @@ class MainView extends StatelessWidget {
                           leading: const Icon(Icons.event),
                           title: Text(DrawerKeys.drawerEvents.tr),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => EventlistPage(
-                                  currentUserAccounts:
-                                      controller.currentUserAccounts.value!,
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => const EventlistPage(),
+                            //   ),
+                            // );
+
+                            Get.toNamed("/event/list");
                           },
                         ),
                         ListTile(

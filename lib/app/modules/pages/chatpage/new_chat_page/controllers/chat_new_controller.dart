@@ -114,8 +114,8 @@ class ChatNewController extends GetxController {
       currentUser.value!.myFriends!.add(
         User(
           userID: response["icerik"][i]["oyuncuID"],
-          userName: response["icerik"][i]["oyuncukullaniciad"],
-          displayName: response["icerik"][i]["oyuncuad"],
+          userName: Rx<String>(response["icerik"][i]["oyuncukullaniciad"]),
+          displayName: Rx<String>(response["icerik"][i]["oyuncuad"]),
           status: response["icerik"][i]["oyuncudurum"] == 1 ? true : false,
           level: response["icerik"][i]["oyunculevel"],
           lastlogin: response["icerik"][i]["songiris"] != null

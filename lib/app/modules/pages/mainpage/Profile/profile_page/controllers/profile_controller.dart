@@ -240,8 +240,8 @@ class ProfileController extends GetxController
               likeID: firstthreelike["begeni_ID"],
               user: User(
                 userID: firstthreelike["ID"],
-                displayName: firstthreelike["adsoyad"],
-                userName: firstthreelike["kullaniciadi"],
+                displayName: Rx<String>(firstthreelike["adsoyad"]),
+                userName: Rx<String>(firstthreelike["kullaniciadi"]),
                 avatar: Media(
                   mediaID: firstthreelike["ID"],
                   mediaURL: MediaURL(
@@ -261,7 +261,7 @@ class ProfileController extends GetxController
               postID: firstthreecomment["paylasimID"],
               user: User(
                 userID: firstthreecomment["yorumcuid"],
-                displayName: firstthreecomment["yorumcuadsoyad"],
+                displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
                 avatar: Media(
                   mediaID: firstthreecomment["yorumcuid"],
                   mediaURL: MediaURL(
@@ -305,7 +305,7 @@ class ProfileController extends GetxController
           media: media,
           owner: User(
             userID: response["icerik"][i]["sahipID"],
-            userName: response["icerik"][i]["sahipad"],
+            userName: Rx<String>(response["icerik"][i]["sahipad"]),
             avatar: Media(
               mediaID: response["icerik"][i]["sahipID"],
               mediaURL: MediaURL(
@@ -434,8 +434,8 @@ class ProfileController extends GetxController
               likeID: firstthreelike["begeni_ID"],
               user: User(
                 userID: firstthreelike["ID"],
-                displayName: firstthreelike["adsoyad"],
-                userName: firstthreelike["kullaniciadi"],
+                displayName: Rx<String>(firstthreelike["adsoyad"]),
+                userName: Rx<String>(firstthreelike["kullaniciadi"]),
                 avatar: Media(
                   mediaID: firstthreelike["ID"],
                   mediaURL: MediaURL(
@@ -546,8 +546,9 @@ class ProfileController extends GetxController
         FunctionService f =
             FunctionService(currentUser: currentUserAccounts.value.user.value);
 
-        Map<String, dynamic> response =
-            await f.lookProfilewithusername(profileUser.value!.userName!);
+        Map<String, dynamic> response = await f.lookProfilewithusername(
+          profileUser.value!.userName!.value,
+        );
 
         if (response["durum"] == 0) {
           log("Oyuncu bulunamadı");
@@ -1429,7 +1430,7 @@ class ProfileController extends GetxController
       );
     } else {
       return CustomText.costum1(
-        userProfile.value.displayName!,
+        userProfile.value.displayName!.value,
         size: 16,
         weight: FontWeight.bold,
       );
@@ -1523,11 +1524,12 @@ class ProfileController extends GetxController
         const SizedBox(width: 3),
         Row(
           children: [
-            CustomText.costum1("${userProfile.value.country?.name}"),
+            CustomText.costum1("${userProfile.value.country?.value.name}"),
             const SizedBox(width: 5),
             userProfile.value.province == null
                 ? Container()
-                : CustomText.costum1("${userProfile.value.province?.name}"),
+                : CustomText.costum1(
+                    "${userProfile.value.province?.value.name}"),
           ],
         ),
       ],

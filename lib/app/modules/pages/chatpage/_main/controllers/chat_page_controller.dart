@@ -125,7 +125,7 @@ class ChatPageController extends GetxController {
           chatID: 1,
           user: User(
             userID: element["kullid"],
-            displayName: element["adisoyadi"],
+            displayName: Rx<String>(element["adisoyadi"]),
             lastlogin: Rx<String>(element["songiris"]),
             lastloginv2: Rx<String>(element["songiris"]),
             avatar: Media(
@@ -403,7 +403,7 @@ class ChatPageController extends GetxController {
                   ),
                   child: SizedBox(
                     child: Text(
-                      isMe ? ChatKeys.chatyournote.tr : user.displayName!,
+                      isMe ? ChatKeys.chatyournote.tr : user.displayName!.value,
                       maxLines: 1,
                       style: TextStyle(
                         fontSize: 12,

@@ -34,29 +34,22 @@ class _WidgetPostComments extends State<WidgetPostComments> {
     super.initState();
   }
 
-  void setstatefunction() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  Future<void> removeComment({required User currentUser}) async {
+  Future<void> removeComment() async {
     isvisiblecomment = false;
-    setstatefunction();
 
-    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
+    FunctionsPosts funct =
+        FunctionsPosts(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response =
         await funct.removecomment(widget.comment.commentID);
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
 
     if (response["durum"] == 0) {
       isvisiblecomment = true;
-      setstatefunction();
       return;
     }
   }
 
-  Future<void> likeunlikefunction({required User currentUser}) async {
+  Future<void> likeunlikefunction() async {
     bool currentstatus = widget.comment.didIlike;
     if (currentstatus) {
       widget.comment.didIlike = false;
@@ -65,8 +58,8 @@ class _WidgetPostComments extends State<WidgetPostComments> {
       widget.comment.didIlike = true;
       widget.comment.likeCount++;
     }
-    setstatefunction();
-    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
+    FunctionsPosts funct =
+        FunctionsPosts(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response;
     if (!widget.comment.didIlike) {
       response = await funct.commentdislike(widget.comment.commentID);
@@ -81,7 +74,6 @@ class _WidgetPostComments extends State<WidgetPostComments> {
         widget.comment.likeCount++;
       }
       widget.comment.didIlike = !widget.comment.didIlike;
-      setstatefunction();
       return;
     }
   }
@@ -111,7 +103,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
               InkWell(
                 onTap: () {
                   PageFunctions functions = PageFunctions(
-                    currentUserAccounts: widget.currentUserAccounts,
+                    currentUser: widget.currentUserAccounts.user.value,
                   );
                   functions.pushProfilePage(
                     context,
@@ -132,7 +124,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
             ],
           ),
         ),
-        title: Text(widget.comment.user.displayName!),
+        title: Text(widget.comment.user.displayName!.value),
         subtitle: Text(widget.comment.content),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -140,9 +132,7 @@ class _WidgetPostComments extends State<WidgetPostComments> {
           children: [
             GestureDetector(
               onTap: () async {
-                await likeunlikefunction(
-                  currentUser: widget.currentUserAccounts.user.value,
-                );
+                await likeunlikefunction();
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,

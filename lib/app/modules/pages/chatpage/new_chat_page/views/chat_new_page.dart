@@ -74,10 +74,10 @@ class ChatNewPage extends StatelessWidget {
                                           .avatar!.mediaURL.minURL.value,
                                     ),
                                   ),
-                                  title: CustomText.costum1(controller
-                                      .filteredItems
-                                      .value![index]
-                                      .displayName!),
+                                  title: CustomText.costum1(
+                                    controller.filteredItems.value![index]
+                                        .displayName!.value,
+                                  ),
                                   trailing: Text(controller
                                       .filteredItems.value![index].lastloginv2
                                       .toString()
