@@ -455,7 +455,7 @@ class ProfileController extends GetxController
               postID: firstthreecomment["paylasimID"],
               user: User(
                 userID: firstthreecomment["yorumcuid"],
-                displayName: firstthreecomment["yorumcuadsoyad"],
+                displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
                 avatar: Media(
                   mediaID: firstthreecomment["yorumcuid"],
                   mediaURL: MediaURL(
@@ -498,7 +498,7 @@ class ProfileController extends GetxController
         media: media,
         owner: User(
           userID: response["icerik"][i]["sahipID"],
-          userName: response["icerik"][i]["sahipad"],
+          userName: Rx<String>(response["icerik"][i]["sahipad"]),
           avatar: Media(
             mediaID: response["icerik"][i]["sahipID"],
             mediaURL: MediaURL(
@@ -1762,7 +1762,7 @@ class ProfileController extends GetxController
                         ARMOYUFunctions functions = ARMOYUFunctions(
                           currentUserAccounts: currentUserAccounts.value,
                         );
-                        functions.profileEdit(context, () {});
+                        functions.profileEdit(context);
                       },
                       child: ListTile(
                         leading: const Icon(Icons.edit),

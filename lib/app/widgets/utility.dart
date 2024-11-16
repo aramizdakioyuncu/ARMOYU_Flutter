@@ -97,25 +97,30 @@ class WidgetUtility {
   static Future cupertinoDatePicker({
     required BuildContext context,
     required Function(String) onChanged,
-    required Function setstatefunction,
     bool dontallowPastDate = false,
     int yearCount = 65,
   }) {
-    int startYearDate = 1945;
+    var startYearDate = 1945.obs;
+    var startMonthDate = 1.obs;
+    var startDayDate = 1.obs;
 
     if (dontallowPastDate) {
-      startYearDate = DateTime.now().year;
+      startYearDate.value = DateTime.now().year;
+      startMonthDate.value = DateTime.now().month;
+      startDayDate.value = DateTime.now().day;
     }
 
-    String selectedYear = "$startYearDate";
-    String selectedMonth = "1";
-    String selectedDay = "1";
+    var selectedYear = startYearDate.value.toString().obs;
+    var selectedMonth = startMonthDate.value.toString().obs;
+    var selectedDay = startDayDate.value.toString().obs;
 
-    List<Map<int, String>> yearList = List.generate(
+    var yearList = List.generate(
       yearCount,
-      (index) => {startYearDate + index: (startYearDate + index).toString()},
-    );
-    List<Map<int, String>> monthList = [
+      (index) => {
+        startYearDate.value + index: (startYearDate.value + index).toString()
+      },
+    ).obs;
+    var monthList = <Map<int, String>>[
       {1: "Ocak"},
       {2: "Şubat"},
       {3: "Mart"},
@@ -128,20 +133,63 @@ class WidgetUtility {
       {10: "Ekim"},
       {11: "Kasım"},
       {12: "Aralık"},
-    ];
+    ].obs;
 
-    List<Map<int, String>> dayList =
-        List.generate(31, (index) => {index + 1: (index + 1).toString()});
+    var monthEditiableList = <Map<int, String>>[
+      {1: "Ocak"},
+      {2: "Şubat"},
+      {3: "Mart"},
+      {4: "Nisan"},
+      {5: "Mayıs"},
+      {6: "Haziran"},
+      {7: "Temmuz"},
+      {8: "Ağustos"},
+      {9: "Eylül"},
+      {10: "Ekim"},
+      {11: "Kasım"},
+      {12: "Aralık"},
+    ].obs;
+
+    var dayList =
+        List.generate(31, (index) => {index + 1: (index + 1).toString()}).obs;
+
+    var editibledayList =
+        List.generate(31, (index) => {index + 1: (index + 1).toString()}).obs;
+
+    updatemonthdonwallowpastdate() {
+      if (dontallowPastDate) {
+        //Geçmişteki Ayları siler
+        monthEditiableList.value = monthList.where((month) {
+          return month.keys.first >= int.parse(selectedMonth.value);
+        }).toList();
+      } else {
+        monthEditiableList.value = monthList.toList();
+      }
+    }
+
+    void removeDaysAfter() {
+      if (dontallowPastDate &&
+          selectedMonth.value == startMonthDate.value.toString()) {
+        editibledayList.value = dayList.where((day) {
+          return day.keys.first >= int.parse(selectedDay.value);
+        }).toList();
+      } else {
+        editibledayList.value = dayList.toList();
+      }
+    }
+
+    updatemonthdonwallowpastdate();
+    removeDaysAfter();
 
     return showCupertinoModalPopup(
       // barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        if (selectedDay.length == 1) {
-          selectedDay = "0$selectedDay";
+        if (selectedDay.value.length == 1) {
+          selectedDay.value = "0$selectedDay";
         }
-        if (selectedMonth.length == 1) {
-          selectedMonth = "0$selectedMonth";
+        if (selectedMonth.value.length == 1) {
+          selectedMonth.value = "0$selectedMonth";
         }
         var selectedDate = "$selectedDay.$selectedMonth.$selectedYear".obs;
 
@@ -156,7 +204,6 @@ class WidgetUtility {
                 child: GestureDetector(
                   onTap: () {
                     onChanged(selectedDate.value);
-                    setstatefunction();
                     Get.back();
                   },
                   child: const Padding(
@@ -177,67 +224,81 @@ class WidgetUtility {
                   SizedBox(
                     width: ARMOYU.screenWidth / 3,
                     height: 200,
-                    child: CupertinoPicker(
-                      itemExtent: 32,
-                      children: List.generate(
-                        yearList.length,
-                        (index) {
-                          Map<int, String> yearMap = yearList[index];
-                          return Text(yearMap.values.last.toString());
+                    child: Obx(
+                      () => CupertinoPicker(
+                        itemExtent: 32,
+                        children: List.generate(
+                          yearList.length,
+                          (index) {
+                            Map<int, String> yearMap = yearList[index];
+                            return Text(yearMap.values.last.toString());
+                          },
+                        ),
+                        onSelectedItemChanged: (value) {
+                          selectedYear.value = yearList[value].values.first;
+
+                          selectedDate.value =
+                              "$selectedDay.$selectedMonth.$selectedYear";
+
+                          updatemonthdonwallowpastdate();
+
+                          onChanged(selectedDate.value);
                         },
                       ),
-                      onSelectedItemChanged: (value) {
-                        selectedYear = yearList[value].values.first;
-
-                        selectedDate.value =
-                            "$selectedDay.$selectedMonth.$selectedYear";
-                      },
                     ),
                   ),
                   SizedBox(
                     width: ARMOYU.screenWidth / 3,
                     height: 150,
-                    child: CupertinoPicker(
-                      itemExtent: 32,
-                      children: List.generate(monthList.length, (index) {
-                        Map<int, String> monthMap = monthList[index];
-                        return Text(monthMap.values.last.toString());
-                      }),
-                      onSelectedItemChanged: (value) {
-                        Map<int, String> monthMap = monthList[value];
-                        selectedMonth = monthMap.keys.first.toString();
+                    child: Obx(
+                      () => CupertinoPicker(
+                        itemExtent: 32,
+                        children:
+                            List.generate(monthEditiableList.length, (index) {
+                          Map<int, String> monthMap = monthEditiableList[index];
+                          return Text(monthMap.values.last.toString());
+                        }),
+                        onSelectedItemChanged: (value) {
+                          Map<int, String> monthMap = monthEditiableList[value];
+                          selectedMonth.value = monthMap.keys.first.toString();
 
-                        // dayList.clear();
-                        dayList = List.generate(
-                          findDaysInMonth(int.parse(selectedYear),
-                              int.parse(selectedMonth)),
-                          (index) => {index + 1: (index + 1).toString()},
-                        );
+                          editibledayList.value = List.generate(
+                            findDaysInMonth(int.parse(selectedYear.value),
+                                int.parse(selectedMonth.value)),
+                            (index) => {index + 1: (index + 1).toString()},
+                          );
 
-                        selectedDate.value =
-                            "$selectedDay.$selectedMonth.$selectedYear";
-                      },
+                          selectedDate.value =
+                              "$selectedDay.$selectedMonth.$selectedYear";
+
+                          removeDaysAfter();
+                          onChanged(selectedDate.value);
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(
                     width: ARMOYU.screenWidth / 3,
                     height: 150,
-                    child: CupertinoPicker(
-                      itemExtent: 32,
-                      children: List.generate(
-                        dayList.length,
-                        (index) {
-                          Map<int, String> dayMap = dayList[index];
-                          return Text(dayMap.values.last.toString());
+                    child: Obx(
+                      () => CupertinoPicker(
+                        itemExtent: 32,
+                        children: List.generate(
+                          editibledayList.length,
+                          (index) {
+                            Map<int, String> dayMap = editibledayList[index];
+                            return Text(dayMap.values.last.toString());
+                          },
+                        ),
+                        onSelectedItemChanged: (value) {
+                          Map<int, String> dayMap = editibledayList[value];
+                          selectedDay.value = dayMap.keys.first.toString();
+
+                          selectedDate.value =
+                              "$selectedDay.$selectedMonth.$selectedYear";
+                          onChanged(selectedDate.value);
                         },
                       ),
-                      onSelectedItemChanged: (value) {
-                        Map<int, String> dayMap = dayList[value];
-                        selectedDay = dayMap.keys.first.toString();
-
-                        selectedDate.value =
-                            "$selectedDay.$selectedMonth.$selectedYear";
-                      },
                     ),
                   ),
                 ],
@@ -256,13 +317,9 @@ class WidgetUtility {
           'Geçersiz ay: $month. Ay 1 ila 12 arasında olmalıdır.');
     }
 
-    // Dart'ta DateTime sınıfı ile belirli bir yıl ve ay oluşturulabilir.
-    // Ardından add metodunu kullanarak bir ay ileri gidilir ve ayın başlangıç ve bitiş tarihleri arasındaki fark bulunur.
-    // DateTime startOfMonth = DateTime(year, month, 1);
     DateTime endOfMonth =
         DateTime(year, month + 1, 1).subtract(const Duration(days: 1));
-
-    // Ardından iki tarih arasındaki fark, yani gün sayısı, hesaplanır ve döndürülür.
+    log(endOfMonth.day.toString());
     return endOfMonth.day;
   }
 
@@ -301,8 +358,6 @@ class WidgetUtility {
                 child: GestureDetector(
                   onTap: () {
                     onChanged(selectedTime.value);
-
-                    log(selectedTime.value.toString());
                     Get.back();
                   },
                   child: const Padding(
@@ -341,6 +396,7 @@ class WidgetUtility {
                       onSelectedItemChanged: (value) {
                         hour.value = hourList[value].values.first;
                         selectedTime.value = "${hour.value}:${minute.value}";
+                        onChanged(selectedTime.value);
                       },
                     ),
                   ),
@@ -362,6 +418,7 @@ class WidgetUtility {
                       onSelectedItemChanged: (value) {
                         minute.value = minuteList[value].values.first;
                         selectedTime.value = "${hour.value}:${minute.value}";
+                        onChanged(selectedTime.value);
                       },
                     ),
                   ),

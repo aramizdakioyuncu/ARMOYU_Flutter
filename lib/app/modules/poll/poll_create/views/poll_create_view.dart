@@ -77,7 +77,6 @@ class PollCreateView extends StatelessWidget {
                             onPressed: () {
                               WidgetUtility.cupertinoDatePicker(
                                 context: context,
-                                setstatefunction: controller.setstatefunction,
                                 dontallowPastDate: true,
                                 yearCount: 1,
                                 onChanged: (value) {

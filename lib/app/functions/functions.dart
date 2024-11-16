@@ -329,9 +329,7 @@ class ARMOYUFunctions {
     return formattedStr;
   }
 
-  Future<void> fetchCountry(
-    setstatefunction,
-  ) async {
+  Future<void> fetchCountry() async {
     FunctionsCountry f =
         FunctionsCountry(currentUser: currentUserAccounts.user.value);
     Map<String, dynamic> response = await f.fetch();
@@ -357,15 +355,13 @@ class ARMOYUFunctions {
           fetchProvince(
             currentUserAccounts.user.value.country!.value.countryID,
             ARMOYU.countryList.length - 1,
-            setstatefunction,
           );
         }
       }
     }
   }
 
-  Future<void> fetchProvince(
-      int countryID, selectedIndex, setstatefunction) async {
+  Future<void> fetchProvince(int countryID, selectedIndex) async {
     if (ARMOYU.countryList[selectedIndex].provinceList != null) {
       if (ARMOYU.countryList[selectedIndex].provinceList!.isNotEmpty) {
         provinceSelectStatus.value = true;
@@ -407,12 +403,11 @@ class ARMOYUFunctions {
     } else {
       provinceSelectStatus.value = false;
     }
-    setstatefunction();
   }
 
   static Rx<bool> provinceSelectStatus = false.obs;
 
-  void profileEdit(BuildContext context, Function setstatefunction) {
+  void profileEdit(BuildContext context) {
     FocusNode myFocusPassword = FocusNode();
 
     var firstName = TextEditingController().obs;
@@ -427,9 +422,7 @@ class ARMOYUFunctions {
     var email = TextEditingController().obs;
     email.value.text = currentUserAccounts.user.value.userMail.toString();
 
-    var birthday = TextEditingController().obs;
-    birthday.value.text =
-        currentUserAccounts.user.value.birthdayDate.toString();
+    var birthday = currentUserAccounts.user.value.birthdayDate;
 
     var country = (ProfileKeys.profileselectcountry.tr).obs;
     int? countryIndex = 0;
@@ -449,13 +442,13 @@ class ARMOYUFunctions {
     if (ARMOYU.countryList.isNotEmpty) {
       if (ARMOYU.countryList[countryIndex].provinceList != null) {
         provinceSelectStatus.value = true;
-        setstatefunction();
+        // setstatefunction();
       }
     }
     Timer? searchTimer;
 
     if (ARMOYU.countryList.isEmpty) {
-      fetchCountry(setstatefunction);
+      fetchCountry();
     }
 
     var phoneNumber = TextEditingController().obs;
@@ -616,10 +609,7 @@ class ARMOYUFunctions {
                                                         milliseconds: 1000),
                                                     () async {
                                                   await fetchProvince(
-                                                    countryID,
-                                                    selectedIndex,
-                                                    setstatefunction,
-                                                  );
+                                                      countryID, selectedIndex);
                                                 });
                                               },
                                               list: ARMOYU.countryList
@@ -685,18 +675,19 @@ class ARMOYUFunctions {
                                 ),
                               ),
                               Expanded(
-                                child: CustomButtons.costum1(
-                                  text: birthday.value.text,
-                                  onPressed: () {
-                                    WidgetUtility.cupertinoDatePicker(
-                                      context: context,
-                                      onChanged: (selectedValue) {
-                                        birthday.value.text = selectedValue;
-                                      },
-                                      setstatefunction: setstatefunction,
-                                    );
-                                  },
-                                  loadingStatus: false.obs,
+                                child: Obx(
+                                  () => CustomButtons.costum1(
+                                    text: birthday!.value!,
+                                    onPressed: () {
+                                      WidgetUtility.cupertinoDatePicker(
+                                        context: context,
+                                        onChanged: (selectedValue) {
+                                          birthday.value = selectedValue;
+                                        },
+                                      );
+                                    },
+                                    loadingStatus: false.obs,
+                                  ),
                                 ),
                               ),
                             ],
@@ -766,7 +757,7 @@ class ARMOYUFunctions {
                                     .replaceAll(RegExp(r'[()\s]'), '');
 
                                 List<String> words =
-                                    birthday.value.text.split(".");
+                                    birthday!.value!.split(".");
                                 if (words.isEmpty) {
                                   return;
                                 }
@@ -803,7 +794,7 @@ class ARMOYUFunctions {
                                   return;
                                 }
                                 profileeditProcess.value = true;
-                                setstatefunction();
+                                // setstatefunction();
 
                                 FunctionsProfile f = FunctionsProfile(
                                   currentUser: currentUserAccounts.user.value,
@@ -822,7 +813,7 @@ class ARMOYUFunctions {
                                 );
 
                                 profileeditProcess.value = false;
-                                setstatefunction();
+                                // setstatefunction();
                                 if (response["durum"] == 0) {
                                   log(response["aciklama"]);
                                   ARMOYUWidget.toastNotification(
@@ -871,7 +862,7 @@ class ARMOYUFunctions {
                                 currentUserAccounts.user.value.phoneNumber!
                                     .value = cleanedphoneNumber;
                                 currentUserAccounts.user.value.birthdayDate!
-                                    .value = birthday.value.text;
+                                    .value = birthday.value;
 
                                 ARMOYUWidget.toastNotification(
                                   response["aciklama"].toString(),

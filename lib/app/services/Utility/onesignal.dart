@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/data/models/Chat/chat.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
@@ -89,7 +86,7 @@ class OneSignalApi {
           for (Map<String, dynamic> element in responseData["content"]) {
             userID = element["userID"];
           }
-
+          log(userID.toString());
           // AppCore.navigatorKey.currentState?.push(
 
           // Get.toNamed("/chat/detail", arguments: {
