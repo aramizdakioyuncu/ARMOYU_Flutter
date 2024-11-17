@@ -52,6 +52,16 @@ class CommonKeys {
   static const friends = 'friends';
 }
 
+class QuestionKeys {
+  static const areyousure = 'are_you_sure';
+  static const areyousuredetail = 'are_you_sure_detail';
+  static const areyousuredetaildescription = 'are_you_sure_detail_description';
+}
+
+class AnswerKeys {
+  static const yourRequestReceived = 'your_request_received';
+}
+
 //Social
 class SocialKeys {
   static const socialStory = 'social_story';
@@ -202,7 +212,9 @@ class EventKeys {
 class SettingsKeys {
   //Settings
   static const translation = 'translation';
+
   static const settings = 'settings';
+  static const accountSettings = 'account_settings';
   static const lastFailedLogin = 'last_failed_login';
 
   static const applicationAndMedia = 'application_and_media';
@@ -219,6 +231,14 @@ class SettingsKeys {
   static const addAccount = 'add_account';
   static const logOut = 'log_out';
   static const version = 'version';
+}
+
+class AccountKeys {
+  static const passwordandsecurity = 'password_and_security';
+  static const personaldetails = 'personal_details';
+  static const accountvalidate = 'account_validate';
+  static const accountprivacy = 'account_privacy';
+  static const deleteaccount = 'delete_account';
 }
 
 class DrawerKeys {

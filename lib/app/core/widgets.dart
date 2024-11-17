@@ -1,4 +1,5 @@
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/cards.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -72,18 +73,18 @@ class ARMOYUWidget {
   }
 
   static void showConfirmationDialog(BuildContext context,
-      {required Function accept, Function? decline}) {
+      {required Function accept, Function? decline, String? question}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Get.theme.scaffoldBackgroundColor,
-          title: CustomText.costum1('Emin misiniz?'),
-          content: CustomText.costum1(
-              'Bu işlemi gerçekleştirmek istediğinizden emin misiniz?'),
+          title: CustomText.costum1(QuestionKeys.areyousure.tr),
+          content:
+              CustomText.costum1(question ?? QuestionKeys.areyousuredetail.tr),
           actions: <Widget>[
             TextButton(
-              child: CustomText.costum1('İptal'),
+              child: CustomText.costum1(CommonKeys.cancel.tr),
               onPressed: () {
                 if (decline != null) {
                   decline();
@@ -92,7 +93,7 @@ class ARMOYUWidget {
               },
             ),
             TextButton(
-              child: CustomText.costum1('Onayla'),
+              child: CustomText.costum1(CommonKeys.accept.tr),
               onPressed: () {
                 accept();
 

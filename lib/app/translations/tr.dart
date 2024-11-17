@@ -35,6 +35,14 @@ Map<String, String> tr = {
 
   CommonKeys.everyone: 'Herkes',
   CommonKeys.friends: 'Arkadaşlar',
+
+  QuestionKeys.areyousure: 'Emin misiniz?',
+  QuestionKeys.areyousuredetail: 'Bu işlemden emin misiniz?',
+  QuestionKeys.areyousuredetaildescription:
+      'Bu işlem hesabınızı doğrudan silmez, sıraya alır. 60 gün içinde hesabınıza giriş yapmazsanız, sistem tarafından otomatik olarak silinir.',
+
+  AnswerKeys.yourRequestReceived: 'Talebiniz alınmıştır.',
+
   //Social
   SocialKeys.socialStory: 'Hikayen',
 
@@ -176,6 +184,7 @@ Map<String, String> tr = {
   //Settings
   SettingsKeys.translation: 'Çeviri',
   SettingsKeys.settings: 'Ayarlar',
+  SettingsKeys.accountSettings: 'Hesap Ayarları',
   SettingsKeys.lastFailedLogin: 'Hatalı Giriş',
 
   SettingsKeys.applicationAndMedia: 'Uygulama ve Medya',
@@ -192,6 +201,13 @@ Map<String, String> tr = {
   SettingsKeys.addAccount: 'Hesap Ekle',
   SettingsKeys.logOut: 'Çıkış Yap',
   SettingsKeys.version: 'Versiyon',
+
+  //Account Settings
+  AccountKeys.passwordandsecurity: 'Şifre ve Güvenlik',
+  AccountKeys.personaldetails: 'Kişisel Bilgiler',
+  AccountKeys.accountvalidate: 'Hesap Doğrulama',
+  AccountKeys.accountprivacy: 'Hesap Gizliliği',
+  AccountKeys.deleteaccount: 'Hesabı Sil',
 
   //Drawer
   DrawerKeys.drawerMeeting: 'Toplantı',

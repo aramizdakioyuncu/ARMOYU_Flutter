@@ -36,6 +36,14 @@ Map<String, String> ru = {
   CommonKeys.everyone: 'Все',
   CommonKeys.friends: 'Друзья',
 
+  QuestionKeys.areyousure: 'Вы уверены?',
+  QuestionKeys.areyousuredetail:
+      'Вы уверены, что хотите выполнить этот процесс?',
+  QuestionKeys.areyousuredetaildescription:
+      'Это действие не удаляет ваш аккаунт сразу, а ставит его в очередь. Если вы не войдете в свой аккаунт в течение 60 дней, он будет автоматически удален системой.',
+
+  AnswerKeys.yourRequestReceived: 'Ваш запрос получен.',
+
   //Social
   SocialKeys.socialStory: 'Ваша история',
   SocialKeys.socialandnumberpersonLiked: 'и #NUMBER# человек понравилось',
@@ -179,6 +187,8 @@ Map<String, String> ru = {
   //Settings
   SettingsKeys.translation: 'Перевод',
   SettingsKeys.settings: 'Настройки',
+  SettingsKeys.accountSettings: 'Настройки аккаунта',
+
   SettingsKeys.lastFailedLogin: 'Неудачная попытка входа',
 
   SettingsKeys.applicationAndMedia: 'Приложение и медиа',
@@ -196,6 +206,13 @@ Map<String, String> ru = {
   SettingsKeys.addAccount: 'Добавить аккаунт',
   SettingsKeys.logOut: 'Выйти',
   SettingsKeys.version: 'Версия',
+
+  //Account Settings
+  AccountKeys.passwordandsecurity: 'Пароль и безопасность',
+  AccountKeys.personaldetails: 'Личные данные',
+  AccountKeys.accountvalidate: 'Проверка аккаунта',
+  AccountKeys.accountprivacy: 'Конфиденциальность аккаунта',
+  AccountKeys.deleteaccount: 'Удалить аккаунт',
 
   //Drawer
   DrawerKeys.drawerMeeting: 'Встреча',

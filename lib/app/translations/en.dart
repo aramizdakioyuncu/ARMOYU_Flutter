@@ -36,6 +36,13 @@ Map<String, String> en = {
   CommonKeys.everyone: 'Everyone',
   CommonKeys.friends: 'Friends',
 
+  QuestionKeys.areyousure: 'Are you sure?',
+  QuestionKeys.areyousuredetail: 'Are you sure about this process?',
+  QuestionKeys.areyousuredetaildescription:
+      'This action does not delete your account directly; it queues it. If you do not log into your account within 60 days, it will be automatically deleted by the system.',
+
+  AnswerKeys.yourRequestReceived: 'Your request has been received.',
+
   //Social
   SocialKeys.socialStory: 'Your Story',
   SocialKeys.socialandnumberpersonLiked: 'and #NUMBER# person liked',
@@ -178,6 +185,8 @@ Map<String, String> en = {
   //Settings
   SettingsKeys.translation: 'Translation',
   SettingsKeys.settings: 'Settings',
+  SettingsKeys.accountSettings: 'Account Settings',
+
   SettingsKeys.lastFailedLogin: 'Failed Login',
 
   SettingsKeys.applicationAndMedia: 'Application and Media',
@@ -194,6 +203,13 @@ Map<String, String> en = {
   SettingsKeys.addAccount: 'Add Account',
   SettingsKeys.logOut: 'Log Out',
   SettingsKeys.version: 'Version',
+
+  //Account Settings
+  AccountKeys.passwordandsecurity: 'Password and Security',
+  AccountKeys.personaldetails: 'Personal Details',
+  AccountKeys.accountvalidate: 'Account Validate',
+  AccountKeys.accountprivacy: 'Account Privacy',
+  AccountKeys.deleteaccount: 'Delete Account',
 
   //Drawer
   DrawerKeys.drawerMeeting: 'Meeting',

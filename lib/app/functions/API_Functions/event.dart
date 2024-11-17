@@ -32,6 +32,7 @@ class FunctionsEvent {
       "etkinlikID": "$eventID",
       "cevap": "$intStatus"
     };
+
     Map<String, dynamic> jsonData =
         await apiService.request("etkinlikler/katilma/0/", formData);
     return jsonData;

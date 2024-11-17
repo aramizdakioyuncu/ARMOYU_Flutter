@@ -36,6 +36,13 @@ Map<String, String> ar = {
   CommonKeys.everyone: 'الجميع',
   CommonKeys.friends: 'الأصدقاء',
 
+  QuestionKeys.areyousure: 'هل أنت متأكد؟',
+  QuestionKeys.areyousuredetail: 'هل أنت متأكد من هذه العملية؟',
+  QuestionKeys.areyousuredetaildescription:
+      'لن يؤدي هذا الإجراء إلى حذف حسابك مباشرةً، بل سيتم وضعه في قائمة الانتظار. إذا لم تقم بتسجيل الدخول إلى حسابك خلال 60 يومًا، فسيتم حذفه تلقائيًا بواسطة النظام.',
+
+  AnswerKeys.yourRequestReceived: 'تم استلام طلبك.',
+
   //Social
   SocialKeys.socialStory: 'قصتك',
   SocialKeys.socialandnumberpersonLiked: 'و #NUMBER# شخص أعجبهم',
@@ -177,6 +184,7 @@ Map<String, String> ar = {
   //Settings
   SettingsKeys.translation: 'الترجمة',
   SettingsKeys.settings: 'الإعدادات',
+  SettingsKeys.accountSettings: 'إعدادات الحساب',
   SettingsKeys.lastFailedLogin: 'فشل تسجيل الدخول',
 
   SettingsKeys.applicationAndMedia: 'التطبيق والإعلام',
@@ -193,6 +201,13 @@ Map<String, String> ar = {
   SettingsKeys.addAccount: 'إضافة حساب',
   SettingsKeys.logOut: 'تسجيل الخروج',
   SettingsKeys.version: 'النسخة',
+
+  //Account Settings
+  AccountKeys.passwordandsecurity: 'كلمة المرور والأمان',
+  AccountKeys.personaldetails: 'التفاصيل الشخصية',
+  AccountKeys.accountvalidate: 'التحقق من الحساب',
+  AccountKeys.accountprivacy: 'خصوصية الحساب',
+  AccountKeys.deleteaccount: 'حذف الحساب',
 
   //Drawer
   DrawerKeys.drawerMeeting: 'الاجتماع',

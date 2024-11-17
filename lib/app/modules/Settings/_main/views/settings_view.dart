@@ -48,15 +48,7 @@ class SettingsView extends StatelessWidget {
                   onTap: () {
                     Get.toNamed("/settings/account");
                   },
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.qr_code),
-                      ),
-                    ],
-                  ),
+                  trailing: const Icon(Icons.arrow_forward),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

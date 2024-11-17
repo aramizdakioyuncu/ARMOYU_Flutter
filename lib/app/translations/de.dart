@@ -36,6 +36,14 @@ Map<String, String> de = {
   CommonKeys.everyone: 'Jeder',
   CommonKeys.friends: 'Freunde',
 
+  QuestionKeys.areyousure: 'Bist du sicher?',
+  QuestionKeys.areyousuredetail:
+      'Bist du sicher, dass du diesen Vorgang durchführen möchtest?',
+  QuestionKeys.areyousuredetaildescription:
+      'Dieser Vorgang löscht Ihr Konto nicht direkt, sondern stellt es in eine Warteschlange. Wenn Sie sich innerhalb von 60 Tagen nicht in Ihr Konto einloggen, wird es automatisch vom System gelöscht.',
+
+  AnswerKeys.yourRequestReceived: 'Ihre Anfrage wurde erhalten.',
+
   //Social
   SocialKeys.socialStory: 'Deine Geschichte',
   SocialKeys.socialandnumberpersonLiked: 'und #NUMBER# Person(en) mochte(n)',
@@ -179,9 +187,12 @@ Map<String, String> de = {
       'Sie haben bereits am Event teilgenommen. Die Frist für die Stornierung ist 30 Minuten vor Beginn des Events.',
   EventKeys.readAndAgreeRules:
       'Ich habe die Regeln gelesen, verstanden und akzeptiere sie.',
+
   //Settings
   SettingsKeys.translation: 'Übersetzung',
   SettingsKeys.settings: 'Einstellungen',
+  SettingsKeys.accountSettings: 'Kontoeinstellungen',
+
   SettingsKeys.lastFailedLogin: 'Fehlgeschlagene Anmeldung',
 
   SettingsKeys.applicationAndMedia: 'Anwendung und Medien',
@@ -199,6 +210,13 @@ Map<String, String> de = {
   SettingsKeys.addAccount: 'Konto hinzufügen',
   SettingsKeys.logOut: 'Abmelden',
   SettingsKeys.version: 'Version',
+
+  //Account Settings
+  AccountKeys.passwordandsecurity: 'Passwort und Sicherheit',
+  AccountKeys.personaldetails: 'Persönliche Angaben',
+  AccountKeys.accountvalidate: 'Konto validieren',
+  AccountKeys.accountprivacy: 'Kontoprivatsphäre',
+  AccountKeys.deleteaccount: 'Konto löschen',
 
   //Drawer
   DrawerKeys.drawerMeeting: 'Besprechung',
