@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +37,10 @@ class _WidgetPostComments extends State<WidgetPostComments> {
   Future<void> removeComment() async {
     isvisiblecomment = false;
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: widget.currentUserAccounts.user.value);
+    PostsAPI funct =
+        PostsAPI(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response =
-        await funct.removecomment(widget.comment.commentID);
+        await funct.removecomment(commentID: widget.comment.commentID);
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
 
     if (response["durum"] == 0) {
@@ -58,13 +58,13 @@ class _WidgetPostComments extends State<WidgetPostComments> {
       widget.comment.didIlike = true;
       widget.comment.likeCount++;
     }
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: widget.currentUserAccounts.user.value);
+    PostsAPI funct =
+        PostsAPI(currentUser: widget.currentUserAccounts.user.value);
     Map<String, dynamic> response;
     if (!widget.comment.didIlike) {
-      response = await funct.commentdislike(widget.comment.commentID);
+      response = await funct.commentunlike(commentID: widget.comment.commentID);
     } else {
-      response = await funct.commentlike(widget.comment.commentID);
+      response = await funct.commentlike(commentID: widget.comment.commentID);
     }
     if (response["durum"] == 0) {
       log(response["aciklama"]);

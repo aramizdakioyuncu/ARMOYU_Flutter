@@ -8,9 +8,9 @@ import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
-import 'package:ARMOYU/app/functions/Client_Functions/profile.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
+import 'package:ARMOYU/app/services/API/blocking_api.dart';
+import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/likers.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
@@ -104,10 +104,8 @@ class PostController extends GetxController {
     }
     fetchCommentStatus.value = true;
 
-    FunctionsPosts funct = FunctionsPosts(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await funct.commentsfetch(postID);
+    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await funct.commentsfetch(postID: postID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       fetchCommentStatus.value = false;
@@ -168,10 +166,8 @@ class PostController extends GetxController {
     }
     fetchlikersStatus.value = true;
 
-    FunctionsPosts funct = FunctionsPosts(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await funct.postlikeslist(postID);
+    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await funct.postlikeslist(postID: postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       fetchlikersStatus.value = false;
@@ -213,10 +209,9 @@ class PostController extends GetxController {
   Future<void> removepost() async {
     postVisible.value = false;
 
-    FunctionsPosts funct = FunctionsPosts(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await funct.remove(postInfo.value.postID);
+    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response =
+        await funct.remove(postID: postInfo.value.postID);
 
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
 
@@ -349,13 +344,13 @@ class PostController extends GetxController {
                           padding: const EdgeInsets.all(5.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              FunctionsPosts funct = FunctionsPosts(
-                                currentUser: currentUserAccounts.user.value,
-                              );
+                              PostsAPI funct = PostsAPI(
+                                  currentUser: currentUserAccounts.user.value);
                               Map<String, dynamic> response =
                                   await funct.createcomment(
-                                      postInfo.value.postID,
-                                      controllerMessage.value.text);
+                                postID: postInfo.value.postID,
+                                text: controllerMessage.value.text,
+                              );
                               if (response["durum"] == 0) {
                                 ARMOYUWidget.toastNotification(
                                     response["aciklama"].toString());
@@ -393,10 +388,8 @@ class PostController extends GetxController {
 
     likeunlikeProcces.value = true;
 
-    FunctionsPosts funct = FunctionsPosts(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await funct.like(postID);
+    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await funct.like(postID: postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       widgetlike = widgetlike;
@@ -415,10 +408,8 @@ class PostController extends GetxController {
     }
     likeunlikeProcces.value = true;
 
-    FunctionsPosts funct = FunctionsPosts(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await funct.unlike(postID);
+    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await funct.unlike(postID: postID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       widgetlike = widgetlike;
@@ -554,11 +545,10 @@ class PostController extends GetxController {
                   Visibility(
                     child: InkWell(
                       onTap: () async {
-                        FunctionsPosts funct = FunctionsPosts(
-                          currentUser: currentUserAccounts.user.value,
-                        );
+                        PostsAPI funct = PostsAPI(
+                            currentUser: currentUserAccounts.user.value);
                         Map<String, dynamic> response =
-                            await funct.remove(postInfo.value.postID);
+                            await funct.remove(postID: postInfo.value.postID);
                         if (response["durum"] == 0) {
                           log(response["aciklama"]);
                           return;
@@ -610,17 +600,15 @@ class PostController extends GetxController {
                         currentUserAccounts.user.value.userID,
                     child: InkWell(
                       onTap: () async {
-                        // if (mounted) {
-                        Navigator.pop(context);
-                        // }
-                        ClientFunctionsProfile function =
-                            ClientFunctionsProfile(
-                          currentUser: currentUserAccounts.user.value,
-                        );
+                        Get.back();
+
+                        BlockingAPI f = BlockingAPI(
+                            currentUser: currentUserAccounts.user.value);
+                        Map<String, dynamic> response =
+                            await f.add(userID: postInfo.value.owner.userID!);
+
                         ARMOYUWidget.toastNotification(
-                          await function.userblock(
-                            postInfo.value.owner.userID!,
-                          ),
+                          response["aciklama"],
                         );
                       },
                       child: ListTile(

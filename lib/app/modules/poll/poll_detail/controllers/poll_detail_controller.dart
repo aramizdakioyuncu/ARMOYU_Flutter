@@ -6,7 +6,7 @@ import 'package:ARMOYU/app/data/models/Survey/question.dart';
 import 'package:ARMOYU/app/data/models/Survey/survey.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/survey.dart';
+import 'package:ARMOYU/app/services/API/survey_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -44,11 +44,13 @@ class PollDetailController extends GetxController {
     }
 
     answerSurveyProccess.value = true;
-    FunctionsSurvey f = FunctionsSurvey(
+    SurveyAPI f = SurveyAPI(
       currentUser: currentUserAccounts.value.user.value,
     );
     Map<String, dynamic> response = await f.answerSurvey(
-        survey.value!.surveyID, int.parse(selectedOption.value.toString()));
+      surveyID: survey.value!.surveyID,
+      optionID: int.parse(selectedOption.value.toString()),
+    );
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -62,8 +64,7 @@ class PollDetailController extends GetxController {
   }
 
   Future<void> refreshSurvey() async {
-    FunctionsSurvey f =
-        FunctionsSurvey(currentUser: currentUserAccounts.value.user.value);
+    SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value.user.value);
 
     Map<String, dynamic> response =
         await f.fetchSurvey(surveyID: survey.value!.surveyID);
@@ -139,11 +140,9 @@ class PollDetailController extends GetxController {
   }
 
   Future<void> deleteSurvey() async {
-    FunctionsSurvey f = FunctionsSurvey(
-      currentUser: currentUserAccounts.value.user.value,
-    );
+    SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response =
-        await f.deleteSurvey(survey.value!.surveyID);
+        await f.deleteSurvey(surveyID: survey.value!.surveyID);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

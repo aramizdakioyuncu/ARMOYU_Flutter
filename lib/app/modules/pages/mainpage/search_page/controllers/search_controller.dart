@@ -6,9 +6,9 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/news.dart';
-import 'package:ARMOYU/app/functions/API_Functions/search.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
+import 'package:ARMOYU/app/services/API/news_api.dart';
+import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -66,10 +66,8 @@ class SearchPageController extends GetxController {
       return;
     }
     eventlistProcces.value = true;
-    FunctionsNews f = FunctionsNews(
-      currentUser: currentUserAccounts.user.value,
-    );
-    Map<String, dynamic> response = await f.fetch(1);
+    NewsAPI f = NewsAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await f.fetch(page: 1);
     if (response["durum"] == 0) {
       ARMOYUWidget.toastNotification(response["aciklama"].toString());
       eventlistProcces.value = false;
@@ -138,10 +136,9 @@ class SearchPageController extends GetxController {
       if (text != controller.text) {
         return;
       }
-      FunctionsSearchEngine f = FunctionsSearchEngine(
-        currentUser: currentUserAccounts.user.value,
-      );
-      Map<String, dynamic> response = await f.searchengine(text, 1);
+      SearchAPI f = SearchAPI(currentUser: currentUserAccounts.user.value);
+      Map<String, dynamic> response =
+          await f.searchengine(searchword: text, page: 1);
       if (response["durum"] == 0) {
         log(response["aciklama"]);
         return;

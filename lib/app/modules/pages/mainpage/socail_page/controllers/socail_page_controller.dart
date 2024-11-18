@@ -9,9 +9,9 @@ import 'package:ARMOYU/app/data/models/Story/story.dart';
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/story.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:ARMOYU/app/services/API/posts_api.dart';
+import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
@@ -102,10 +102,8 @@ class SocailPageController extends GetxController {
 
     fetchStoryStatus.value = true;
 
-    FunctionsStory f = FunctionsStory(
-      currentUser: currentUserAccounts.value.user.value,
-    );
-    Map<String, dynamic> response = await f.stories(storypage.value);
+    StoryAPI f = StoryAPI(currentUser: currentUserAccounts.value.user.value);
+    Map<String, dynamic> response = await f.stories(page: storypage.value);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
 
@@ -222,9 +220,8 @@ class SocailPageController extends GetxController {
 
     fetchPostStatus.value = true;
 
-    FunctionsPosts f =
-        FunctionsPosts(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.getPosts(postpage.value);
+    PostsAPI f = PostsAPI(currentUser: currentUserAccounts.value.user.value);
+    Map<String, dynamic> response = await f.getPosts(page: postpage.value);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
 

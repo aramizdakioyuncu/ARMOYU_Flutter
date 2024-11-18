@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -49,8 +49,8 @@ class InviteController extends GetxController {
   }
 
   Future<void> refreshInviteCode() async {
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value!.user.value);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
     Map<String, dynamic> response = await f.invitecoderefresh();
 
     if (response["durum"] == 0) {
@@ -65,9 +65,9 @@ class InviteController extends GetxController {
   }
 
   Future<void> sendmailURL(int userID) async {
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value!.user.value);
-    Map<String, dynamic> response = await f.sendauthmailURL(userID);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
+    Map<String, dynamic> response = await f.sendauthmailURL(userID: userID);
     log(response["durum"].toString());
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -86,9 +86,9 @@ class InviteController extends GetxController {
     if (invitePage.value == 1) {
       invitelist.clear();
     }
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value!.user.value);
-    Map<String, dynamic> response = await f.invitelist(invitePage.value);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
+    Map<String, dynamic> response = await f.invitelist(page: invitePage.value);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

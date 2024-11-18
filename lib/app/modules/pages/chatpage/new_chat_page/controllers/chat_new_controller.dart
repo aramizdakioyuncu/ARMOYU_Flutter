@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -83,12 +83,10 @@ class ChatNewController extends GetxController {
       chatnewpage++;
     }
 
-    FunctionsProfile f = FunctionsProfile(
-      currentUser: currentUser.value!,
-    );
+    ProfileAPI f = ProfileAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.friendlist(
-      currentUser.value!.userID!,
-      chatnewpage.value,
+      userID: currentUser.value!.userID!,
+      page: chatnewpage.value,
     );
     if (response["durum"] == 0) {
       log(response["aciklama"]);

@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/functions/API_Functions/search.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Mention/mention.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -143,9 +143,9 @@ class CustomTextfields {
         //Oyuncu listesi bomboşsa
         if (WidgetMention.peopleList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
-            FunctionsSearchEngine f =
-                FunctionsSearchEngine(currentUser: currentUser);
-            Map<String, dynamic> response = await f.onlyusers("", 1);
+            SearchAPI f = SearchAPI(currentUser: currentUser);
+            Map<String, dynamic> response =
+                await f.onlyusers(searchword: "", page: 1);
             if (response["durum"] == 0) {
               log(response["aciklama"]);
               return;
@@ -164,9 +164,9 @@ class CustomTextfields {
         //Hashtag listesi bomboşsa
         if (WidgetMention.hashtagList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
-            FunctionsSearchEngine f =
-                FunctionsSearchEngine(currentUser: currentUser);
-            Map<String, dynamic> response = await f.hashtag("", 1);
+            SearchAPI f = SearchAPI(currentUser: currentUser);
+            Map<String, dynamic> response =
+                await f.hashtag(hashtag: "", page: 1);
             if (response["durum"] == 0) {
               log(response["aciklama"]);
               return;
@@ -195,14 +195,14 @@ class CustomTextfields {
         // Eğer buraya kadar gelindi ise, yeni bir kelime girilmiştir, mevcut sorguyu iptal eder
         searchTimer?.cancel();
         searchTimer = Timer(const Duration(milliseconds: 500), () async {
-          FunctionsSearchEngine f =
-              FunctionsSearchEngine(currentUser: currentUser);
+          SearchAPI f = SearchAPI(currentUser: currentUser);
 
           Map<String, dynamic> response;
           if (lastWord[0] == "@") {
-            response = await f.onlyusers(lastWord.substring(1), 1);
+            response =
+                await f.onlyusers(searchword: lastWord.substring(1), page: 1);
           } else if (lastWord[0] == "#") {
-            response = await f.hashtag(lastWord.substring(1), 1);
+            response = await f.hashtag(hashtag: lastWord.substring(1), page: 1);
           } else {
             return;
           }

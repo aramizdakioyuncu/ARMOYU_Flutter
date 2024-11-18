@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/event.dart';
+import 'package:ARMOYU/app/services/API/event_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
@@ -36,9 +36,7 @@ class EventlistController extends GetxController {
 
     eventlistProecces.value = true;
 
-    FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUser.value!,
-    );
+    EventAPI f = EventAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.fetch();
     if (response["durum"] == 0) {
       log(response["aciklama"]);

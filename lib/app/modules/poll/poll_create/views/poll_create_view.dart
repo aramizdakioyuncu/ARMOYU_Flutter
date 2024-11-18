@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/functions/API_Functions/survey.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/modules/poll/poll_create/controllers/poll_create_controller.dart';
+import 'package:ARMOYU/app/services/API/survey_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
@@ -228,9 +228,8 @@ class PollCreateView extends StatelessWidget {
                   text: CommonKeys.submit.tr,
                   onPressed: () async {
                     controller.poolproccess.value = true;
-                    FunctionsSurvey f = FunctionsSurvey(
-                      currentUser: controller.user.value!,
-                    );
+                    SurveyAPI f =
+                        SurveyAPI(currentUser: controller.user.value!);
 
                     if (controller.surveyDate.value == null) {
                       controller.poolproccess.value = false;
@@ -250,9 +249,10 @@ class PollCreateView extends StatelessWidget {
                       values.add(element.text);
                     }
                     Map<String, dynamic> response = await f.createSurvey(
-                      controller.controllerSurveyQuestion.value.text,
-                      values,
-                      "$newDate ${controller.surveyTime}",
+                      surveyQuestion:
+                          controller.controllerSurveyQuestion.value.text,
+                      options: values,
+                      date: "$newDate ${controller.surveyTime}",
                     );
 
                     if (response["durum"] == 0) {

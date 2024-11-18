@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/blocking.dart';
+import 'package:ARMOYU/app/services/API/blocking_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -34,9 +34,11 @@ class BlockedlistSettingsController extends GetxController {
   }
 
   Future<void> removeblock(int userID, int index) async {
-    FunctionsBlocking f =
-        FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.remove(userID);
+    // FunctionsBlocking f =
+    //     FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
+    BlockingAPI f =
+        BlockingAPI(currentUser: currentUserAccounts.value.user.value);
+    Map<String, dynamic> response = await f.remove(userID: userID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -49,8 +51,12 @@ class BlockedlistSettingsController extends GetxController {
       return;
     }
     blockedProcces.value = true;
-    FunctionsBlocking f =
-        FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
+
+    BlockingAPI f =
+        BlockingAPI(currentUser: currentUserAccounts.value.user.value);
+
+    // FunctionsBlocking f =
+    //     FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await f.list();
     if (response["durum"] == 0) {
       log(response["aciklama"]);

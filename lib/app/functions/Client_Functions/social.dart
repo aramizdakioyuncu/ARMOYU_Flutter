@@ -2,14 +2,14 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/Services/API/api_service.dart';
+import 'package:ARMOYU/app/services/API/utils_api.dart';
 
 class ClientFunctionsSocail {
   final User currentUser;
-  late final ApiService apiService;
+  late final UtilsAPI apiService;
 
   ClientFunctionsSocail({required this.currentUser}) {
-    apiService = ApiService(user: currentUser);
+    apiService = UtilsAPI(currentUser: currentUser);
   }
 
   Future<List<Map<String, String>>> loadXPCards(

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/media.dart';
+import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -82,10 +82,10 @@ class GalleryController extends GetxController
     mediaUploadProcess.value = true;
     setstatefunction();
 
-    FunctionsMedia funct =
-        FunctionsMedia(currentUser: currentUserAccounts.value.user.value);
+    MediaAPI funct =
+        MediaAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await funct.upload(
-      files: mediaList,
+      files: mediaList.map((media) => media.mediaXFile!).toList(),
       category: "-1",
     );
 
@@ -116,12 +116,12 @@ class GalleryController extends GetxController
       gallerycounter.value = 0;
     }
     ismediaProcces.value = true;
-    FunctionsMedia f =
-        FunctionsMedia(currentUser: currentUserAccounts.value.user.value);
+    MediaAPI f = MediaAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await f.fetch(
-        currentUserAccounts.value.user.value.userID!,
-        "",
-        gallerycounter.value + 1);
+      uyeID: currentUserAccounts.value.user.value.userID!,
+      category: "",
+      page: gallerycounter.value + 1,
+    );
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

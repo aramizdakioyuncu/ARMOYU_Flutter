@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/notification.dart';
+import 'package:ARMOYU/app/services/API/notification_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
@@ -48,8 +48,8 @@ class NotificationsettingsController extends GetxController {
 
     firstfetchnotifi.value = true;
 
-    FunctionsNotification f = FunctionsNotification(
-        currentUser: currentUserAccounts.value.user.value);
+    NotificationAPI f =
+        NotificationAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await f.listNotificationSettings();
 
     if (response["durum"] == 0) {
@@ -99,10 +99,10 @@ class NotificationsettingsController extends GetxController {
     settingsNotification.add("aramalar=${notifiCalling!.value ? 1 : 0}");
     settingsNotification.add("bahsetmeler=${notifiMention!.value ? 1 : 0}");
 
-    FunctionsNotification f = FunctionsNotification(
-        currentUser: currentUserAccounts.value.user.value);
+    NotificationAPI f =
+        NotificationAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response =
-        await f.updateNotificationSettings(settingsNotification);
+        await f.updateNotificationSettings(options: settingsNotification);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

@@ -7,8 +7,8 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/group.dart';
-import 'package:ARMOYU/app/functions/API_Functions/search.dart';
+import 'package:ARMOYU/app/services/API/group_api.dart';
+import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -104,9 +104,10 @@ class GroupController extends GetxController {
     }
 
     inviteuserStatus.value = true;
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
     Map<String, dynamic> response = await f.userInvite(
-        groupID: group.value!.groupID!, userList: selectedUsers);
+        groupID: group.value!.groupID!,
+        userList: selectedUsers.map((user) => user.userName!.value).toList());
 
     ARMOYUWidget.toastNotification(response["aciklama"].toString());
 
@@ -132,8 +133,9 @@ class GroupController extends GetxController {
       return;
     }
     groupProcces.value = true;
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
-    Map<String, dynamic> response = await f.groupFetch(group.value!.groupID!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
+    Map<String, dynamic> response =
+        await f.groupFetch(grupID: group.value!.groupID!);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       groupProcces.value = false;
@@ -197,9 +199,9 @@ class GroupController extends GetxController {
     }
     groupusersfetchProcces.value = true;
 
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
     Map<String, dynamic> response =
-        await f.groupusersFetch(group.value!.groupID!);
+        await f.groupusersFetch(grupID: group.value!.groupID!);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       groupProcces.value = false;
@@ -235,7 +237,7 @@ class GroupController extends GetxController {
   }
 
   Future<void> removeuserfromgroup(index) async {
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
     Map<String, dynamic> response = await f.userRemove(
       groupID: group.value!.groupID!,
       userID: group.value!.groupUsers![index].userID!,
@@ -257,7 +259,7 @@ class GroupController extends GetxController {
     }
     groupdetailSaveproccess.value = true;
 
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
     Map<String, dynamic> response = await f.groupsettingsSave(
       grupID: group.value!.groupID!,
       groupName: groupname.value.text,
@@ -319,13 +321,13 @@ class GroupController extends GetxController {
       changegrouplogoStatus.value = false;
       return;
     }
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
 
     log(group.value!.groupID.toString());
-    Map<String, dynamic> response = await f.changegroupmedia(imagePath,
-        groupID: group.value!.groupID!, category: "logo");
+    Map<String, dynamic> response = await f.changegroupmedia(
+        files: imagePath, groupID: group.value!.groupID!, category: "logo");
 
     ARMOYUWidget.toastNotification(response["aciklama"]);
 
@@ -384,12 +386,12 @@ class GroupController extends GetxController {
 
       return;
     }
-    FunctionsGroup f = FunctionsGroup(currentUser: user.value!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
 
-    Map<String, dynamic> response = await f.changegroupmedia(imagePath,
-        groupID: group.value!.groupID!, category: "banner");
+    Map<String, dynamic> response = await f.changegroupmedia(
+        files: imagePath, groupID: group.value!.groupID!, category: "banner");
 
     ARMOYUWidget.toastNotification(response["aciklama"]);
 
@@ -458,10 +460,9 @@ class GroupController extends GetxController {
       if (text != controller.text) {
         return;
       }
-      FunctionsSearchEngine f = FunctionsSearchEngine(
-        currentUser: user.value!,
-      );
-      Map<String, dynamic> response = await f.onlyusers(text, 1);
+      SearchAPI f = SearchAPI(currentUser: user.value!);
+      Map<String, dynamic> response =
+          await f.onlyusers(searchword: text, page: 1);
       if (response["durum"] == 0) {
         log(response["aciklama"]);
         return;
@@ -499,10 +500,9 @@ class GroupController extends GetxController {
   }
 
   Future<void> leavegroup() async {
-    FunctionsGroup f = FunctionsGroup(
-      currentUser: user.value!,
-    );
-    Map<String, dynamic> response = await f.groupleave(group.value!.groupID!);
+    GroupAPI f = GroupAPI(currentUser: user.value!);
+    Map<String, dynamic> response =
+        await f.leave(grupID: group.value!.groupID!);
     if (response["durum"] == 0) {
       ARMOYUWidget.toastNotification(response["aciklama"].toString());
       return;

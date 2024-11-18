@@ -8,13 +8,13 @@ import 'package:ARMOYU/app/data/models/ARMOYU/station.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
-import 'package:ARMOYU/app/functions/API_Functions/station.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
 import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
+import 'package:ARMOYU/app/services/API/station_api.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -217,8 +217,8 @@ class MainPageController extends GetxController {
   }
 
   Future<void> favteamselect(User currentUser, Team team) async {
-    FunctionsProfile f = FunctionsProfile(currentUser: currentUser);
-    Map<String, dynamic> response = await f.selectfavteam(team.teamID);
+    ProfileAPI f = ProfileAPI(currentUser: currentUser);
+    Map<String, dynamic> response = await f.selectfavteam(teamID: team.teamID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       return;
@@ -377,7 +377,7 @@ class MainPageController extends GetxController {
     }
     loadfoodStationProcess.value = true;
 
-    FunctionsStation f = FunctionsStation(currentUser: currentUser);
+    StationAPI f = StationAPI(currentUser: currentUser);
     Map<String, dynamic> response = await f.fetchStations();
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());

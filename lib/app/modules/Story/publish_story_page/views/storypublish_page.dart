@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/functions/API_Functions/story.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -33,9 +33,11 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
   }
 
   Future<void> publishstory(String storyURL, bool isEveryonepublish) async {
-    FunctionsStory f = FunctionsStory(currentUser: widget.currentUser);
-    Map<String, dynamic> response =
-        await f.addstory(storyURL, isEveryonepublish);
+    StoryAPI f = StoryAPI(currentUser: widget.currentUser);
+    Map<String, dynamic> response = await f.addstory(
+      imageURL: storyURL,
+      isEveryonePublish: isEveryonepublish,
+    );
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;

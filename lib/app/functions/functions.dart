@@ -3,9 +3,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/functions/API_Functions/country.dart';
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
-import 'package:ARMOYU/app/functions/API_Functions/teams.dart';
+
 import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/job.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/province.dart';
@@ -14,7 +12,10 @@ import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/Services/API/api_service.dart';
+import 'package:ARMOYU/app/services/API/country_api.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
+import 'package:ARMOYU/app/services/API/teams_api.dart';
+import 'package:ARMOYU/app/services/API/utils_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -27,10 +28,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
   final UserAccounts currentUserAccounts;
-  late final ApiService apiService;
+  late final UtilsAPI apiService;
 
   ARMOYUFunctions({required this.currentUserAccounts}) {
-    apiService = ApiService(user: currentUserAccounts.user.value);
+    apiService = UtilsAPI(currentUser: currentUserAccounts.user.value);
   }
 
   static User userfetch(response) {
@@ -271,9 +272,8 @@ class ARMOYUFunctions {
   }
 
   Future<void> favteamselect(Team? team) async {
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await f.selectfavteam(team?.teamID);
+    ProfileAPI f = ProfileAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await f.selectfavteam(teamID: team?.teamID);
     log(response.toString());
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -289,8 +289,7 @@ class ARMOYUFunctions {
 
   Future<void> favteamfetch() async {
     if (currentUserAccounts.favoriteteams == null) {
-      FunctionsTeams f =
-          FunctionsTeams(currentUser: currentUserAccounts.user.value);
+      TeamsAPI f = TeamsAPI(currentUser: currentUserAccounts.user.value);
       Map<String, dynamic> response = await f.fetch();
       if (response["durum"] == 0) {
         log(response["aciklama"].toString());
@@ -330,8 +329,7 @@ class ARMOYUFunctions {
   }
 
   Future<void> fetchCountry() async {
-    FunctionsCountry f =
-        FunctionsCountry(currentUser: currentUserAccounts.user.value);
+    CountryAPI f = CountryAPI(currentUser: currentUserAccounts.user.value);
     Map<String, dynamic> response = await f.fetch();
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
@@ -370,9 +368,8 @@ class ARMOYUFunctions {
       }
       return;
     }
-    FunctionsCountry f =
-        FunctionsCountry(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await f.fetchprovince(countryID);
+    CountryAPI f = CountryAPI(currentUser: currentUserAccounts.user.value);
+    Map<String, dynamic> response = await f.fetchprovince(countryID: countryID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       return;
@@ -796,7 +793,7 @@ class ARMOYUFunctions {
                                 profileeditProcess.value = true;
                                 // setstatefunction();
 
-                                FunctionsProfile f = FunctionsProfile(
+                                ProfileAPI f = ProfileAPI(
                                   currentUser: currentUserAccounts.user.value,
                                 );
                                 Map<String, dynamic> response =

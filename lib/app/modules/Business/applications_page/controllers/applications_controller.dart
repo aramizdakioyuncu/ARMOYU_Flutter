@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/joinus.dart';
+import 'package:ARMOYU/app/services/API/joinus_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +37,8 @@ class ApplicationsController extends GetxController {
       return;
     }
     requestProccess.value = true;
-    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.applicationList(page.value);
+    JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
+    Map<String, dynamic> response = await f.applicationList(page: page.value);
 
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());

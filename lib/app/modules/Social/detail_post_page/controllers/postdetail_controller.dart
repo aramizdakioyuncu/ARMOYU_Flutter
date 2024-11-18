@@ -7,7 +7,7 @@ import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
+import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
@@ -25,9 +25,9 @@ class PostdetailController extends GetxController {
       const CupertinoActivityIndicator(),
     );
 
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await funct.commentsfetch(postID);
+    PostsAPI funct =
+        PostsAPI(currentUser: currentUserAccounts.value.user.value);
+    Map<String, dynamic> response = await funct.commentsfetch(postID: postID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -82,8 +82,8 @@ class PostdetailController extends GetxController {
 
   var widget = Rx<Widget?>(null);
   Future<void> postdetailfetch() async {
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.value.user.value);
+    PostsAPI funct =
+        PostsAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await funct.detailfetch(
       postID: postID.value,
       category: "yorum",

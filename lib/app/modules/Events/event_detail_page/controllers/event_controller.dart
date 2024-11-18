@@ -8,7 +8,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/event.dart';
+import 'package:ARMOYU/app/services/API/event_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
@@ -72,10 +72,8 @@ class EventController extends GetxController {
     }
     fetcheventdetailProcess.value = true;
 
-    FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUser.value!,
-    );
-    Map<String, dynamic> response = await f.detailfetch(eventID);
+    EventAPI f = EventAPI(currentUser: currentUser.value!);
+    Map<String, dynamic> response = await f.detailfetch(eventID: eventID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       fetchParticipantProccess.value = false;
@@ -125,10 +123,8 @@ class EventController extends GetxController {
       return;
     }
     fetchParticipantProccess.value = true;
-    FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUser.value!,
-    );
-    Map<String, dynamic> response = await f.participantList(eventID);
+    EventAPI f = EventAPI(currentUser: currentUser.value!);
+    Map<String, dynamic> response = await f.participantList(eventID: eventID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       fetchParticipantProccess.value = false;
@@ -228,9 +224,9 @@ class EventController extends GetxController {
 
     joineventProccess.value = true;
 
-    FunctionsEvent f = FunctionsEvent(currentUser: currentUser.value!);
+    EventAPI f = EventAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response =
-        await f.joinOrleave(event.value!.eventID, true);
+        await f.joinOrleave(eventID: event.value!.eventID, status: true);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;
@@ -243,11 +239,9 @@ class EventController extends GetxController {
   Future<void> leaveevent() async {
     joineventProccess.value = true;
 
-    FunctionsEvent f = FunctionsEvent(
-      currentUser: currentUser.value!,
-    );
+    EventAPI f = EventAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response =
-        await f.joinOrleave(event.value!.eventID, false);
+        await f.joinOrleave(eventID: event.value!.eventID, status: false);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;

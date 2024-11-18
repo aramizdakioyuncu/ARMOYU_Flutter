@@ -10,12 +10,12 @@ import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/blocking.dart';
-import 'package:ARMOYU/app/functions/API_Functions/media.dart';
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
+import 'package:ARMOYU/app/services/API/blocking_api.dart';
+import 'package:ARMOYU/app/services/API/media_api.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -167,10 +167,15 @@ class ProfileController extends GetxController
     // Navigator.pop(Get.context);
     Get.back();
 
-    FunctionsBlocking f = FunctionsBlocking(
-      currentUser: currentUserAccounts.value.user.value,
-    );
-    Map<String, dynamic> response = await f.add(userProfile.value.userID!);
+    // FunctionsBlocking f = FunctionsBlocking(
+    //   currentUser: currentUserAccounts.value.user.value,
+    // );
+
+    BlockingAPI f =
+        BlockingAPI(currentUser: currentUserAccounts.value.user.value);
+
+    Map<String, dynamic> response =
+        await f.add(userID: userProfile.value.userID!);
 
     ARMOYUWidget.toastNotification(response["aciklama"]);
 
@@ -340,10 +345,10 @@ class ProfileController extends GetxController
 
     galleryproccess.value = true;
 
-    FunctionsMedia f = FunctionsMedia(
-      currentUser: currentUserAccounts.value.user.value,
-    );
-    Map<String, dynamic> response = await f.fetch(userID, "-1", page);
+    MediaAPI f = MediaAPI(currentUser: currentUserAccounts.value.user.value);
+
+    Map<String, dynamic> response =
+        await f.fetch(uyeID: userID, category: "-1", page: page);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -737,7 +742,7 @@ class ProfileController extends GetxController
 
     changeavatarStatus.value = true;
 
-    FunctionsProfile f = FunctionsProfile(
+    ProfileAPI f = ProfileAPI(
       currentUser: currentUserAccounts.value.user.value,
     );
     Map<String, dynamic> response = await f.defaultavatar();
@@ -780,9 +785,9 @@ class ProfileController extends GetxController
 
     changebannerStatus.value = true;
 
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.defaultbanner();
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
+    Map<String, dynamic> response = await f.defaultavatar();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
@@ -831,11 +836,11 @@ class ProfileController extends GetxController
 
     changeavatarStatus.value = true;
 
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
-    Map<String, dynamic> response = await f.changeavatar(imagePath);
+    Map<String, dynamic> response = await f.changeavatar(files: imagePath);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
@@ -876,11 +881,11 @@ class ProfileController extends GetxController
 
     changebannerStatus.value = true;
 
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
-    Map<String, dynamic> response = await f.changebanner(imagePath);
+    Map<String, dynamic> response = await f.changebanner(files: imagePath);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       ARMOYUWidget.toastNotification(response["aciklama"]);
@@ -904,10 +909,10 @@ class ProfileController extends GetxController
   }
 
   Future<void> friendrequest() async {
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response =
-        await f.friendrequest(userProfile.value.userID!);
+        await f.friendrequest(userID: userProfile.value.userID!);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -1810,11 +1815,11 @@ class ProfileController extends GetxController
                     visible: isFriend.value,
                     child: InkWell(
                       onTap: () async {
-                        FunctionsProfile f = FunctionsProfile(
+                        ProfileAPI f = ProfileAPI(
                           currentUser: currentUserAccounts.value.user.value,
                         );
                         Map<String, dynamic> response = await f.friendremove(
-                          userProfile.value.userID!,
+                          userID: userProfile.value.userID!,
                         );
                         if (response["durum"] == 0) {
                           log(response["aciklama"]);
@@ -1835,11 +1840,11 @@ class ProfileController extends GetxController
                     visible: isFriend.value,
                     child: InkWell(
                       onTap: () async {
-                        FunctionsProfile f = FunctionsProfile(
+                        ProfileAPI f = ProfileAPI(
                           currentUser: currentUserAccounts.value.user.value,
                         );
                         Map<String, dynamic> response = await f.userdurting(
-                          userProfile.value.userID!,
+                          userID: userProfile.value.userID!,
                         );
                         if (response["durum"] == 0) {
                           log(response["aciklama"]);

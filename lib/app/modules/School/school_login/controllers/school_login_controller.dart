@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/school.dart';
+import 'package:ARMOYU/app/services/API/school_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -50,17 +50,19 @@ class SchoolLoginController extends GetxController {
     if (schoolProcess.value) {
       return;
     }
-    // setState(() {
     schoolProcess.value = true;
-    // });
-    FunctionsSchool f = FunctionsSchool(currentUser: currentUser.value!);
+    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
     String? schoolID = cupertinolist[selectedcupertinolist.value]["ID"];
     String? classID = cupertinolist2[selectedcupertinolist2.value]["ID"];
     String? jobID = "123";
     String classPassword = schoolpassword.value.text;
 
-    Map<String, dynamic> response =
-        await f.joinschool(schoolID!, classID!, jobID, classPassword);
+    Map<String, dynamic> response = await f.joinschool(
+      schoolID: schoolID!,
+      classID: classID!,
+      jobID: jobID,
+      classPassword: classPassword,
+    );
 
     String gelenyanit = response["aciklama"];
     // if (mounted) {
@@ -83,7 +85,7 @@ class SchoolLoginController extends GetxController {
   Future<void> handleRefresh() async {}
 
   Future<void> getschools(List<Map<String, String>> listname) async {
-    FunctionsSchool f = FunctionsSchool(currentUser: currentUser.value!);
+    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.getschools();
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -103,10 +105,10 @@ class SchoolLoginController extends GetxController {
 
   Future<void> getschoolclass(
       String schoolID, List<Map<String, String>> listname) async {
-    FunctionsSchool f = FunctionsSchool(currentUser: currentUser.value!);
+    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
 
     log(schoolID);
-    Map<String, dynamic> response = await f.getschoolclass(schoolID);
+    Map<String, dynamic> response = await f.getschoolclass(schoolID: schoolID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       return;

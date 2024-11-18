@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -54,10 +54,10 @@ class ProfileFriendlistController extends GetxController {
     proccessStatus.value = true;
 
     // Verinin çekilmesi
-    FunctionsProfile f =
-        FunctionsProfile(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response =
-        await f.friendlist(user.value.user.value.userID!, pagecounter.value);
+    ProfileAPI f =
+        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
+    Map<String, dynamic> response = await f.friendlist(
+        userID: user.value.user.value.userID!, page: pagecounter.value);
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);

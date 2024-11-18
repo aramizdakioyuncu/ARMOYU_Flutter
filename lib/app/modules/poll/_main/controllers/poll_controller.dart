@@ -6,7 +6,7 @@ import 'package:ARMOYU/app/data/models/Survey/question.dart';
 import 'package:ARMOYU/app/data/models/Survey/survey.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/survey.dart';
+import 'package:ARMOYU/app/services/API/survey_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,8 +58,7 @@ class PollController extends GetxController {
 
     surveyListProcces.value = true;
 
-    FunctionsSurvey f =
-        FunctionsSurvey(currentUser: currentUserAccounts.value!.user.value);
+    SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value!.user.value);
 
     Map<String, dynamic> response =
         await f.fetchSurveys(page: surveyCounter.value);

@@ -4,8 +4,8 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/app.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
+import 'package:ARMOYU/app/services/API/app_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -90,9 +90,12 @@ class PagesController extends GetxController {
       return;
     }
     siteMessagesProcces.value = true;
-    FunctionsApp f = FunctionsApp(
-      currentUser: currentUserAccount.user.value,
-    );
+    // FunctionsApp f = FunctionsApp(
+    //   currentUser: currentUserAccount.user.value,
+    // );
+
+    AppAPI f = AppAPI(currentUser: currentUserAccount.user.value);
+
     Map<String, dynamic> response = await f.sitemesaji();
 
     if (response["durum"] == 0) {

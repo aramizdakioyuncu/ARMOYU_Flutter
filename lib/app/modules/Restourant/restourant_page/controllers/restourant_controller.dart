@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/station.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/station.dart';
+import 'package:ARMOYU/app/services/API/station_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
@@ -38,9 +38,9 @@ class RestourantController extends GetxController {
     }
     fetchEquipmentProcess.value = true;
 
-    FunctionsStation f = FunctionsStation(currentUser: currentUser.value!);
+    StationAPI f = StationAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response =
-        await f.fetchEquipments(cafe.value!.stationID);
+        await f.fetchEquipments(stationID: cafe.value!.stationID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       fetchEquipmentProcess.value = false;

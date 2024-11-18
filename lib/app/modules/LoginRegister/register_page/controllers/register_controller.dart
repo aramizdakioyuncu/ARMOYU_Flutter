@@ -4,8 +4,8 @@ import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/loginregister.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
+import 'package:ARMOYU/app/services/API/loginregister_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 
 import 'package:flutter/material.dart';
@@ -35,9 +35,10 @@ class RegisterpageController extends GetxController {
     inviteCodeProcces.value = true;
     // });
 
-    FunctionsLoginRegister f = FunctionsLoginRegister(
-        currentUser: User(userName: "0".obs, password: "0".obs));
-    Map<String, dynamic> response = await f.inviteCodeTest(code);
+    LoginregisterAPI f = LoginregisterAPI(
+      currentUser: User(userName: "0".obs, password: "0".obs),
+    );
+    Map<String, dynamic> response = await f.inviteCodeTest(code: code);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       ARMOYUWidget.stackbarNotification(Get.context!, response["aciklama"]);

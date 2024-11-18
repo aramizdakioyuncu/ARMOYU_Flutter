@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,9 +61,9 @@ class Comment {
       return;
     }
     likeunlikeProcces = true;
-    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
+    PostsAPI funct = PostsAPI(currentUser: currentUser);
     Map<String, dynamic> response;
-    response = await funct.commentlike(commentID);
+    response = await funct.commentlike(commentID: commentID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       likeunlikeProcces = false;
@@ -83,9 +83,9 @@ class Comment {
     }
     likeunlikeProcces = true;
 
-    FunctionsPosts funct = FunctionsPosts(currentUser: currentUser);
+    PostsAPI funct = PostsAPI(currentUser: currentUser);
     Map<String, dynamic> response;
-    response = await funct.commentdislike(commentID);
+    response = await funct.commentunlike(commentID: commentID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       likeunlikeProcces = false;

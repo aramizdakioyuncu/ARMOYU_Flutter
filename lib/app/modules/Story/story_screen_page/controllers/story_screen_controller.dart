@@ -5,7 +5,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Story/story.dart';
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/story.dart';
+import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/cupertino.dart';
@@ -77,8 +77,8 @@ class StoryScreenController extends GetxController {
 
     storyviewProcess.value = true;
 
-    FunctionsStory funct = FunctionsStory(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await funct.view(story.storyID);
+    StoryAPI funct = StoryAPI(currentUser: currentUser.value!);
+    Map<String, dynamic> response = await funct.view(storyID: story.storyID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       storyviewProcess.value = false;
@@ -161,8 +161,8 @@ class StoryScreenController extends GetxController {
     }
 
     viewlistProcess.value = true;
-    FunctionsStory funct = FunctionsStory(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await funct.fetchviewlist(storyID);
+    StoryAPI funct = StoryAPI(currentUser: currentUser.value!);
+    Map<String, dynamic> response = await funct.fetchviewlist(storyID: storyID);
     if (response["durum"] == 0) {
       log(response["aciklama"]);
       viewlistProcess.value = false;

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/joinus.dart';
+import 'package:ARMOYU/app/services/API/joinus_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,12 +68,13 @@ class JoinusController extends GetxController {
     }
     requestProccess.value = true;
 
-    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser.value!);
+    JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.requestjoindepartment(
-        positionID.value!,
-        whyjointheteamController.value.text,
-        whypositionController.value.text,
-        howmuchtimedoyouspareController.value.text);
+      positionID: positionID.value!,
+      whyjoin: whyjointheteamController.value.text,
+      whyposition: whypositionController.value.text,
+      howmachtime: howmuchtimedoyouspareController.value.text,
+    );
 
     if (response["durum"] == 0) {
       log(response["aciklama"]);
@@ -89,7 +90,7 @@ class JoinusController extends GetxController {
   }
 
   Future<void> fetchdepartmentInfo() async {
-    FunctionsJoinUs f = FunctionsJoinUs(currentUser: currentUser.value!);
+    JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
     Map<String, dynamic> response = await f.fetchdepartment();
 
     if (response["durum"] == 0) {

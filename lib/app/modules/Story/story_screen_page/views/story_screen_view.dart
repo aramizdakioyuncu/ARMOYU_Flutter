@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:ARMOYU/app/core/ARMOYU.dart';
-import 'package:ARMOYU/app/functions/API_Functions/story.dart';
 import 'package:ARMOYU/app/modules/Story/story_screen_page/controllers/story_screen_controller.dart';
+import 'package:ARMOYU/app/services/API/story_api.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -366,18 +366,18 @@ class StoryScreenView extends StatelessWidget {
                                                         .story![index]
                                                         .isLike ==
                                                     0) {
-                                                  FunctionsStory funct =
-                                                      FunctionsStory(
-                                                    currentUser: controller
-                                                        .currentUser.value!,
-                                                  );
+                                                  StoryAPI funct = StoryAPI(
+                                                      currentUser: controller
+                                                          .currentUser.value!);
                                                   Map<String, dynamic>
                                                       response =
-                                                      await funct.like(controller
-                                                          .storyList
-                                                          .value[indexstoryList]
-                                                          .story![index]
-                                                          .storyID);
+                                                      await funct.like(
+                                                    storyID: controller
+                                                        .storyList
+                                                        .value[indexstoryList]
+                                                        .story![index]
+                                                        .storyID,
+                                                  );
                                                   if (response["durum"] == 0) {
                                                     log(response["aciklama"]);
                                                     return;
@@ -391,19 +391,19 @@ class StoryScreenView extends StatelessWidget {
 
                                                   // setstatefunction();
                                                 } else {
-                                                  FunctionsStory funct =
-                                                      FunctionsStory(
+                                                  StoryAPI funct = StoryAPI(
                                                     currentUser: controller
                                                         .currentUser.value!,
                                                   );
                                                   Map<String, dynamic>
-                                                      response = await funct
-                                                          .likeremove(controller
-                                                              .storyList
-                                                              .value[
-                                                                  indexstoryList]
-                                                              .story![index]
-                                                              .storyID);
+                                                      response =
+                                                      await funct.likeremove(
+                                                    storyID: controller
+                                                        .storyList
+                                                        .value[indexstoryList]
+                                                        .story![index]
+                                                        .storyID,
+                                                  );
                                                   if (response["durum"] == 0) {
                                                     log(response["aciklama"]);
                                                     return;

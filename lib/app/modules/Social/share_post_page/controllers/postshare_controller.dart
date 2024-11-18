@@ -1,7 +1,7 @@
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/API_Functions/posts.dart';
+import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
@@ -34,11 +34,11 @@ class PostshareController extends GetxController {
     }
 
     postshareProccess.value = true;
-    FunctionsPosts funct =
-        FunctionsPosts(currentUser: currentUserAccounts.value.user.value);
+    PostsAPI funct =
+        PostsAPI(currentUser: currentUserAccounts.value.user.value);
     Map<String, dynamic> response = await funct.share(
-      key.value.currentState!.controller!.text,
-      media,
+      text: key.value.currentState!.controller!.text,
+      files: media.map((media) => media.mediaXFile!).toList(),
       location: userLocation.value,
     );
     if (response["durum"] == 0) {

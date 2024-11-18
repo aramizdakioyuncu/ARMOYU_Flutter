@@ -5,15 +5,15 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/services/API/group_api.dart';
+import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 
-import 'package:ARMOYU/app/functions/API_Functions/group.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:ARMOYU/app/functions/API_Functions/profile.dart';
 import 'package:get/get.dart';
 import 'detectabletext.dart';
 
@@ -161,13 +161,15 @@ class _CustomMenusNotificationbarsState
                                     setstatefunction();
 
                                     if (widget.categorydetail == "istek") {
-                                      FunctionsProfile f = FunctionsProfile(
+                                      ProfileAPI f = ProfileAPI(
                                         currentUser: widget
                                             .currentUserAccounts.user.value,
                                       );
                                       Map<String, dynamic> response =
                                           await f.friendrequestanswer(
-                                              widget.user.userID!, 1);
+                                        userID: widget.user.userID!,
+                                        answer: 1,
+                                      );
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
@@ -200,13 +202,14 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
-                                      FunctionsGroup f = FunctionsGroup(
-                                        currentUser: widget
-                                            .currentUserAccounts.user.value,
-                                      );
+                                      GroupAPI f = GroupAPI(
+                                          currentUser: widget
+                                              .currentUserAccounts.user.value);
                                       Map<String, dynamic> response =
                                           await f.grouprequestanswer(
-                                              widget.categorydetailID, 1);
+                                        groupID: widget.categorydetailID,
+                                        answer: "1",
+                                      );
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
@@ -247,13 +250,15 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
-                                      FunctionsProfile f = FunctionsProfile(
+                                      ProfileAPI f = ProfileAPI(
                                         currentUser: widget
                                             .currentUserAccounts.user.value,
                                       );
                                       Map<String, dynamic> response =
                                           await f.friendrequestanswer(
-                                              widget.user.userID!, 0);
+                                        userID: widget.user.userID!,
+                                        answer: 0,
+                                      );
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());
@@ -286,13 +291,14 @@ class _CustomMenusNotificationbarsState
                                           1;
                                       widget.natificationisVisible = false;
                                       setstatefunction();
-                                      FunctionsGroup f = FunctionsGroup(
-                                        currentUser: widget
-                                            .currentUserAccounts.user.value,
-                                      );
+                                      GroupAPI f = GroupAPI(
+                                          currentUser: widget
+                                              .currentUserAccounts.user.value);
                                       Map<String, dynamic> response =
                                           await f.grouprequestanswer(
-                                              widget.categorydetailID, 0);
+                                        groupID: widget.categorydetailID,
+                                        answer: "0",
+                                      );
                                       if (response["durum"] == 0) {
                                         ARMOYUWidget.toastNotification(
                                             response["aciklama"].toString());

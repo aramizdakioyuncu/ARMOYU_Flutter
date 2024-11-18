@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/school.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/functions/API_Functions/school.dart';
+import 'package:ARMOYU/app/services/API/school_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
@@ -40,8 +40,8 @@ class SchoolController extends GetxController {
     }
     schoolfetchProcess.value = true;
     setstatefunction();
-    FunctionsSchool f = FunctionsSchool(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.fetchSchool(schoolID);
+    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
+    Map<String, dynamic> response = await f.fetchSchool(schoolID: schoolID);
     if (response["durum"] == 0) {
       log(response["aciklama"].toString());
       schoolfetchProcess.value = false;
