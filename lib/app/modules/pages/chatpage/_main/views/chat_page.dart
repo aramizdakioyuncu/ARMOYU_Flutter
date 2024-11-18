@@ -108,11 +108,12 @@ class ChatPage extends StatelessWidget {
             ),
           ),
           Obx(
-            () => controller.filteredItems.value == null
+            () => controller.filteredItems.value == null &&
+                    controller.isFirstFetch.value
                 ? const SliverFillRemaining(
                     child: CupertinoActivityIndicator(),
                   )
-                : controller.filteredItems.value!.isEmpty
+                : controller.filteredItems.value == null
                     ? SliverFillRemaining(
                         child: !controller.isFirstFetch.value &&
                                 !controller.chatsearchprocess.value
@@ -121,22 +122,29 @@ class ChatPage extends StatelessWidget {
                               )
                             : const CupertinoActivityIndicator(),
                       )
-                    : SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: controller.filteredItems.value!.length,
-                          (context, index) {
-                            return Obx(
-                              () => controller.filteredItems.value![index]
-                                  .listtilechat(
-                                context,
-                                currentUserAccounts:
-                                    findCurrentAccountController
-                                        .currentUserAccounts.value,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                    : controller.filteredItems.value!.isEmpty
+                        ? SliverFillRemaining(
+                            child: Center(
+                              child: Text(CommonKeys.empty.tr),
+                            ),
+                          )
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              childCount:
+                                  controller.filteredItems.value!.length,
+                              (context, index) {
+                                return Obx(
+                                  () => controller.filteredItems.value![index]
+                                      .listtilechat(
+                                    context,
+                                    currentUserAccounts:
+                                        findCurrentAccountController
+                                            .currentUserAccounts.value,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
           ),
         ],
       ),

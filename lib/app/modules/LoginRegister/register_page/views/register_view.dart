@@ -134,22 +134,23 @@ class RegisterpageView extends StatelessWidget {
                     ),
             ),
             const SizedBox(height: 16),
-            CustomButtons.costum1(
-              text: RegisterKeys.registerKeyssignup.tr,
-              onPressed: () async => await controller.register(),
-              loadingStatus: controller.registerProccess,
+            Obx(
+              () => CustomButtons.costum1(
+                text: RegisterKeys.registerKeyssignup.tr,
+                onPressed: () async => await controller.register(),
+                loadingStatus: controller.registerProccess,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomText.costum1(
-                    RegisterKeys.registerKeysifyouhaveaccount.tr),
+                  RegisterKeys.registerKeysifyouhaveaccount.tr,
+                ),
                 const SizedBox(width: 5),
                 InkWell(
-                  onTap: () {
-                    Get.back();
-                  },
+                  onTap: () => Get.back(),
                   child: CustomText.costum1(RegisterKeys.registerKeyssignin.tr),
                 ),
               ],

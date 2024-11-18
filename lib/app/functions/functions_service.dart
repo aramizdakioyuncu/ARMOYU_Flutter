@@ -217,7 +217,7 @@ class FunctionService {
 
   Future<Map<String, dynamic>> lookProfile(int userID) async {
     Map<String, dynamic> jsonData =
-        await apiService.lookProfile(userID: userID.toString());
+        await apiService.lookProfile(userID: userID);
     return jsonData;
   }
 
@@ -246,7 +246,7 @@ class FunctionService {
       int page, int userID, String category) async {
     Map<String, dynamic> jsonData = await apiService.getprofilePosts(
       userID: userID.toString(),
-      page: page.toString(),
+      page: page,
       category: category,
     );
     return jsonData;

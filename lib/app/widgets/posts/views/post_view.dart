@@ -163,7 +163,7 @@ class TwitterPostWidget extends StatelessWidget {
               InkWell(
                 onDoubleTap: () {
                   if (!controller.postInfo.value.isLikeme) {
-                    // controller.likeButtonKey.value.currentState?.onTap();
+                    controller.likeButtonKey.value.currentState?.onTap();
                     controller.postLike(controller.postInfo.value.isLikeme);
                   }
                 },
@@ -188,7 +188,8 @@ class TwitterPostWidget extends StatelessWidget {
               InkWell(
                 onDoubleTap: () {
                   if (!controller.postInfo.value.isLikeme) {
-                    // controller.likeButtonKey.value.currentState?.onTap();
+                    controller.likeButtonKey.value.currentState?.onTap();
+                    controller.postLike(controller.postInfo.value.isLikeme);
                   }
                 },
                 child: Obx(

@@ -9,7 +9,6 @@ class NotificationAPI {
     return await API.service.notificationServices.listNotificationSettings(
       username: currentUser.userName!.value,
       password: currentUser.password!.value,
-      page: 0,
     );
   }
 

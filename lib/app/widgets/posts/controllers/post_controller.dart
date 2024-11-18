@@ -34,7 +34,7 @@ class PostController extends GetxController {
     required this.post,
   });
 
-  // var likeButtonKey = GlobalKey<LikeButtonState>().obs;
+  var likeButtonKey = GlobalKey<LikeButtonState>().obs;
 
   late var likebutton = Rx<LikeButton?>(null);
 
@@ -47,7 +47,7 @@ class PostController extends GetxController {
     // postInfo.value = post;
     postInfo = Rx<Post>(post);
     likebutton = LikeButton(
-      // key: likeButtonKey.value,
+      key: likeButtonKey.value,
       isLiked: postInfo.value.isLikeme,
       likeCount: postInfo.value.likesCount,
       onTap: (isLiked) async => await postLike(isLiked),
@@ -258,8 +258,7 @@ class PostController extends GetxController {
                       child: Container(
                         alignment: Alignment.center,
                         child: Obx(
-                          () => fetchCommentStatus.value &&
-                                  postInfo.value.comments == null
+                          () => postInfo.value.comments == null
                               ? Column(
                                   children: [
                                     ShimmerPlaceholder.listTilePlaceholder(
@@ -472,8 +471,7 @@ class PostController extends GetxController {
                       child: Container(
                         alignment: Alignment.center,
                         child: Obx(
-                          () => fetchlikersStatus.value &&
-                                  postInfo.value.likers == null
+                          () => postInfo.value.likers == null
                               ? Column(
                                   children: [
                                     ShimmerPlaceholder.listTilePlaceholder(),
@@ -485,7 +483,7 @@ class PostController extends GetxController {
                                   ],
                                 )
                               : postInfo.value.likers!.isEmpty
-                                  ? CustomText.costum1("Beğeni Yok")
+                                  ? CustomText.costum1(CommonKeys.empty.tr)
                                   : ListView.builder(
                                       itemCount: postInfo.value.likers!.length,
                                       itemBuilder: (context, index) {

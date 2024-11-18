@@ -67,6 +67,7 @@ class ChatPageController extends GetxController {
     if (fetchRestart) {
       chatPage.value = 1;
       currentUserAccounts.value.user.value.chatlist = <Chat>[].obs;
+      filteredItems.value = null;
     }
 
     if (chatPage.value == 1 && !fetchRestart) {

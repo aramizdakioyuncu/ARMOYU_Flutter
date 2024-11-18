@@ -97,18 +97,22 @@ class InviteView extends StatelessWidget {
                                     const SizedBox(width: 2),
                                     InkWell(
                                       onTap: () {
-                                        Clipboard.setData(
-                                          ClipboardData(
-                                            text: controller
-                                                .currentUserAccounts
-                                                .value!
-                                                .user
-                                                .value
-                                                .invitecode!
-                                                .value
-                                                .toString(),
-                                          ),
-                                        );
+                                        controller.currentUserAccounts.value!
+                                                    .user.value.invitecode ==
+                                                null
+                                            ? null
+                                            : Clipboard.setData(
+                                                ClipboardData(
+                                                  text: controller
+                                                      .currentUserAccounts
+                                                      .value!
+                                                      .user
+                                                      .value
+                                                      .invitecode!
+                                                      .value
+                                                      .toString(),
+                                                ),
+                                              );
                                         ARMOYUWidget.toastNotification(
                                           "Kod koyalandı",
                                         );
@@ -116,20 +120,29 @@ class InviteView extends StatelessWidget {
                                       child: Row(
                                         children: [
                                           Obx(
-                                            () => Text(
-                                              controller
-                                                  .currentUserAccounts
-                                                  .value!
-                                                  .user
-                                                  .value
-                                                  .invitecode!
-                                                  .value,
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 12,
-                                              ),
-                                            ),
+                                            () => controller
+                                                        .currentUserAccounts
+                                                        .value!
+                                                        .user
+                                                        .value
+                                                        .invitecode ==
+                                                    null
+                                                ? Container()
+                                                : Text(
+                                                    controller
+                                                        .currentUserAccounts
+                                                        .value!
+                                                        .user
+                                                        .value
+                                                        .invitecode!
+                                                        .value,
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
                                           ),
                                           const SizedBox(width: 2),
                                           const Icon(
@@ -227,21 +240,23 @@ class InviteView extends StatelessWidget {
             },
           ),
           Obx(
-            () => SliverToBoxAdapter(
-              child: controller.invitelist.isEmpty
-                  ? Center(
-                      child: !controller.isfirstfetch.value &&
-                              !controller.inviteListProcces.value
-                          ? const Text("Henüz kimse davet edilmemiş")
-                          : const CupertinoActivityIndicator(),
-                    )
-                  : Column(
+            () => controller.invitelist.isEmpty
+                ? SliverFillRemaining(
+                    child: !controller.isfirstfetch.value &&
+                            !controller.inviteListProcces.value
+                        ? Center(
+                            child: Text(CommonKeys.empty.tr),
+                          )
+                        : const CupertinoActivityIndicator(),
+                  )
+                : SliverToBoxAdapter(
+                    child: Column(
                       children: List.generate(
                         controller.invitelist.length,
                         (index) => controller.invitelist[index],
                       ),
                     ),
-            ),
+                  ),
           ),
         ],
       ),

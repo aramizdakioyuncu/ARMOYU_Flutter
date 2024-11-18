@@ -85,7 +85,7 @@ class UtilsAPI {
   }
 
   Future<Map<String, dynamic>> lookProfile({
-    required String userID,
+    required int userID,
   }) async {
     return await API.service.utilsServices.lookProfile(
       username: currentUser.userName!.value,
@@ -128,7 +128,7 @@ class UtilsAPI {
   Future<Map<String, dynamic>> getprofilePosts({
     required String userID,
     required String category,
-    required String page,
+    required int page,
   }) async {
     return await API.service.utilsServices.getprofilePosts(
       username: currentUser.userName!.value,

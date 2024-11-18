@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WidgetUtility {
   static Widget specialText(BuildContext context, String text,
@@ -17,6 +19,10 @@ class WidgetUtility {
       required UserAccounts currentUserAccounts}) {
     final lines = text.split('\n');
     final textSpans = <TextSpan>[];
+
+    // URL tespiti için bir düzenli ifade (regex)
+    final urlRegex = RegExp(
+        r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)?");
 
     for (String line in lines) {
       final words = line.split(' ');
@@ -45,7 +51,7 @@ class WidgetUtility {
             lineSpans.add(TextSpan(
               text: username,
               style: const TextStyle(
-                color: Colors.blue,
+                color: Colors.amber,
                 fontWeight: FontWeight.bold,
               ),
               recognizer: TapGestureRecognizer()
@@ -63,6 +69,30 @@ class WidgetUtility {
                     ),
                     ScrollController(),
                   );
+                },
+            ));
+          } else if (urlRegex.hasMatch(word)) {
+            final match = urlRegex.firstMatch(word);
+            final url = match?.group(0) ?? word;
+
+            lineSpans.add(TextSpan(
+              text: url,
+              style: const TextStyle(
+                color: Colors.blueAccent,
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () async {
+                  ARMOYUWidget.showConfirmationDialog(context,
+                      question:
+                          "Bu bağlantı uygulama dışına yönlendiriyor. Güvenliğiniz için, tıklamadan önce bağlantının güvenilir olduğundan emin olun.",
+                      accept: () async {
+                    if (!url.startsWith('http')) {
+                      await launchUrl(Uri.parse('https://$url'));
+                    } else {
+                      await launchUrl(Uri.parse(url));
+                    }
+                  });
                 },
             ));
           } else {
