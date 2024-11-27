@@ -344,7 +344,7 @@ class Profileusersharedmedias extends SliverPersistentHeaderDelegate {
       child: TabBar(
         controller: tabController,
         isScrollable: true,
-        indicatorColor: ARMOYU.color,
+        indicatorColor: Get.theme.hintColor,
         tabs: [
           Padding(
             padding: const EdgeInsets.all(8.0),

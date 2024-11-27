@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
@@ -143,7 +142,7 @@ class ChatDetailView extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
-              color: ARMOYU.appbottomColor,
+              color: Get.theme.scaffoldBackgroundColor,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
@@ -155,7 +154,7 @@ class ChatDetailView extends StatelessWidget {
                           icon: const Icon(Icons.attach_file_sharp),
                           style: ButtonStyle(
                             backgroundColor: WidgetStatePropertyAll(
-                              ARMOYU.bodyColor,
+                              Get.theme.cardColor,
                             ),
                           ),
                           onPressed: () {},
@@ -171,7 +170,7 @@ class ChatDetailView extends StatelessWidget {
                             alignment: Alignment.topCenter,
                             child: Container(
                               decoration: BoxDecoration(
-                                color: ARMOYU.textbackColor,
+                                color: Get.theme.scaffoldBackgroundColor,
                                 borderRadius: BorderRadius.circular(25),
                               ),
                               child: TextField(

@@ -2,7 +2,6 @@
 import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ARMOYU {
@@ -16,22 +15,6 @@ class ARMOYU {
 
   static String devicePlatform = "";
   static String deviceModel = "";
-
-  // static Color appbarColor = Colors.black;
-  static Color appbottomColor = Colors.black;
-  static Color bodyColor = Colors.black;
-
-  static Color color = Colors.black;
-  // static Color backgroundcolor = Colors.black;
-
-  // static Color textColor = Colors.black;
-  static Color textbackColor = Colors.black;
-  static Color texthintColor = Colors.black;
-
-  static Color buttonColor = Colors.black;
-
-  // static Color baseColor = Colors.grey.shade300;
-  // static Color highlightColor = Colors.grey.shade100;
 
   static double get screenWidth => Get.width;
   static double get screenHeight => Get.height;

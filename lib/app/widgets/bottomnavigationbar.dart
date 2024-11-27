@@ -148,7 +148,7 @@ class BottomnavigationBar {
             label: 'Profil',
           ),
         ],
-        selectedItemColor: ARMOYU.color,
+        selectedItemColor: Get.theme.primaryColor,
         unselectedItemColor: Colors.grey,
       ),
     );

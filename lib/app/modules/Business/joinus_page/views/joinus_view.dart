@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/Business/joinus_page/controllers/joinus_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -23,7 +22,7 @@ class JoinusView extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 50.0),
           child: Column(
             children: [
-              Container(color: ARMOYU.bodyColor, height: 1),
+              Container(color: Get.theme.cardColor, height: 1),
               const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.all(10),

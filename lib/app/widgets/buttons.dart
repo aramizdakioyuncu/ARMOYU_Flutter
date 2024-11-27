@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,13 +66,11 @@ class CustomButtons {
   static Widget costum2({
     Icon? icon,
     String? text,
-    Color? background = Colors.amber,
+    Color? background,
     required onPressed,
     bool loadingStatus = false,
   }) {
-    if (background == Colors.amber) {
-      background = ARMOYU.buttonColor;
-    }
+    // background = ARMOYU.buttonColor;
 
     List<Widget> aa = [];
 
@@ -85,7 +82,7 @@ class CustomButtons {
       aa.add(Text(text));
     }
     return loadingStatus
-        ? CupertinoActivityIndicator(color: ARMOYU.color)
+        ? const CupertinoActivityIndicator()
         : ElevatedButton(
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(

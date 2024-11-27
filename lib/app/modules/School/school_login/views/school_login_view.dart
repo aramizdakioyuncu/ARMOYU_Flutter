@@ -105,7 +105,7 @@ class SchoolLoginView extends StatelessWidget {
                     child: Container(
                       width: ARMOYU.screenWidth - 10,
                       padding: const EdgeInsets.all(16.0),
-                      color: ARMOYU.textbackColor,
+                      color: Get.theme.scaffoldBackgroundColor,
                       child: Text(
                         controller.cupertinolist[
                                 controller.selectedcupertinolist.value]["value"]
@@ -149,7 +149,7 @@ class SchoolLoginView extends StatelessWidget {
                     child: Container(
                       width: ARMOYU.screenWidth - 10,
                       padding: const EdgeInsets.all(16.0),
-                      color: ARMOYU.textbackColor,
+                      color: Get.theme.scaffoldBackgroundColor,
                       child: Text(
                         controller.cupertinolist2[controller
                                 .selectedcupertinolist2.value]["value"]

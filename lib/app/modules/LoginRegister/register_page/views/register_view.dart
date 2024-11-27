@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/register_page/controllers/register_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -100,7 +99,7 @@ class RegisterpageView extends StatelessWidget {
                   : ListTile(
                       contentPadding: const EdgeInsets.symmetric(
                           vertical: 0, horizontal: 5),
-                      tileColor: ARMOYU.textbackColor,
+                      tileColor: Get.theme.scaffoldBackgroundColor,
                       leading: controller.inviteduseravatar.value != null
                           ? CircleAvatar(
                               foregroundImage: CachedNetworkImageProvider(

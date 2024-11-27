@@ -93,12 +93,12 @@ class PollCreateView extends StatelessWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: ARMOYU.buttonColor,
+                              // color: ARMOYU.buttonColor,
                             ),
                             child: DropdownButton(
                               underline: const SizedBox(),
                               value: controller.selectedValue.value,
-                              dropdownColor: ARMOYU.buttonColor,
+                              // dropdownColor: ARMOYU.buttonColor,
                               borderRadius: BorderRadius.circular(3),
                               items: <String>[
                                 PollKeys.selectPollMultipleChoice.tr,

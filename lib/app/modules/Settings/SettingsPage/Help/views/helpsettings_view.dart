@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,7 @@ class HelpsettingsView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(color: ARMOYU.bodyColor, height: 1),
+            Container(color: Get.theme.cardColor, height: 1),
             Column(
               children: [
                 ListTile(

@@ -77,7 +77,7 @@ dependencies:
   pinch_zoom: ^2.0.0
   qr_flutter: ^4.1.0
   get: ^4.6.6
-  armoyu_services: ^1.0.0+7
+  armoyu_services: ^1.0.0+8
 
   share_plus: ^10.1.2
   marquee: ^2.3.0

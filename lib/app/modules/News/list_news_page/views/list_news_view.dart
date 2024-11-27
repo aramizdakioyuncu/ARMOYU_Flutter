@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/News/list_news_page/controllers/list_news_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,9 +37,9 @@ class ListNewsView extends StatelessWidget {
                         // Separator
                         return Column(
                           children: [
-                            Container(color: ARMOYU.bodyColor, height: 1),
+                            Container(color: Get.theme.cardColor, height: 1),
                             const SizedBox(height: 2),
-                            Container(color: ARMOYU.bodyColor, height: 1),
+                            Container(color: Get.theme.cardColor, height: 1),
                           ],
                         );
                       },

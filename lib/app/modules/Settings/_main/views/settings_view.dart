@@ -96,7 +96,7 @@ class SettingsView extends StatelessWidget {
                   () => Visibility(
                     visible: controller.filteredlistSettings.isNotEmpty,
                     child: Container(
-                      color: ARMOYU.bodyColor,
+                      color: Get.theme.cardColor,
                       height: 2.5,
                     ),
                   ),
@@ -124,7 +124,7 @@ class SettingsView extends StatelessWidget {
                   () => Visibility(
                     visible: controller.filteredlistSettingssupport.isNotEmpty,
                     child: Container(
-                      color: ARMOYU.bodyColor,
+                      color: Get.theme.cardColor,
                       height: 2.5,
                     ),
                   ),

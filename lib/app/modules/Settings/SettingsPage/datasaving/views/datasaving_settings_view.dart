@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/modules/Settings/SettingsPage/datasaving/controllers/datasaving_settings_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -18,7 +17,7 @@ class DatasavingSettingsView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(color: ARMOYU.bodyColor, height: 1),
+            Container(color: Get.theme.cardColor, height: 1),
             Obx(
               () => Column(
                 children: [

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -25,7 +24,7 @@ class AccountstatusSettingsView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(color: ARMOYU.bodyColor, height: 1),
+            Container(color: Get.theme.cardColor, height: 1),
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(

@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,7 @@ class LanguagesSettingsView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(color: ARMOYU.bodyColor, height: 1),
+            Container(color: Get.theme.cardColor, height: 1),
             Column(
               children: List.generate(
                 AppTranslation.translationKeys.entries.length,
