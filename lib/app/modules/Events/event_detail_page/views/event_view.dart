@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';

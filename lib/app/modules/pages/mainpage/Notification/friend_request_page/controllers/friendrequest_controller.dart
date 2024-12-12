@@ -6,6 +6,8 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/notification_bars.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,11 +67,11 @@ class FriendrequestController extends GetxController {
 
     FunctionService f =
         FunctionService(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response =
+    NotificationListResponse response =
         await f.getnotifications("arkadaslik", "istek", page.value);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       pageproccess.value = false;
       firstFetchProcces.value = false;
 
@@ -78,7 +80,7 @@ class FriendrequestController extends GetxController {
     if (page.value == 1) {
       widgetNotifications.clear();
     }
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       pageproccess.value = false;
       firstFetchProcces.value = false;
 
@@ -86,16 +88,16 @@ class FriendrequestController extends GetxController {
     }
 
     bool noticiationbuttons = false;
-    for (int i = 0; i < response["icerik"].length; i++) {
+
+    for (APINotificationList element in response.response!) {
       noticiationbuttons = false;
 
-      if (response["icerik"][i]["bildirimamac"].toString() == "arkadaslik") {
-        if (response["icerik"][i]["bildirimkategori"].toString() == "istek") {
+      if (element.bildirimAmac.toString() == "arkadaslik") {
+        if (element.bildirimKategori.toString() == "istek") {
           noticiationbuttons = true;
         }
-      } else if (response["icerik"][i]["bildirimamac"].toString() ==
-          "gruplar") {
-        if (response["icerik"][i]["bildirimkategori"].toString() == "davet") {
+      } else if (element.bildirimAmac.toString() == "gruplar") {
+        if (element.bildirimKategori.toString() == "davet") {
           noticiationbuttons = true;
         }
       }
@@ -104,27 +106,23 @@ class FriendrequestController extends GetxController {
         CustomMenusNotificationbars(
           currentUserAccounts: currentUserAccounts.value,
           user: User(
-            userID: response["icerik"][i]["bildirimgonderenID"],
-            displayName:
-                Rx<String>(response["icerik"][i]["bildirimgonderenadsoyad"]),
+            userID: element.bildirimGonderenID,
+            displayName: Rx<String>(element.bildirimGonderenAdSoyad),
             avatar: Media(
-              mediaID: response["icerik"][i]["bildirimgonderenID"],
+              mediaID: element.bildirimGonderenID,
               mediaURL: MediaURL(
-                bigURL:
-                    Rx<String>(response["icerik"][i]["bildirimgonderenavatar"]),
-                normalURL:
-                    Rx<String>(response["icerik"][i]["bildirimgonderenavatar"]),
-                minURL:
-                    Rx<String>(response["icerik"][i]["bildirimgonderenavatar"]),
+                bigURL: Rx<String>(element.bildirimGonderenAvatar),
+                normalURL: Rx<String>(element.bildirimGonderenAvatar),
+                minURL: Rx<String>(element.bildirimGonderenAvatar),
               ),
             ),
           ),
-          category: response["icerik"][i]["bildirimamac"],
-          categorydetail: response["icerik"][i]["bildirimkategori"],
-          categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
-          date: response["icerik"][i]["bildirimzaman"],
+          category: element.bildirimAmac,
+          categorydetail: element.bildirimKategori,
+          categorydetailID: element.bildirimKategoriDetay,
+          date: element.bildirimZaman,
           enableButtons: noticiationbuttons,
-          text: response["icerik"][i]["bildirimicerik"],
+          text: element.bildirimIcerik,
         ),
       );
 

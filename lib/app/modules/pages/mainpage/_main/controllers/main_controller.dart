@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/school.dart';
@@ -15,6 +15,11 @@ import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.
 import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
 import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/API/station_api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/station/station_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_group_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_school_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -218,9 +223,9 @@ class MainPageController extends GetxController {
 
   Future<void> favteamselect(User currentUser, Team team) async {
     ProfileAPI f = ProfileAPI(currentUser: currentUser);
-    Map<String, dynamic> response = await f.selectfavteam(teamID: team.teamID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    ServiceResult response = await f.selectfavteam(teamID: team.teamID);
+    if (!response.status) {
+      log(response.description.toString());
       return;
     }
 
@@ -241,13 +246,13 @@ class MainPageController extends GetxController {
 
     loadGroupProcess.value = true;
     FunctionService f = FunctionService(currentUser: currentUser);
-    Map<String, dynamic> response = await f.myGroups();
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    APIMyGroupListResponse response = await f.myGroups();
+    if (!response.result.status) {
+      log(response.result.description.toString());
       loadGroupProcess.value = false;
       return;
     }
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       currentUser.myGroups = [];
       loadGroupProcess.value = false;
       return;
@@ -258,49 +263,44 @@ class MainPageController extends GetxController {
 
     widgetGroups.value = [];
 
-    for (dynamic element in response["icerik"]) {
+    for (APIMyGroupList element in response.response!) {
       Group groupfetch = Group(
-        groupID: element['group_ID'],
-        groupName: element['group_name'],
-        groupshortName: element['group_shortname'],
-        groupUsersCount: element['group_usercount'],
-        joinStatus: element['group_joinstatus'] == 1 ? true.obs : false.obs,
-        description: element['group_description'],
+        groupID: element.groupID,
+        groupName: element.groupName,
+        groupshortName: element.groupShortName,
+        groupUsersCount: element.groupUserCount,
+        joinStatus: element.groupJoinStatus == 1 ? true.obs : false.obs,
+        description: element.groupDescription,
         groupSocial: GroupSocial(
-          discord: element['group_social']['group_discord'],
-          web: element['group_social']['group_website'],
+          discord: element.groupSocial.groupDiscord,
+          web: element.groupSocial.groupWebsite,
         ),
         groupLogo: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(element['group_logo']['media_bigURL']),
-            normalURL: Rx<String>(element['group_logo']['media_URL']),
-            minURL: Rx<String>(element['group_logo']['media_minURL']),
+            bigURL: Rx<String>(element.groupLogo.mediaURL.bigURL),
+            normalURL: Rx<String>(element.groupLogo.mediaURL.normalURL),
+            minURL: Rx<String>(element.groupLogo.mediaURL.minURL),
           ),
         ),
         groupBanner: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(element['group_banner']['media_bigURL']),
-            normalURL: Rx<String>(element['group_banner']['media_URL']),
-            minURL: Rx<String>(element['group_banner']['media_minURL']),
+            bigURL: Rx<String>(element.groupBanner.mediaURL.bigURL),
+            normalURL: Rx<String>(element.groupBanner.mediaURL.normalURL),
+            minURL: Rx<String>(element.groupBanner.mediaURL.minURL),
           ),
         ),
         myRole: GroupRoles(
-          owner: element['group_myRole']['owner'] == 1 ? true : false,
-          userInvite:
-              element['group_myRole']['user_invite'] == 1 ? true : false,
-          userKick: element['group_myRole']['user_kick'] == 1 ? true : false,
-          userRole: element['group_myRole']['user_role'] == 1 ? true : false,
-          groupSettings:
-              element['group_myRole']['group_settings'] == 1 ? true : false,
-          groupFiles:
-              element['group_myRole']['group_files'] == 1 ? true : false,
-          groupEvents:
-              element['group_myRole']['group_events'] == 1 ? true : false,
-          groupRole: element['group_myRole']['group_role'] == 1 ? true : false,
-          groupSurvey:
-              element['group_myRole']['group_survey'] == 1 ? true : false,
+          owner: element.groupMyRole.owner == 1 ? true : false,
+          userInvite: element.groupMyRole.userInvite == 1 ? true : false,
+          userKick: element.groupMyRole.userKick == 1 ? true : false,
+          userRole: element.groupMyRole.userRole == 1 ? true : false,
+          groupSettings: element.groupMyRole.groupSettings == 1 ? true : false,
+          groupFiles: element.groupMyRole.groupFiles == 1 ? true : false,
+          groupEvents: element.groupMyRole.groupEvents == 1 ? true : false,
+          groupRole: element.groupMyRole.groupRole == 1 ? true : false,
+          groupSurvey: element.groupMyRole.groupSurvey == 1 ? true : false,
         ),
       );
       currentUser.myGroups!.add(groupfetch);
@@ -314,8 +314,8 @@ class MainPageController extends GetxController {
     }
     loadmySchoolProcess.value = true;
     FunctionService f = FunctionService(currentUser: currentUser);
-    Map<String, dynamic> response = await f.mySchools();
-    if (response["durum"] == 0) {
+    APIMySchoolListResponse response = await f.mySchools();
+    if (!response.result.status) {
       loadmySchoolProcess.value = false;
       //10 saniye sonra Tekrar çekmeyi dene
       await Future.delayed(const Duration(seconds: 10));
@@ -323,7 +323,7 @@ class MainPageController extends GetxController {
       return;
     }
 
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       loadmySchoolProcess.value = false;
       return;
     }
@@ -334,31 +334,25 @@ class MainPageController extends GetxController {
     //Kişi belleğine de kaydet
     currentUser.mySchools = [];
 
-    for (int i = 0; i < response["icerik"].length; i++) {
+    for (APIMySchoolList element in response.response!) {
       School fetchSchool = School(
-        schoolID: response["icerik"][i]["school_ID"],
-        schoolName: response["icerik"][i]["school_name"],
-        schoolUsersCount: response["icerik"][i]["school_uyesayisi"],
+        schoolID: element.schoolID,
+        schoolName: element.schoolName,
+        schoolUsersCount: element.schoolUserCount,
         schoolLogo: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(
-                response["icerik"][i]["school_logo"]["media_bigURL"]),
-            normalURL:
-                Rx<String>(response["icerik"][i]["school_logo"]["media_URL"]),
-            minURL: Rx<String>(
-                response["icerik"][i]["school_logo"]["media_minURL"]),
+            bigURL: Rx<String>(element.schoolLogo.mediaURL.bigURL),
+            normalURL: Rx<String>(element.schoolLogo.mediaURL.normalURL),
+            minURL: Rx<String>(element.schoolLogo.mediaURL.minURL),
           ),
         ),
         schoolBanner: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(
-                response["icerik"][i]["school_banner"]["media_bigURL"]),
-            normalURL:
-                Rx<String>(response["icerik"][i]["school_banner"]["media_URL"]),
-            minURL: Rx<String>(
-                response["icerik"][i]["school_banner"]["media_minURL"]),
+            bigURL: Rx<String>(element.schoolLogo.mediaURL.bigURL),
+            normalURL: Rx<String>(element.schoolLogo.mediaURL.normalURL),
+            minURL: Rx<String>(element.schoolLogo.mediaURL.minURL),
           ),
         ),
       );
@@ -378,34 +372,34 @@ class MainPageController extends GetxController {
     loadfoodStationProcess.value = true;
 
     StationAPI f = StationAPI(currentUser: currentUser);
-    Map<String, dynamic> response = await f.fetchStations();
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    StationFetchListResponse response = await f.fetchStations();
+    if (!response.result.status) {
+      log(response.result.description);
       loadfoodStationProcess.value = false;
       return;
     }
     widgetStations.value = [];
 
-    for (dynamic element in response["icerik"]) {
+    for (APIStationList element in response.response!) {
       widgetStations.value!.add(
         Station(
-          stationID: element["station_ID"],
-          name: element["station_name"],
-          type: element["station_type"],
+          stationID: element.stationID,
+          name: element.stationName,
+          type: element.stationType,
           logo: Media(
-            mediaID: element["station_ID"],
+            mediaID: element.stationID,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(element["station_logo"]["media_bigURL"]),
-              normalURL: Rx<String>(element["station_logo"]["media_URL"]),
-              minURL: Rx<String>(element["station_logo"]["media_minURL"]),
+              bigURL: Rx<String>(element.stationLogo.mediaURL.bigURL),
+              normalURL: Rx<String>(element.stationLogo.mediaURL.normalURL),
+              minURL: Rx<String>(element.stationLogo.mediaURL.minURL),
             ),
           ),
           banner: Media(
-            mediaID: element["station_ID"],
+            mediaID: element.stationID,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(element["station_banner"]["media_bigURL"]),
-              normalURL: Rx<String>(element["station_banner"]["media_URL"]),
-              minURL: Rx<String>(element["station_banner"]["media_minURL"]),
+              bigURL: Rx<String>(element.stationBanner.mediaURL.bigURL),
+              normalURL: Rx<String>(element.stationBanner.mediaURL.normalURL),
+              minURL: Rx<String>(element.stationBanner.mediaURL.minURL),
             ),
           ),
         ),

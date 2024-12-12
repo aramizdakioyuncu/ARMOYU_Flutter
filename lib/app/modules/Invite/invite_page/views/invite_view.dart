@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/modules/Invite/invite_page/controllers/invite_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';

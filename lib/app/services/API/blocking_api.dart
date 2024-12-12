@@ -1,31 +1,20 @@
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 
 class BlockingAPI {
   final User currentUser;
   BlockingAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> list() async {
-    return await API.service.blockingServices.list(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<BlockingListResponse> list() async {
+    return await API.service.blockingServices.list();
   }
 
-  Future<Map<String, dynamic>> add({required int userID}) async {
-    final result = await API.service.blockingServices.add(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
-    return result;
+  Future<BlockingAddResponse> add({required int userID}) async {
+    return await API.service.blockingServices.add(userID: userID);
   }
 
-  Future<Map<String, dynamic>> remove({required int userID}) async {
-    return await API.service.blockingServices.remove(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<BlockingRemoveResponse> remove({required int userID}) async {
+    return await API.service.blockingServices.remove(userID: userID);
   }
 }

@@ -1,50 +1,37 @@
 import 'package:ARMOYU/app/Core/API.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 
 class SchoolAPI {
   final User currentUser;
   SchoolAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> getschools() async {
-    return await API.service.schoolServices.getschools(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<SchoolFetchListResponse> getschools() async {
+    return await API.service.schoolServices.getschools();
   }
 
-  Future<Map<String, dynamic>> fetchSchool({
-    required int schoolID,
-  }) async {
-    return await API.service.schoolServices.fetchSchool(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      schoolID: schoolID,
-    );
+  Future<SchoolFetchDetailResponse> fetchSchool({required int schoolID}) async {
+    return await API.service.schoolServices.fetchSchool(schoolID: schoolID);
   }
 
-  Future<Map<String, dynamic>> joinschool({
+  Future<ServiceResult> joinschool({
     required String schoolID,
     required String classID,
     required String jobID,
     required String classPassword,
   }) async {
-    return await API.service.schoolServices.joinschool(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      schoolID: schoolID,
+    return await API.service.schoolServices.joinWorkstation(
+      workstationID: schoolID,
       classID: classID,
       jobID: jobID,
       classPassword: classPassword,
     );
   }
 
-  Future<Map<String, dynamic>> getschoolclass({
-    required String schoolID,
-  }) async {
-    return await API.service.schoolServices.getschoolclass(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      schoolID: schoolID,
-    );
+  Future<StationFetchDetailResponse> getschoolclass(
+      {required String schoolID}) async {
+    return await API.service.schoolServices
+        .fetchWorkstationDetail(workStationID: schoolID);
   }
 }

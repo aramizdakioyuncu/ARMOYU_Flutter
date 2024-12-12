@@ -4,6 +4,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/joinus_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/joinus/joinus_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -38,31 +40,32 @@ class ApplicationsController extends GetxController {
     }
     requestProccess.value = true;
     JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.applicationList(page: page.value);
+    JoinUsApplicationsResponse response =
+        await f.applicationList(page: page.value);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    if (!response.result.status) {
+      log(response.result.description.toString());
       requestProccess.value = false;
       return;
     }
 
-    for (var departmentInfo in response["icerik"]) {
+    for (APIJoinusList element in response.response!) {
       applicationList.add(
         ListTile(
           onTap: () {},
           leading: const Icon(Icons.star_outline_sharp),
           title: CustomText.costum1(
-            departmentInfo["sapplication_position"]["position_name"],
+            element.applicationPosition.positionName,
           ),
           subtitle: CustomText.costum1(
-            departmentInfo["sapplication_position"]["position_department"],
+            element.applicationPosition.positionDepartment,
             color: Colors.black.withOpacity(0.6),
           ),
-          trailing: departmentInfo["sapplication_status"] == 2
+          trailing: element.applicationStatus == 2
               ? CustomText.costum1("İnceleniyor")
-              : departmentInfo["sapplication_status"] == 1
+              : element.applicationStatus == 1
                   ? CustomText.costum1("Kabul Edildi")
-                  : departmentInfo["sapplication_status"] == 0
+                  : element.applicationStatus == 0
                       ? CustomText.costum1("Reddedildi")
                       : null,
         ),

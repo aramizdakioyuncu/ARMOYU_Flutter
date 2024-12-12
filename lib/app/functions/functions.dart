@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 
 import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/job.dart';
+import 'package:ARMOYU/app/data/models/ARMOYU/job.dart' as armoyujob;
 import 'package:ARMOYU/app/data/models/ARMOYU/province.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -21,6 +21,12 @@ import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/country&province/country.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/country&province/province.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/login.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/team/team_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,90 +40,88 @@ class ARMOYUFunctions {
     apiService = UtilsAPI(currentUser: currentUserAccounts.user.value);
   }
 
-  static User userfetch(response) {
+  static User userfetch(APILogin response) {
     return User(
-      userID: response["playerID"],
-      userName: Rx<String>(response["username"]),
-      firstName: Rx<String>(response["firstName"]),
-      lastName: Rx<String>(response["lastName"]),
-      displayName: Rx<String>(response["displayName"]),
-      userMail: Rx<String>(response["detailInfo"]["email"]),
-      aboutme: Rx<String>(response["detailInfo"]["about"]),
+      userID: response.playerID,
+      userName: Rx<String>(response.username!),
+      firstName: Rx<String>(response.firstName!),
+      lastName: Rx<String>(response.lastName!),
+      displayName: Rx<String>(response.displayName!),
+      userMail: Rx<String>(response.detailInfo!.email!),
+      aboutme: Rx<String>(response.detailInfo!.about!),
       avatar: Media(
-        mediaID: response["avatar"]["media_ID"],
-        ownerID: response["playerID"],
+        mediaID: response.avatar!.mediaID,
+        ownerID: response.playerID,
         mediaURL: MediaURL(
-          bigURL: Rx<String>(response["avatar"]["media_bigURL"]),
-          normalURL: Rx<String>(response["avatar"]["media_URL"]),
-          minURL: Rx<String>(response["avatar"]["media_minURL"]),
+          bigURL: Rx<String>(response.avatar!.mediaURL.bigURL),
+          normalURL: Rx<String>(response.avatar!.mediaURL.normalURL),
+          minURL: Rx<String>(response.avatar!.mediaURL.minURL),
         ),
       ),
       banner: Media(
-        mediaID: response["banner"]["media_ID"],
-        ownerID: response["playerID"],
+        mediaID: response.banner!.mediaID,
+        ownerID: response.playerID,
         mediaURL: MediaURL(
-          bigURL: Rx<String>(response["banner"]["media_bigURL"]),
-          normalURL: Rx<String>(response["banner"]["media_URL"]),
-          minURL: Rx<String>(response["banner"]["media_minURL"]),
+          bigURL: Rx<String>(response.banner!.mediaURL.bigURL),
+          normalURL: Rx<String>(response.banner!.mediaURL.normalURL),
+          minURL: Rx<String>(response.banner!.mediaURL.minURL),
         ),
       ),
-      burc: response["burc"] == null ? null : Rx<String>(response["burc"]),
-      invitecode: response["detailInfo"]["inviteCode"] == null
+      burc: response.burc == null ? null : Rx<String>(response.burc!),
+      invitecode: response.detailInfo!.inviteCode == null
           ? null
-          : Rx<String>(response["detailInfo"]["inviteCode"]),
-      lastlogin: response["detailInfo"]["lastloginDate"] == null
+          : Rx<String>(response.detailInfo!.inviteCode!),
+      lastlogin: response.detailInfo!.lastloginDate == null
           ? null
-          : Rx<String>(response["detailInfo"]["lastloginDate"]),
-      lastloginv2: response["detailInfo"]["lastloginDateV2"] == null
+          : Rx<String>(response.detailInfo!.lastloginDate!),
+      lastloginv2: response.detailInfo!.lastloginDateV2 == null
           ? null
-          : Rx<String>(response["detailInfo"]["lastloginDateV2"]),
-      lastfaillogin: response["detailInfo"]["lastfailedDate"] == null
+          : Rx<String>(response.detailInfo!.lastloginDateV2!),
+      lastfaillogin: response.detailInfo!.lastfailedDate == null
           ? null
-          : Rx<String>(response["detailInfo"]["lastfailedDate"]),
-      job: response["job"] == null
+          : Rx<String>(response.detailInfo!.lastfailedDate!),
+      job: response.job == null
           ? null
-          : Job(
-              jobID: response["job"]["job_ID"],
-              name: response["job"]["job_name"],
-              shortName: response["job"]["job_shortName"],
+          : armoyujob.Job(
+              jobID: response.job!.jobID,
+              name: response.job!.jobName,
+              shortName: response.job!.jobShortName,
             ),
-      level: Rx<int>(response["level"]),
-      levelColor: Rx<String>(response["levelColor"]),
-      xp: Rx<String>(response["levelXP"]),
-      awardsCount: response["detailInfo"]["awards"],
-      postsCount: response["detailInfo"]["posts"],
-      friendsCount: response["detailInfo"]["friends"],
-      country: response["detailInfo"]["country"] == null
+      level: Rx<int>(response.level!),
+      levelColor: Rx<String>(response.levelColor!),
+      xp: Rx<String>(response.levelXP!),
+      awardsCount: response.detailInfo!.awards,
+      postsCount: response.detailInfo!.posts,
+      friendsCount: response.detailInfo!.friends,
+      country: response.detailInfo!.country == null
           ? null
           : Country(
-              countryID: response["detailInfo"]["country"]["country_ID"],
-              name: response["detailInfo"]["country"]["country_name"],
-              countryCode: response["detailInfo"]["country"]["country_code"],
-              phoneCode: response["detailInfo"]["country"]["country_phoneCode"],
+              countryID: response.detailInfo!.country!.countryID,
+              name: response.detailInfo!.country!.name,
+              countryCode: response.detailInfo!.country!.code,
+              phoneCode: response.detailInfo!.country!.phonecode,
             ).obs,
-      province: response["detailInfo"]["province"] == null
+      province: response.detailInfo!.province == null
           ? null
           : Province(
-              provinceID: response["detailInfo"]["province"]["province_ID"],
-              name: response["detailInfo"]["province"]["province_name"],
-              plateCode: response["detailInfo"]["province"]
-                  ["province_plateCode"],
-              phoneCode: response["detailInfo"]["province"]
-                  ["province_phoneCode"],
+              provinceID: response.detailInfo!.province!.provinceID,
+              name: response.detailInfo!.province!.name,
+              plateCode: response.detailInfo!.province!.platecode,
+              phoneCode: response.detailInfo!.province!.phonecode,
             ).obs,
-      registerDate: response["registeredDateV2"],
+      registerDate: response.registeredDateV2,
       role: Role(
-        roleID: response["roleID"],
-        name: response["roleName"],
-        color: response["roleColor"],
+        roleID: response.roleID!,
+        name: response.roleName!,
+        color: response.roleColor!,
       ),
-      birthdayDate: Rxn<String>(response["detailInfo"]["birthdayDate"]),
-      phoneNumber: Rxn<String>(response["detailInfo"]["phoneNumber"]),
-      favTeam: response["favTeam"] != null
+      birthdayDate: Rxn<String>(response.detailInfo!.birthdayDate!),
+      phoneNumber: Rxn<String>(response.detailInfo!.phoneNumber!),
+      favTeam: response.favTeam != null
           ? Team(
-              teamID: response["favTeam"]["team_ID"],
-              name: response["favTeam"]["team_name"],
-              logo: response["favTeam"]["team_logo"],
+              teamID: response.favTeam!.teamID,
+              name: response.favTeam!.teamName,
+              logo: response.favTeam!.teamLogo.minURL,
             )
           : null,
     );
@@ -273,10 +277,10 @@ class ARMOYUFunctions {
 
   Future<void> favteamselect(Team? team) async {
     ProfileAPI f = ProfileAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await f.selectfavteam(teamID: team?.teamID);
+    ServiceResult response = await f.selectfavteam(teamID: team?.teamID);
     log(response.toString());
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    if (!response.status) {
+      log(response.description);
       return;
     }
     if (team != null) {
@@ -290,21 +294,21 @@ class ARMOYUFunctions {
   Future<void> favteamfetch() async {
     if (currentUserAccounts.favoriteteams == null) {
       TeamsAPI f = TeamsAPI(currentUser: currentUserAccounts.user.value);
-      Map<String, dynamic> response = await f.fetch();
-      if (response["durum"] == 0) {
-        log(response["aciklama"].toString());
+      TeamListResponse response = await f.fetch();
+      if (!response.result.status) {
+        log(response.result.description);
         favteamfetch();
         return;
       }
 
       currentUserAccounts.favoriteteams = [];
 
-      for (int i = 0; response["icerik"].length > i; i++) {
+      for (APITeamList element in response.response!) {
         currentUserAccounts.favoriteteams!.add(
           Team(
-            teamID: response["icerik"][i]["takim_ID"],
-            name: response["icerik"][i]["takim_adi"],
-            logo: response["icerik"][i]["takim_logo"],
+            teamID: element.teamId,
+            name: element.teamName,
+            logo: element.teamLogo.minURL,
           ),
         );
       }
@@ -330,25 +334,25 @@ class ARMOYUFunctions {
 
   Future<void> fetchCountry() async {
     CountryAPI f = CountryAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await f.fetch();
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    CountryResponse response = await f.fetch();
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
     ARMOYU.countryList.clear();
 
-    for (var country in response["icerik"]) {
+    for (APICountry country in response.response!) {
       ARMOYU.countryList.add(
         Country(
-          countryID: country["country_ID"],
-          name: country["country_name"],
-          countryCode: country["country_code"],
-          phoneCode: country["country_phoneCode"],
+          countryID: country.countryID,
+          name: country.name,
+          countryCode: country.code,
+          phoneCode: country.phonecode,
         ),
       );
 
       if (currentUserAccounts.user.value.country != null) {
-        if (country["country_ID"] ==
+        if (country.countryID ==
             currentUserAccounts.user.value.country!.value.countryID) {
           fetchProvince(
             currentUserAccounts.user.value.country!.value.countryID,
@@ -369,26 +373,26 @@ class ARMOYUFunctions {
       return;
     }
     CountryAPI f = CountryAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await f.fetchprovince(countryID: countryID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    ProvinceResponse response = await f.fetchprovince(countryID: countryID);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
-    if (response["icerik"].length == 0) {
+    if (response.response == null) {
       provinceSelectStatus.value = false;
       return;
     }
-    List<Province> provinceList = [];
 
-    for (var province in response["icerik"]) {
-      log(province["province_name"].toString());
+    List<Province> provinceList = [];
+    for (APIProvince province in response.response!) {
+      log(province.name);
       provinceList.add(
         Province(
-          provinceID: province["province_ID"],
-          name: province["province_name"],
-          plateCode: province["province_plateCode"],
-          phoneCode: province["province_phoneCode"],
+          provinceID: province.provinceID,
+          name: province.name,
+          plateCode: province.platecode,
+          phoneCode: province.phonecode,
         ),
       );
     }
@@ -796,7 +800,7 @@ class ARMOYUFunctions {
                                 ProfileAPI f = ProfileAPI(
                                   currentUser: currentUserAccounts.user.value,
                                 );
-                                Map<String, dynamic> response =
+                                ServiceResult response =
                                     await f.saveprofiledetails(
                                   firstname: firstName.value.text,
                                   lastname: lastName.value.text,
@@ -811,10 +815,11 @@ class ARMOYUFunctions {
 
                                 profileeditProcess.value = false;
                                 // setstatefunction();
-                                if (response["durum"] == 0) {
-                                  log(response["aciklama"]);
+                                if (!response.status) {
+                                  log(response.description);
                                   ARMOYUWidget.toastNotification(
-                                      response["aciklama"].toString());
+                                    response.description,
+                                  );
                                   return;
                                 }
                                 currentUserAccounts.user.value.firstName!
@@ -862,7 +867,7 @@ class ARMOYUFunctions {
                                     .value = birthday.value;
 
                                 ARMOYUWidget.toastNotification(
-                                  response["aciklama"].toString(),
+                                  response.description,
                                 );
                                 Get.back();
                               },

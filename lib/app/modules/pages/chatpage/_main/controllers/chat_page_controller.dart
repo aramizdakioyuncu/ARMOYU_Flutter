@@ -8,6 +8,8 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -91,8 +93,8 @@ class ChatPageController extends GetxController {
     FunctionService f = FunctionService(
       currentUser: currentUserAccounts.value.user.value,
     );
-    Map<String, dynamic> response = await f.getchats(chatPage.value);
-    if (response["durum"] == 0) {
+    ChatListResponse response = await f.getchats(chatPage.value);
+    if (!response.result.status) {
       chatsearchprocess.value = false;
       isFirstFetch.value = false;
 
@@ -102,7 +104,7 @@ class ChatPageController extends GetxController {
       return;
     }
 
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       chatsearchprocess.value = false;
       isFirstFetch.value = false;
 
@@ -111,13 +113,13 @@ class ChatPageController extends GetxController {
       return;
     }
 
-    for (var element in response["icerik"]) {
-      String sonmesaj = element["sonmesaj"].toString();
+    for (APIChatList element in response.response!) {
+      String sonmesaj = element.sonMesaj.toString();
       if (sonmesaj == "null") {
         sonmesaj = "";
       }
       bool notification = false;
-      if (element["bildirim"] == 1) {
+      if (element.bildirim == 1) {
         notification = true;
       }
       currentUserAccounts.value.user.value.chatlist ?? <Chat>[];
@@ -125,29 +127,28 @@ class ChatPageController extends GetxController {
         Chat(
           chatID: 1,
           user: User(
-            userID: element["kullid"],
-            displayName: Rx<String>(element["adisoyadi"]),
-            lastlogin: Rx<String>(element["songiris"]),
-            lastloginv2: Rx<String>(element["songiris"]),
+            userID: element.kullID,
+            displayName: Rx<String>(element.adSoyad),
+            lastlogin: Rx<String>(element.sonGiris),
+            lastloginv2: Rx<String>(element.sonGiris),
             avatar: Media(
-              mediaID: element["kullid"],
+              mediaID: element.kullID,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(element["chatImage"]["media_bigURL"]),
-                normalURL: Rx<String>(element["chatImage"]["media_URL"]),
-                minURL: Rx<String>(element["chatImage"]["media_minURL"]),
+                bigURL: Rx<String>(element.chatImage.mediaURL.bigURL),
+                normalURL: Rx<String>(element.chatImage.mediaURL.normalURL),
+                minURL: Rx<String>(element.chatImage.mediaURL.minURL),
               ),
             ),
           ),
           lastmessage: ChatMessage(
-            user: User(userID: element["kullid"]),
+            user: User(userID: element.kullID),
             messageContext: sonmesaj,
             messageID: 1,
-            isMe:
-                element["kullid"] == currentUserAccounts.value.user.value.userID
-                    ? true
-                    : false,
+            isMe: element.kullID == currentUserAccounts.value.user.value.userID
+                ? true
+                : false,
           ).obs,
-          chatType: element["sohbetturu"],
+          chatType: element.sohbetTuru,
           chatNotification: notification.obs,
         ),
       );

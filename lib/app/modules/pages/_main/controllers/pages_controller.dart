@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/services/API/app_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -96,10 +97,10 @@ class PagesController extends GetxController {
 
     AppAPI f = AppAPI(currentUser: currentUserAccount.user.value);
 
-    Map<String, dynamic> response = await f.sitemesaji();
+    SitemessageResponse response = await f.sitemesaji();
 
-    if (response["durum"] == 0) {
-      if (response["aciklama"] == "Lütfen Geçerli API_KEY giriniz!") {
+    if (!response.result.status) {
+      if (response.result.description == "Lütfen Geçerli API_KEY giriniz!") {
         someCondition.value = true;
         ARMOYUFunctions.updateForce(Get.context);
         return;
@@ -109,21 +110,20 @@ class PagesController extends GetxController {
     }
 
     try {
-      ARMOYU.onlineMembersCount = response["icerik"]["cevrimicikac"];
-      ARMOYU.totalPlayerCount = response["icerik"]["mevcutoyuncu"];
+      ARMOYU.onlineMembersCount = response.response!.onlineMembers;
+      ARMOYU.totalPlayerCount = response.response!.currentMembers;
       currentUserAccount.chatNotificationCount.value =
-          response["icerik"]["sohbetbildirim"];
+          response.response!.chatcount;
       currentUserAccount.surveyNotificationCount.value =
-          response["icerik"]["mevcutanket"];
+          response.response!.avaiblepolls;
       currentUserAccount.eventsNotificationCount.value =
-          response["icerik"]["mevcutetkinlik"];
-      currentUserAccount.downloadableCount.value =
-          response["icerik"]["indirmeler"];
+          response.response!.avaibleEvents;
+      currentUserAccount.downloadableCount.value = response.response!.downloads;
 
       currentUserAccount.friendRequestCount.value =
-          response["icerik"]["arkadaslikistekleri"];
+          response.response!.friendrequests;
       currentUserAccount.groupInviteCount.value =
-          response["icerik"]["grupistekleri"];
+          response.response!.grouprequests;
     } catch (e) {
       log(e.toString());
     }

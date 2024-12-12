@@ -4,6 +4,8 @@ import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/joinus_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/joinus/joinus_permission_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -69,20 +71,20 @@ class JoinusController extends GetxController {
     requestProccess.value = true;
 
     JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.requestjoindepartment(
+    JoinUsRequestJoinDepartmentResponse response =
+        await f.requestjoindepartment(
       positionID: positionID.value!,
       whyjoin: whyjointheteamController.value.text,
       whyposition: whypositionController.value.text,
       howmachtime: howmuchtimedoyouspareController.value.text,
     );
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
 
-      ARMOYUWidget.stackbarNotification(Get.context!, response["aciklama"]);
-
+      ARMOYUWidget.stackbarNotification(
+          Get.context!, response.result.description);
       requestProccess.value = false;
-
       return;
     }
 
@@ -91,37 +93,36 @@ class JoinusController extends GetxController {
 
   Future<void> fetchdepartmentInfo() async {
     JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.fetchdepartment();
+    JoinUsFetchDepartmentsResponse response = await f.fetchdepartment();
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
-    for (var departmentInfo in response["icerik"]) {
-      log(departmentInfo["Value"].toString());
-      if (departmentInfo["Value"] == "Kurucu") {
+    for (APIJoinusPermissionList element in response.response!) {
+      if (element.value == "Kurucu") {
         continue;
       }
-      if (departmentInfo["category"] != null) {
-        if (!departmentList.any((info) =>
-            info.values.first['category'] == departmentInfo['category'])) {
-          departmentList.add({
-            departmentInfo["ID"]: {
-              "ID": departmentInfo["ID"],
-              "category": departmentInfo["category"],
-              "value": departmentInfo["Value"],
-              "about": departmentInfo["about"],
-            },
-          });
-        }
+
+      if (!departmentList
+          .any((info) => info.values.first['category'] == element.category)) {
+        departmentList.add({
+          element.id: {
+            "ID": element.id,
+            "category": element.category,
+            "value": element.value,
+            "about": element.about,
+          },
+        });
       }
+
       departmentdetailList.add({
-        departmentInfo["ID"]: {
-          "ID": departmentInfo["ID"],
-          "category": departmentInfo["category"],
-          "value": departmentInfo["Value"],
-          "about": departmentInfo["about"],
+        element.id: {
+          "ID": element.id,
+          "category": element.category,
+          "value": element.value,
+          "about": element.about,
         }
       });
     }

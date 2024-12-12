@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

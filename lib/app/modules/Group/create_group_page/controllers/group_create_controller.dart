@@ -5,6 +5,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/category_api.dart';
 import 'package:ARMOYU/app/services/API/group_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/category/category.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -49,17 +51,18 @@ class GroupCreateController extends GetxController {
   Future<void> groupcreaterequest(
       String category, List<Map<String, String>> listname) async {
     CategoryAPI f = CategoryAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.category(categoryID: category);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    CategoryResponse response = await f.category(categoryID: category);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
     listname.clear();
-    for (dynamic element in response['icerik']) {
+
+    for (APICategory element in response.response!) {
       listname.add({
-        'ID': element["kategori_ID"].toString(),
-        'value': element["kategori_adi"]
+        'ID': element.categoryID.toString(),
+        'value': element.name,
       });
     }
   }
@@ -67,14 +70,14 @@ class GroupCreateController extends GetxController {
   Future<void> groupdetailfetch(
       String data, List<Map<String, String>> listname) async {
     CategoryAPI f = CategoryAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.categorydetail(categoryID: data);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    CategoryResponse response = await f.categorydetail(categoryID: data);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
     listname.clear();
-    for (dynamic element in response['icerik']) {
+    for (dynamic element in response.response!) {
       listname.add({
         'ID': element["kategori_ID"].toString(),
         'value': element["kategori_adi"]
@@ -89,15 +92,15 @@ class GroupCreateController extends GetxController {
     groupcreateProcess.value = true;
 
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.groupcreate(
+    GroupCreateResponse response = await f.groupcreate(
       grupadi: groupname.value.text,
       kisaltmaadi: groupshortname.value.text,
       grupkategori: selectedcupertinolist.value,
       grupkategoridetay: selectedcupertinolist2.value,
       varsayilanoyun: selectedcupertinolist3.value,
     );
-    if (response["durum"] == 0) {
-      String text = response["aciklama"];
+    if (!response.result.status) {
+      String text = response.result.description;
       // if (mounted) {
       ARMOYUWidget.stackbarNotification(Get.context!, text);
       groupcreateProcess.value = false;

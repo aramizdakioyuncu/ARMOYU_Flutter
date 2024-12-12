@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/controllers/profile_controller.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';

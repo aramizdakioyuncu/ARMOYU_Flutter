@@ -6,6 +6,8 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/notification_bars.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -68,33 +70,33 @@ class GrouprequestController extends GetxController {
     }
     FunctionService f =
         FunctionService(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response =
+    NotificationListResponse response =
         await f.getnotifications("gruplar", "davet", page);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       firstFetchProcces.value = false;
       postpageproccess.value = false;
       return;
     }
 
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       firstFetchProcces.value = false;
       postpageproccess.value = false;
       return;
     }
 
     var noticiationbuttons = false.obs;
-    for (int i = 0; i < response["icerik"].length; i++) {
+
+    for (APINotificationList element in response.response!) {
       noticiationbuttons.value = false;
 
-      if (response["icerik"][i]["bildirimamac"].toString() == "arkadaslik") {
-        if (response["icerik"][i]["bildirimkategori"].toString() == "istek") {
+      if (element.bildirimAmac.toString() == "arkadaslik") {
+        if (element.bildirimKategori.toString() == "istek") {
           noticiationbuttons.value = true;
         }
-      } else if (response["icerik"][i]["bildirimamac"].toString() ==
-          "gruplar") {
-        if (response["icerik"][i]["bildirimkategori"].toString() == "davet") {
+      } else if (element.bildirimAmac.toString() == "gruplar") {
+        if (element.bildirimKategori.toString() == "davet") {
           noticiationbuttons.value = true;
         }
       }
@@ -103,24 +105,23 @@ class GrouprequestController extends GetxController {
         CustomMenusNotificationbars(
           currentUserAccounts: currentUserAccounts.value,
           user: User(
-            userID: response["icerik"][i]["bildirimgonderenID"],
-            displayName:
-                Rx<String>(response["icerik"][i]["bildirimgonderenadsoyad"]),
+            userID: element.bildirimGonderenID,
+            displayName: Rx<String>(element.bildirimGonderenAdSoyad),
             avatar: Media(
-              mediaID: response["icerik"][i]["bildirimgonderenID"],
+              mediaID: element.bildirimGonderenID,
               mediaURL: MediaURL(
-                bigURL: response["icerik"][i]["bildirimgonderenavatar"],
-                normalURL: response["icerik"][i]["bildirimgonderenavatar"],
-                minURL: response["icerik"][i]["bildirimgonderenavatar"],
+                bigURL: Rx<String>(element.bildirimGonderenAvatar),
+                normalURL: Rx<String>(element.bildirimGonderenAvatar),
+                minURL: Rx<String>(element.bildirimGonderenAvatar),
               ),
             ),
           ),
-          category: response["icerik"][i]["bildirimamac"],
-          categorydetail: response["icerik"][i]["bildirimkategori"],
-          categorydetailID: response["icerik"][i]["bildirimkategoridetay"],
-          date: response["icerik"][i]["bildirimzaman"],
+          category: element.bildirimAmac,
+          categorydetail: element.bildirimKategori,
+          categorydetailID: element.bildirimKategoriDetay,
+          date: element.bildirimZaman,
           enableButtons: noticiationbuttons.value,
-          text: response["icerik"][i]["bildirimicerik"],
+          text: element.bildirimIcerik,
         ),
       );
     }

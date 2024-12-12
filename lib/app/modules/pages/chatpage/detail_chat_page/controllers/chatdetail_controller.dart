@@ -7,6 +7,9 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/services/socketio_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat_detail_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -57,23 +60,23 @@ class ChatdetailController extends GetxController {
     FunctionService f = FunctionService(
       currentUser: currentUserAccounts.value!.user.value,
     );
-    Map<String, dynamic> response =
+    ChatFetchDetailResponse response =
         await f.getdeailchats(chat.value!.user.userID!);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       return;
     }
 
     var ismee = true.obs;
     chat.value!.messages!.value = <ChatMessage>[].obs;
 
-    for (dynamic element in response["icerik"]) {
+    for (APIChatDetailList element in response.response!) {
       try {
-        if (element["sohbetkim"] == "ben") {
+        if (element.sohbetKim == "ben") {
           ismee.value = true;
         } else {
           ismee.value = false;
@@ -83,7 +86,7 @@ class ChatdetailController extends GetxController {
           ChatMessage(
             messageID: 0,
             isMe: ismee.value,
-            messageContext: element["mesajicerik"],
+            messageContext: element.mesajIcerik,
             user: User(
               userID: chat.value!.user.userID,
               avatar: chat.value!.user.avatar,
@@ -96,7 +99,7 @@ class ChatdetailController extends GetxController {
         chat.value!.lastmessage!.value = ChatMessage(
           messageID: 0,
           isMe: ismee.value,
-          messageContext: element["mesajicerik"],
+          messageContext: element.mesajIcerik,
           user: User(
             userID: chat.value!.user.userID,
             avatar: chat.value!.user.avatar,
@@ -160,10 +163,10 @@ class ChatdetailController extends GetxController {
     FunctionService f = FunctionService(
       currentUser: currentUserAccounts.value!.user.value,
     );
-    Map<String, dynamic> response =
+    ServiceResult response =
         await f.sendchatmessage(chat.value!.user.userID!, message, "ozel");
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.status) {
+      log(response.description);
       return;
     }
   }

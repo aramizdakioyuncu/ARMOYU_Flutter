@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Social/comment.dart';
@@ -16,6 +16,8 @@ import 'package:ARMOYU/app/widgets/likers.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
@@ -105,9 +107,10 @@ class PostController extends GetxController {
     fetchCommentStatus.value = true;
 
     PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await funct.commentsfetch(postID: postID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    PostCommentsFetchResponse response =
+        await funct.commentsfetch(postID: postID);
+    if (!response.result.status) {
+      log(response.result.description);
       fetchCommentStatus.value = false;
 
       return;
@@ -117,20 +120,21 @@ class PostController extends GetxController {
     postInfo.value.comments = [];
 
     //Veriler çek
-    for (int i = 0; i < response["icerik"].length; i++) {
-      String displayname = response["icerik"][i]["yorumcuadsoyad"].toString();
-      String avatar = response["icerik"][i]["yorumcuminnakavatar"].toString();
-      String text = response["icerik"][i]["yorumcuicerik"].toString();
-      int islike = response["icerik"][i]["benbegendim"];
-      int yorumID = response["icerik"][i]["yorumID"];
-      int userID = response["icerik"][i]["yorumcuid"];
-      int postID = response["icerik"][i]["paylasimID"];
-      int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
+
+    for (APIPostComments element in response.response!) {
+      String displayname = element.postcommenter.displayname.toString();
+      String avatar = element.postcommenter.avatar.minURL.toString();
+      String text = element.commentContent.toString();
+      bool islike = element.isLikedByMe;
+      int yorumID = element.commentID;
+      int userID = element.postcommenter.userID;
+      int postID = element.postID;
+      int commentlikescount = element.likeCount;
 
       Comment comment = Comment(
         commentID: yorumID,
         content: text,
-        didIlike: islike == 1 ? true : false,
+        didIlike: islike,
         likeCount: commentlikescount,
         postID: postID,
         user: User(
@@ -167,9 +171,9 @@ class PostController extends GetxController {
     fetchlikersStatus.value = true;
 
     PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await funct.postlikeslist(postID: postID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    PostLikesListResponse response = await funct.postlikeslist(postID: postID);
+    if (!response.result.status) {
+      log(response.result.description.toString());
       fetchlikersStatus.value = false;
 
       return;
@@ -178,11 +182,11 @@ class PostController extends GetxController {
     //Beğenenleri Temizle
     postInfo.value.likers = [];
 
-    for (int i = 0; i < response["icerik"].length; i++) {
-      String displayname = response["icerik"][i]["begenenadi"].toString();
-      String avatar = response["icerik"][i]["begenenavatar"].toString();
-      String date = response["icerik"][i]["begenmezaman"].toString();
-      int userID = response["icerik"][i]["begenenID"];
+    for (APIPostLiker element in response.response!) {
+      String displayname = element.likerdisplayname.toString();
+      String avatar = element.likeravatar.minURL.toString();
+      String date = element.likedate.toString();
+      int userID = element.likerID;
 
       postInfo.value.likers!.add(
         Like(
@@ -210,12 +214,12 @@ class PostController extends GetxController {
     postVisible.value = false;
 
     PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response =
+    PostRemoveResponse response =
         await funct.remove(postID: postInfo.value.postID);
 
-    ARMOYUWidget.toastNotification(response["aciklama"].toString());
+    ARMOYUWidget.toastNotification(response.result.description.toString());
 
-    if (response["durum"] == 0) {
+    if (!response.result.status) {
       postVisible.value = true;
 
       return;
@@ -345,14 +349,14 @@ class PostController extends GetxController {
                             onPressed: () async {
                               PostsAPI funct = PostsAPI(
                                   currentUser: currentUserAccounts.user.value);
-                              Map<String, dynamic> response =
+                              PostCreateCommentResponse response =
                                   await funct.createcomment(
                                 postID: postInfo.value.postID,
                                 text: controllerMessage.value.text,
                               );
-                              if (response["durum"] == 0) {
+                              if (!response.result.status) {
                                 ARMOYUWidget.toastNotification(
-                                    response["aciklama"].toString());
+                                    response.result.description.toString());
                                 return;
                               }
                               await getcommentsfetch(
@@ -388,9 +392,9 @@ class PostController extends GetxController {
     likeunlikeProcces.value = true;
 
     PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await funct.like(postID: postID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    PostLikeResponse response = await funct.like(postID: postID);
+    if (!response.result.status) {
+      log(response.result.description.toString());
       widgetlike = widgetlike;
       postInfo.value.likesCount = postInfo.value.likesCount;
       return;
@@ -408,9 +412,9 @@ class PostController extends GetxController {
     likeunlikeProcces.value = true;
 
     PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await funct.unlike(postID: postID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    PostUnLikeResponse response = await funct.unlike(postID: postID);
+    if (!response.result.status) {
+      log(response.result.description.toString());
       widgetlike = widgetlike;
       postInfo.value.likesCount = postInfo.value.likesCount;
       return;
@@ -545,13 +549,13 @@ class PostController extends GetxController {
                       onTap: () async {
                         PostsAPI funct = PostsAPI(
                             currentUser: currentUserAccounts.user.value);
-                        Map<String, dynamic> response =
+                        PostRemoveResponse response =
                             await funct.remove(postID: postInfo.value.postID);
-                        if (response["durum"] == 0) {
-                          log(response["aciklama"]);
+                        if (!response.result.status) {
+                          log(response.result.description);
                           return;
                         }
-                        log(response["aciklama"]);
+                        log(response.result.description);
                       },
                       child: ListTile(
                         leading: const Icon(
@@ -602,11 +606,11 @@ class PostController extends GetxController {
 
                         BlockingAPI f = BlockingAPI(
                             currentUser: currentUserAccounts.user.value);
-                        Map<String, dynamic> response =
+                        BlockingAddResponse response =
                             await f.add(userID: postInfo.value.owner.userID!);
 
                         ARMOYUWidget.toastNotification(
-                          response["aciklama"],
+                          response.result.description,
                         );
                       },
                       child: ListTile(

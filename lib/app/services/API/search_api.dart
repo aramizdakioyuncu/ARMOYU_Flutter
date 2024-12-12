@@ -1,65 +1,57 @@
 import 'package:ARMOYU/app/Core/API.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 
 class SearchAPI {
   final User currentUser;
   SearchAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> hashtag({
+  Future<SearchHashtagListResponse> hashtag({
     required String hashtag,
     required int page,
   }) async {
     return await API.service.searchServices.hashtag(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       hashtag: hashtag,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> searchengine({
+  Future<SearchListResponse> searchengine({
     required String searchword,
     required int page,
   }) async {
     return await API.service.searchServices.searchengine(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       searchword: searchword,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> onlyusers({
+  Future<SearchListResponse> onlyusers({
     required String searchword,
     required int page,
   }) async {
     return await API.service.searchServices.onlyusers(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       searchword: searchword,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> onlyschools({
+  Future<ServiceResult> onlyschools({
     required String searchword,
     required int page,
   }) async {
     return await API.service.searchServices.onlyschools(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       searchword: searchword,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> onlyworks({
+  Future<ServiceResult> onlyworks({
     required String searchword,
     required int page,
   }) async {
     return await API.service.searchServices.onlyworks(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       searchword: searchword,
       page: page,
     );

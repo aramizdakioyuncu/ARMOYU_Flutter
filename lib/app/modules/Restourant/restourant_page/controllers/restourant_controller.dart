@@ -5,6 +5,8 @@ import 'package:ARMOYU/app/data/models/ARMOYU/station.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/station_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/station/station_equipment_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
 
 class RestourantController extends GetxController {
@@ -39,37 +41,38 @@ class RestourantController extends GetxController {
     fetchEquipmentProcess.value = true;
 
     StationAPI f = StationAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response =
+    StationFetchEquipmentListResponse response =
         await f.fetchEquipments(stationID: cafe.value!.stationID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       fetchEquipmentProcess.value = false;
       return;
     }
 
     cafe.value!.products = [];
-    for (var element in response["icerik"]) {
+
+    for (APIStationEquipmentList element in response.response!) {
       cafe.value!.products.add(
         StationEquipment(
-          productsID: element["equipment_ID"],
-          name: element["equipment_name"],
+          productsID: element.equipmentId,
+          name: element.equipmentName,
           logo: Media(
-            mediaID: element["equipment_ID"],
+            mediaID: element.equipmentId,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(element["equipment_image"]),
-              normalURL: Rx<String>(element["equipment_image"]),
-              minURL: Rx<String>(element["equipment_image"]),
+              bigURL: Rx<String>(element.equipmentImage.bigURL),
+              normalURL: Rx<String>(element.equipmentImage.normalURL),
+              minURL: Rx<String>(element.equipmentImage.minURL),
             ),
           ),
           banner: Media(
-            mediaID: element["equipment_ID"],
+            mediaID: element.equipmentId,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(element["equipment_image"]),
-              normalURL: Rx<String>(element["equipment_image"]),
-              minURL: Rx<String>(element["equipment_image"]),
+              bigURL: Rx<String>(element.equipmentImage.bigURL),
+              normalURL: Rx<String>(element.equipmentImage.normalURL),
+              minURL: Rx<String>(element.equipmentImage.minURL),
             ),
           ),
-          price: element["equipment_price"],
+          price: element.equipmentPrice,
         ),
       );
     }

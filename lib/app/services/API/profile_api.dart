@@ -1,130 +1,74 @@
 import 'package:ARMOYU/app/Core/API.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileAPI {
   final User currentUser;
   ProfileAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> invitelist({
-    required int page,
-  }) async {
-    return await API.service.profileServices.invitelist(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      page: page,
-    );
+  Future<ProfileInviteListResponse> invitelist({required int page}) async {
+    return await API.service.profileServices.invitelist(page: page);
   }
 
-  Future<Map<String, dynamic>> sendauthmailURL({
-    required int userID,
-  }) async {
-    return await API.service.profileServices.sendauthmailURL(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<ServiceResult> sendauthmailURL({required int userID}) async {
+    return await API.service.profileServices.sendauthmailURL(userID: userID);
   }
 
-  Future<Map<String, dynamic>> invitecoderefresh() async {
-    return await API.service.profileServices.invitecoderefresh(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<ServiceResult> invitecoderefresh() async {
+    return await API.service.profileServices.invitecoderefresh();
   }
 
-  Future<Map<String, dynamic>> friendlist({
+  Future<ProfileFriendListResponse> friendlist({
     required int userID,
     required int page,
   }) async {
     return await API.service.profileServices.friendlist(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       userID: userID,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> friendrequest({
-    required int userID,
-  }) async {
-    return await API.service.profileServices.friendrequest(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<ServiceResult> friendrequest({required int userID}) async {
+    return await API.service.profileServices.friendrequest(userID: userID);
   }
 
-  Future<Map<String, dynamic>> friendrequestanswer({
+  Future<ServiceResult> friendrequestanswer({
     required int userID,
     required int answer,
   }) async {
     return await API.service.profileServices.friendrequestanswer(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       userID: userID,
       answer: answer,
     );
   }
 
-  Future<Map<String, dynamic>> userdurting({
-    required int userID,
-  }) async {
-    return await API.service.profileServices.userdurting(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<ServiceResult> userdurting({required int userID}) async {
+    return await API.service.profileServices.userdurting(userID: userID);
   }
 
-  Future<Map<String, dynamic>> friendremove({
-    required int userID,
-  }) async {
-    return await API.service.profileServices.friendremove(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<ServiceResult> friendremove({required int userID}) async {
+    return await API.service.profileServices.friendremove(userID: userID);
   }
 
-  Future<Map<String, dynamic>> defaultavatar() async {
-    return await API.service.profileServices.defaultavatar(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<ServiceResult> defaultavatar() async {
+    return await API.service.profileServices.defaultavatar();
   }
 
-  Future<Map<String, dynamic>> changeavatar({
-    required List<XFile> files,
-  }) async {
-    return await API.service.profileServices.changeavatar(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      files: files,
-    );
+  Future<ServiceResult> changeavatar({required List<XFile> files}) async {
+    return await API.service.profileServices.changeavatar(files: files);
   }
 
-  Future<Map<String, dynamic>> changebanner({
-    required List<XFile> files,
-  }) async {
-    return await API.service.profileServices.changebanner(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      files: files,
-    );
+  Future<ServiceResult> changebanner({required List<XFile> files}) async {
+    return await API.service.profileServices.changebanner(files: files);
   }
 
-  Future<Map<String, dynamic>> selectfavteam({
-    int? teamID,
-  }) async {
-    return await API.service.profileServices.selectfavteam(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      teamID: teamID,
-    );
+  Future<ServiceResult> selectfavteam({int? teamID}) async {
+    return await API.service.profileServices.selectfavteam(teamID: teamID);
   }
 
-  Future<Map<String, dynamic>> saveprofiledetails({
+  Future<ServiceResult> saveprofiledetails({
     required String firstname,
     required String lastname,
     required String aboutme,
@@ -136,8 +80,6 @@ class ProfileAPI {
     required String passwordControl,
   }) async {
     return await API.service.profileServices.saveprofiledetails(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       firstname: firstname,
       aboutme: aboutme,
       lastname: lastname,

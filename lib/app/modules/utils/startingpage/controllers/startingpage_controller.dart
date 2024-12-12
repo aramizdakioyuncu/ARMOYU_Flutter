@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
@@ -11,6 +11,7 @@ import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/services/socketio_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/get.dart';
@@ -171,20 +172,21 @@ class StartingpageController extends GetxController {
 
     FunctionService f = FunctionService(
         currentUser: User(displayName: "".obs, password: "".obs));
-    Map<String, dynamic> response = await f.login(
+    LoginResponse response = await f.login(
       username.toString(),
       password.toString(),
       true,
     );
 
-    if (response["durum"] == 1) {
-      log("Web Versiyon ${response["aciklamadetay"]["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
-      if (response["aciklamadetay"]["build"] > int.parse(ARMOYU.appBuild)) {
+    if (response.result.status) {
+      log("Web Versiyon ${response.result.descriptiondetail["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
+      if (response.result.descriptiondetail["build"] >
+          int.parse(ARMOYU.appBuild)) {
         ARMOYUFunctions.updateForce(Get.context);
         return;
       }
 
-      if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+      if (response.result.description == "Oyuncu bilgileri yanlış!") {
         Get.offNamed("/login");
         return;
       }
@@ -193,7 +195,7 @@ class StartingpageController extends GetxController {
       Get.offNamed("/app");
 
       return;
-    } else if (response["durum"] == 0) {
+    } else if (!response.result.status) {
       if (usersJson == null) {
         bool statusinternet = await checkInternetConnectionv2();
         if (!statusinternet) {

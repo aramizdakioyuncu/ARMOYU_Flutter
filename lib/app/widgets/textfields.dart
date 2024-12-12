@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Mention/mention.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
@@ -144,18 +145,19 @@ class CustomTextfields {
         if (WidgetMention.peopleList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
             SearchAPI f = SearchAPI(currentUser: currentUser);
-            Map<String, dynamic> response =
+            SearchListResponse response =
                 await f.onlyusers(searchword: "", page: 1);
-            if (response["durum"] == 0) {
-              log(response["aciklama"]);
+            if (!response.result.status) {
+              log(response.result.description);
               return;
             }
-            for (var element in response["icerik"]) {
+
+            for (var element in response.response!.search) {
               WidgetMention.addpeopleList({
-                'id': element["ID"].toString(),
-                'display': element["username"].toString(),
-                'full_name': element["Value"].toString(),
-                'photo': element["avatar"].toString()
+                'id': element.id.toString(),
+                'display': element.username,
+                'full_name': element.value.toString(),
+                'photo': element.avatar.toString()
               });
             }
             key.refresh();
@@ -165,17 +167,18 @@ class CustomTextfields {
         if (WidgetMention.hashtagList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
             SearchAPI f = SearchAPI(currentUser: currentUser);
-            Map<String, dynamic> response =
+            SearchHashtagListResponse response =
                 await f.hashtag(hashtag: "", page: 1);
-            if (response["durum"] == 0) {
-              log(response["aciklama"]);
+            if (!response.result.status) {
+              log(response.result.description);
               return;
             }
-            for (var element in response["icerik"]) {
+
+            for (var element in response.response!.search) {
               WidgetMention.addhashtagList({
-                'id': element["hashtag_ID"].toString(),
-                'display': element["hashtag_value"].toString(),
-                'numberofuses': element["hashtag_numberofuses"],
+                'id': element.hashtagID.toString(),
+                'display': element.value.toString(),
+                'numberofuses': element.numberofuses,
               });
             }
             key.refresh();
@@ -197,36 +200,44 @@ class CustomTextfields {
         searchTimer = Timer(const Duration(milliseconds: 500), () async {
           SearchAPI f = SearchAPI(currentUser: currentUser);
 
-          Map<String, dynamic> response;
           if (lastWord[0] == "@") {
-            response =
+            SearchListResponse response =
                 await f.onlyusers(searchword: lastWord.substring(1), page: 1);
+
+            if (!response.result.status) {
+              log(response.result.description);
+              return;
+            }
+
+            for (var element in response.response!.search) {
+              if (lastWord[0] == "@") {
+                WidgetMention.addpeopleList({
+                  'id': element.id.toString(),
+                  'display': element.username.toString(),
+                  'full_name': element.value.toString(),
+                  'photo': element.avatar.toString()
+                });
+              }
+            }
           } else if (lastWord[0] == "#") {
-            response = await f.hashtag(hashtag: lastWord.substring(1), page: 1);
+            SearchHashtagListResponse response =
+                await f.hashtag(hashtag: lastWord.substring(1), page: 1);
+
+            if (!response.result.status) {
+              log(response.result.description);
+              return;
+            }
+            for (var element in response.response!.search) {
+              if (lastWord[0] == "#") {
+                WidgetMention.addhashtagList({
+                  'id': element.hashtagID.toString(),
+                  'display': element.value.toString(),
+                  'numberofuses': element.numberofuses,
+                });
+              }
+            }
           } else {
             return;
-          }
-
-          if (response["durum"] == 0) {
-            log(response["aciklama"]);
-            return;
-          }
-          for (var element in response["icerik"]) {
-            if (lastWord[0] == "@") {
-              WidgetMention.addpeopleList({
-                'id': element["ID"].toString(),
-                'display': element["username"].toString(),
-                'full_name': element["Value"].toString(),
-                'photo': element["avatar"].toString()
-              });
-            }
-            if (lastWord[0] == "#") {
-              WidgetMention.addhashtagList({
-                'id': element["hashtag_ID"].toString(),
-                'display': element["hashtag_value"].toString(),
-                'numberofuses': element["hashtag_numberofuses"],
-              });
-            }
           }
 
           key.refresh();

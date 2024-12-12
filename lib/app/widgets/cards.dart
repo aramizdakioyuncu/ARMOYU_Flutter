@@ -5,6 +5,8 @@ import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/utils/player_pop_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -68,39 +70,47 @@ class _CustomCardsState extends State<CustomCards> {
     FunctionService f = FunctionService(
       currentUser: widget.currentUserAccounts.user.value,
     );
-    Map<String, dynamic> response = {};
 
     if (widget.title == "POP") {
-      response = await f.getplayerpop(
+      PlayerPopResponse response = await f.getplayerpop(
           int.parse(((widget.content.length ~/ 10) + 1).toString()));
-    } else {
-      response = await f.getplayerxp(
-          int.parse(((widget.content.length ~/ 10) + 1).toString()));
-    }
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      morefetchProcces = false;
-      setstatefunction();
-      return;
-    }
 
-    for (int i = 0; i < response["icerik"].length; i++) {
-      if (widget.title == "POP") {
+      if (!response.result.status) {
+        log(response.result.description);
+        morefetchProcces = false;
+        setstatefunction();
+        return;
+      }
+
+      for (APIPlayerPop element in response.response!) {
         widget.content.add({
-          "userID": response["icerik"][i]["oyuncuID"].toString(),
-          "image": response["icerik"][i]["oyuncuavatar"],
-          "displayname": response["icerik"][i]["oyuncuadsoyad"],
-          "score": response["icerik"][i]["oyuncupop"].toString()
+          "userID": element.oyuncuID.toString(),
+          "image": element.oyuncuAvatar,
+          "displayname": element.oyuncuAdSoyad,
+          "score": element.oyuncuPop.toString()
         });
-      } else {
+      }
+    } else {
+      PlayerPopResponse response = await f.getplayerxp(
+          int.parse(((widget.content.length ~/ 10) + 1).toString()));
+
+      if (!response.result.status) {
+        log(response.result.description);
+        morefetchProcces = false;
+        setstatefunction();
+        return;
+      }
+
+      for (APIPlayerPop element in response.response!) {
         widget.content.add({
-          "userID": response["icerik"][i]["oyuncuID"].toString(),
-          "image": response["icerik"][i]["oyuncuavatar"],
-          "displayname": response["icerik"][i]["oyuncuadsoyad"],
-          "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
+          "userID": element.oyuncuID.toString(),
+          "image": element.oyuncuAvatar,
+          "displayname": element.oyuncuAdSoyad,
+          "score": element.oyuncuSeviyeSezonlukXP.toString()
         });
       }
     }
+
     log(((widget.content.length ~/ 10)).toString());
 
     morefetchProcces = false;

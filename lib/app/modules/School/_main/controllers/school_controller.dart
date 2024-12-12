@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/school.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/school_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
 
 class SchoolController extends GetxController {
@@ -41,35 +42,35 @@ class SchoolController extends GetxController {
     schoolfetchProcess.value = true;
     setstatefunction();
     SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.fetchSchool(schoolID: schoolID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    SchoolFetchDetailResponse response =
+        await f.fetchSchool(schoolID: schoolID);
+    if (!response.result.status) {
+      log(response.result.description.toString());
       schoolfetchProcess.value = false;
       setstatefunction();
       return;
     }
     schoolInfo.value = School(
-      schoolID: response["icerik"]["school_ID"],
-      schoolName: response["icerik"]["school_name"],
-      schoolshortName: response["icerik"]["school_shortname"],
-      schoolURL: response["icerik"]["school_URL"],
+      schoolID: response.response!.schoolID,
+      schoolName: response.response!.schoolName,
+      schoolshortName: response.response!.schoolShortName,
+      schoolURL: response.response!.schoolURL,
       schoolBanner: Media(
-        mediaID: response["icerik"]["school_banner"]["media_ID"],
+        mediaID: response.response!.schoolBanner.mediaID,
         mediaURL: MediaURL(
-          bigURL:
-              Rx<String>(response["icerik"]["school_banner"]["media_bigURL"]),
+          bigURL: Rx<String>(response.response!.schoolBanner.mediaURL.bigURL),
           normalURL:
-              Rx<String>(response["icerik"]["school_banner"]["media_URL"]),
-          minURL:
-              Rx<String>(response["icerik"]["school_banner"]["media_minURL"]),
+              Rx<String>(response.response!.schoolBanner.mediaURL.normalURL),
+          minURL: Rx<String>(response.response!.schoolBanner.mediaURL.minURL),
         ),
       ),
       schoolLogo: Media(
-        mediaID: response["icerik"]["school_logo"]["media_ID"],
+        mediaID: response.response!.schoolLogo.mediaID,
         mediaURL: MediaURL(
-          bigURL: Rx<String>(response["icerik"]["school_logo"]["media_bigURL"]),
-          normalURL: Rx<String>(response["icerik"]["school_logo"]["media_URL"]),
-          minURL: Rx<String>(response["icerik"]["school_logo"]["media_minURL"]),
+          bigURL: Rx<String>(response.response!.schoolLogo.mediaURL.bigURL),
+          normalURL:
+              Rx<String>(response.response!.schoolLogo.mediaURL.normalURL),
+          minURL: Rx<String>(response.response!.schoolLogo.mediaURL.minURL),
         ),
       ),
     );

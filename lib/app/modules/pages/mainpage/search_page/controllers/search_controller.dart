@@ -11,6 +11,7 @@ import 'package:ARMOYU/app/services/API/news_api.dart';
 import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -67,9 +68,9 @@ class SearchPageController extends GetxController {
     }
     eventlistProcces.value = true;
     NewsAPI f = NewsAPI(currentUser: currentUserAccounts.user.value);
-    Map<String, dynamic> response = await f.fetch(page: 1);
-    if (response["durum"] == 0) {
-      ARMOYUWidget.toastNotification(response["aciklama"].toString());
+    NewsListResponse response = await f.fetch(page: 1);
+    if (!response.result.status) {
+      ARMOYUWidget.toastNotification(response.result.description.toString());
       eventlistProcces.value = false;
       //10 saniye sonra Tekrar çekmeyi dene
       await Future.delayed(const Duration(seconds: 10));
@@ -78,17 +79,18 @@ class SearchPageController extends GetxController {
     }
 
     newsList.clear();
-    for (dynamic element in response['icerik']) {
+
+    for (var element in response.response!.news) {
       newsList.add(
         News(
-          newsID: element["haberID"],
-          newsTitle: element["haberbaslik"],
+          newsID: element.newsID,
+          newsTitle: element.title,
           newsContent: "",
-          author: element["yazar"],
-          newsImage: element["resimminnak"],
-          newssummary: element["ozet"],
-          authoravatar: element["yazaravatar"],
-          newsViews: element["goruntulen"],
+          author: element.newsOwner.displayname,
+          newsImage: element.newsOwner.avatar.minURL,
+          newssummary: element.summary,
+          authoravatar: element.newsOwner.avatar.minURL,
+          newsViews: element.views,
         ),
       );
     }
@@ -137,10 +139,10 @@ class SearchPageController extends GetxController {
         return;
       }
       SearchAPI f = SearchAPI(currentUser: currentUserAccounts.user.value);
-      Map<String, dynamic> response =
+      SearchListResponse response =
           await f.searchengine(searchword: text, page: 1);
-      if (response["durum"] == 0) {
-        log(response["aciklama"]);
+      if (!response.result.status) {
+        log(response.result.description);
         return;
       }
 
@@ -150,48 +152,45 @@ class SearchPageController extends GetxController {
         log(e.toString());
       }
 
-      int dynamicItemCount = response["icerik"].length;
       //Eğer cevap gelene kadar yeni bir şeyler yazmışsa
       if (text != controller.text) {
         return;
       }
-      for (int i = 0; i < dynamicItemCount; i++) {
+
+      for (var element in response.response!.search) {
         try {
           widgetSearch.add(
             ListTile(
               leading: CircleAvatar(
-                foregroundImage: CachedNetworkImageProvider(
-                  response["icerik"][i]["avatar"],
-                ),
+                foregroundImage: CachedNetworkImageProvider(element.avatar!),
                 backgroundColor: Colors.black,
               ),
-              title: CustomText.costum1(response["icerik"][i]["Value"],
-                  weight: FontWeight.bold),
-              trailing: response["icerik"][i]["turu"] == "oyuncu"
+              title: CustomText.costum1(element.value, weight: FontWeight.bold),
+              trailing: element.turu == "oyuncu"
                   ? const Icon(Icons.person)
-                  : response["icerik"][i]["turu"] == "okullar"
+                  : element.turu == "okullar"
                       ? const Icon(Icons.school)
                       : const Icon(Icons.groups),
               onTap: () {
-                if (response["icerik"][i]["turu"] == "oyuncu") {
+                if (element.turu == "oyuncu") {
                   PageFunctions functions = PageFunctions(
                     currentUser: currentUserAccounts.user.value,
                   );
                   functions.pushProfilePage(
                     Get.context!,
                     User(
-                      userID: response["icerik"][i]["ID"],
+                      userID: element.id,
                     ),
                     ScrollController(),
                   );
-                } else if (response["icerik"][i]["turu"] == "gruplar") {
+                } else if (element.turu == "gruplar") {
                   Get.toNamed("/group/detail", arguments: {
                     "user": currentUserAccounts.user.value,
-                    "group": Group(groupID: response["icerik"][i]["ID"]),
+                    "group": Group(groupID: element.id),
                   });
-                } else if (response["icerik"][i]["turu"] == "okullar") {
+                } else if (element.turu == "okullar") {
                   Get.toNamed("/school", arguments: {
-                    "schoolID": response["icerik"][i]["ID"],
+                    "schoolID": element.id,
                   });
                 }
               },

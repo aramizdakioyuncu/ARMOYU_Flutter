@@ -1,42 +1,25 @@
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:image_picker/image_picker.dart';
 
 class GroupAPI {
   final User currentUser;
   GroupAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> groupFetch({
-    required int grupID,
-  }) async {
-    return await API.service.groupServices.groupFetch(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      grupID: grupID,
-    );
+  Future<GroupDetailResponse> groupFetch({required int grupID}) async {
+    return await API.service.groupServices.groupFetch(grupID: grupID);
   }
 
-  Future<Map<String, dynamic>> groupusersFetch({
-    required int grupID,
-  }) async {
-    return await API.service.groupServices.groupusersFetch(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      grupID: grupID,
-    );
+  Future<GroupUsersResponse> groupusersFetch({required int grupID}) async {
+    return await API.service.groupServices.groupusersFetch(grupID: grupID);
   }
 
-  Future<Map<String, dynamic>> leave({
-    required int grupID,
-  }) async {
-    return await API.service.groupServices.groupLeave(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      grupID: grupID,
-    );
+  Future<GroupLeaveResponse> leave({required int grupID}) async {
+    return await API.service.groupServices.groupLeave(grupID: grupID);
   }
 
-  Future<Map<String, dynamic>> groupsettingsSave({
+  Future<GroupSettingsResponse> groupsettingsSave({
     required int grupID,
     required String groupName,
     required String groupshortName,
@@ -46,8 +29,6 @@ class GroupAPI {
     required bool joinStatus,
   }) async {
     return await API.service.groupServices.groupsettingsSave(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       grupID: grupID,
       groupName: groupName,
       groupshortName: groupshortName,
@@ -58,57 +39,49 @@ class GroupAPI {
     );
   }
 
-  Future<Map<String, dynamic>> changegroupmedia({
+  Future<GroupChangeMediaResponse> changegroupmedia({
     required List<XFile> files,
     required int groupID,
     required String category,
   }) async {
     return await API.service.groupServices.changegroupmedia(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       files: files,
       groupID: groupID,
       category: category,
     );
   }
 
-  Future<Map<String, dynamic>> grouprequestanswer({
+  Future<GroupRequestAnswerResponse> grouprequestanswer({
     required int groupID,
     required String answer,
   }) async {
     return await API.service.groupServices.grouprequestanswer(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       groupID: groupID,
       answer: answer,
     );
   }
 
-  Future<Map<String, dynamic>> userInvite({
+  Future<GroupUserInviteResponse> userInvite({
     required int groupID,
     required List<String> userList, //Username
   }) async {
     return await API.service.groupServices.groupuserInvite(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       groupID: groupID,
       userList: userList,
     );
   }
 
-  Future<Map<String, dynamic>> userRemove({
+  Future<GroupUserKickResponse> userRemove({
     required int groupID,
     required int userID,
   }) async {
     return await API.service.groupServices.groupuserRemove(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       groupID: groupID,
       userID: userID,
     );
   }
 
-  Future<Map<String, dynamic>> groupcreate({
+  Future<GroupCreateResponse> groupcreate({
     required String grupadi,
     required String kisaltmaadi,
     required int grupkategori,
@@ -116,8 +89,6 @@ class GroupAPI {
     required int varsayilanoyun,
   }) async {
     return await API.service.groupServices.groupcreate(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       grupadi: grupadi,
       kisaltmaadi: kisaltmaadi,
       grupkategori: grupkategori,

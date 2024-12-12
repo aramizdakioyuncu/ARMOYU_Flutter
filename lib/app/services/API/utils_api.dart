@@ -1,34 +1,31 @@
 import 'package:ARMOYU/app/Core/API.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 
 class UtilsAPI {
   final User currentUser;
   UtilsAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> getappdetail() async {
-    return await API.service.utilsServices.getappdetail(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<ServiceResult> getappdetail() async {
+    return await API.service.utilsServices.getappdetail();
   }
 
-  Future<Map<String, dynamic>> fetchUserInfo({required int userID}) async {
-    return await API.service.utilsServices.fetchUserInfo(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<ServiceResult> fetchUserInfo({required int userID}) async {
+    return await API.service.utilsServices.fetchUserInfo(userID: userID);
   }
 
-  Future<Map<String, dynamic>> previuslogin(
-      {required String username, required String password}) async {
-    return await API.service.authServices.previuslogin(
+  Future<LoginResponse> previuslogin({
+    required String username,
+    required String password,
+  }) async {
+    return await API.service.authServices.login(
       username: username,
       password: password,
     );
   }
 
-  Future<Map<String, dynamic>> previusregister({
+  Future<RegisterResponse> previusregister({
     required String username,
     required String name,
     required String lastname,
@@ -37,10 +34,10 @@ class UtilsAPI {
     required String rpassword,
     required String inviteCode,
   }) async {
-    return await API.service.authServices.previusregister(
+    return await API.service.authServices.register(
       username: username,
       password: password,
-      name: name,
+      firstname: name,
       lastname: lastname,
       email: email,
       rpassword: rpassword,
@@ -49,26 +46,22 @@ class UtilsAPI {
   }
 
   Future<Map<String, dynamic>> previuslogOut() async {
-    return await API.service.authServices.previuslogOut(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+    return await API.service.authServices.logOut();
   }
 
-  Future<Map<String, dynamic>> forgotpassword({
+  Future<ServiceResult> forgotpassword({
     required String username,
     required String useremail,
     required String userresettype,
   }) async {
     return await API.service.utilsServices.forgotpassword(
       username: username,
-      password: currentUser.password!.value,
       useremail: useremail,
       userresettype: userresettype,
     );
   }
 
-  Future<Map<String, dynamic>> forgotpassworddone({
+  Future<ServiceResult> forgotpassworddone({
     required String username,
     required String password,
     required String useremail,
@@ -84,127 +77,78 @@ class UtilsAPI {
     );
   }
 
-  Future<Map<String, dynamic>> lookProfile({
-    required int userID,
-  }) async {
-    return await API.service.utilsServices.lookProfile(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userID: userID,
-    );
+  Future<LookProfileResponse> lookProfile({required int userID}) async {
+    return await API.service.utilsServices.lookProfile(userID: userID);
   }
 
-  Future<Map<String, dynamic>> lookProfilewithusername({
-    required String userusername,
-  }) async {
-    return await API.service.utilsServices.lookProfilewithusername(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      userusername: userusername,
-    );
+  Future<LookProfilewithUsernameResponse> lookProfilewithusername(
+      {required String userusername}) async {
+    return await API.service.utilsServices
+        .lookProfilewithusername(userusername: userusername);
   }
 
-  Future<Map<String, dynamic>> myGroups() async {
-    return await API.service.utilsServices.myGroups(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<APIMyGroupListResponse> myGroups() async {
+    return await API.service.utilsServices.myGroups();
   }
 
-  Future<Map<String, dynamic>> mySchools() async {
-    return await API.service.utilsServices.mySchools(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<APIMySchoolListResponse> mySchools() async {
+    return await API.service.utilsServices.mySchools();
   }
 
-  Future<Map<String, dynamic>> myStations() async {
-    return await API.service.utilsServices.myStations(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<ServiceResult> myStations() async {
+    return await API.service.utilsServices.myStations();
   }
 
-  Future<Map<String, dynamic>> getprofilePosts({
+  Future<PostFetchListResponse> getprofilePosts({
     required String userID,
     required String category,
     required int page,
   }) async {
-    return await API.service.utilsServices.getprofilePosts(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
+    return await API.service.postsServices.getprofilePosts(
       userID: userID,
       category: category,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> getplayerxp({
-    required int page,
-  }) async {
-    return await API.service.utilsServices.getplayerxp(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      page: page,
-    );
+  Future<PlayerPopResponse> getplayerxp({required int page}) async {
+    return await API.service.utilsServices.getplayerxp(page: page);
   }
 
-  Future<Map<String, dynamic>> getplayerpop({
-    required int page,
-  }) async {
-    return await API.service.utilsServices.getplayerpop(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      page: page,
-    );
+  Future<PlayerPopResponse> getplayerpop({required int page}) async {
+    return await API.service.utilsServices.getplayerpop(page: page);
   }
 
-  Future<Map<String, dynamic>> getnotifications({
+  Future<NotificationListResponse> getnotifications({
     required String kategori,
     required String kategoridetay,
     required int page,
   }) async {
-    return await API.service.utilsServices.getnotifications(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
+    return await API.service.notificationServices.getnotifications(
       kategori: kategori,
       kategoridetay: kategoridetay,
       page: page,
     );
   }
 
-  Future<Map<String, dynamic>> getchats({required int page}) async {
-    return await API.service.utilsServices.getchats(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      page: page,
-    );
+  Future<ChatListResponse> getchats({required int page}) async {
+    return await API.service.utilsServices.getchats(page: page);
   }
 
-  Future<Map<String, dynamic>> getnewchatfriendlist({required int page}) async {
-    return await API.service.utilsServices.getnewchatfriendlist(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      page: page,
-    );
+  Future<ServiceResult> getnewchatfriendlist({required int page}) async {
+    return await API.service.utilsServices.getnewchatfriendlist(page: page);
   }
 
-  Future<Map<String, dynamic>> getdeailchats({required int chatID}) async {
-    return await API.service.utilsServices.getdeailchats(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      chatID: chatID,
-    );
+  Future<ChatFetchDetailResponse> getdeailchats({required int chatID}) async {
+    return await API.service.utilsServices.getdetailchats(chatID: chatID);
   }
 
-  Future<Map<String, dynamic>> sendchatmessage({
+  Future<ServiceResult> sendchatmessage({
     required int userID,
     required String message,
     required String type,
   }) async {
     return await API.service.utilsServices.sendchatmessage(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
       userID: userID,
       message: message,
       type: type,

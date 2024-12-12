@@ -4,6 +4,8 @@ import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/news_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/news/news_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,9 +56,9 @@ class ListNewsController extends GetxController {
 
     eventlistProcces.value = true;
     NewsAPI function = NewsAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await function.fetch(page: newspage.value);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    NewsListResponse response = await function.fetch(page: newspage.value);
+    if (!response.result.status) {
+      log(response.result.description);
       eventlistProcces.value = false;
       //Tekrar çekmeyi dene
       getnewslist();
@@ -67,22 +69,22 @@ class ListNewsController extends GetxController {
       newsList.clear();
     }
 
-    if (response['icerik'].length == 0) {
+    if (response.response!.news.isEmpty) {
       eventlistProcces.value = true;
-      log("Haner Sonu!");
+      log("Haber Sonu!");
       return;
     }
-    for (dynamic element in response['icerik']) {
+    for (APINewsDetail element in response.response!.news) {
       newsList.add(
         News(
-          newsID: element["haberID"],
-          newsTitle: element["haberbaslik"],
+          newsID: element.newsID,
+          newsTitle: element.title,
           newsContent: "",
-          author: element["yazar"],
-          newsImage: element["resimminnak"],
-          newssummary: element["ozet"],
-          authoravatar: element["yazaravatar"],
-          newsViews: element["goruntulen"],
+          author: element.newsOwner.displayname,
+          newsImage: element.media.mediaURL.minURL,
+          newssummary: element.summary,
+          authoravatar: element.newsOwner.avatar.minURL,
+          newsViews: element.views,
         ),
       );
     }

@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/API/notification_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
 
 class NotificationsettingsController extends GetxController {
@@ -50,33 +51,31 @@ class NotificationsettingsController extends GetxController {
 
     NotificationAPI f =
         NotificationAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.listNotificationSettings();
+    NotificationSettingsResponse response = await f.listNotificationSettings();
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
+      ARMOYUWidget.toastNotification(response.result.description);
 
       firstfetchnotifi.value = false;
       return;
     }
 
     notifiPostLike =
-        response["icerik"]["paylasimbegeni"] == 1 ? true.obs : false.obs;
+        response.response!.paylasimBegeni == 1 ? true.obs : false.obs;
     notifiCommentLike =
-        response["icerik"]["yorumbegeni"] == 1 ? true.obs : false.obs;
+        response.response!.yorumBegeni == 1 ? true.obs : false.obs;
 
     notifiComments =
-        response["icerik"]["paylasimyorum"] == 1 ? true.obs : false.obs;
+        response.response!.paylasimYorum == 1 ? true.obs : false.obs;
     notifiReplyComment =
-        response["icerik"]["yorumyanit"] == 1 ? true.obs : false.obs;
+        response.response!.yorumYanit == 1 ? true.obs : false.obs;
 
-    notifiEvents = response["icerik"]["etkinlik"] == 1 ? true.obs : false.obs;
-    notifiBirthdays =
-        response["icerik"]["dogumgunu"] == 1 ? true.obs : false.obs;
-    notifiMessages = response["icerik"]["mesajlar"] == 1 ? true.obs : false.obs;
-    notifiCalling = response["icerik"]["aramalar"] == 1 ? true.obs : false.obs;
-    notifiMention =
-        response["icerik"]["bahsetmeler"] == 1 ? true.obs : false.obs;
+    notifiEvents = response.response!.etkinlik == 1 ? true.obs : false.obs;
+    notifiBirthdays = response.response!.dogumGunu == 1 ? true.obs : false.obs;
+    notifiMessages = response.response!.mesajlar == 1 ? true.obs : false.obs;
+    notifiCalling = response.response!.aramalar == 1 ? true.obs : false.obs;
+    notifiMention = response.response!.bahsetmeler == 1 ? true.obs : false.obs;
 
     firstfetchnotifi.value = false;
   }
@@ -101,16 +100,16 @@ class NotificationsettingsController extends GetxController {
 
     NotificationAPI f =
         NotificationAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response =
+    NotificationSettingsUpdateResponse response =
         await f.updateNotificationSettings(options: settingsNotification);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
+      ARMOYUWidget.toastNotification(response.result.description);
       updatesettingProcess.value = false;
       return;
     }
-    ARMOYUWidget.toastNotification(response["aciklama"]);
+    ARMOYUWidget.toastNotification(response.result.description);
 
     updatesettingProcess.value = false;
   }

@@ -12,7 +12,7 @@ class Survey {
   List<SurveyAnswer> surveyOptions;
   User surveyOwner;
   bool surveyStatus;
-  int surveyvotingPercentage;
+  double surveyvotingPercentage;
   int surveyvotingCount;
   bool didIVote;
   int selectedOption;

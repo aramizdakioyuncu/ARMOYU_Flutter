@@ -1,31 +1,22 @@
 import 'package:ARMOYU/app/Core/API.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 
 class StationAPI {
   final User currentUser;
   StationAPI({required this.currentUser});
 
-  Future<Map<String, dynamic>> fetchStations() async {
-    return await API.service.stationServices.fetchStations(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<StationFetchListResponse> fetchStations() async {
+    return await API.service.stationServices.fetchStations();
   }
 
-  Future<Map<String, dynamic>> fetchfoodstation() async {
-    return await API.service.stationServices.fetchfoodstation(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-    );
+  Future<StationFetchListResponse> fetchfoodstation() async {
+    return await API.service.stationServices.fetchfoodstation();
   }
 
-  Future<Map<String, dynamic>> fetchEquipments({
-    required int stationID,
-  }) async {
-    return await API.service.stationServices.fetchEquipments(
-      username: currentUser.userName!.value,
-      password: currentUser.password!.value,
-      stationID: stationID,
-    );
+  Future<StationFetchEquipmentListResponse> fetchEquipments(
+      {required int stationID}) async {
+    return await API.service.stationServices
+        .fetchEquipments(stationID: stationID);
   }
 }

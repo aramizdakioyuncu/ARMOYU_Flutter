@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -56,11 +57,11 @@ class ProfileFriendlistController extends GetxController {
     // Verinin çekilmesi
     ProfileAPI f =
         ProfileAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.friendlist(
+    ProfileFriendListResponse response = await f.friendlist(
         userID: user.value.user.value.userID!, page: pagecounter.value);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
     if (refreshfetch || pagecounter.value == 1) {
@@ -69,14 +70,14 @@ class ProfileFriendlistController extends GetxController {
     }
     user.value.user.value.myFriends ??= RxList([]);
 
-    for (var element in response["icerik"]) {
-      int userID = element["oyuncuID"];
-      String displayname = element["oyuncuad"];
-      String userlogin = element["oyuncukullaniciad"];
-      String avatar = element["oyuncuavatar"];
-      String normalavatar = element["oyuncufakavatar"];
-      String minavatar = element["oyuncuminnakavatar"];
-      int isFriend = element["oyuncuarkadasdurum"];
+    for (var element in response.response!) {
+      int userID = element.playerID;
+      String displayname = element.displayName;
+      String userlogin = element.username;
+      String avatar = element.avatar.bigURL;
+      String normalavatar = element.avatar.normalURL;
+      String minavatar = element.avatar.minURL;
+      int isFriend = element.friendshipStatus;
 
       var isFriendStatus = true.obs;
       if (isFriend == 0) {

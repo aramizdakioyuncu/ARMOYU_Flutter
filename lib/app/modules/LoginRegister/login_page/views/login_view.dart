@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/login_page/controllers/login_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
@@ -6,6 +6,7 @@ import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/modules/utils/text_page.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -96,13 +97,13 @@ class LoginpageView extends StatelessWidget {
                         FunctionService f = FunctionService(
                           currentUser: controller.currentUser.value!,
                         );
-                        Map<String, dynamic> response = await f.getappdetail();
+                        ServiceResult response = await f.getappdetail();
 
-                        if (response["durum"] == 0) {
+                        if (!response.status) {
                           return;
                         }
-                        ARMOYU.securityDetail = response["aciklamadetay"]
-                            ["projegizliliksozlesmesi"];
+                        ARMOYU.securityDetail = response
+                            .descriptiondetail["projegizliliksozlesmesi"];
                       }
 
                       Get.to(
@@ -125,14 +126,13 @@ class LoginpageView extends StatelessWidget {
                           if (ARMOYU.securityDetail == "0") {
                             FunctionService f = FunctionService(
                                 currentUser: controller.currentUser.value!);
-                            Map<String, dynamic> response =
-                                await f.getappdetail();
+                            ServiceResult response = await f.getappdetail();
 
-                            if (response["durum"] == 0) {
+                            if (!response.status) {
                               return;
                             }
-                            ARMOYU.securityDetail =
-                                response["projegizliliksozlesmesi"];
+                            ARMOYU.securityDetail = response
+                                .descriptiondetail["projegizliliksozlesmesi"];
                           }
 
                           Get.to(

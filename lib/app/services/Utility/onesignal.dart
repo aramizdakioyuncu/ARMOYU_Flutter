@@ -9,10 +9,9 @@ import 'package:http/http.dart' as http;
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 class OneSignalApi {
-  static const String oneSignalApiUrl =
-      'https://onesignal.com/api/v1/'; // OneSignal API URL'si
-  static const String oneSignalApiKey =
-      'Y2ExNDY5MjAtMzlkOC00YzZkLTlkYTMtNTNhOWE0NzYzZmM5'; // OneSignal API anahtarınız
+  static const String oneSignalApiUrl = 'https://onesignal.com/api/v1/';
+  static String oneSignalClientID = API.oneSignalClientID;
+  static String oneSignalApiKey = API.oneSignalAPIKey;
 
   // Yeni bir bildirim göndermek için bu metodu kullanabilirsiniz
   static Future<bool> sendNotification(
@@ -24,8 +23,7 @@ class OneSignalApi {
     };
 
     final notification = {
-      'app_id':
-          'c741c6f1-e84e-41d7-85b1-a596ffcfb5bd', // OneSignal uygulama kimliğinizi buraya ekleyin
+      'app_id': oneSignalClientID,
       'name': "ARMOYU Mobile",
       'headings': {'en': title, 'tr': title},
       'contents': {'en': content, 'tr': content},
@@ -49,7 +47,7 @@ class OneSignalApi {
 
   static setupOneSignal({required UserAccounts currentUserAccounts}) {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
-    OneSignal.initialize(API.oneSignalKey);
+    OneSignal.initialize(API.oneSignalClientID);
     OneSignal.consentRequired(false);
     OneSignal.Notifications.clearAll();
 

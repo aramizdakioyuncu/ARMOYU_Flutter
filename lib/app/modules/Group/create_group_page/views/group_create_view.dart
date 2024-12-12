@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/controllers/group_create_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';

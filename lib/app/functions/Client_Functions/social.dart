@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/utils_api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/utils/player_pop_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 
 class ClientFunctionsSocail {
   final User currentUser;
@@ -15,21 +17,22 @@ class ClientFunctionsSocail {
   Future<List<Map<String, String>>> loadXPCards(
       int page, List<Map<String, String>> list) async {
     FunctionService f = FunctionService(currentUser: currentUser);
-    Map<String, dynamic> response = await f.getplayerxp(1);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    PlayerPopResponse response = await f.getplayerxp(1);
+    if (!response.result.status) {
+      log(response.result.description);
       return list;
     }
     if (page == 1) {
       list.clear();
     }
-    for (int i = 0; i < response["icerik"].length; i++) {
+
+    for (APIPlayerPop element in response.response!) {
       list.add(
         {
-          "userID": response["icerik"][i]["oyuncuID"].toString(),
-          "image": response["icerik"][i]["oyuncuavatar"],
-          "displayname": response["icerik"][i]["oyuncuadsoyad"],
-          "score": response["icerik"][i]["oyuncuseviyesezonlukxp"].toString()
+          "userID": element.oyuncuID.toString(),
+          "image": element.oyuncuAvatar,
+          "displayname": element.oyuncuAdSoyad,
+          "score": element.oyuncuSeviyeSezonlukXP,
         },
       );
     }
@@ -40,20 +43,21 @@ class ClientFunctionsSocail {
   Future<List<Map<String, String>>> loadpopCards(
       int page, List<Map<String, String>> list) async {
     FunctionService f = FunctionService(currentUser: currentUser);
-    Map<String, dynamic> response = await f.getplayerpop(1);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    PlayerPopResponse response = await f.getplayerpop(1);
+    if (!response.result.status) {
+      log(response.result.description);
       return list;
     }
     if (page == 1) {
       list.clear();
     }
-    for (int i = 0; i < response["icerik"].length; i++) {
+
+    for (APIPlayerPop element in response.response!) {
       list.add({
-        "userID": response["icerik"][i]["oyuncuID"].toString(),
-        "image": response["icerik"][i]["oyuncuavatar"],
-        "displayname": response["icerik"][i]["oyuncuadsoyad"],
-        "score": response["icerik"][i]["oyuncupop"].toString()
+        "userID": element.oyuncuID.toString(),
+        "image": element.oyuncuAvatar,
+        "displayname": element.oyuncuAdSoyad,
+        "score": element.oyuncuPop.toString(),
       });
     }
     return list;

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -81,23 +82,21 @@ class ResetpasswordController extends GetxController {
 
     FunctionService f =
         FunctionService(currentUser: User(userName: "".obs, password: "".obs));
-    Map<String, dynamic> response = await f.forgotpassword(
+    ServiceResult response = await f.forgotpassword(
       usernameController.value.text,
       emailController.value.text,
       type,
     );
 
-    if (response["durum"] == 0) {
-      String text = response["aciklama"];
-      // if (mounted) {
+    if (!response.status) {
+      String text = response.description;
       ARMOYUWidget.stackbarNotification(Get.context!, text);
-      // }
       log(text);
       resetpasswordProcess.value = false;
       return;
     }
 
-    passwordtimer.value = response["aciklamadetay"];
+    passwordtimer.value = response.descriptiondetail;
     step1.value = false;
     step2.value = true;
     resetpasswordProcess.value = false;
@@ -135,7 +134,7 @@ class ResetpasswordController extends GetxController {
 
     FunctionService f =
         FunctionService(currentUser: User(userName: "".obs, password: "".obs));
-    Map<String, dynamic> response = await f.forgotpassworddone(
+    ServiceResult response = await f.forgotpassworddone(
       // yeniformat,
       usernameController.value.text,
       emailController.value.text,
@@ -144,23 +143,16 @@ class ResetpasswordController extends GetxController {
       repasswordController.value.text,
     );
 
-    if (response["durum"] == 0) {
-      String text = response["aciklama"];
-      // if (mounted) {
+    if (!response.status) {
+      String text = response.description;
       ARMOYUWidget.stackbarNotification(Get.context!, text);
-      // }
       log(text);
 
-      // setState(() {
       resetpasswordauthProcess.value = false;
-      // });
       return;
     }
     step1.value = true;
     step2.value = false;
-    // if (mounted) {
-    // Navigator.of(context).pop();
     Get.back();
-    // }
   }
 }

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';

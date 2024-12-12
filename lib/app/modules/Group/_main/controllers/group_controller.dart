@@ -10,6 +10,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/group_api.dart';
 import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -105,20 +106,17 @@ class GroupController extends GetxController {
 
     inviteuserStatus.value = true;
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.userInvite(
+    GroupUserInviteResponse response = await f.userInvite(
         groupID: group.value!.groupID!,
         userList: selectedUsers.map((user) => user.userName!.value).toList());
 
-    ARMOYUWidget.toastNotification(response["aciklama"].toString());
+    ARMOYUWidget.toastNotification(response.result.description.toString());
 
-    if (response["durum"] == 0) {
+    if (!response.result.status) {
       inviteuserStatus.value = false;
       return;
     }
 
-    for (var element in response["icerik"]) {
-      log("${element["aciklama"]} -- ${element["aciklamadetay"]}");
-    }
     selectedUsers.clear();
 
     inviteuserStatus.value = false;
@@ -134,44 +132,40 @@ class GroupController extends GetxController {
     }
     groupProcces.value = true;
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response =
+    GroupDetailResponse response =
         await f.groupFetch(grupID: group.value!.groupID!);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    if (!response.result.status) {
+      log(response.result.description.toString());
       groupProcces.value = false;
       return;
     }
 
     group.value = Group(
-      groupID: response["icerik"]["group_ID"],
-      groupName: response["icerik"]["group_name"],
-      groupshortName: response["icerik"]["group_shortname"],
-      groupURL: response["icerik"]["group_URL"],
+      groupID: response.response!.groupID,
+      groupName: response.response!.groupName,
+      groupshortName: response.response!.groupShortname,
+      groupURL: response.response!.groupURL,
       groupType: "",
-      joinStatus:
-          response["icerik"]['group_joinstatus'] == 1 ? true.obs : false.obs,
-      description: response["icerik"]["group_description"],
+      joinStatus: response.response!.groupJoinStatus ? true.obs : false.obs,
+      description: response.response!.groupDescription,
       groupSocial: GroupSocial(
-        discord: response["icerik"]['group_social']['group_discord'].toString(),
-        web: response["icerik"]['group_social']['group_website'] ?? "",
+        discord: response.response!.groupSocial.discord,
+        web: response.response!.groupSocial.website ?? "",
       ),
       groupBanner: Media(
-        mediaID: response["icerik"]["group_banner"]["media_ID"],
+        mediaID: response.response!.groupID,
         mediaURL: MediaURL(
-          bigURL:
-              Rx<String>(response["icerik"]["group_banner"]["media_bigURL"]),
-          normalURL:
-              Rx<String>(response["icerik"]["group_banner"]["media_URL"]),
-          minURL:
-              Rx<String>(response["icerik"]["group_banner"]["media_minURL"]),
+          bigURL: Rx<String>(response.response!.groupBanner.bigURL),
+          normalURL: Rx<String>(response.response!.groupBanner.normalURL),
+          minURL: Rx<String>(response.response!.groupBanner.minURL),
         ),
       ),
       groupLogo: Media(
-        mediaID: response["icerik"]["group_logo"]["media_ID"],
+        mediaID: response.response!.groupID,
         mediaURL: MediaURL(
-          bigURL: Rx<String>(response["icerik"]["group_logo"]["media_bigURL"]),
-          normalURL: Rx<String>(response["icerik"]["group_logo"]["media_URL"]),
-          minURL: Rx<String>(response["icerik"]["group_logo"]["media_minURL"]),
+          bigURL: Rx<String>(response.response!.groupLogo.bigURL),
+          normalURL: Rx<String>(response.response!.groupLogo.normalURL),
+          minURL: Rx<String>(response.response!.groupLogo.minURL),
         ),
       ),
     );
@@ -200,33 +194,33 @@ class GroupController extends GetxController {
     groupusersfetchProcces.value = true;
 
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response =
+    GroupUsersResponse response =
         await f.groupusersFetch(grupID: group.value!.groupID!);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    if (!response.result.status) {
+      log(response.result.description.toString());
       groupProcces.value = false;
       return;
     }
 
     group.value!.groupUsers = <User>[].obs;
 
-    for (var users in response["icerik"]) {
+    for (var users in response.response!.user) {
       group.value!.groupUsers!.add(
         User(
-          userID: users["player_ID"],
-          displayName: Rx<String>(users["player_displayname"]),
-          userName: Rx<String>(users["player_userlogin"]),
+          userID: users.userID,
+          displayName: Rx<String>(users.displayname),
+          userName: Rx<String>(users.username!),
           avatar: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(users["player_avatar"]["media_bigURL"]),
-              normalURL: Rx<String>(users["player_avatar"]["media_URL"]),
-              minURL: Rx<String>(users["player_avatar"]["media_minURL"]),
+              bigURL: Rx<String>(users.avatar.bigURL),
+              normalURL: Rx<String>(users.avatar.bigURL),
+              minURL: Rx<String>(users.avatar.minURL),
             ),
           ),
           role: Role(
             roleID: 0,
-            name: users["player_role"],
+            name: users.role!,
             color: "",
           ),
         ),
@@ -238,14 +232,14 @@ class GroupController extends GetxController {
 
   Future<void> removeuserfromgroup(index) async {
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.userRemove(
+    GroupUserKickResponse response = await f.userRemove(
       groupID: group.value!.groupID!,
       userID: group.value!.groupUsers![index].userID!,
     );
 
-    ARMOYUWidget.toastNotification(response["aciklama"].toString());
+    ARMOYUWidget.toastNotification(response.result.description.toString());
 
-    if (response["durum"] == 0) {
+    if (!response.result.status) {
       return;
     }
 
@@ -260,7 +254,7 @@ class GroupController extends GetxController {
     groupdetailSaveproccess.value = true;
 
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.groupsettingsSave(
+    GroupSettingsResponse response = await f.groupsettingsSave(
       grupID: group.value!.groupID!,
       groupName: groupname.value.text,
       groupshortName: groupshortname.value.text,
@@ -270,9 +264,9 @@ class GroupController extends GetxController {
       joinStatus: group.value!.joinStatus!.value,
     );
 
-    ARMOYUWidget.toastNotification(response["aciklama"].toString());
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    ARMOYUWidget.toastNotification(response.result.description.toString());
+    if (!response.result.status) {
+      log(response.result.description.toString());
       groupdetailSaveproccess.value = false;
 
       return;
@@ -326,12 +320,12 @@ class GroupController extends GetxController {
     imagePath.add(selectedImage);
 
     log(group.value!.groupID.toString());
-    Map<String, dynamic> response = await f.changegroupmedia(
+    GroupChangeMediaResponse response = await f.changegroupmedia(
         files: imagePath, groupID: group.value!.groupID!, category: "logo");
 
-    ARMOYUWidget.toastNotification(response["aciklama"]);
+    ARMOYUWidget.toastNotification(response.result.description);
 
-    if (response["durum"] == 0) {
+    if (!response.result.status) {
       changegrouplogoStatus.value = false;
 
       return;
@@ -343,27 +337,27 @@ class GroupController extends GetxController {
     user.value!.myGroups![groupIndex].groupLogo = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.result.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.result.descriptiondetail.toString()),
+        minURL: Rx<String>(response.result.descriptiondetail.toString()),
       ),
     );
 
     group.value!.groupLogo = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.result.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.result.descriptiondetail.toString()),
+        minURL: Rx<String>(response.result.descriptiondetail.toString()),
       ),
     );
 
     group.value!.groupLogo = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.result.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.result.descriptiondetail.toString()),
+        minURL: Rx<String>(response.result.descriptiondetail.toString()),
       ),
     );
 
@@ -390,12 +384,12 @@ class GroupController extends GetxController {
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
 
-    Map<String, dynamic> response = await f.changegroupmedia(
+    GroupChangeMediaResponse response = await f.changegroupmedia(
         files: imagePath, groupID: group.value!.groupID!, category: "banner");
 
-    ARMOYUWidget.toastNotification(response["aciklama"]);
+    ARMOYUWidget.toastNotification(response.result.description);
 
-    if (response["durum"] == 0) {
+    if (!response.result.status) {
       changegroupbannerStatus.value = false;
 
       return;
@@ -407,27 +401,27 @@ class GroupController extends GetxController {
     user.value!.myGroups![groupIndex].groupBanner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.result.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.result.descriptiondetail.toString()),
+        minURL: Rx<String>(response.result.descriptiondetail.toString()),
       ),
     );
 
     group.value!.groupBanner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.result.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.result.descriptiondetail.toString()),
+        minURL: Rx<String>(response.result.descriptiondetail.toString()),
       ),
     );
 
     group.value!.groupBanner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.result.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.result.descriptiondetail.toString()),
+        minURL: Rx<String>(response.result.descriptiondetail.toString()),
       ),
     );
 
@@ -461,10 +455,10 @@ class GroupController extends GetxController {
         return;
       }
       SearchAPI f = SearchAPI(currentUser: user.value!);
-      Map<String, dynamic> response =
+      SearchListResponse response =
           await f.onlyusers(searchword: text, page: 1);
-      if (response["durum"] == 0) {
-        log(response["aciklama"]);
+      if (!response.result.status) {
+        log(response.result.description);
         return;
       }
 
@@ -474,23 +468,23 @@ class GroupController extends GetxController {
         log(e.toString());
       }
 
-      int dynamicItemCount = response["icerik"].length;
       //Eğer cevap gelene kadar yeni bir şeyler yazmışsa
       if (text != controller.text) {
         return;
       }
-      for (int i = 0; i < dynamicItemCount; i++) {
+
+      for (var element in response.response!.search) {
         searchUserList.add(
           User(
-            userID: response["icerik"][i]["ID"],
-            displayName: response["icerik"][i]["Value"],
-            userName: response["icerik"][i]["username"],
+            userID: element.id,
+            displayName: RxString(element.value),
+            userName: RxString(element.username!),
             avatar: Media(
               mediaID: 11,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(response["icerik"][i]["avatar"]),
-                normalURL: Rx<String>(response["icerik"][i]["avatar"]),
-                minURL: Rx<String>(response["icerik"][i]["avatar"]),
+                bigURL: Rx<String>(element.avatar!),
+                normalURL: Rx<String>(element.avatar!),
+                minURL: Rx<String>(element.avatar!),
               ),
             ),
           ),
@@ -501,10 +495,9 @@ class GroupController extends GetxController {
 
   Future<void> leavegroup() async {
     GroupAPI f = GroupAPI(currentUser: user.value!);
-    Map<String, dynamic> response =
-        await f.leave(grupID: group.value!.groupID!);
-    if (response["durum"] == 0) {
-      ARMOYUWidget.toastNotification(response["aciklama"].toString());
+    GroupLeaveResponse response = await f.leave(grupID: group.value!.groupID!);
+    if (!response.result.status) {
+      ARMOYUWidget.toastNotification(response.result.description.toString());
       return;
     }
 

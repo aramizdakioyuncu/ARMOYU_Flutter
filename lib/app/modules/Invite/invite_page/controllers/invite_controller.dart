@@ -7,6 +7,9 @@ import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/profile/profile_invitelist.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -51,15 +54,15 @@ class InviteController extends GetxController {
   Future<void> refreshInviteCode() async {
     ProfileAPI f =
         ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
-    Map<String, dynamic> response = await f.invitecoderefresh();
+    ServiceResult response = await f.invitecoderefresh();
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.status) {
+      log(response.description);
       return;
     }
 
     currentUserAccounts.value!.user.value.invitecode =
-        Rx<String>(response["aciklamadetay"]);
+        Rx<String>(response.description);
 
     currentUserAccounts.value!.user.refresh();
   }
@@ -67,14 +70,13 @@ class InviteController extends GetxController {
   Future<void> sendmailURL(int userID) async {
     ProfileAPI f =
         ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
-    Map<String, dynamic> response = await f.sendauthmailURL(userID: userID);
-    log(response["durum"].toString());
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    ServiceResult response = await f.sendauthmailURL(userID: userID);
+    if (!response.status) {
+      log(response.description);
       return;
     }
 
-    ARMOYUWidget.stackbarNotification(Get.context!, response["aciklama"]);
+    ARMOYUWidget.stackbarNotification(Get.context!, response.description);
   }
 
   Future<void> invitepeoplelist() async {
@@ -88,10 +90,11 @@ class InviteController extends GetxController {
     }
     ProfileAPI f =
         ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
-    Map<String, dynamic> response = await f.invitelist(page: invitePage.value);
+    ProfileInviteListResponse response =
+        await f.invitelist(page: invitePage.value);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
 
       inviteListProcces.value = false;
       isfirstfetch.value = false;
@@ -99,10 +102,12 @@ class InviteController extends GetxController {
       return;
     }
 
-    authroizedUserCount.value = response["aciklamadetay"]["dogrulanmishesap"];
-    unauthroizedUserCount.value = response["aciklamadetay"]["normalhesap"];
+    authroizedUserCount.value =
+        response.result.descriptiondetail["dogrulanmishesap"];
+    unauthroizedUserCount.value =
+        response.result.descriptiondetail["normalhesap"];
 
-    for (int i = 0; i < response["icerik"].length; i++) {
+    for (APIProfileInvitelist element in response.response!) {
       invitelist.add(
         ListTile(
           minVerticalPadding: 5.0,
@@ -115,22 +120,18 @@ class InviteController extends GetxController {
             functions.pushProfilePage(
               Get.context!,
               User(
-                userName: response["icerik"][i]["oyuncu_username"],
+                userName: Rx<String>(element.username),
               ),
               ScrollController(),
             );
           },
           leading: CircleAvatar(
             backgroundColor: Colors.transparent,
-            foregroundImage: CachedNetworkImageProvider(
-              response["icerik"][i]["oyuncu_avatar"],
-            ),
+            foregroundImage: CachedNetworkImageProvider(element.avatar.minURL),
           ),
           // tileColor: ARMOYU.appbarColor,
-          title:
-              CustomText.costum1(response["icerik"][i]["oyuncu_displayname"]),
-          subtitle:
-              CustomText.costum1(response["icerik"][i]["oyuncu_username"]),
+          title: CustomText.costum1(element.displayName),
+          subtitle: CustomText.costum1(element.username),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -138,7 +139,7 @@ class InviteController extends GetxController {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  response["icerik"][i]["oyuncu_dogrulama"] == true
+                  element.isVerified == true
                       ? const Icon(
                           Icons.check_circle,
                           color: Colors.green,
@@ -149,7 +150,7 @@ class InviteController extends GetxController {
                         ),
                 ],
               ),
-              response["icerik"][i]["oyuncu_dogrulama"] == false
+              element.isVerified == false
                   ? IconButton(
                       onPressed: () {
                         showModalBottomSheet<void>(
@@ -183,8 +184,7 @@ class InviteController extends GetxController {
                                       ),
                                       InkWell(
                                         onTap: () async {
-                                          await sendmailURL(response["icerik"]
-                                              [i]["oyuncu_ID"]);
+                                          await sendmailURL(element.userID);
                                         },
                                         child: const ListTile(
                                           textColor: Colors.amber,

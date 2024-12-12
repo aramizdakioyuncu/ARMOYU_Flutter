@@ -1,13 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Story/publish_story_page/views/storypublish_page.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/services/API/media_api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -144,13 +145,14 @@ class Media {
                             medialist.removeAt(index);
                             setstatefunction();
                             MediaAPI funct = MediaAPI(currentUser: currentUser);
-                            Map<String, dynamic> response =
+                            MediaDeleteResponse response =
                                 await funct.delete(mediaID: mediaID);
 
-                            if (response["durum"] == 0) {
-                              log(response["aciklama"].toString());
+                            if (!response.result.status) {
+                              log(response.result.description.toString());
                               ARMOYUWidget.toastNotification(
-                                  response["aciklama"].toString());
+                                response.result.description.toString(),
+                              );
                               return;
                             }
                           },

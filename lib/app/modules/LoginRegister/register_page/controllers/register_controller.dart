@@ -1,12 +1,13 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/services/API/loginregister_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,19 +39,21 @@ class RegisterpageController extends GetxController {
     LoginregisterAPI f = LoginregisterAPI(
       currentUser: User(userName: "0".obs, password: "0".obs),
     );
-    Map<String, dynamic> response = await f.inviteCodeTest(code: code);
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
-      ARMOYUWidget.stackbarNotification(Get.context!, response["aciklama"]);
+    LoginRegisterInviteCodeResponse response =
+        await f.inviteCodeTest(code: code);
+    if (!response.result.status) {
+      log(response.result.description);
+      ARMOYUWidget.stackbarNotification(
+          Get.context!, response.result.description);
       inviteCodeProcces.value = false;
       return;
     }
     log(inviteduserID.value =
-        response["aciklamadetay"]["oyuncu_ID"].toString());
+        response.result.descriptiondetail["oyuncu_ID"].toString());
     log(inviteduseravatar.value =
-        response["aciklamadetay"]["oyuncu_avatar"].toString());
+        response.result.descriptiondetail["oyuncu_avatar"].toString());
     log(inviteduserdisplayName.value =
-        response["aciklamadetay"]["oyuncu_displayName"].toString());
+        response.result.descriptiondetail["oyuncu_displayName"].toString());
     // setState(() {
     inviteCodeProcces.value = false;
     // });
@@ -94,21 +97,20 @@ class RegisterpageController extends GetxController {
 
     FunctionService f =
         FunctionService(currentUser: User(userName: "".obs, password: "".obs));
-    Map<String, dynamic> response = await f.register(
+    RegisterResponse response = await f.register(
         username, name, lastname, email, password, rpassword, inviteCode);
 
-    if (response["durum"] == 0) {
-      String text = response["aciklama"];
-      ARMOYUWidget.stackbarNotification(Get.context!, text);
+    if (!response.result.status) {
+      ARMOYUWidget.stackbarNotification(
+          Get.context!, response.result.description);
       registerProccess.value = false;
       return;
     }
 
-    if (response["durum"] == 1) {
-      Map<String, dynamic> loginresponse =
-          await f.login(username, password, true);
+    if (response.result.status) {
+      LoginResponse loginresponse = await f.login(username, password, true);
 
-      if (loginresponse["aciklama"] == "Başarılı.") {
+      if (loginresponse.result.description == "Başarılı.") {
         UserAccounts newUser = ARMOYU.appUsers.first;
 
         accountController.changeUser(

@@ -1,13 +1,15 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -85,12 +87,11 @@ class LoginPageController extends GetxController {
 
     if (accountAdd.value) {
       FunctionService f = FunctionService(currentUser: currentUser);
-      Map<String, dynamic> response =
-          await f.adduserAccount(username, password);
+      LoginResponse response = await f.adduserAccount(username, password);
 
-      if (response["durum"] == 0 ||
-          response["aciklama"] == "Oyuncu bilgileri yanlış!") {
-        String gelenyanit = response["aciklama"];
+      if (!response.result.status ||
+          response.result.description == "Oyuncu bilgileri yanlış!") {
+        String gelenyanit = response.result.description;
 
         ARMOYUWidget.stackbarNotification(Get.context!, gelenyanit);
         Get.snackbar("Oyuncu bilgileri yanlış!", gelenyanit);
@@ -110,11 +111,11 @@ class LoginPageController extends GetxController {
     }
 
     FunctionService f = FunctionService(currentUser: currentUser);
-    Map<String, dynamic> response = await f.login(username, password, false);
+    LoginResponse response = await f.login(username, password, false);
 
-    if (response["durum"] == 0 ||
-        response["aciklama"] == "Oyuncu bilgileri yanlış!") {
-      String gelenyanit = response["aciklama"];
+    if (!response.result.status ||
+        response.result.description == "Oyuncu bilgileri yanlış!") {
+      String gelenyanit = response.result.description;
 
       Get.snackbar("Oyuncu bilgileri yanlış!", gelenyanit);
       ARMOYUWidget.stackbarNotification(Get.context!, gelenyanit);
@@ -124,7 +125,9 @@ class LoginPageController extends GetxController {
       return;
     }
 
-    User newUser = User.fromJson(response["icerik"]);
+    // User newUser = User.fromJson(response.response!);
+
+    User newUser = ARMOYUFunctions.userfetch(response.response!);
 
     log(newUser.userID.toString());
 

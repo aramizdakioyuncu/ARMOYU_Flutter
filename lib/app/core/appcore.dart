@@ -4,7 +4,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:http/http.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
@@ -106,11 +105,11 @@ class AppCore {
     return XFile(result.path);
   }
 
-  static Future<MultipartFile> generateImageFile(
-      String text, XFile file) async {
-    final fileBytes = await file.readAsBytes();
-    return MultipartFile.fromBytes(text, fileBytes, filename: file.name);
-  }
+  // static Future<MultipartFile> generateImageFile(
+  //     String text, XFile file) async {
+  //   final fileBytes = await file.readAsBytes();
+  //   return MultipartFile.fromBytes(text, fileBytes, filename: file.name);
+  // }
 
   static Future<bool> checkInternetConnection() async {
     List<ConnectivityResult> connectivityResult =

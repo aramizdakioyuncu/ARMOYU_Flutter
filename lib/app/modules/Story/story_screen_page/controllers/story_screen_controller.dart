@@ -8,6 +8,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -78,9 +80,9 @@ class StoryScreenController extends GetxController {
     storyviewProcess.value = true;
 
     StoryAPI funct = StoryAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await funct.view(storyID: story.storyID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    ServiceResult response = await funct.view(storyID: story.storyID);
+    if (!response.status) {
+      log(response.description);
       storyviewProcess.value = false;
       firststoryviewProcess.value = true;
       return;
@@ -162,27 +164,28 @@ class StoryScreenController extends GetxController {
 
     viewlistProcess.value = true;
     StoryAPI funct = StoryAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await funct.fetchviewlist(storyID: storyID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    StoryViewListResponse response =
+        await funct.fetchviewlist(storyID: storyID);
+    if (!response.result.status) {
+      log(response.result.description);
       viewlistProcess.value = false;
       return;
     }
 
     viewerlist.clear();
 
-    for (var element in response["icerik"]) {
+    for (var element in response.response!) {
       viewerlist.add(
         User(
-          userName: element["hgoruntuleyen_kullaniciad"],
-          displayName: element["hgoruntuleyen_adsoyad"],
-          status: element["hgoruntuleyen_begenme"] == 1 ? true : false,
+          userName: RxString(element.goruntuleyenKullaniciAd),
+          displayName: RxString(element.goruntuleyenAdSoyad),
+          status: element.goruntuleyenBegenme == 1 ? true : false,
           avatar: Media(
             mediaID: 0,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(element["hgoruntuleyen_avatar"]),
-              normalURL: Rx<String>(element["hgoruntuleyen_avatar"]),
-              minURL: Rx<String>(element["hgoruntuleyen_avatar"]),
+              bigURL: Rx<String>(element.goruntuleyenAvatar.bigURL),
+              normalURL: Rx<String>(element.goruntuleyenAvatar.normalURL),
+              minURL: Rx<String>(element.goruntuleyenAvatar.minURL),
             ),
           ),
         ),

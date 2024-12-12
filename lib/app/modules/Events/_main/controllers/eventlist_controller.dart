@@ -5,6 +5,9 @@ import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/event_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/event/event.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/user.dart' as armoyuuser;
 import 'package:get/get.dart';
 
 class EventlistController extends GetxController {
@@ -37,28 +40,29 @@ class EventlistController extends GetxController {
     eventlistProecces.value = true;
 
     EventAPI f = EventAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.fetch();
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    EventResponse response = await f.fetch();
+    if (!response.result.status) {
+      log(response.result.description);
       eventlistProecces.value = false;
       return;
     }
 
     eventsList.clear();
-    for (dynamic element in response['icerik']) {
-      List<User> aa = [];
 
-      for (dynamic element2 in element['event_organizer']) {
-        aa.add(
+    for (APIEvent element in response.response!) {
+      List<User> organizerList = [];
+
+      for (armoyuuser.UserInfo element in element.organizer) {
+        organizerList.add(
           User(
-            userID: element2["player_ID"],
-            displayName: Rx<String>(element2["player_displayname"]),
+            userID: element.userID,
+            displayName: Rx<String>(element.displayname),
             avatar: Media(
-              mediaID: element2["player_ID"],
+              mediaID: element.userID,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(element2["player_avatar"]),
-                normalURL: Rx<String>(element2["player_avatar"]),
-                minURL: Rx<String>(element2["player_avatar"]),
+                bigURL: Rx<String>(element.avatar.bigURL),
+                normalURL: Rx<String>(element.avatar.normalURL),
+                minURL: Rx<String>(element.avatar.minURL),
               ),
             ),
           ),
@@ -67,24 +71,23 @@ class EventlistController extends GetxController {
 
       eventsList.add(
         Event(
-          eventID: element["event_ID"],
-          status: element["event_status"],
-          name: element["event_name"],
-          eventType: element["event_type"],
-          eventDate: element["event_date"],
-          gameImage: element["event_gamelogo"],
-          image: element["event_foto"],
-          detailImage: element["event_fotodetail"],
-          banner: element["event_gamebanner"],
-          eventorganizer: aa,
-          eventPlace: element["event_location"],
-          description: element["event_description"],
-          rules: element["event_rules"],
-          participantsLimit: element["event_participantlimit"],
-          participantsCurrent: element["event_participantcurrent"],
-          participantsgroupplayerlimit:
-              element["event_participantgroupplayerlimit"],
-          location: element["event_location"],
+          eventID: element.eventID,
+          status: int.parse(element.status),
+          name: element.name,
+          eventType: element.type,
+          eventDate: element.date,
+          gameImage: element.gameLogo,
+          image: element.foto,
+          detailImage: element.fotoDetail,
+          banner: element.gameBanner,
+          eventorganizer: organizerList,
+          eventPlace: element.location,
+          description: element.description,
+          rules: element.rules,
+          participantsLimit: element.participantLimit,
+          participantsCurrent: element.participantCurrent,
+          participantsgroupplayerlimit: element.participantGroupPlayerLimit,
+          location: element.location,
         ),
       );
     }

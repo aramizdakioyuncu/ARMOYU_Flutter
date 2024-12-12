@@ -10,6 +10,8 @@ import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -165,14 +167,14 @@ class _CustomMenusNotificationbarsState
                                         currentUser: widget
                                             .currentUserAccounts.user.value,
                                       );
-                                      Map<String, dynamic> response =
+                                      ServiceResult response =
                                           await f.friendrequestanswer(
                                         userID: widget.user.userID!,
                                         answer: 1,
                                       );
-                                      if (response["durum"] == 0) {
+                                      if (!response.status) {
                                         ARMOYUWidget.toastNotification(
-                                            response["aciklama"].toString());
+                                            response.description.toString());
                                         widget.natificationisVisible = true;
                                         // widget.currentUserAccounts
                                         //     .friendRequestCount++;
@@ -205,16 +207,15 @@ class _CustomMenusNotificationbarsState
                                       GroupAPI f = GroupAPI(
                                           currentUser: widget
                                               .currentUserAccounts.user.value);
-                                      Map<String, dynamic> response =
+                                      GroupRequestAnswerResponse response =
                                           await f.grouprequestanswer(
                                         groupID: widget.categorydetailID,
                                         answer: "1",
                                       );
-                                      if (response["durum"] == 0) {
-                                        ARMOYUWidget.toastNotification(
-                                            response["aciklama"].toString());
-                                        // widget.currentUserAccounts
-                                        //     .groupInviteCount++;
+                                      if (!response.result.status) {
+                                        ARMOYUWidget.toastNotification(response
+                                            .result.description
+                                            .toString());
 
                                         widget.currentUserAccounts
                                             .groupInviteCount.value = widget
@@ -254,14 +255,14 @@ class _CustomMenusNotificationbarsState
                                         currentUser: widget
                                             .currentUserAccounts.user.value,
                                       );
-                                      Map<String, dynamic> response =
+                                      ServiceResult response =
                                           await f.friendrequestanswer(
                                         userID: widget.user.userID!,
                                         answer: 0,
                                       );
-                                      if (response["durum"] == 0) {
+                                      if (!response.status) {
                                         ARMOYUWidget.toastNotification(
-                                            response["aciklama"].toString());
+                                            response.description.toString());
                                         // widget.currentUserAccounts
                                         //     .friendRequestCount++;
 
@@ -294,14 +295,15 @@ class _CustomMenusNotificationbarsState
                                       GroupAPI f = GroupAPI(
                                           currentUser: widget
                                               .currentUserAccounts.user.value);
-                                      Map<String, dynamic> response =
+                                      GroupRequestAnswerResponse response =
                                           await f.grouprequestanswer(
                                         groupID: widget.categorydetailID,
                                         answer: "0",
                                       );
-                                      if (response["durum"] == 0) {
-                                        ARMOYUWidget.toastNotification(
-                                            response["aciklama"].toString());
+                                      if (!response.result.status) {
+                                        ARMOYUWidget.toastNotification(response
+                                            .result.description
+                                            .toString());
                                         // widget.currentUserAccounts
                                         //     .groupInviteCount++;
 

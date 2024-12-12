@@ -6,6 +6,8 @@ import 'package:ARMOYU/app/services/API/blocking_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/blocking/blocking_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -38,9 +40,9 @@ class BlockedlistSettingsController extends GetxController {
     //     FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
     BlockingAPI f =
         BlockingAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.remove(userID: userID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    BlockingRemoveResponse response = await f.remove(userID: userID);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
     blockedList.removeWhere((element) => element.keys.first == userID);
@@ -57,9 +59,9 @@ class BlockedlistSettingsController extends GetxController {
 
     // FunctionsBlocking f =
     //     FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.list();
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    BlockingListResponse response = await f.list();
+    if (!response.result.status) {
+      log(response.result.description);
       blockedProcces.value = false;
       isFirstProcces.value = false;
       return;
@@ -67,20 +69,19 @@ class BlockedlistSettingsController extends GetxController {
 
     blockedList.clear();
 
-    for (int i = 0; i < response['icerik'].length; i++) {
-      int blockeduserID =
-          int.parse(response['icerik'][i]["engel_kimeID"].toString());
-
+    int orderCount = 0;
+    for (APIBlockingList element in response.response!) {
+      int blockeduserID = element.blockeduser.userID;
       blockedList.add({
         blockeduserID: ListTile(
           leading: CircleAvatar(
             radius: 20,
             foregroundImage: CachedNetworkImageProvider(
-                response['icerik'][i]["engel_avatar"].toString()),
+              element.blockeduser.avatar.minURL,
+            ),
           ),
-          title: CustomText.costum1(
-              response['icerik'][i]["engel_kime"].toString()),
-          subtitle: Text(response['icerik'][i]["engel_kadi"].toString()),
+          title: CustomText.costum1(element.blockeduser.displayname),
+          subtitle: Text(element.blockeduser.username!),
           onTap: () {},
           trailing: ElevatedButton(
             style: const ButtonStyle(
@@ -98,7 +99,7 @@ class BlockedlistSettingsController extends GetxController {
               ),
             ),
             onPressed: () async {
-              removeblock(blockeduserID, i);
+              removeblock(blockeduserID, orderCount);
             },
             child: Text(
               BlockedListKeys.unblock.tr,
@@ -107,6 +108,7 @@ class BlockedlistSettingsController extends GetxController {
           ),
         ),
       });
+      orderCount++;
     }
     blockedProcces.value = false;
     isFirstProcces.value = false;

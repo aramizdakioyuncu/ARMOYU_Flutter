@@ -5,6 +5,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/media/media_fetch.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -84,13 +86,13 @@ class GalleryController extends GetxController
 
     MediaAPI funct =
         MediaAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await funct.upload(
+    MediaUploadResponse response = await funct.upload(
       files: mediaList.map((media) => media.mediaXFile!).toList(),
       category: "-1",
     );
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"].toString());
+    if (!response.result.status) {
+      log(response.result.description.toString());
       mediaUploadProcess.value = false;
       setstatefunction();
       return;
@@ -117,14 +119,14 @@ class GalleryController extends GetxController
     }
     ismediaProcces.value = true;
     MediaAPI f = MediaAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.fetch(
+    MediaFetchResponse response = await f.fetch(
       uyeID: currentUserAccounts.value.user.value.userID!,
       category: "",
       page: gallerycounter.value + 1,
     );
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       ismediaProcces.value = false;
       return;
     }
@@ -133,18 +135,17 @@ class GalleryController extends GetxController
       mediaGallery.clear();
     }
 
-    for (int i = 0; i < response["icerik"].length; i++) {
-      Map<String, dynamic> mediaInfo = response["icerik"][i];
+    for (APIMediaFetch element in response.response!) {
       mediaGallery.add(
         Media(
-          mediaID: mediaInfo["media_ID"],
-          ownerID: mediaInfo["media_ownerID"],
-          mediaType: mediaInfo["fotodosyatipi"],
-          mediaTime: mediaInfo["media_time"],
+          mediaID: element.media.mediaID,
+          ownerID: element.mediaOwner.userID,
+          mediaType: element.mediatype,
+          mediaTime: element.mediaDate,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(mediaInfo["fotoorijinalurl"]),
-            normalURL: Rx<String>(mediaInfo["fotoufaklikurl"]),
-            minURL: Rx<String>(mediaInfo["fotominnakurl"]),
+            bigURL: Rx<String>(element.media.mediaURL.bigURL),
+            normalURL: Rx<String>(element.media.mediaURL.normalURL),
+            minURL: Rx<String>(element.media.mediaURL.minURL),
           ),
         ),
       );

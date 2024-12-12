@@ -4,6 +4,10 @@ import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/school_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/school/school_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/station/station_detail.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -57,27 +61,21 @@ class SchoolLoginController extends GetxController {
     String? jobID = "123";
     String classPassword = schoolpassword.value.text;
 
-    Map<String, dynamic> response = await f.joinschool(
+    ServiceResult response = await f.joinschool(
       schoolID: schoolID!,
       classID: classID!,
       jobID: jobID,
       classPassword: classPassword,
     );
 
-    String gelenyanit = response["aciklama"];
-    // if (mounted) {
-    ARMOYUWidget.stackbarNotification(Get.context!, gelenyanit);
-    // }
+    String gelenyanit = response.description;
 
-    if (response["durum"] == 1) {
-      // if (mounted) {
-      // Navigator.of(context).pop();
+    ARMOYUWidget.stackbarNotification(Get.context!, gelenyanit);
+
+    if (response.status) {
       Get.back();
-      // }
     }
-    // setState(() {
     schoolProcess.value = false;
-    // });
   }
 
   var schoolpassword = TextEditingController().obs;
@@ -86,19 +84,20 @@ class SchoolLoginController extends GetxController {
 
   Future<void> getschools(List<Map<String, String>> listname) async {
     SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.getschools();
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    SchoolFetchListResponse response = await f.getschools();
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
     listname.clear();
     listname.add({'ID': "-1", 'value': "Okul Seç", 'logo': schoollogo.value});
-    for (dynamic element in response['icerik']) {
+
+    for (APISchoolList element in response.response!) {
       listname.add({
-        'ID': element["ID"].toString(),
-        'value': element["Value"],
-        'logo': element["okul_ufaklogo"]
+        'ID': element.schoolID.toString(),
+        'value': element.value,
+        'logo': element.schoolLogo.minURL
       });
     }
   }
@@ -107,10 +106,10 @@ class SchoolLoginController extends GetxController {
       String schoolID, List<Map<String, String>> listname) async {
     SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
 
-    log(schoolID);
-    Map<String, dynamic> response = await f.getschoolclass(schoolID: schoolID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    StationFetchDetailResponse response =
+        await f.getschoolclass(schoolID: schoolID);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
@@ -120,10 +119,10 @@ class SchoolLoginController extends GetxController {
       'value': "Sınıf Seç",
     });
 
-    for (dynamic element in response['icerik']) {
+    for (APIStationDetail element in response.response!) {
       listname.add({
-        'ID': element["ID"].toString(),
-        'value': element["Value"],
+        'ID': element.id.toString(),
+        'value': element.value,
       });
     }
   }

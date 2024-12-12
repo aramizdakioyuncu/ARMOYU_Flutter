@@ -3,6 +3,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:geolocator/geolocator.dart';
@@ -36,20 +37,20 @@ class PostshareController extends GetxController {
     postshareProccess.value = true;
     PostsAPI funct =
         PostsAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await funct.share(
+    PostShareResponse response = await funct.share(
       text: key.value.currentState!.controller!.text,
       files: media.map((media) => media.mediaXFile!).toList(),
       location: userLocation.value,
     );
-    if (response["durum"] == 0) {
-      postsharetext.value.text = response["aciklama"].toString();
+    if (!response.result.status) {
+      postsharetext.value.text = response.result.description.toString();
       postshareProccess.value = false;
 
       return;
     }
 
-    if (response["durum"] == 1) {
-      postsharetext.value.text = response["aciklama"].toString();
+    if (response.result.status) {
+      postsharetext.value.text = response.result.description.toString();
       postshareProccess.value = false;
 
       Get.back();

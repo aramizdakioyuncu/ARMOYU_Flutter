@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/modules/poll/poll_create/controllers/poll_create_controller.dart';
 import 'package:ARMOYU/app/services/API/survey_api.dart';
@@ -8,6 +8,7 @@ import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -248,15 +249,15 @@ class PollCreateView extends StatelessWidget {
                         in controller.controllers) {
                       values.add(element.text);
                     }
-                    Map<String, dynamic> response = await f.createSurvey(
+                    ServiceResult response = await f.createSurvey(
                       surveyQuestion:
                           controller.controllerSurveyQuestion.value.text,
                       options: values,
                       date: "$newDate ${controller.surveyTime}",
                     );
 
-                    if (response["durum"] == 0) {
-                      log(response["aciklama"]);
+                    if (!response.status) {
+                      log(response.description);
                       controller.poolproccess.value = false;
                       return;
                     }

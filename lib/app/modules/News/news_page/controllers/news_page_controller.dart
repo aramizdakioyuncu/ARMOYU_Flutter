@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/news_api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
 import 'package:html/parser.dart';
 
@@ -33,17 +34,16 @@ class NewsPageController extends GetxController {
     }
     newsfetchProcess.value = true;
     NewsAPI f = NewsAPI(currentUser: user.value!);
-    Map<String, dynamic> response =
-        await f.fetchnews(newsID: news.value!.newsID);
+    NewsFetchResponse response = await f.fetchnews(newsID: news.value!.newsID);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       newsfetchProcess.value = false;
       fetchnewscontent();
       return;
     }
 
-    news.value!.newsContent = response["icerik"]["yaziicerik"].toString();
+    news.value!.newsContent = response.response!.content!;
     var document = parse(news.value!.newsContent);
     news.value!.newsContent = document.outerHtml;
     newsfetchProcess.value = false;

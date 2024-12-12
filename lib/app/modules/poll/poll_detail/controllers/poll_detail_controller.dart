@@ -8,6 +8,10 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/API/survey_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/survey/survey_list.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
+import 'package:armoyu_services/core/models/ARMOYU/media.dart' as armoyumedia;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -47,13 +51,13 @@ class PollDetailController extends GetxController {
     SurveyAPI f = SurveyAPI(
       currentUser: currentUserAccounts.value.user.value,
     );
-    Map<String, dynamic> response = await f.answerSurvey(
+    ServiceResult response = await f.answerSurvey(
       surveyID: survey.value!.surveyID,
       optionID: int.parse(selectedOption.value.toString()),
     );
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.status) {
+      log(response.description);
       //Tekrar çekmeyi dene
       answerSurveyProccess.value = false;
       return;
@@ -66,68 +70,69 @@ class PollDetailController extends GetxController {
   Future<void> refreshSurvey() async {
     SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value.user.value);
 
-    Map<String, dynamic> response =
+    SurveyListResponse response =
         await f.fetchSurvey(surveyID: survey.value!.surveyID);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
     var surveyList = <Survey>[].obs;
-    for (var element in response["icerik"]) {
+
+    for (APISurveyList element in response.response!) {
       List<SurveyAnswer> surveyOptions = [];
       List<Media> surveyMedias = [];
-      for (var options in element["survey_options"]) {
+      for (var options in element.surveyOptions) {
         surveyOptions.add(
           SurveyAnswer(
-            answerID: options["option_ID"],
+            answerID: options.optionId,
             answerType: "answerType",
-            value: options["option_answer"],
-            percentage: double.parse(options["option_votingPercentage"]),
+            value: options.optionAnswer,
+            percentage: options.optionVotingPercentage,
           ),
         );
       }
-      for (var media in element["survey_media"]) {
+      for (armoyumedia.Media mediaelement in element.surveyMedia) {
         surveyMedias.add(
           Media(
-            mediaID: media["media_ID"],
+            mediaID: mediaelement.mediaID,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(media["media_bigURL"]),
-              normalURL: Rx<String>(media["media_URL"]),
-              minURL: Rx<String>(media["media_minURL"]),
+              bigURL: Rx<String>(mediaelement.mediaURL.bigURL),
+              normalURL: Rx<String>(mediaelement.mediaURL.normalURL),
+              minURL: Rx<String>(mediaelement.mediaURL.minURL),
             ),
           ),
         );
       }
       surveyList.add(
         Survey(
-          surveyID: element["survey_ID"],
+          surveyID: element.surveyId,
           surveyQuestion: SurveyQuestion(
-            questionValue: element["survey_question"],
+            questionValue: element.surveyQuestion,
             questionImages: surveyMedias,
           ),
           surveyOptions: surveyOptions,
           surveyOwner: User(
-            userID: element["survey_owner"]["owner_ID"],
-            displayName:
-                Rx<String>(element["survey_owner"]["owner_displayname"]),
+            userID: element.surveyOwner.ownerId,
+            displayName: Rx<String>(element.surveyOwner.ownerDisplayName),
             avatar: Media(
-              mediaID: element["survey_ID"],
+              mediaID: element.surveyId,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(element["survey_owner"]["owner_avatar"]),
-                normalURL: Rx<String>(element["survey_owner"]["owner_avatar"]),
-                minURL: Rx<String>(element["survey_owner"]["owner_avatar"]),
+                bigURL: Rx<String>(element.surveyOwner.ownerAvatar.bigURL),
+                normalURL:
+                    Rx<String>(element.surveyOwner.ownerAvatar.normalURL),
+                minURL: Rx<String>(element.surveyOwner.ownerAvatar.minURL),
               ),
             ),
           ),
-          surveyStatus: element["survey_status"] == 1 ? true : false,
-          surveyvotingPercentage: element["survey_votingPercentage"],
-          surveyvotingCount: element["survey_votingCount"],
-          didIVote: element["survey_didIVote"] == 1 ? true : false,
-          selectedOption: element["survey_selectedOption"],
-          surveyEndDate: element["survey_enddate"],
-          surveyRemainingTime: element["survey_remainingtime"],
+          surveyStatus: element.surveyStatus == 1 ? true : false,
+          surveyvotingPercentage: element.surveyVotingPercentage,
+          surveyvotingCount: element.surveyVotingCount,
+          didIVote: element.surveyDidIVote == 1 ? true : false,
+          selectedOption: element.surveySelectedOption,
+          surveyEndDate: element.surveyEndDate,
+          surveyRemainingTime: element.surveyRemainingTime,
         ),
       );
     }
@@ -141,11 +146,11 @@ class PollDetailController extends GetxController {
 
   Future<void> deleteSurvey() async {
     SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response =
+    ServiceResult response =
         await f.deleteSurvey(surveyID: survey.value!.surveyID);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.status) {
+      log(response.description);
       return;
     }
 

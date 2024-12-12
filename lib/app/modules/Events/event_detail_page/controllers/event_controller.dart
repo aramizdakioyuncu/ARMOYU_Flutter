@@ -10,6 +10,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/event_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
 
 class EventController extends GetxController {
@@ -73,46 +74,45 @@ class EventController extends GetxController {
     fetcheventdetailProcess.value = true;
 
     EventAPI f = EventAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.detailfetch(eventID: eventID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    EventDetailResponse response = await f.detailfetch(eventID: eventID);
+    if (!response.result.status) {
+      log(response.result.description);
       fetchParticipantProccess.value = false;
       return;
     }
 
     dlcList.clear();
-    for (var dlc in response["icerik"]["dlc"]) {
+    for (var element in response.response!.dlc) {
       dlcList.add(
         DLCInfo(
-          dlcID: dlc["dlc_ID"],
-          dlcname: dlc["dlc_name"],
-          dlcFile: dlc["dlc_file"],
+          dlcID: element["dlc_ID"],
+          dlcname: element["dlc_name"],
+          dlcFile: element["dlc_file"],
         ),
       );
     }
 
     fileList.clear();
-    for (var files in response["icerik"]["files"]) {
+    for (var element in response.response!.files) {
       fileList.add(
         FileInfo(
-          fileID: files["file_ID"],
-          fileType: files["file_type"],
-          fileName: files["file_name"],
-          fileURL: files["file_URL"],
+          fileID: element["file_ID"],
+          fileType: element["file_type"],
+          fileName: element["file_name"],
+          fileURL: element["file_URL"],
         ),
       );
     }
 
     detailList.clear();
-    for (var detail in response["icerik"]["detail"]) {
-      detail["detail_ID"];
-      if (detail["detail_name"] == "cekicilogo") {
-        eventdetailImage = Rx<String>(detail["detail_info"]);
+    for (var element in response.response!.detail) {
+      if (element["detail_name"] == "cekicilogo") {
+        eventdetailImage = Rx<String>(element["detail_info"]);
       }
       detailList.add(
         {
-          "name": detail["detail_name"],
-          "info": detail["detail_info"],
+          "name": element["detail_name"],
+          "info": element["detail_info"],
         },
       );
     }
@@ -124,9 +124,10 @@ class EventController extends GetxController {
     }
     fetchParticipantProccess.value = true;
     EventAPI f = EventAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.participantList(eventID: eventID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    EventParticipantResponse response =
+        await f.participantList(eventID: eventID);
+    if (!response.result.status) {
+      log(response.result.description);
       fetchParticipantProccess.value = false;
       return;
     }
@@ -136,73 +137,78 @@ class EventController extends GetxController {
 
     //Gruplu Katılımcılar
     int sayac = -1;
-    for (var element in response["icerik"]["participant_groups"]) {
+
+    for (var element in response.response!.groups) {
       sayac++;
 
       List<User> groupUsers = [];
-      for (var element2 in response["icerik"]["participant_groups"][sayac]
-          ["group_players"]) {
+
+      for (var element2 in response.response!.groups[sayac].groupPlayers) {
         groupUsers.add(
           User(
-            userID: element2["player_ID"],
-            displayName: element2["player_name"],
-            userName: element2["player_username"],
+            userID: element2.userID,
+            displayName: Rx<String>(element2.displayname),
+            userName: Rx<String>(element2.username!),
             avatar: Media(
-              mediaID: element2["player_ID"],
+              mediaID: element2.userID,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(element2["player_avatar"]),
-                normalURL: Rx<String>(element2["player_avatar"]),
-                minURL: Rx<String>(element2["player_avatar"]),
+                bigURL: Rx<String>(element2.avatar.bigURL),
+                normalURL: Rx<String>(element2.avatar.normalURL),
+                minURL: Rx<String>(element2.avatar.minURL),
               ),
             ),
             role: Role(
-                roleID: 0, name: element2["player_role"].toString(), color: ""),
+              roleID: 0,
+              name: element2.role.toString(),
+              color: "",
+            ),
           ),
         );
       }
 
       Group g = Group(
-        groupID: element["group_ID"],
+        groupID: element.groupID,
         groupLogo: Media(
-          mediaID: element["group_ID"],
+          mediaID: element.groupID,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(element["group_logo"]),
-            normalURL: Rx<String>(element["group_logo"]),
-            minURL: Rx<String>(element["group_logo"]),
+            bigURL: Rx<String>(element.groupLogo),
+            normalURL: Rx<String>(element.groupLogo),
+            minURL: Rx<String>(element.groupLogo),
           ),
         ),
         groupBanner: Media(
-          mediaID: element["group_ID"],
+          mediaID: element.groupID,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(element["group_banner"]),
-            normalURL: Rx<String>(element["group_banner"]),
-            minURL: Rx<String>(element["group_banner"]),
+            bigURL: Rx<String>(element.groupBanner),
+            normalURL: Rx<String>(element.groupBanner),
+            minURL: Rx<String>(element.groupBanner),
           ),
         ),
-        groupName: element["group_name"],
-        groupshortName: element["group_shortname"],
+        groupName: element.groupName,
+        groupshortName: element.groupShortname,
         groupUsers: groupUsers.obs,
       );
       groupParticipant.add(g);
     }
 
     //Bireysel Katılımcılar
-    for (var element in response["icerik"]["participant_players"]) {
-      if (element["player_ID"] == currentUser.value!) {
+
+    for (var element in response.response!.players) {
+      if (element.userID == currentUser.value!.userID) {
         didijoin.value = true;
       }
 
       userParticipant.add(
         User(
-          userID: element["player_ID"],
-          displayName: Rx<String>(element["player_name"]),
-          userName: Rx<String>(element["player_username"]),
+          userID: element.userID,
+          displayName: Rx<String>(element.displayname),
+          userName: Rx<String>(element.username!),
           avatar: Media(
-            mediaID: element["player_ID"],
+            mediaID: element.userID,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(element["player_avatar"]),
-              normalURL: Rx<String>(element["player_avatar"]),
-              minURL: Rx<String>(element["player_avatar"]),
+              bigURL: Rx<String>(element.avatar.bigURL),
+              normalURL: Rx<String>(element.avatar.normalURL),
+              minURL: Rx<String>(element.avatar.minURL),
             ),
           ),
         ),
@@ -225,10 +231,10 @@ class EventController extends GetxController {
     joineventProccess.value = true;
 
     EventAPI f = EventAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response =
+    EventJoinorLeaveResponse response =
         await f.joinOrleave(eventID: event.value!.eventID, status: true);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
@@ -240,10 +246,10 @@ class EventController extends GetxController {
     joineventProccess.value = true;
 
     EventAPI f = EventAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response =
+    EventJoinorLeaveResponse response =
         await f.joinOrleave(eventID: event.value!.eventID, status: false);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 

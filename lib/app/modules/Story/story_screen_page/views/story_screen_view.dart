@@ -1,7 +1,8 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/Story/story_screen_page/controllers/story_screen_controller.dart';
 import 'package:ARMOYU/app/services/API/story_api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -369,8 +370,7 @@ class StoryScreenView extends StatelessWidget {
                                                   StoryAPI funct = StoryAPI(
                                                       currentUser: controller
                                                           .currentUser.value!);
-                                                  Map<String, dynamic>
-                                                      response =
+                                                  ServiceResult response =
                                                       await funct.like(
                                                     storyID: controller
                                                         .storyList
@@ -378,8 +378,8 @@ class StoryScreenView extends StatelessWidget {
                                                         .story![index]
                                                         .storyID,
                                                   );
-                                                  if (response["durum"] == 0) {
-                                                    log(response["aciklama"]);
+                                                  if (!response.status) {
+                                                    log(response.description);
                                                     return;
                                                   }
 
@@ -395,8 +395,7 @@ class StoryScreenView extends StatelessWidget {
                                                     currentUser: controller
                                                         .currentUser.value!,
                                                   );
-                                                  Map<String, dynamic>
-                                                      response =
+                                                  ServiceResult response =
                                                       await funct.likeremove(
                                                     storyID: controller
                                                         .storyList
@@ -404,8 +403,8 @@ class StoryScreenView extends StatelessWidget {
                                                         .story![index]
                                                         .storyID,
                                                   );
-                                                  if (response["durum"] == 0) {
-                                                    log(response["aciklama"]);
+                                                  if (!response.status) {
+                                                    log(response.description);
                                                     return;
                                                   }
 

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/Social/like.dart';
@@ -11,6 +11,9 @@ import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/media.dart' as armoyumedia;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -27,22 +30,23 @@ class PostdetailController extends GetxController {
 
     PostsAPI funct =
         PostsAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await funct.commentsfetch(postID: postID);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    PostCommentsFetchResponse response =
+        await funct.commentsfetch(postID: postID);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
     listComments.clear();
 
-    for (int i = 0; i < response["icerik"].length; i++) {
-      String displayname = response["icerik"][i]["yorumcuadsoyad"].toString();
-      String avatar = response["icerik"][i]["yorumcuminnakavatar"].toString();
-      String text = response["icerik"][i]["yorumcuicerik"].toString();
-      int islike = response["icerik"][i]["benbegendim"];
-      int yorumID = response["icerik"][i]["yorumID"];
-      int userID = response["icerik"][i]["yorumcuid"];
-      int postID = response["icerik"][i]["paylasimID"];
-      int commentlikescount = response["icerik"][i]["yorumbegenisayi"];
+    for (var element in response.response!) {
+      String displayname = element.postcommenter.displayname.toString();
+      String avatar = element.postcommenter.avatar.toString();
+      String text = element.commentContent.toString();
+      bool islike = element.isLikedByMe;
+      int yorumID = element.commentID;
+      int userID = element.postcommenter.userID;
+      int postID = element.postID;
+      int commentlikescount = element.likeCount;
 
       listComments.add(
         WidgetPostComments(
@@ -50,7 +54,7 @@ class PostdetailController extends GetxController {
           comment: Comment(
             commentID: yorumID,
             content: text,
-            didIlike: islike == 1 ? true : false,
+            didIlike: islike,
             likeCount: commentlikescount,
             postID: postID,
             user: User(
@@ -84,13 +88,13 @@ class PostdetailController extends GetxController {
   Future<void> postdetailfetch() async {
     PostsAPI funct =
         PostsAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await funct.detailfetch(
+    PostFetchResponse response = await funct.detailfetch(
       postID: postID.value,
       category: "yorum",
       categoryDetail: commentID.value,
     );
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
@@ -98,100 +102,103 @@ class PostdetailController extends GetxController {
     List<Comment> comments = [];
     List<Like> likers = [];
 
-    getcommentsfetch(response["icerik"][0]["paylasimID"], listComments);
+    getcommentsfetch(response.response!.postID, listComments);
 
-    if (response["icerik"][0]["paylasimfoto"].length != 0) {
-      for (int j = 0; j < response["icerik"][0]["paylasimfoto"].length; j++) {
+    if (response.response!.media!.isNotEmpty) {
+      for (armoyumedia.Media element in response.response!.media!) {
         media.add(
           Media(
-            mediaID: response["icerik"][0]["paylasimfoto"][j]["fotoID"],
-            ownerID: response["icerik"][0]["sahipID"],
-            mediaType: response["icerik"][0]["paylasimfoto"][j]
-                ["paylasimkategori"],
-            mediaDirection: response["icerik"][0]["paylasimfoto"][j]
-                ["medyayonu"],
+            mediaID: element.mediaID,
+            ownerID: element.owner!.userID,
+            mediaType: element.mediaType,
+            mediaDirection: element.mediaDirection,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(
-                  response["icerik"][0]["paylasimfoto"][j]["fotourl"]),
-              normalURL: Rx<String>(
-                  response["icerik"][0]["paylasimfoto"][j]["fotoufakurl"]),
-              minURL: Rx<String>(
-                  response["icerik"][0]["paylasimfoto"][j]["fotominnakurl"]),
+              bigURL: Rx<String>(element.mediaURL.bigURL),
+              normalURL: Rx<String>(element.mediaURL.normalURL),
+              minURL: Rx<String>(element.mediaURL.minURL),
             ),
           ),
         );
       }
     }
 
-    for (var firstthreelike in response["icerik"][0]["paylasimilkucbegenen"]) {
+    for (APIPostLiker firstthreelike in response.response!.firstlikers!) {
       likers.add(
         Like(
-            likeID: firstthreelike["begeni_ID"],
-            user: User(
-              userID: firstthreelike["ID"],
-              displayName: Rx<String>(firstthreelike["adsoyad"]),
-              userName: Rx<String>(firstthreelike["kullaniciadi"]),
-              avatar: Media(
-                mediaID: firstthreelike["ID"],
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(firstthreelike["avatar"]),
-                  normalURL: Rx<String>(firstthreelike["avatar"]),
-                  minURL: Rx<String>(firstthreelike["avatar"]),
-                ),
+          likeID: firstthreelike.postlikeID,
+          user: User(
+            userID: firstthreelike.likerID,
+            displayName: Rx<String>(firstthreelike.likerdisplayname),
+            userName: Rx<String>(firstthreelike.likerusername),
+            avatar: Media(
+              mediaID: firstthreelike.likerID,
+              mediaURL: MediaURL(
+                bigURL: Rx<String>(firstthreelike.likeravatar.bigURL),
+                normalURL: Rx<String>(firstthreelike.likeravatar.normalURL),
+                minURL: Rx<String>(firstthreelike.likeravatar.minURL),
               ),
             ),
-            date: firstthreelike["begeni_zaman"]),
+          ),
+          date: firstthreelike.likedate,
+        ),
       );
     }
 
-    for (var firstthreecomment in response["icerik"][0]["ilkucyorum"]) {
+    for (APIPostComments firstthreecomment
+        in response.response!.firstcomments!) {
       comments.add(
         Comment(
-            commentID: firstthreecomment["yorumID"],
-            postID: firstthreecomment["paylasimID"],
-            user: User(
-              userID: firstthreecomment["yorumcuid"],
-              displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
-              avatar: Media(
-                mediaID: firstthreecomment["yorumcuid"],
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(firstthreecomment["yorumcuavatar"]),
-                  normalURL: Rx<String>(firstthreecomment["yorumcuufakavatar"]),
-                  minURL: Rx<String>(firstthreecomment["yorumcuminnakavatar"]),
-                ),
+          commentID: firstthreecomment.commentID,
+          postID: firstthreecomment.postID,
+          user: User(
+            userID: firstthreecomment.postcommenter.userID,
+            displayName:
+                Rx<String>(firstthreecomment.postcommenter.displayname),
+            avatar: Media(
+              mediaID: firstthreecomment.postcommenter.userID,
+              mediaURL: MediaURL(
+                bigURL:
+                    Rx<String>(firstthreecomment.postcommenter.avatar.bigURL),
+                normalURL: Rx<String>(
+                    firstthreecomment.postcommenter.avatar.normalURL),
+                minURL:
+                    Rx<String>(firstthreecomment.postcommenter.avatar.minURL),
               ),
             ),
-            content: firstthreecomment["yorumcuicerik"],
-            likeCount: firstthreecomment["yorumbegenisayi"],
-            didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
-            date: firstthreecomment["yorumcuzamangecen"]),
+          ),
+          content: firstthreecomment.commentContent,
+          likeCount: firstthreecomment.likeCount,
+          didIlike: firstthreecomment.isLikedByMe ? true : false,
+          date: firstthreecomment.commentTime,
+        ),
       );
     }
     Post post = Post(
-      postID: response["icerik"][0]["paylasimID"],
-      content: response["icerik"][0]["paylasimicerik"],
-      postDate: response["icerik"][0]["paylasimzamangecen"],
-      sharedDevice: response["icerik"][0]["paylasimnereden"],
-      likesCount: response["icerik"][0]["begenisay"],
-      isLikeme: response["icerik"][0]["benbegendim"] == 1 ? true : false,
-      commentsCount: response["icerik"][0]["yorumsay"],
-      iscommentMe: response["icerik"][0]["benyorumladim"] == 1 ? true : false,
+      postID: response.response!.postID,
+      content: response.response!.content,
+      postDate: response.response!.date,
+      sharedDevice: response.response!.postdevice,
+      likesCount: response.response!.likeCount,
+      isLikeme: response.response!.likeCount == 1 ? true : false,
+      commentsCount: response.response!.commentCount,
+      iscommentMe: response.response!.didicommentit == 1 ? true : false,
       media: media,
       owner: User(
-        userID: response["icerik"][0]["sahipID"],
-        userName: Rx<String>(response["icerik"][0]["sahipad"]),
+        userID: response.response!.postOwner.ownerID,
+        userName: Rx<String>(response.response!.postOwner.displayName),
         avatar: Media(
-          mediaID: response["icerik"][0]["sahipID"],
+          mediaID: response.response!.postOwner.ownerID,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(response["icerik"][0]["sahipavatarminnak"]),
-            normalURL: Rx<String>(response["icerik"][0]["sahipavatarminnak"]),
-            minURL: Rx<String>(response["icerik"][0]["sahipavatarminnak"]),
+            bigURL: Rx<String>(response.response!.postOwner.avatar.bigURL),
+            normalURL:
+                Rx<String>(response.response!.postOwner.avatar.normalURL),
+            minURL: Rx<String>(response.response!.postOwner.avatar.minURL),
           ),
         ),
       ),
       firstthreecomment: comments,
       firstthreelike: likers,
-      location: response["icerik"][0]["paylasimkonum"],
+      location: response.response!.location,
     );
     widget.value = TwitterPostWidget(
       currentUserAccounts: currentUserAccounts.value,

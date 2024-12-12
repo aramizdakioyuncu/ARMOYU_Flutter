@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:developer';
 
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -5,6 +7,8 @@ import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/profile/profile_friendlist.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -84,12 +88,12 @@ class ChatNewController extends GetxController {
     }
 
     ProfileAPI f = ProfileAPI(currentUser: currentUser.value!);
-    Map<String, dynamic> response = await f.friendlist(
+    ProfileFriendListResponse response = await f.friendlist(
       userID: currentUser.value!.userID!,
       page: chatnewpage.value,
     );
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       chatFriendsprocess.value = false;
       await getchatfriendlist();
       return;
@@ -100,7 +104,8 @@ class ChatNewController extends GetxController {
 
       currentUser.value!.myFriends = <User>[].obs;
     }
-    if (response["icerik"].length == 0) {
+
+    if (response.response!.isEmpty) {
       log("Sohbet Arkadaşlarım Sayfa Sonu");
 
       chatFriendsprocess.value = true;
@@ -108,29 +113,26 @@ class ChatNewController extends GetxController {
 
       return;
     }
-    for (int i = 0; i < response["icerik"].length; i++) {
+
+    for (APIProfileFriendlist element in response.response!) {
       currentUser.value!.myFriends!.add(
         User(
-          userID: response["icerik"][i]["oyuncuID"],
-          userName: Rx<String>(response["icerik"][i]["oyuncukullaniciad"]),
-          displayName: Rx<String>(response["icerik"][i]["oyuncuad"]),
-          status: response["icerik"][i]["oyuncudurum"] == 1 ? true : false,
-          level: response["icerik"][i]["oyunculevel"],
-          lastlogin: response["icerik"][i]["songiris"] != null
-              ? Rx<String>(response["icerik"][i]["songiris"])
-              : null,
-          lastloginv2: response["icerik"][i]["songiris"] != null
-              ? Rx<String>(response["icerik"][i]["songiris"])
-              : null,
-          ismyFriend: response["icerik"][i]["oyuncuarkadasdurum"] == 1
-              ? true.obs
-              : false.obs,
+          userID: element.playerID,
+          userName: Rx<String>(element.username),
+          displayName: Rx<String>(element.displayName),
+          status: element.status == 1 ? true : false,
+          level: Rx<int>(element.level),
+          lastlogin:
+              element.lastLogin != null ? Rx<String>(element.lastLogin) : null,
+          lastloginv2:
+              element.lastLogin != null ? Rx<String>(element.lastLogin) : null,
+          ismyFriend: element.friendshipStatus == 1 ? true.obs : false.obs,
           avatar: Media(
-            mediaID: response["icerik"][i]["oyuncuID"],
+            mediaID: 0,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(response["icerik"][i]["oyuncuavatar"]),
-              normalURL: Rx<String>(response["icerik"][i]["oyuncufakavatar"]),
-              minURL: Rx<String>(response["icerik"][i]["oyuncuminnakavatar"]),
+              bigURL: Rx<String>(element.avatar.bigURL),
+              normalURL: Rx<String>(element.avatar.normalURL),
+              minURL: Rx<String>(element.avatar.minURL),
             ),
           ),
         ),

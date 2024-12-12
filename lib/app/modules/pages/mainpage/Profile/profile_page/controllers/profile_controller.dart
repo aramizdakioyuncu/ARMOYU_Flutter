@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/ARMOYU.dart';
+import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -23,6 +23,12 @@ import 'package:ARMOYU/app/widgets/detectabletext.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/login.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/media/media_fetch.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
+import 'package:armoyu_services/core/models/ARMOYU/media.dart' as armoyumedia;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -174,13 +180,13 @@ class ProfileController extends GetxController
     BlockingAPI f =
         BlockingAPI(currentUser: currentUserAccounts.value.user.value);
 
-    Map<String, dynamic> response =
+    BlockingAddResponse response =
         await f.add(userID: userProfile.value.userID!);
 
-    ARMOYUWidget.toastNotification(response["aciklama"]);
+    ARMOYUWidget.toastNotification(response.result.description);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
   }
@@ -199,10 +205,10 @@ class ProfileController extends GetxController
     FunctionService f = FunctionService(
       currentUser: currentUserAccounts.value.user.value,
     );
-    Map<String, dynamic> response =
+    PostFetchListResponse response =
         await f.getprofilePosts(page, userID, category);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
 
       postsfetchproccess.value = false;
 
@@ -211,119 +217,120 @@ class ProfileController extends GetxController
 
     list.value ??= [];
 
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       postsfetchproccess.value = false;
       return;
     }
-
-    for (int i = 0; i < response["icerik"].length; i++) {
+    for (APIPostList element in response.response!) {
       var media = <Media>[].obs;
       var comments = <Comment>[].obs;
       var likers = <Like>[].obs;
 
-      if (response["icerik"][i]["paylasimfoto"].length != 0) {
-        for (var mediaInfo in response["icerik"][i]["paylasimfoto"]) {
+      if (element.media!.isNotEmpty) {
+        for (armoyumedia.Media mediaInfo in element.media!) {
           media.add(
             Media(
-              mediaID: mediaInfo["fotoID"],
-              ownerID: response["icerik"][i]["sahipID"],
-              mediaType: mediaInfo["paylasimkategori"],
-              mediaDirection: mediaInfo["medyayonu"],
+              mediaID: mediaInfo.mediaID,
+              ownerID: element.postOwner.ownerID,
+              mediaType: mediaInfo.mediaType,
+              mediaDirection: mediaInfo.mediaDirection,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(mediaInfo["fotourl"]),
-                normalURL: Rx<String>(mediaInfo["fotoufakurl"]),
-                minURL: Rx<String>(mediaInfo["fotominnakurl"]),
+                bigURL: Rx<String>(mediaInfo.mediaURL.bigURL),
+                normalURL: Rx<String>(mediaInfo.mediaURL.normalURL),
+                minURL: Rx<String>(mediaInfo.mediaURL.minURL),
               ),
             ),
           );
         }
       }
-      for (var firstthreelike in response["icerik"][i]
-          ["paylasimilkucbegenen"]) {
+
+      for (APIPostLiker liker in element.firstlikers!) {
         likers.add(
           Like(
-              likeID: firstthreelike["begeni_ID"],
-              user: User(
-                userID: firstthreelike["ID"],
-                displayName: Rx<String>(firstthreelike["adsoyad"]),
-                userName: Rx<String>(firstthreelike["kullaniciadi"]),
-                avatar: Media(
-                  mediaID: firstthreelike["ID"],
-                  mediaURL: MediaURL(
-                    bigURL: Rx<String>(firstthreelike["avatar"]),
-                    normalURL: Rx<String>(firstthreelike["avatar"]),
-                    minURL: Rx<String>(firstthreelike["avatar"]),
-                  ),
+            likeID: liker.postlikeID,
+            user: User(
+              userID: liker.likerID,
+              displayName: Rx<String>(liker.likerdisplayname),
+              userName: Rx<String>(liker.likerusername),
+              avatar: Media(
+                mediaID: liker.likerID,
+                mediaURL: MediaURL(
+                  bigURL: Rx<String>(liker.likeravatar.bigURL),
+                  normalURL: Rx<String>(liker.likeravatar.normalURL),
+                  minURL: Rx<String>(liker.likeravatar.minURL),
                 ),
               ),
-              date: firstthreelike["begeni_zaman"]),
+            ),
+            date: liker.likedate,
+          ),
         );
       }
-      for (var firstthreecomment in response["icerik"][i]["ilkucyorum"]) {
+
+      for (var commenter in element.firstcomments!) {
         comments.add(
           Comment(
-              commentID: firstthreecomment["yorumID"],
-              postID: firstthreecomment["paylasimID"],
-              user: User(
-                userID: firstthreecomment["yorumcuid"],
-                displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
-                avatar: Media(
-                  mediaID: firstthreecomment["yorumcuid"],
-                  mediaURL: MediaURL(
-                    bigURL: Rx<String>(firstthreecomment["yorumcuavatar"]),
-                    normalURL:
-                        Rx<String>(firstthreecomment["yorumcuufakavatar"]),
-                    minURL:
-                        Rx<String>(firstthreecomment["yorumcuminnakavatar"]),
-                  ),
+            commentID: commenter.commentID,
+            postID: commenter.postID,
+            user: User(
+              userID: commenter.postcommenter.userID,
+              displayName: Rx<String>(commenter.postcommenter.displayname),
+              avatar: Media(
+                mediaID: commenter.postcommenter.userID,
+                mediaURL: MediaURL(
+                  bigURL: Rx<String>(commenter.postcommenter.avatar.bigURL),
+                  normalURL:
+                      Rx<String>(commenter.postcommenter.avatar.normalURL),
+                  minURL: Rx<String>(commenter.postcommenter.avatar.minURL),
                 ),
               ),
-              content: firstthreecomment["yorumcuicerik"],
-              likeCount: firstthreecomment["yorumbegenisayi"],
-              didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
-              date: firstthreecomment["yorumcuzamangecen"]),
+            ),
+            content: commenter.commentContent,
+            likeCount: commenter.likeCount,
+            didIlike: commenter.isLikedByMe ? true : false,
+            date: commenter.commentElapsedTime,
+          ),
         );
       }
 
       bool ismelike = false;
-      if (response["icerik"][i]["benbegendim"] == 1) {
+      if (element.didilikeit == 1) {
         ismelike = true;
       } else {
         ismelike = false;
       }
       bool ismecomment = false;
 
-      if (response["icerik"][i]["benyorumladim"] == 1) {
+      if (element.didicommentit == 1) {
         ismecomment = true;
       } else {
         ismecomment = false;
       }
       Post post = Post(
-          postID: response["icerik"][i]["paylasimID"],
-          content: response["icerik"][i]["paylasimicerik"],
-          postDate: response["icerik"][i]["paylasimzamangecen"],
-          sharedDevice: response["icerik"][i]["paylasimnereden"],
-          likesCount: response["icerik"][i]["begenisay"],
-          isLikeme: ismelike,
-          commentsCount: response["icerik"][i]["yorumsay"],
-          iscommentMe: ismecomment,
-          media: media,
-          owner: User(
-            userID: response["icerik"][i]["sahipID"],
-            userName: Rx<String>(response["icerik"][i]["sahipad"]),
-            avatar: Media(
-              mediaID: response["icerik"][i]["sahipID"],
-              mediaURL: MediaURL(
-                bigURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
-                normalURL:
-                    Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
-                minURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
-              ),
+        postID: element.postID,
+        content: element.content,
+        postDate: element.date,
+        sharedDevice: element.postdevice,
+        likesCount: element.likeCount,
+        isLikeme: ismelike,
+        commentsCount: element.commentCount,
+        iscommentMe: ismecomment,
+        media: media,
+        owner: User(
+          userID: element.postOwner.ownerID,
+          userName: Rx<String>(element.postOwner.displayName),
+          avatar: Media(
+            mediaID: element.postOwner.ownerID,
+            mediaURL: MediaURL(
+              bigURL: Rx<String>(element.postOwner.avatar.bigURL),
+              normalURL: Rx<String>(element.postOwner.avatar.normalURL),
+              minURL: Rx<String>(element.postOwner.avatar.minURL),
             ),
           ),
-          firstthreecomment: comments,
-          firstthreelike: likers,
-          location: response["icerik"][i]["paylasimkonum"]);
+        ),
+        firstthreecomment: comments,
+        firstthreelike: likers,
+        location: element.location,
+      );
 
       list.value!.add(
         TwitterPostWidget(
@@ -347,17 +354,17 @@ class ProfileController extends GetxController
 
     MediaAPI f = MediaAPI(currentUser: currentUserAccounts.value.user.value);
 
-    Map<String, dynamic> response =
+    MediaFetchResponse response =
         await f.fetch(uyeID: userID, category: "-1", page: page);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       return;
     }
 
     medialist.value ??= [];
 
-    if (response["icerik"].length == 0) {
+    if (response.response!.isEmpty) {
       log("Sayfa Sonu");
       galleryproccess.value = false;
       return;
@@ -366,19 +373,20 @@ class ProfileController extends GetxController
     if (page == 1) {
       medialist.value = [];
     }
-    for (int i = 0; i < response["icerik"].length; i++) {
+
+    for (APIMediaFetch element in response.response!) {
       medialist.value!.add(
         Media(
-          mediaID: response["icerik"][i]["media_ID"],
-          ownerID: response["icerik"][i]["media_ownerID"],
-          ownerusername: response["icerik"][i]["media_ownerusername"],
-          owneravatar: response["icerik"][i]["media_owneravatar"],
-          mediaTime: response["icerik"][i]["media_time"],
-          mediaType: response["icerik"][i]["fotodosyatipi"],
+          mediaID: element.media.mediaID,
+          ownerID: element.mediaOwner.userID,
+          ownerusername: element.mediaOwner.displayname,
+          owneravatar: element.mediaOwner.avatar.minURL,
+          mediaTime: element.mediaDate,
+          mediaType: element.mediatype,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(response["icerik"][i]["fotoorijinalurl"]),
-            normalURL: Rx<String>(response["icerik"][i]["fotoufaklikurl"]),
-            minURL: Rx<String>(response["icerik"][i]["fotominnakurl"]),
+            bigURL: Rx<String>(element.media.mediaURL.bigURL),
+            normalURL: Rx<String>(element.media.mediaURL.normalURL),
+            minURL: Rx<String>(element.media.mediaURL.minURL),
           ),
         ),
       );
@@ -398,124 +406,129 @@ class ProfileController extends GetxController
     FunctionService f = FunctionService(
       currentUser: currentUserAccounts.value.user.value,
     );
-    Map<String, dynamic> response =
+    PostFetchListResponse response =
         await f.getprofilePosts(page, userID, category);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       postsfetchProccessv2.value = false;
       return;
     }
 
     list.value ??= [];
-    if (response["icerik"].length == 0) {
-      postsfetchProccessv2.value = false;
+
+    if (response.response!.isEmpty) {
+      postsfetchproccess.value = false;
       return;
     }
-    for (int i = 0; i < response["icerik"].length; i++) {
+    for (APIPostList element in response.response!) {
       var media = <Media>[].obs;
       var comments = <Comment>[].obs;
       var likers = <Like>[].obs;
-      if (response["icerik"][i]["paylasimfoto"].length != 0) {
-        for (var mediaInfo in response["icerik"][i]["paylasimfoto"]) {
+
+      if (element.media!.isNotEmpty) {
+        for (armoyumedia.Media mediaInfo in element.media!) {
           media.add(
             Media(
-              mediaID: mediaInfo["fotoID"],
-              ownerID: response["icerik"][i]["sahipID"],
-              mediaType: mediaInfo["paylasimkategori"],
-              mediaDirection: mediaInfo["medyayonu"],
+              mediaID: mediaInfo.mediaID,
+              ownerID: element.postOwner.ownerID,
+              mediaType: mediaInfo.mediaType,
+              mediaDirection: mediaInfo.mediaDirection,
               mediaURL: MediaURL(
-                bigURL: Rx<String>(mediaInfo["fotoufakurl"]),
-                normalURL: Rx<String>(mediaInfo["fotominnakurl"]),
-                minURL: Rx<String>(mediaInfo["fotominnakurl"]),
+                bigURL: Rx<String>(mediaInfo.mediaURL.bigURL),
+                normalURL: Rx<String>(mediaInfo.mediaURL.normalURL),
+                minURL: Rx<String>(mediaInfo.mediaURL.minURL),
               ),
             ),
           );
         }
       }
-      for (var firstthreelike in response["icerik"][i]
-          ["paylasimilkucbegenen"]) {
+
+      for (APIPostLiker liker in element.firstlikers!) {
         likers.add(
           Like(
-              likeID: firstthreelike["begeni_ID"],
-              user: User(
-                userID: firstthreelike["ID"],
-                displayName: Rx<String>(firstthreelike["adsoyad"]),
-                userName: Rx<String>(firstthreelike["kullaniciadi"]),
-                avatar: Media(
-                  mediaID: firstthreelike["ID"],
-                  mediaURL: MediaURL(
-                    bigURL: Rx<String>(firstthreelike["avatar"]),
-                    normalURL: Rx<String>(firstthreelike["avatar"]),
-                    minURL: Rx<String>(firstthreelike["avatar"]),
-                  ),
+            likeID: liker.postlikeID,
+            user: User(
+              userID: liker.likerID,
+              displayName: Rx<String>(liker.likerdisplayname),
+              userName: Rx<String>(liker.likerusername),
+              avatar: Media(
+                mediaID: liker.likerID,
+                mediaURL: MediaURL(
+                  bigURL: Rx<String>(liker.likeravatar.bigURL),
+                  normalURL: Rx<String>(liker.likeravatar.normalURL),
+                  minURL: Rx<String>(liker.likeravatar.minURL),
                 ),
               ),
-              date: firstthreelike["begeni_zaman"]),
+            ),
+            date: liker.likedate,
+          ),
         );
       }
-      for (var firstthreecomment in response["icerik"][i]["ilkucyorum"]) {
+
+      for (var commenter in element.firstcomments!) {
         comments.add(
           Comment(
-              commentID: firstthreecomment["yorumID"],
-              postID: firstthreecomment["paylasimID"],
-              user: User(
-                userID: firstthreecomment["yorumcuid"],
-                displayName: Rx<String>(firstthreecomment["yorumcuadsoyad"]),
-                avatar: Media(
-                  mediaID: firstthreecomment["yorumcuid"],
-                  mediaURL: MediaURL(
-                    bigURL: Rx<String>(firstthreecomment["yorumcuavatar"]),
-                    normalURL:
-                        Rx<String>(firstthreecomment["yorumcuufakavatar"]),
-                    minURL:
-                        Rx<String>(firstthreecomment["yorumcuminnakavatar"]),
-                  ),
+            commentID: commenter.commentID,
+            postID: commenter.postID,
+            user: User(
+              userID: commenter.postcommenter.userID,
+              displayName: Rx<String>(commenter.postcommenter.displayname),
+              avatar: Media(
+                mediaID: commenter.postcommenter.userID,
+                mediaURL: MediaURL(
+                  bigURL: Rx<String>(commenter.postcommenter.avatar.bigURL),
+                  normalURL:
+                      Rx<String>(commenter.postcommenter.avatar.normalURL),
+                  minURL: Rx<String>(commenter.postcommenter.avatar.minURL),
                 ),
               ),
-              content: firstthreecomment["yorumcuicerik"],
-              likeCount: firstthreecomment["yorumbegenisayi"],
-              didIlike: firstthreecomment["benbegendim"] == 1 ? true : false,
-              date: firstthreecomment["yorumcuzamangecen"]),
+            ),
+            content: commenter.commentContent,
+            likeCount: commenter.likeCount,
+            didIlike: commenter.isLikedByMe ? true : false,
+            date: commenter.commentElapsedTime,
+          ),
         );
       }
+
       bool ismelike = false;
-      if (response["icerik"][i]["benbegendim"] == 1) {
+      if (element.didilikeit == 1) {
         ismelike = true;
       } else {
         ismelike = false;
       }
       bool ismecomment = false;
 
-      if (response["icerik"][i]["benyorumladim"] == 1) {
+      if (element.didicommentit == 1) {
         ismecomment = true;
       } else {
         ismecomment = false;
       }
       Post post = Post(
-        postID: response["icerik"][i]["paylasimID"],
-        content: response["icerik"][i]["paylasimicerik"],
-        postDate: response["icerik"][i]["paylasimzamangecen"],
-        sharedDevice: response["icerik"][i]["paylasimnereden"],
-        likesCount: response["icerik"][i]["begenisay"],
+        postID: element.postID,
+        content: element.content,
+        postDate: element.date,
+        sharedDevice: element.postdevice,
+        likesCount: element.likeCount,
         isLikeme: ismelike,
-        commentsCount: response["icerik"][i]["yorumsay"],
+        commentsCount: element.commentCount,
         iscommentMe: ismecomment,
         media: media,
         owner: User(
-          userID: response["icerik"][i]["sahipID"],
-          userName: Rx<String>(response["icerik"][i]["sahipad"]),
+          userID: element.postOwner.ownerID,
+          userName: Rx<String>(element.postOwner.displayName),
           avatar: Media(
-            mediaID: response["icerik"][i]["sahipID"],
+            mediaID: element.postOwner.ownerID,
             mediaURL: MediaURL(
-              bigURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
-              normalURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
-              minURL: Rx<String>(response["icerik"][i]["sahipavatarminnak"]),
+              bigURL: Rx<String>(element.postOwner.avatar.bigURL),
+              normalURL: Rx<String>(element.postOwner.avatar.normalURL),
+              minURL: Rx<String>(element.postOwner.avatar.minURL),
             ),
           ),
         ),
         firstthreecomment: comments,
         firstthreelike: likers,
-        location: response["icerik"][i]["paylasimkonum"],
+        location: element.location,
       );
 
       list.value!.add(
@@ -537,41 +550,47 @@ class ProfileController extends GetxController
         FunctionService f =
             FunctionService(currentUser: currentUserAccounts.value.user.value);
 
-        Map<String, dynamic> response =
+        LookProfileResponse response =
             await f.lookProfile(currentUserAccounts.value.user.value.userID!);
-        userProfile.value = ARMOYUFunctions.userfetch(response["icerik"]);
+
+        if (!response.result.status) {
+          log("Oyuncu bulunamadı");
+          return;
+          // test();
+        }
+
+        userProfile.value = ARMOYUFunctions.userfetch(response.response!);
       } else {
         userProfile.value = currentUserAccounts.value.user.value;
       }
     } else {
-      Map<String, dynamic> response = {};
+      LookProfileResponse response;
       if (profileUser.value!.userName != null) {
         log("->>kullanıcıadına  göre oyuncu bul!");
 
         FunctionService f =
             FunctionService(currentUser: currentUserAccounts.value.user.value);
 
-        Map<String, dynamic> response = await f.lookProfilewithusername(
-          profileUser.value!.userName!.value,
-        );
+        LookProfilewithUsernameResponse response =
+            await f.lookProfilewithusername(profileUser.value!.userName!.value);
 
-        if (response["durum"] == 0) {
+        if (!response.result.status) {
           log("Oyuncu bulunamadı");
           return;
         }
 
-        if (response["aciklama"] == "Oyuncu bilgileri yanlış!") {
+        if (response.result.description == "Oyuncu bilgileri yanlış!") {
           return;
         }
         //Kullanıcı adında birisi var
-        Map<String, dynamic> oyuncubilgi = response["icerik"];
+        APILogin oyuncubilgi = response.response!;
 
         userProfile.value = ARMOYUFunctions.userfetch(oyuncubilgi);
 
-        if (oyuncubilgi["arkadasdurum"] == "1") {
+        if (oyuncubilgi.arkadasdurum == "1") {
           isFriend.value = true;
           isbeFriend.value = false;
-        } else if (oyuncubilgi["arkadasdurum"] == "2") {
+        } else if (oyuncubilgi.arkadasdurum == "2") {
           isFriend.value = false;
           isbeFriend.value = false;
         } else {
@@ -581,32 +600,35 @@ class ProfileController extends GetxController
         listFriendTOP3.clear();
         friendTextLine.value = "";
 
-        for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
-          if (i < 2) {
-            if (i == 0) {
+        int countorder = 0;
+
+        for (var userfriendSummary in oyuncubilgi.ortakarkadasliste!) {
+          if (countorder < 2) {
+            if (countorder == 0) {
               friendTextLine.value +=
-                  "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                  "@${userfriendSummary.oyuncuKullaniciAdi} ";
             } else {
-              if (oyuncubilgi["ortakarkadasliste"].length == 2) {
+              if (oyuncubilgi.ortakarkadasliste!.length == 2) {
                 friendTextLine.value +=
-                    "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                    "ve @${userfriendSummary.oyuncuKullaniciAdi} ";
               } else {
                 friendTextLine.value +=
-                    ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                    ", @${userfriendSummary.oyuncuKullaniciAdi} ";
               }
             }
           }
-          listFriendTOP3
-              .add(oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
+          listFriendTOP3.add(userfriendSummary.oyuncuMinnakAvatar);
+
+          countorder++;
         }
 
-        if (oyuncubilgi["ortakarkadasliste"].length > 2) {
-          int mutualFriend = oyuncubilgi["ortakarkadaslar"] - 2;
+        if (oyuncubilgi.ortakarkadasliste!.length > 2) {
+          int mutualFriend = oyuncubilgi.ortakarkadaslar! - 2;
           friendTextLine.value +=
               "ve ${mutualFriend.toString()} diğer kişi ile arkadaş";
-        } else if (oyuncubilgi["ortakarkadasliste"].length == 2) {
+        } else if (oyuncubilgi.ortakarkadasliste!.length == 2) {
           friendTextLine.value += " ile arkadaş";
-        } else if (oyuncubilgi["ortakarkadasliste"].length == 1) {
+        } else if (oyuncubilgi.ortakarkadasliste!.length == 1) {
           friendTextLine.value += " ile arkadaş";
         }
         ///////
@@ -615,19 +637,19 @@ class ProfileController extends GetxController
         FunctionService f =
             FunctionService(currentUser: currentUserAccounts.value.user.value);
         response = await f.lookProfile(profileUser.value!.userID!);
-        if (response["durum"] == 0) {
+        if (!response.result.status) {
           log("Oyuncu bulunamadı");
           return;
         }
 
-        Map<String, dynamic> oyuncubilgi = response["icerik"];
+        APILogin oyuncubilgi = response.response!;
 
         userProfile.value = ARMOYUFunctions.userfetch(oyuncubilgi);
 
-        if (oyuncubilgi["arkadasdurum"] == "1") {
+        if (oyuncubilgi.arkadasdurum == "1") {
           isFriend.value = true;
           isbeFriend.value = false;
-        } else if (oyuncubilgi["arkadasdurum"] == "2") {
+        } else if (oyuncubilgi.arkadasdurum == "2") {
           isFriend.value = false;
           isbeFriend.value = false;
         } else {
@@ -637,32 +659,35 @@ class ProfileController extends GetxController
 
         listFriendTOP3.clear();
         friendTextLine.value = "";
-        for (int i = 0; i < oyuncubilgi["ortakarkadasliste"].length; i++) {
-          if (i < 2) {
-            if (i == 0) {
+        int countorder = 0;
+
+        for (var userfriendSummary in oyuncubilgi.ortakarkadasliste!) {
+          if (countorder < 2) {
+            if (countorder == 0) {
               friendTextLine.value +=
-                  "@${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                  "@${userfriendSummary.oyuncuKullaniciAdi} ";
             } else {
-              if (oyuncubilgi["ortakarkadasliste"].length == 2) {
+              if (oyuncubilgi.ortakarkadasliste!.length == 2) {
                 friendTextLine.value +=
-                    "ve @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]}";
+                    "ve @${userfriendSummary.oyuncuKullaniciAdi} ";
               } else {
                 friendTextLine.value +=
-                    ", @${oyuncubilgi["ortakarkadasliste"][i]["oyuncukullaniciadi"]} ";
+                    ", @${userfriendSummary.oyuncuKullaniciAdi} ";
               }
             }
           }
-          listFriendTOP3
-              .add(oyuncubilgi["ortakarkadasliste"][i]["oyuncuminnakavatar"]);
+          listFriendTOP3.add(userfriendSummary.oyuncuMinnakAvatar);
+
+          countorder++;
         }
 
-        if (oyuncubilgi["ortakarkadasliste"].length > 2) {
-          int mutualFriend = oyuncubilgi["ortakarkadaslar"] - 2;
+        if (oyuncubilgi.ortakarkadasliste!.length > 2) {
+          int mutualFriend = oyuncubilgi.ortakarkadaslar! - 2;
           friendTextLine.value +=
               "ve ${mutualFriend.toString()} diğer kişi ile arkadaş";
-        } else if (oyuncubilgi["ortakarkadasliste"].length == 2) {
+        } else if (oyuncubilgi.ortakarkadasliste!.length == 2) {
           friendTextLine.value += " ile arkadaş";
-        } else if (oyuncubilgi["ortakarkadasliste"].length == 1) {
+        } else if (oyuncubilgi.ortakarkadasliste!.length == 1) {
           friendTextLine.value += " ile arkadaş";
         }
         /////
@@ -745,10 +770,10 @@ class ProfileController extends GetxController
     ProfileAPI f = ProfileAPI(
       currentUser: currentUserAccounts.value.user.value,
     );
-    Map<String, dynamic> response = await f.defaultavatar();
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"]);
+    ServiceResult response = await f.defaultavatar();
+    if (!response.status) {
+      log(response.description);
+      ARMOYUWidget.toastNotification(response.description);
       changeavatarStatus.value = false;
 
       return;
@@ -757,18 +782,18 @@ class ProfileController extends GetxController
     currentUserAccounts.value.user.value.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.descriptiondetail.toString()),
+        minURL: Rx<String>(response.descriptiondetail.toString()),
       ),
     );
 
     userProfile.value.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.descriptiondetail.toString()),
+        minURL: Rx<String>(response.descriptiondetail.toString()),
       ),
     );
 
@@ -787,10 +812,10 @@ class ProfileController extends GetxController
 
     ProfileAPI f =
         ProfileAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response = await f.defaultavatar();
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"]);
+    ServiceResult response = await f.defaultavatar();
+    if (!response.status) {
+      log(response.description);
+      ARMOYUWidget.toastNotification(response.description);
       changebannerStatus.value = false;
 
       return;
@@ -799,18 +824,18 @@ class ProfileController extends GetxController
     currentUserAccounts.value.user.value.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.descriptiondetail.toString()),
+        minURL: Rx<String>(response.descriptiondetail.toString()),
       ),
     );
 
     userProfile.value.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.descriptiondetail.toString()),
+        minURL: Rx<String>(response.descriptiondetail.toString()),
       ),
     );
 
@@ -840,10 +865,10 @@ class ProfileController extends GetxController
         ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
-    Map<String, dynamic> response = await f.changeavatar(files: imagePath);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"]);
+    ServiceResult response = await f.changeavatar(files: imagePath);
+    if (!response.status) {
+      log(response.description);
+      ARMOYUWidget.toastNotification(response.description);
       changeavatarStatus.value = false;
 
       return;
@@ -852,9 +877,9 @@ class ProfileController extends GetxController
     currentUserAccounts.value.user.value.avatar = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.descriptiondetail.toString()),
+        minURL: Rx<String>(response.descriptiondetail.toString()),
       ),
     );
     changeavatarStatus.value = false;
@@ -885,10 +910,10 @@ class ProfileController extends GetxController
         ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
-    Map<String, dynamic> response = await f.changebanner(files: imagePath);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      ARMOYUWidget.toastNotification(response["aciklama"]);
+    ServiceResult response = await f.changebanner(files: imagePath);
+    if (!response.status) {
+      log(response.description);
+      ARMOYUWidget.toastNotification(response.description);
 
       changebannerStatus.value = false;
 
@@ -897,9 +922,9 @@ class ProfileController extends GetxController
     currentUserAccounts.value.user.value.banner = Media(
       mediaID: 1000000,
       mediaURL: MediaURL(
-        bigURL: Rx<String>(response["aciklamadetay"].toString()),
-        normalURL: Rx<String>(response["aciklamadetay"].toString()),
-        minURL: Rx<String>(response["aciklamadetay"].toString()),
+        bigURL: Rx<String>(response.descriptiondetail.toString()),
+        normalURL: Rx<String>(response.descriptiondetail.toString()),
+        minURL: Rx<String>(response.descriptiondetail.toString()),
       ),
     );
 
@@ -911,11 +936,11 @@ class ProfileController extends GetxController
   Future<void> friendrequest() async {
     ProfileAPI f =
         ProfileAPI(currentUser: currentUserAccounts.value.user.value);
-    Map<String, dynamic> response =
+    ServiceResult response =
         await f.friendrequest(userID: userProfile.value.userID!);
 
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.status) {
+      log(response.description);
       return;
     }
 
@@ -1818,11 +1843,11 @@ class ProfileController extends GetxController
                         ProfileAPI f = ProfileAPI(
                           currentUser: currentUserAccounts.value.user.value,
                         );
-                        Map<String, dynamic> response = await f.friendremove(
+                        ServiceResult response = await f.friendremove(
                           userID: userProfile.value.userID!,
                         );
-                        if (response["durum"] == 0) {
-                          log(response["aciklama"]);
+                        if (!response.status) {
+                          log(response.description);
                           return;
                         }
                       },
@@ -1843,13 +1868,13 @@ class ProfileController extends GetxController
                         ProfileAPI f = ProfileAPI(
                           currentUser: currentUserAccounts.value.user.value,
                         );
-                        Map<String, dynamic> response = await f.userdurting(
+                        ServiceResult response = await f.userdurting(
                           userID: userProfile.value.userID!,
                         );
-                        if (response["durum"] == 0) {
-                          log(response["aciklama"]);
+                        if (!response.status) {
+                          log(response.description);
                           ARMOYUWidget.toastNotification(
-                              response["aciklama"].toString());
+                              response.description.toString());
                           return;
                         }
                       },

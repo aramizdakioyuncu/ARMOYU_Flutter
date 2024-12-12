@@ -7,6 +7,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -39,11 +40,11 @@ class _WidgetPostComments extends State<WidgetPostComments> {
 
     PostsAPI funct =
         PostsAPI(currentUser: widget.currentUserAccounts.user.value);
-    Map<String, dynamic> response =
+    PostRemoveCommentResponse response =
         await funct.removecomment(commentID: widget.comment.commentID);
-    ARMOYUWidget.toastNotification(response["aciklama"].toString());
+    ARMOYUWidget.toastNotification(response.result.description.toString());
 
-    if (response["durum"] == 0) {
+    if (!response.result.status) {
       isvisiblecomment = true;
       return;
     }
@@ -60,21 +61,34 @@ class _WidgetPostComments extends State<WidgetPostComments> {
     }
     PostsAPI funct =
         PostsAPI(currentUser: widget.currentUserAccounts.user.value);
-    Map<String, dynamic> response;
     if (!widget.comment.didIlike) {
-      response = await funct.commentunlike(commentID: widget.comment.commentID);
-    } else {
-      response = await funct.commentlike(commentID: widget.comment.commentID);
-    }
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
-      if (currentstatus) {
-        widget.comment.likeCount--;
-      } else {
-        widget.comment.likeCount++;
+      PostCommentUnLikeResponse response =
+          await funct.commentunlike(commentID: widget.comment.commentID);
+
+      if (!response.result.status) {
+        log(response.result.description);
+        if (currentstatus) {
+          widget.comment.likeCount--;
+        } else {
+          widget.comment.likeCount++;
+        }
+        widget.comment.didIlike = !widget.comment.didIlike;
+        return;
       }
-      widget.comment.didIlike = !widget.comment.didIlike;
-      return;
+    } else {
+      PostCommentLikeResponse response =
+          await funct.commentlike(commentID: widget.comment.commentID);
+
+      if (!response.result.status) {
+        log(response.result.description);
+        if (currentstatus) {
+          widget.comment.likeCount--;
+        } else {
+          widget.comment.likeCount++;
+        }
+        widget.comment.didIlike = !widget.comment.didIlike;
+        return;
+      }
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:ARMOYU/app/data/models/Camera/camfilter.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -282,11 +283,11 @@ class CamController extends GetxController {
     savemediaProcess.value = true;
 
     MediaAPI f = MediaAPI(currentUser: user.value!);
-    Map<String, dynamic> response = await f.upload(
+    MediaUploadResponse response = await f.upload(
         category: "-1",
         files: [camfilter[filterpage.value].media!.mediaXFile!]);
-    if (response["durum"] == 0) {
-      log(response["aciklama"]);
+    if (!response.result.status) {
+      log(response.result.description);
       savemediaProcess.value = false;
       camfilter[filterpage.value].loadingStatus = false;
 
