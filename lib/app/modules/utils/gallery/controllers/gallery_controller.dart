@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/media/media_fetch.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -27,7 +27,12 @@ class GalleryController extends GetxController
   var assets = <AssetEntity>[].obs;
   var memorymedia = <Media>[].obs;
   var thumbnailmemorymedia = <Media>[].obs;
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+    ),
+  );
 
   @override
   void onInit() {
@@ -84,9 +89,7 @@ class GalleryController extends GetxController
     mediaUploadProcess.value = true;
     setstatefunction();
 
-    MediaAPI funct =
-        MediaAPI(currentUser: currentUserAccounts.value.user.value);
-    MediaUploadResponse response = await funct.upload(
+    MediaUploadResponse response = await API.service.mediaServices.upload(
       files: mediaList.map((media) => media.mediaXFile!).toList(),
       category: "-1",
     );
@@ -118,8 +121,8 @@ class GalleryController extends GetxController
       gallerycounter.value = 0;
     }
     ismediaProcces.value = true;
-    MediaAPI f = MediaAPI(currentUser: currentUserAccounts.value.user.value);
-    MediaFetchResponse response = await f.fetch(
+
+    MediaFetchResponse response = await API.service.mediaServices.fetch(
       uyeID: currentUserAccounts.value.user.value.userID!,
       category: "",
       page: gallerycounter.value + 1,

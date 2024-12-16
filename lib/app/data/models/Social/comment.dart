@@ -1,7 +1,7 @@
 import 'dart:developer';
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
@@ -62,9 +62,9 @@ class Comment {
       return;
     }
     likeunlikeProcces = true;
-    PostsAPI funct = PostsAPI(currentUser: currentUser);
+
     PostCommentLikeResponse response =
-        await funct.commentlike(commentID: commentID);
+        await API.service.postsServices.commentlike(commentID: commentID);
     if (!response.result.status) {
       log(response.result.description);
       likeunlikeProcces = false;
@@ -84,9 +84,8 @@ class Comment {
     }
     likeunlikeProcces = true;
 
-    PostsAPI funct = PostsAPI(currentUser: currentUser);
     PostCommentUnLikeResponse response =
-        await funct.commentunlike(commentID: commentID);
+        await API.service.postsServices.commentunlike(commentID: commentID);
     if (!response.result.status) {
       log(response.result.description);
       likeunlikeProcces = false;

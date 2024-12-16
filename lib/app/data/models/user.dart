@@ -20,7 +20,6 @@ class User {
   Rx<String>? userName = "0".obs;
   Rx<String>? firstName = "".obs;
   Rx<String>? lastName = "".obs;
-  Rx<String>? password = "0".obs;
   Rx<String>? displayName = "".obs;
   Media? avatar;
   Media? banner;
@@ -76,7 +75,6 @@ class User {
   User({
     this.userID,
     this.userName,
-    this.password,
     this.firstName,
     this.lastName,
     this.displayName,
@@ -125,8 +123,6 @@ class User {
           json['firstname'] == null ? null : (json['firstname'] as String).obs,
       lastName:
           json['lastname'] == null ? null : (json['lastname'] as String).obs,
-      password:
-          json['password'] == null ? null : (json['password'] as String).obs,
       displayName: json['displayname'] == null
           ? null
           : (json['displayname'] as String).obs,
@@ -223,7 +219,6 @@ class User {
       'username': userName?.value,
       'firstname': firstName?.value,
       'lastname': lastName?.value,
-      'password': password?.value,
       'displayname': displayName?.value,
       'aboutme': aboutme?.value,
       'level': level?.value,
@@ -279,7 +274,6 @@ class User {
       targetUser.firstName = firstName;
     }
     if (lastName != null) targetUser.lastName = lastName;
-    if (password != null) targetUser.password = password;
     if (displayName != null) {
       targetUser.displayName = displayName;
     }

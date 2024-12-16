@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 
 class UserAccounts {
   Rx<User> user;
+  Rx<String> sessionTOKEN;
   //Sosyal KISIM
   List<Post>? widgetPosts;
   List<StoryList>? widgetStoriescard;
@@ -44,6 +45,7 @@ class UserAccounts {
 
   UserAccounts({
     required this.user,
+    required this.sessionTOKEN,
     this.widgetPosts,
     this.widgetStoriescard,
     this.widgettaggedPosts,
@@ -84,6 +86,7 @@ class UserAccounts {
   Map<String, dynamic> toJson() {
     return {
       'user': user.value.toJson(),
+      'sessionTOKEN': sessionTOKEN.value,
       'widgetPosts': widgetPosts?.map((post) => post.toJson()).toList(),
       'widgetStoriescard':
           widgetStoriescard?.map((story) => story.toJson()).toList(),
@@ -119,6 +122,7 @@ class UserAccounts {
   factory UserAccounts.fromJson(Map<String, dynamic> json) {
     return UserAccounts(
       user: User.fromJson(json['user']).obs,
+      sessionTOKEN: Rx(json['sessionTOKEN']),
       widgetPosts: (json['widgetPosts'] as List<dynamic>?)
           ?.map((post) => Post.fromJson(post))
           .toList(),

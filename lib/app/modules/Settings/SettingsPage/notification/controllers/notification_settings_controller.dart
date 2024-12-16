@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/notification_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
@@ -26,7 +26,8 @@ class NotificationsettingsController extends GetxController {
   var firstfetchnotifi = false.obs;
 
   var settingsNotification = <String>[].obs;
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   @override
   void onInit() {
@@ -49,9 +50,8 @@ class NotificationsettingsController extends GetxController {
 
     firstfetchnotifi.value = true;
 
-    NotificationAPI f =
-        NotificationAPI(currentUser: currentUserAccounts.value.user.value);
-    NotificationSettingsResponse response = await f.listNotificationSettings();
+    NotificationSettingsResponse response =
+        await API.service.notificationServices.listNotificationSettings();
 
     if (!response.result.status) {
       log(response.result.description);
@@ -98,10 +98,9 @@ class NotificationsettingsController extends GetxController {
     settingsNotification.add("aramalar=${notifiCalling!.value ? 1 : 0}");
     settingsNotification.add("bahsetmeler=${notifiMention!.value ? 1 : 0}");
 
-    NotificationAPI f =
-        NotificationAPI(currentUser: currentUserAccounts.value.user.value);
-    NotificationSettingsUpdateResponse response =
-        await f.updateNotificationSettings(options: settingsNotification);
+    NotificationSettingsUpdateResponse response = await API
+        .service.notificationServices
+        .updateNotificationSettings(options: settingsNotification);
 
     if (!response.result.status) {
       log(response.result.description);

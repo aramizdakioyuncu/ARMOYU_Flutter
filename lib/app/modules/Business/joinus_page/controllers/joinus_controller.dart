@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/joinus_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/joinus/joinus_permission_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -70,9 +70,8 @@ class JoinusController extends GetxController {
     }
     requestProccess.value = true;
 
-    JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
     JoinUsRequestJoinDepartmentResponse response =
-        await f.requestjoindepartment(
+        await API.service.joinusServices.requestjoindepartment(
       positionID: positionID.value!,
       whyjoin: whyjointheteamController.value.text,
       whyposition: whypositionController.value.text,
@@ -92,8 +91,8 @@ class JoinusController extends GetxController {
   }
 
   Future<void> fetchdepartmentInfo() async {
-    JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
-    JoinUsFetchDepartmentsResponse response = await f.fetchdepartment();
+    JoinUsFetchDepartmentsResponse response =
+        await API.service.joinusServices.fetchdepartment();
 
     if (!response.result.status) {
       log(response.result.description);

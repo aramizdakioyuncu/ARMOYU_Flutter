@@ -77,9 +77,8 @@ class AccountsettingsView extends StatelessWidget {
                   ARMOYUWidget.showConfirmationDialog(
                     context,
                     accept: () async {
-                      Map<String, dynamic> result = await FunctionService(
-                        currentUser: controller.user.value!,
-                      ).logOut(controller.user.value!.userID!);
+                      Map<String, dynamic> result = await FunctionService()
+                          .logOut(controller.user.value!.userID!);
 
                       if (result['durum'] == 1) {
                         ARMOYUWidget.toastNotification(

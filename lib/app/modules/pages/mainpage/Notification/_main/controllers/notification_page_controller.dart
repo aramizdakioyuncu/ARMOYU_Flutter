@@ -70,8 +70,7 @@ class NotificationPageController extends GetxController {
     }
     notificationProccess.value = true;
 
-    FunctionService f =
-        FunctionService(currentUser: currentUserAccounts.user.value);
+    FunctionService f = FunctionService();
     NotificationListResponse response =
         await f.getnotifications("", "", page.value);
     if (!response.result.status) {

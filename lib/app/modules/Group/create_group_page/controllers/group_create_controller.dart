@@ -1,9 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/category_api.dart';
-import 'package:ARMOYU/app/services/API/group_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/category/category.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -50,8 +49,8 @@ class GroupCreateController extends GetxController {
 
   Future<void> groupcreaterequest(
       String category, List<Map<String, String>> listname) async {
-    CategoryAPI f = CategoryAPI(currentUser: user.value!);
-    CategoryResponse response = await f.category(categoryID: category);
+    CategoryResponse response =
+        await API.service.categoryServices.category(categoryID: category);
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -69,8 +68,8 @@ class GroupCreateController extends GetxController {
 
   Future<void> groupdetailfetch(
       String data, List<Map<String, String>> listname) async {
-    CategoryAPI f = CategoryAPI(currentUser: user.value!);
-    CategoryResponse response = await f.categorydetail(categoryID: data);
+    CategoryResponse response =
+        await API.service.categoryServices.categorydetail(categoryID: data);
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -91,8 +90,7 @@ class GroupCreateController extends GetxController {
     }
     groupcreateProcess.value = true;
 
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupCreateResponse response = await f.groupcreate(
+    GroupCreateResponse response = await API.service.groupServices.groupcreate(
       grupadi: groupname.value.text,
       kisaltmaadi: groupshortname.value.text,
       grupkategori: selectedcupertinolist.value,

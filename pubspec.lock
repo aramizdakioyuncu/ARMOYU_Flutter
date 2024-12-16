@@ -13,10 +13,10 @@ packages:
     dependency: "direct main"
     description:
       name: armoyu_services
-      sha256: "26f01e317a94c12fccd1e51b3d5fcb2079e04f2d21021e8babc62870b6778e33"
+      sha256: f460c662a99b1ddbefc035a6b4594cdd181b0a31d3e22cb007c1a59196a99b54
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+29"
+    version: "1.0.0+31"
   armoyu_widgets:
     dependency: "direct main"
     description:

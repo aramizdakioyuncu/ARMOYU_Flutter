@@ -19,7 +19,8 @@ class GrouprequestController extends GetxController {
 
   var scrollController = ScrollController().obs;
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   @override
   void onInit() {
@@ -68,8 +69,7 @@ class GrouprequestController extends GetxController {
     if (page == 1) {
       widgetNotifications.clear();
     }
-    FunctionService f =
-        FunctionService(currentUser: currentUserAccounts.value.user.value);
+    FunctionService f = FunctionService();
     NotificationListResponse response =
         await f.getnotifications("gruplar", "davet", page);
 

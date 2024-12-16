@@ -7,7 +7,6 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
-import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +58,7 @@ class LoginPageController extends GetxController {
   }
 
   Future<void> logOutFunction(User loggoutAccount) async {
-    FunctionService f = FunctionService(currentUser: currentUser.value!);
+    FunctionService f = FunctionService();
     Map<String, dynamic> response = await f.logOut(loggoutAccount.userID!);
 
     if (response["durum"] == 0) {
@@ -69,7 +68,7 @@ class LoginPageController extends GetxController {
     }
   }
 
-  Future<void> login({required User currentUser}) async {
+  Future<void> login() async {
     if (loginProcess.value) {
       return;
     }
@@ -85,8 +84,9 @@ class LoginPageController extends GetxController {
 
     loginProcess.value = true;
 
+    //2.Hesap Ekle
     if (accountAdd.value) {
-      FunctionService f = FunctionService(currentUser: currentUser);
+      FunctionService f = FunctionService();
       LoginResponse response = await f.adduserAccount(username, password);
 
       if (!response.result.status ||
@@ -110,8 +110,8 @@ class LoginPageController extends GetxController {
       return;
     }
 
-    FunctionService f = FunctionService(currentUser: currentUser);
-    LoginResponse response = await f.login(username, password, false);
+    FunctionService f = FunctionService();
+    LoginResponse response = await f.login(username, password);
 
     if (!response.result.status ||
         response.result.description == "Oyuncu bilgileri yanlış!") {
@@ -125,20 +125,23 @@ class LoginPageController extends GetxController {
       return;
     }
 
-    // User newUser = User.fromJson(response.response!);
-
     User newUser = ARMOYUFunctions.userfetch(response.response!);
 
-    log(newUser.userID.toString());
+    log("Barrierrrr _>>>${response.result.description}");
 
     usernameController.value.text = "";
     passwordController.value.text = "";
 
     loginProcess.value = false;
 
-    accountController.changeUser(UserAccounts(user: newUser.obs));
+    accountController.changeUser(
+      UserAccounts(
+        user: newUser.obs,
+        sessionTOKEN: Rx(response.result.description),
+      ),
+    );
 
-    Get.off(() => const AppPageView(), arguments: {
+    Get.offAndToNamed("/app", arguments: {
       'currentUserAccounts': ARMOYU.appUsers,
     });
   }

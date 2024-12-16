@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/school_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/school/school_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/station/station_detail.dart';
@@ -55,14 +55,14 @@ class SchoolLoginController extends GetxController {
       return;
     }
     schoolProcess.value = true;
-    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
+
     String? schoolID = cupertinolist[selectedcupertinolist.value]["ID"];
     String? classID = cupertinolist2[selectedcupertinolist2.value]["ID"];
     String? jobID = "123";
     String classPassword = schoolpassword.value.text;
 
-    ServiceResult response = await f.joinschool(
-      schoolID: schoolID!,
+    ServiceResult response = await API.service.schoolServices.joinWorkstation(
+      workstationID: schoolID!,
       classID: classID!,
       jobID: jobID,
       classPassword: classPassword,
@@ -83,8 +83,8 @@ class SchoolLoginController extends GetxController {
   Future<void> handleRefresh() async {}
 
   Future<void> getschools(List<Map<String, String>> listname) async {
-    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
-    SchoolFetchListResponse response = await f.getschools();
+    SchoolFetchListResponse response =
+        await API.service.schoolServices.getschools();
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -104,10 +104,8 @@ class SchoolLoginController extends GetxController {
 
   Future<void> getschoolclass(
       String schoolID, List<Map<String, String>> listname) async {
-    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
-
-    StationFetchDetailResponse response =
-        await f.getschoolclass(schoolID: schoolID);
+    StationFetchDetailResponse response = await API.service.schoolServices
+        .fetchWorkstationDetail(workStationID: schoolID);
     if (!response.result.status) {
       log(response.result.description);
       return;

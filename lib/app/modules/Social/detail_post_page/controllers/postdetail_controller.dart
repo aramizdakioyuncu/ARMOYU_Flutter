@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Social/comment.dart';
@@ -7,7 +8,6 @@ import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
@@ -28,10 +28,8 @@ class PostdetailController extends GetxController {
       const CupertinoActivityIndicator(),
     );
 
-    PostsAPI funct =
-        PostsAPI(currentUser: currentUserAccounts.value.user.value);
     PostCommentsFetchResponse response =
-        await funct.commentsfetch(postID: postID);
+        await API.service.postsServices.commentsfetch(postID: postID);
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -86,9 +84,7 @@ class PostdetailController extends GetxController {
 
   var widget = Rx<Widget?>(null);
   Future<void> postdetailfetch() async {
-    PostsAPI funct =
-        PostsAPI(currentUser: currentUserAccounts.value.user.value);
-    PostFetchResponse response = await funct.detailfetch(
+    PostFetchResponse response = await API.service.postsServices.detailfetch(
       postID: postID.value,
       category: "yorum",
       categoryDetail: commentID.value,
@@ -206,7 +202,8 @@ class PostdetailController extends GetxController {
     );
   }
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
   var postID = Rx<int?>(null);
   var commentID = Rx<int?>(null);
   @override

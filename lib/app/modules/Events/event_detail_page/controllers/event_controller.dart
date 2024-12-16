@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/dlc.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
@@ -8,7 +9,6 @@ import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/event_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
@@ -73,8 +73,8 @@ class EventController extends GetxController {
     }
     fetcheventdetailProcess.value = true;
 
-    EventAPI f = EventAPI(currentUser: currentUser.value!);
-    EventDetailResponse response = await f.detailfetch(eventID: eventID);
+    EventDetailResponse response =
+        await API.service.eventServices.detailfetch(eventID: eventID);
     if (!response.result.status) {
       log(response.result.description);
       fetchParticipantProccess.value = false;
@@ -123,9 +123,9 @@ class EventController extends GetxController {
       return;
     }
     fetchParticipantProccess.value = true;
-    EventAPI f = EventAPI(currentUser: currentUser.value!);
+
     EventParticipantResponse response =
-        await f.participantList(eventID: eventID);
+        await API.service.eventServices.participantList(eventID: eventID);
     if (!response.result.status) {
       log(response.result.description);
       fetchParticipantProccess.value = false;
@@ -230,9 +230,8 @@ class EventController extends GetxController {
 
     joineventProccess.value = true;
 
-    EventAPI f = EventAPI(currentUser: currentUser.value!);
-    EventJoinorLeaveResponse response =
-        await f.joinOrleave(eventID: event.value!.eventID, status: true);
+    EventJoinorLeaveResponse response = await API.service.eventServices
+        .joinOrleave(eventID: event.value!.eventID, status: true);
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -245,9 +244,8 @@ class EventController extends GetxController {
   Future<void> leaveevent() async {
     joineventProccess.value = true;
 
-    EventAPI f = EventAPI(currentUser: currentUser.value!);
-    EventJoinorLeaveResponse response =
-        await f.joinOrleave(eventID: event.value!.eventID, status: false);
+    EventJoinorLeaveResponse response = await API.service.eventServices
+        .joinOrleave(eventID: event.value!.eventID, status: false);
     if (!response.result.status) {
       log(response.result.description);
       return;

@@ -68,12 +68,12 @@ class AppPageController extends GetxController {
   }
 
   Future<void> fetchChangedprofiledata(User user) async {
-    FunctionService f = FunctionService(currentUser: user);
+    FunctionService f = FunctionService();
 
     try {
       User? userInfo = await f.fetchUserInfo(userID: user.userID!);
       if (userInfo != null) {
-        userInfo.password = user.password;
+        // userInfo.sesssionTOKEN = user.sesssionTOKEN;
         userInfo.updateUser(targetUser: user);
       } else {
         log("Kullanıcı bilgileri alınamadı.");

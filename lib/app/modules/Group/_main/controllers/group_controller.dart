@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/group_api.dart';
-import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:camera/camera.dart';
@@ -105,10 +104,12 @@ class GroupController extends GetxController {
     }
 
     inviteuserStatus.value = true;
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupUserInviteResponse response = await f.userInvite(
-        groupID: group.value!.groupID!,
-        userList: selectedUsers.map((user) => user.userName!.value).toList());
+
+    GroupUserInviteResponse response = await API.service.groupServices
+        .groupuserInvite(
+            groupID: group.value!.groupID!,
+            userList:
+                selectedUsers.map((user) => user.userName!.value).toList());
 
     ARMOYUWidget.toastNotification(response.result.description.toString());
 
@@ -131,9 +132,9 @@ class GroupController extends GetxController {
       return;
     }
     groupProcces.value = true;
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupDetailResponse response =
-        await f.groupFetch(grupID: group.value!.groupID!);
+
+    GroupDetailResponse response = await API.service.groupServices
+        .groupFetch(grupID: group.value!.groupID!);
     if (!response.result.status) {
       log(response.result.description.toString());
       groupProcces.value = false;
@@ -193,9 +194,8 @@ class GroupController extends GetxController {
     }
     groupusersfetchProcces.value = true;
 
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupUsersResponse response =
-        await f.groupusersFetch(grupID: group.value!.groupID!);
+    GroupUsersResponse response = await API.service.groupServices
+        .groupusersFetch(grupID: group.value!.groupID!);
     if (!response.result.status) {
       log(response.result.description.toString());
       groupProcces.value = false;
@@ -231,8 +231,8 @@ class GroupController extends GetxController {
   }
 
   Future<void> removeuserfromgroup(index) async {
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupUserKickResponse response = await f.userRemove(
+    GroupUserKickResponse response =
+        await API.service.groupServices.groupuserRemove(
       groupID: group.value!.groupID!,
       userID: group.value!.groupUsers![index].userID!,
     );
@@ -253,8 +253,8 @@ class GroupController extends GetxController {
     }
     groupdetailSaveproccess.value = true;
 
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupSettingsResponse response = await f.groupsettingsSave(
+    GroupSettingsResponse response =
+        await API.service.groupServices.groupsettingsSave(
       grupID: group.value!.groupID!,
       groupName: groupname.value.text,
       groupshortName: groupshortname.value.text,
@@ -315,13 +315,14 @@ class GroupController extends GetxController {
       changegrouplogoStatus.value = false;
       return;
     }
-    GroupAPI f = GroupAPI(currentUser: user.value!);
+
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
 
     log(group.value!.groupID.toString());
-    GroupChangeMediaResponse response = await f.changegroupmedia(
-        files: imagePath, groupID: group.value!.groupID!, category: "logo");
+    GroupChangeMediaResponse response = await API.service.groupServices
+        .changegroupmedia(
+            files: imagePath, groupID: group.value!.groupID!, category: "logo");
 
     ARMOYUWidget.toastNotification(response.result.description);
 
@@ -380,12 +381,15 @@ class GroupController extends GetxController {
 
       return;
     }
-    GroupAPI f = GroupAPI(currentUser: user.value!);
+
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
 
-    GroupChangeMediaResponse response = await f.changegroupmedia(
-        files: imagePath, groupID: group.value!.groupID!, category: "banner");
+    GroupChangeMediaResponse response = await API.service.groupServices
+        .changegroupmedia(
+            files: imagePath,
+            groupID: group.value!.groupID!,
+            category: "banner");
 
     ARMOYUWidget.toastNotification(response.result.description);
 
@@ -454,9 +458,9 @@ class GroupController extends GetxController {
       if (text != controller.text) {
         return;
       }
-      SearchAPI f = SearchAPI(currentUser: user.value!);
+
       SearchListResponse response =
-          await f.onlyusers(searchword: text, page: 1);
+          await API.service.searchServices.onlyusers(searchword: text, page: 1);
       if (!response.result.status) {
         log(response.result.description);
         return;
@@ -494,8 +498,8 @@ class GroupController extends GetxController {
   }
 
   Future<void> leavegroup() async {
-    GroupAPI f = GroupAPI(currentUser: user.value!);
-    GroupLeaveResponse response = await f.leave(grupID: group.value!.groupID!);
+    GroupLeaveResponse response = await API.service.groupServices
+        .groupLeave(grupID: group.value!.groupID!);
     if (!response.result.status) {
       ARMOYUWidget.toastNotification(response.result.description.toString());
       return;

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/joinus_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/joinus/joinus_list.dart';
@@ -39,9 +39,9 @@ class ApplicationsController extends GetxController {
       return;
     }
     requestProccess.value = true;
-    JoinusAPI f = JoinusAPI(currentUser: currentUser.value!);
+
     JoinUsApplicationsResponse response =
-        await f.applicationList(page: page.value);
+        await API.service.joinusServices.applicationList(page: page.value);
 
     if (!response.result.status) {
       log(response.result.description.toString());

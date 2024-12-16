@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/news_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/news/news_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -55,8 +55,9 @@ class ListNewsController extends GetxController {
     }
 
     eventlistProcces.value = true;
-    NewsAPI function = NewsAPI(currentUser: user.value!);
-    NewsListResponse response = await function.fetch(page: newspage.value);
+
+    NewsListResponse response =
+        await API.service.newsServices.fetch(page: newspage.value);
     if (!response.result.status) {
       log(response.result.description);
       eventlistProcces.value = false;

@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/services/API/news_api.dart';
-import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -67,8 +66,8 @@ class SearchPageController extends GetxController {
       return;
     }
     eventlistProcces.value = true;
-    NewsAPI f = NewsAPI(currentUser: currentUserAccounts.user.value);
-    NewsListResponse response = await f.fetch(page: 1);
+
+    NewsListResponse response = await API.service.newsServices.fetch(page: 1);
     if (!response.result.status) {
       ARMOYUWidget.toastNotification(response.result.description.toString());
       eventlistProcces.value = false;
@@ -138,9 +137,9 @@ class SearchPageController extends GetxController {
       if (text != controller.text) {
         return;
       }
-      SearchAPI f = SearchAPI(currentUser: currentUserAccounts.user.value);
-      SearchListResponse response =
-          await f.searchengine(searchword: text, page: 1);
+
+      SearchListResponse response = await API.service.searchServices
+          .searchengine(searchword: text, page: 1);
       if (!response.result.status) {
         log(response.result.description);
         return;

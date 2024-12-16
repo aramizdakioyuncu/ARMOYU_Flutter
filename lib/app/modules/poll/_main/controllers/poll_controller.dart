@@ -1,12 +1,12 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Survey/answer.dart';
 import 'package:ARMOYU/app/data/models/Survey/question.dart';
 import 'package:ARMOYU/app/data/models/Survey/survey.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/survey_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/survey/survey_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -61,10 +61,8 @@ class PollController extends GetxController {
 
     surveyListProcces.value = true;
 
-    SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value!.user.value);
-
-    SurveyListResponse response =
-        await f.fetchSurveys(page: surveyCounter.value);
+    SurveyListResponse response = await API.service.surveyServices
+        .fetchSurveys(page: surveyCounter.value);
 
     if (!response.result.status) {
       log(response.result.description);

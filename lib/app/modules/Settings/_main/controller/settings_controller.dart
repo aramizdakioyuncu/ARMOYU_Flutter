@@ -70,8 +70,7 @@ class SettingsController extends GetxController {
     } else {
       final appPageController = Get.find<AppPageController>();
 
-      FunctionService f =
-          FunctionService(currentUser: currentUserAccounts.value.user.value);
+      FunctionService f = FunctionService();
       Map<String, dynamic> response =
           await f.logOut(currentUserAccounts.value.user.value.userID!);
 
@@ -85,7 +84,12 @@ class SettingsController extends GetxController {
     }
   }
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+    ),
+  );
   @override
   void onInit() {
     super.onInit();

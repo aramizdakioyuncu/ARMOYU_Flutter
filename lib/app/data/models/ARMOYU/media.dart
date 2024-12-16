@@ -1,13 +1,13 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Story/publish_story_page/views/storypublish_page.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
@@ -144,9 +144,10 @@ class Media {
                             Navigator.pop(context);
                             medialist.removeAt(index);
                             setstatefunction();
-                            MediaAPI funct = MediaAPI(currentUser: currentUser);
-                            MediaDeleteResponse response =
-                                await funct.delete(mediaID: mediaID);
+
+                            MediaDeleteResponse response = await API
+                                .service.mediaServices
+                                .delete(mediaID: mediaID);
 
                             if (!response.result.status) {
                               log(response.result.description.toString());

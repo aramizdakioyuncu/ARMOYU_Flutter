@@ -27,7 +27,7 @@ class AppbarWidget {
         () => Visibility(
           visible: controller.isBottomNavbarVisible.value,
           child: AppBar(
-            elevation: 0,
+            forceMaterialTransparency: true,
             leading: Builder(
               builder: (BuildContext context) {
                 return GestureDetector(

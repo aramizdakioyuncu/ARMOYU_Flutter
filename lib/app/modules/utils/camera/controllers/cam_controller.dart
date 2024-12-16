@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Camera/camfilter.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:camera/camera.dart';
@@ -282,8 +282,7 @@ class CamController extends GetxController {
 
     savemediaProcess.value = true;
 
-    MediaAPI f = MediaAPI(currentUser: user.value!);
-    MediaUploadResponse response = await f.upload(
+    MediaUploadResponse response = await API.service.mediaServices.upload(
         category: "-1",
         files: [camfilter[filterpage.value].media!.mediaXFile!]);
     if (!response.result.status) {

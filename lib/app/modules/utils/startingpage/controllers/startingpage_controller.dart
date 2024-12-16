@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/services/socketio_services.dart';
@@ -119,8 +119,7 @@ class StartingpageController extends GetxController {
     // Kullanıcı listesini SharedPreferences'den yükleme
     List<String>? usersJson = prefs.getStringList('users');
 
-    String? username;
-    String? password;
+    String? sesssionTOKEN;
 
     //Listeye Yükle
     try {
@@ -132,8 +131,7 @@ class StartingpageController extends GetxController {
     }
 
     if (ARMOYU.appUsers.isNotEmpty) {
-      username = ARMOYU.appUsers.first.user.value.userName!.value;
-      password = ARMOYU.appUsers.first.user.value.password!.value;
+      sesssionTOKEN = ARMOYU.appUsers.first.sessionTOKEN.value;
 
       log("Açık Kullanıcı Hesabı : ${usersJson!.length}");
 
@@ -141,7 +139,7 @@ class StartingpageController extends GetxController {
       for (UserAccounts userInfo in ARMOYU.appUsers) {
         sirasay++;
 
-        log("$sirasay. Ad: ${userInfo.user.value.displayName}");
+        log("$sirasay. Ad: ${userInfo.user.value.displayName} TOKEN : ${userInfo.sessionTOKEN.value}");
         if (userInfo.user.value.myFriends == null) {
           continue;
         }
@@ -157,9 +155,8 @@ class StartingpageController extends GetxController {
     }
 
     //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
-    if (username == null || password == null) {
+    if (sesssionTOKEN == null) {
       Get.offNamed("/login");
-
       return;
     }
 
@@ -170,13 +167,8 @@ class StartingpageController extends GetxController {
       }
     }
 
-    FunctionService f = FunctionService(
-        currentUser: User(displayName: "".obs, password: "".obs));
-    LoginResponse response = await f.login(
-      username.toString(),
-      password.toString(),
-      true,
-    );
+    LoginResponse response = await API.service.authServices
+        .loginwithbarriertoken(barriertoken: sesssionTOKEN);
 
     if (response.result.status) {
       log("Web Versiyon ${response.result.descriptiondetail["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
@@ -192,6 +184,7 @@ class StartingpageController extends GetxController {
       }
 
       accountController.changeUser(ARMOYU.appUsers.first);
+
       Get.offNamed("/app");
 
       return;
@@ -206,10 +199,7 @@ class StartingpageController extends GetxController {
       //internet yok ama önceden giriş yapılmış verileri var
       accountController.changeUser(ARMOYU.appUsers.first);
 
-      Get.toNamed("/app", arguments: {
-        'currentUserAccounts': ARMOYU.appUsers,
-        'userID': 1,
-      });
+      Get.toNamed("/app");
 
       return;
     }

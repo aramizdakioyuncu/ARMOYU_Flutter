@@ -1,12 +1,11 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/group_api.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -163,12 +162,9 @@ class _CustomMenusNotificationbarsState
                                     setstatefunction();
 
                                     if (widget.categorydetail == "istek") {
-                                      ProfileAPI f = ProfileAPI(
-                                        currentUser: widget
-                                            .currentUserAccounts.user.value,
-                                      );
-                                      ServiceResult response =
-                                          await f.friendrequestanswer(
+                                      ServiceResult response = await API
+                                          .service.profileServices
+                                          .friendrequestanswer(
                                         userID: widget.user.userID!,
                                         answer: 1,
                                       );
@@ -204,11 +200,9 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
-                                      GroupAPI f = GroupAPI(
-                                          currentUser: widget
-                                              .currentUserAccounts.user.value);
                                       GroupRequestAnswerResponse response =
-                                          await f.grouprequestanswer(
+                                          await API.service.groupServices
+                                              .grouprequestanswer(
                                         groupID: widget.categorydetailID,
                                         answer: "1",
                                       );
@@ -251,12 +245,9 @@ class _CustomMenusNotificationbarsState
                                       widget.natificationisVisible = false;
                                       setstatefunction();
 
-                                      ProfileAPI f = ProfileAPI(
-                                        currentUser: widget
-                                            .currentUserAccounts.user.value,
-                                      );
-                                      ServiceResult response =
-                                          await f.friendrequestanswer(
+                                      ServiceResult response = await API
+                                          .service.profileServices
+                                          .friendrequestanswer(
                                         userID: widget.user.userID!,
                                         answer: 0,
                                       );
@@ -292,11 +283,10 @@ class _CustomMenusNotificationbarsState
                                           1;
                                       widget.natificationisVisible = false;
                                       setstatefunction();
-                                      GroupAPI f = GroupAPI(
-                                          currentUser: widget
-                                              .currentUserAccounts.user.value);
+
                                       GroupRequestAnswerResponse response =
-                                          await f.grouprequestanswer(
+                                          await API.service.groupServices
+                                              .grouprequestanswer(
                                         groupID: widget.categorydetailID,
                                         answer: "0",
                                       );

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class Event {
   int eventID;
   String? name;
-  int? status;
+  bool? status;
   String? eventType;
   String? eventDate;
   String? gameImage;

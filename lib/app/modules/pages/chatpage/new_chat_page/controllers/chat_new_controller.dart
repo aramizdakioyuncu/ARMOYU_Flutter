@@ -2,10 +2,10 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/profile/profile_friendlist.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -87,8 +87,8 @@ class ChatNewController extends GetxController {
       chatnewpage++;
     }
 
-    ProfileAPI f = ProfileAPI(currentUser: currentUser.value!);
-    ProfileFriendListResponse response = await f.friendlist(
+    ProfileFriendListResponse response =
+        await API.service.profileServices.friendlist(
       userID: currentUser.value!.userID!,
       page: chatnewpage.value,
     );

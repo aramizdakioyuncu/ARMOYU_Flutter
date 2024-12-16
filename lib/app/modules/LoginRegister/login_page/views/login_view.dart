@@ -79,9 +79,7 @@ class LoginpageView extends StatelessWidget {
             Obx(
               () => CustomButtons.costum1(
                 text: LoginKeys.loginKeysLogin.tr,
-                onPressed: () async => await controller.login(
-                  currentUser: controller.currentUser.value!,
-                ),
+                onPressed: () async => await controller.login(),
                 loadingStatus: controller.loginProcess,
               ),
             ),
@@ -94,9 +92,7 @@ class LoginpageView extends StatelessWidget {
                   InkWell(
                     onTap: () async {
                       if (ARMOYU.securityDetail == "0") {
-                        FunctionService f = FunctionService(
-                          currentUser: controller.currentUser.value!,
-                        );
+                        FunctionService f = FunctionService();
                         ServiceResult response = await f.getappdetail();
 
                         if (!response.status) {
@@ -124,8 +120,7 @@ class LoginpageView extends StatelessWidget {
                       InkWell(
                         onTap: () async {
                           if (ARMOYU.securityDetail == "0") {
-                            FunctionService f = FunctionService(
-                                currentUser: controller.currentUser.value!);
+                            FunctionService f = FunctionService();
                             ServiceResult response = await f.getappdetail();
 
                             if (!response.status) {

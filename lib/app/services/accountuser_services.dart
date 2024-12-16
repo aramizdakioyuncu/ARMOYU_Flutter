@@ -6,7 +6,8 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:get/get.dart';
 
 class AccountUserController extends GetxController {
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
   @override
   void onInit() {
     super.onInit();

@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/media_api.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -94,8 +94,9 @@ class _MediaViewerPage extends State<MediaViewer> {
                       return;
                     }
                     isRotationprocces = true;
-                    MediaAPI f = MediaAPI(currentUser: widget.currentUser);
-                    MediaRotationResponse response = await f.rotation(
+
+                    MediaRotationResponse response =
+                        await API.service.mediaServices.rotation(
                       mediaID: widget.media[widget.initialIndex].mediaID,
                       rotate: 360 - (rotateangle % 360),
                     );

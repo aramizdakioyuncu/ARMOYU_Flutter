@@ -41,7 +41,8 @@ class SocketioController extends GetxController {
     super.onClose();
   }
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   void updateuseraccount() {
     pingTimer = Timer.periodic(const Duration(seconds: 1), (timer) {

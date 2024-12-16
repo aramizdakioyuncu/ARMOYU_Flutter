@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/event_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/event/event.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -39,8 +39,7 @@ class EventlistController extends GetxController {
 
     eventlistProecces.value = true;
 
-    EventAPI f = EventAPI(currentUser: currentUser.value!);
-    EventResponse response = await f.fetch();
+    EventResponse response = await API.service.eventServices.fetch();
     if (!response.result.status) {
       log(response.result.description);
       eventlistProecces.value = false;
@@ -72,7 +71,7 @@ class EventlistController extends GetxController {
       eventsList.add(
         Event(
           eventID: element.eventID,
-          status: int.parse(element.status),
+          status: element.status,
           name: element.name,
           eventType: element.type,
           eventDate: element.date,

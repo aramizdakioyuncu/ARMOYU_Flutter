@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/blocking_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -16,7 +16,12 @@ class BlockedlistSettingsController extends GetxController {
   var blockedList = <Map<int, Widget>>[].obs;
   var blockedProcces = false.obs;
   var isFirstProcces = true.obs;
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+    ),
+  );
 
   @override
   void onInit() {
@@ -38,9 +43,9 @@ class BlockedlistSettingsController extends GetxController {
   Future<void> removeblock(int userID, int index) async {
     // FunctionsBlocking f =
     //     FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
-    BlockingAPI f =
-        BlockingAPI(currentUser: currentUserAccounts.value.user.value);
-    BlockingRemoveResponse response = await f.remove(userID: userID);
+
+    BlockingRemoveResponse response =
+        await API.service.blockingServices.remove(userID: userID);
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -54,12 +59,7 @@ class BlockedlistSettingsController extends GetxController {
     }
     blockedProcces.value = true;
 
-    BlockingAPI f =
-        BlockingAPI(currentUser: currentUserAccounts.value.user.value);
-
-    // FunctionsBlocking f =
-    //     FunctionsBlocking(currentUser: currentUserAccounts.value.user.value);
-    BlockingListResponse response = await f.list();
+    BlockingListResponse response = await API.service.blockingServices.list();
     if (!response.result.status) {
       log(response.result.description);
       blockedProcces.value = false;

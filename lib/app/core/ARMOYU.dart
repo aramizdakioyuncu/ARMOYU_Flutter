@@ -3,6 +3,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ARMOYU {
   static String appName = "";
@@ -29,4 +30,6 @@ class ARMOYU {
   //Genel işlemler
   static int onlineMembersCount = 0;
   static int totalPlayerCount = 0;
+
+  static SharedPreferences? sharedprefences;
 }

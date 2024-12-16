@@ -1,11 +1,11 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/services/API/loginregister_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 
@@ -36,11 +36,8 @@ class RegisterpageController extends GetxController {
     inviteCodeProcces.value = true;
     // });
 
-    LoginregisterAPI f = LoginregisterAPI(
-      currentUser: User(userName: "0".obs, password: "0".obs),
-    );
     LoginRegisterInviteCodeResponse response =
-        await f.inviteCodeTest(code: code);
+        await API.service.loginRegisterServices.inviteCodeTest(code: code);
     if (!response.result.status) {
       log(response.result.description);
       ARMOYUWidget.stackbarNotification(
@@ -95,8 +92,7 @@ class RegisterpageController extends GetxController {
       return;
     }
 
-    FunctionService f =
-        FunctionService(currentUser: User(userName: "".obs, password: "".obs));
+    FunctionService f = FunctionService();
     RegisterResponse response = await f.register(
         username, name, lastname, email, password, rpassword, inviteCode);
 
@@ -108,13 +104,16 @@ class RegisterpageController extends GetxController {
     }
 
     if (response.result.status) {
-      LoginResponse loginresponse = await f.login(username, password, true);
+      LoginResponse loginresponse = await f.login(username, password);
 
       if (loginresponse.result.description == "Başarılı.") {
         UserAccounts newUser = ARMOYU.appUsers.first;
 
         accountController.changeUser(
-          UserAccounts(user: newUser.user),
+          UserAccounts(
+            user: newUser.user,
+            sessionTOKEN: Rx(loginresponse.result.descriptiondetail),
+          ),
         );
 
         Get.toNamed("/app", arguments: {'userID': newUser.user.value.userID!});
@@ -145,7 +144,8 @@ class RegisterpageController extends GetxController {
     }
   }
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   late AccountUserController accountController;
   @override

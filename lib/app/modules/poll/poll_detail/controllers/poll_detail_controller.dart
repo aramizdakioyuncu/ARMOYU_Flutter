@@ -1,12 +1,12 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Survey/answer.dart';
 import 'package:ARMOYU/app/data/models/Survey/question.dart';
 import 'package:ARMOYU/app/data/models/Survey/survey.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/survey_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/survey/survey_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -21,7 +21,8 @@ class PollDetailController extends GetxController {
 
   var answerSurveyProccess = false.obs;
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
   late var survey = Rxn<Survey>();
 
   @override
@@ -48,10 +49,8 @@ class PollDetailController extends GetxController {
     }
 
     answerSurveyProccess.value = true;
-    SurveyAPI f = SurveyAPI(
-      currentUser: currentUserAccounts.value.user.value,
-    );
-    ServiceResult response = await f.answerSurvey(
+
+    ServiceResult response = await API.service.surveyServices.answerSurvey(
       surveyID: survey.value!.surveyID,
       optionID: int.parse(selectedOption.value.toString()),
     );
@@ -68,10 +67,8 @@ class PollDetailController extends GetxController {
   }
 
   Future<void> refreshSurvey() async {
-    SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value.user.value);
-
-    SurveyListResponse response =
-        await f.fetchSurvey(surveyID: survey.value!.surveyID);
+    SurveyListResponse response = await API.service.surveyServices
+        .fetchSurvey(surveyID: survey.value!.surveyID);
 
     if (!response.result.status) {
       log(response.result.description);
@@ -145,9 +142,8 @@ class PollDetailController extends GetxController {
   }
 
   Future<void> deleteSurvey() async {
-    SurveyAPI f = SurveyAPI(currentUser: currentUserAccounts.value.user.value);
-    ServiceResult response =
-        await f.deleteSurvey(surveyID: survey.value!.surveyID);
+    ServiceResult response = await API.service.surveyServices
+        .deleteSurvey(surveyID: survey.value!.surveyID);
 
     if (!response.status) {
       log(response.description);

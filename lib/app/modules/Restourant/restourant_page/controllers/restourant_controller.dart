@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/station.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/station_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/station/station_equipment_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -40,9 +40,9 @@ class RestourantController extends GetxController {
     }
     fetchEquipmentProcess.value = true;
 
-    StationAPI f = StationAPI(currentUser: currentUser.value!);
-    StationFetchEquipmentListResponse response =
-        await f.fetchEquipments(stationID: cafe.value!.stationID);
+    StationFetchEquipmentListResponse response = await API
+        .service.stationServices
+        .fetchEquipments(stationID: cafe.value!.stationID);
     if (!response.result.status) {
       log(response.result.description);
       fetchEquipmentProcess.value = false;

@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/school.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/school_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
@@ -41,9 +41,9 @@ class SchoolController extends GetxController {
     }
     schoolfetchProcess.value = true;
     setstatefunction();
-    SchoolAPI f = SchoolAPI(currentUser: currentUser.value!);
+
     SchoolFetchDetailResponse response =
-        await f.fetchSchool(schoolID: schoolID);
+        await API.service.schoolServices.fetchSchool(schoolID: schoolID);
     if (!response.result.status) {
       log(response.result.description.toString());
       schoolfetchProcess.value = false;

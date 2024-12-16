@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -13,8 +14,6 @@ import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
 import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
-import 'package:ARMOYU/app/services/API/station_api.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/station/station_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_group_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_school_list.dart';
@@ -222,8 +221,8 @@ class MainPageController extends GetxController {
   }
 
   Future<void> favteamselect(User currentUser, Team team) async {
-    ProfileAPI f = ProfileAPI(currentUser: currentUser);
-    ServiceResult response = await f.selectfavteam(teamID: team.teamID);
+    ServiceResult response =
+        await API.service.profileServices.selectfavteam(teamID: team.teamID);
     if (!response.status) {
       log(response.description.toString());
       return;
@@ -245,7 +244,7 @@ class MainPageController extends GetxController {
     }
 
     loadGroupProcess.value = true;
-    FunctionService f = FunctionService(currentUser: currentUser);
+    FunctionService f = FunctionService();
     APIMyGroupListResponse response = await f.myGroups();
     if (!response.result.status) {
       log(response.result.description.toString());
@@ -313,7 +312,7 @@ class MainPageController extends GetxController {
       return;
     }
     loadmySchoolProcess.value = true;
-    FunctionService f = FunctionService(currentUser: currentUser);
+    FunctionService f = FunctionService();
     APIMySchoolListResponse response = await f.mySchools();
     if (!response.result.status) {
       loadmySchoolProcess.value = false;
@@ -371,8 +370,8 @@ class MainPageController extends GetxController {
     }
     loadfoodStationProcess.value = true;
 
-    StationAPI f = StationAPI(currentUser: currentUser);
-    StationFetchListResponse response = await f.fetchStations();
+    StationFetchListResponse response =
+        await API.service.stationServices.fetchStations();
     if (!response.result.status) {
       log(response.result.description);
       loadfoodStationProcess.value = false;

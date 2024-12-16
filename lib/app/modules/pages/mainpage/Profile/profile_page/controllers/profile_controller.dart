@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
@@ -13,9 +14,6 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/services/API/blocking_api.dart';
-import 'package:ARMOYU/app/services/API/media_api.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -93,7 +91,9 @@ class ProfileController extends GetxController
     super.onClose();
   }
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(user: User().obs, sessionTOKEN: Rx("")),
+  );
 
   @override
   void onInit() {
@@ -173,15 +173,8 @@ class ProfileController extends GetxController
     // Navigator.pop(Get.context);
     Get.back();
 
-    // FunctionsBlocking f = FunctionsBlocking(
-    //   currentUser: currentUserAccounts.value.user.value,
-    // );
-
-    BlockingAPI f =
-        BlockingAPI(currentUser: currentUserAccounts.value.user.value);
-
-    BlockingAddResponse response =
-        await f.add(userID: userProfile.value.userID!);
+    BlockingAddResponse response = await API.service.blockingServices
+        .add(userID: userProfile.value.userID!);
 
     ARMOYUWidget.toastNotification(response.result.description);
 
@@ -202,9 +195,7 @@ class ProfileController extends GetxController
     }
     postsfetchproccess.value = true;
 
-    FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.value.user.value,
-    );
+    FunctionService f = FunctionService();
     PostFetchListResponse response =
         await f.getprofilePosts(page, userID, category);
     if (!response.result.status) {
@@ -308,7 +299,7 @@ class ProfileController extends GetxController
       Post post = Post(
         postID: element.postID,
         content: element.content,
-        postDate: element.date,
+        postDate: element.datecounting,
         sharedDevice: element.postdevice,
         likesCount: element.likeCount,
         isLikeme: ismelike,
@@ -352,10 +343,8 @@ class ProfileController extends GetxController
 
     galleryproccess.value = true;
 
-    MediaAPI f = MediaAPI(currentUser: currentUserAccounts.value.user.value);
-
-    MediaFetchResponse response =
-        await f.fetch(uyeID: userID, category: "-1", page: page);
+    MediaFetchResponse response = await API.service.mediaServices
+        .fetch(uyeID: userID, category: "-1", page: page);
 
     if (!response.result.status) {
       log(response.result.description);
@@ -403,9 +392,7 @@ class ProfileController extends GetxController
 
     postsfetchProccessv2.value = true;
 
-    FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.value.user.value,
-    );
+    FunctionService f = FunctionService();
     PostFetchListResponse response =
         await f.getprofilePosts(page, userID, category);
     if (!response.result.status) {
@@ -507,7 +494,7 @@ class ProfileController extends GetxController
       Post post = Post(
         postID: element.postID,
         content: element.content,
-        postDate: element.date,
+        postDate: element.datecounting,
         sharedDevice: element.postdevice,
         likesCount: element.likeCount,
         isLikeme: ismelike,
@@ -547,8 +534,7 @@ class ProfileController extends GetxController
     if (profileUser.value!.userID ==
         currentUserAccounts.value.user.value.userID) {
       if (myprofilerefresh) {
-        FunctionService f =
-            FunctionService(currentUser: currentUserAccounts.value.user.value);
+        FunctionService f = FunctionService();
 
         LookProfileResponse response =
             await f.lookProfile(currentUserAccounts.value.user.value.userID!);
@@ -568,8 +554,7 @@ class ProfileController extends GetxController
       if (profileUser.value!.userName != null) {
         log("->>kullanıcıadına  göre oyuncu bul!");
 
-        FunctionService f =
-            FunctionService(currentUser: currentUserAccounts.value.user.value);
+        FunctionService f = FunctionService();
 
         LookProfilewithUsernameResponse response =
             await f.lookProfilewithusername(profileUser.value!.userName!.value);
@@ -602,7 +587,7 @@ class ProfileController extends GetxController
 
         int countorder = 0;
 
-        for (var userfriendSummary in oyuncubilgi.ortakarkadasliste!) {
+        for (Friend userfriendSummary in oyuncubilgi.ortakarkadasliste!) {
           if (countorder < 2) {
             if (countorder == 0) {
               friendTextLine.value +=
@@ -617,7 +602,7 @@ class ProfileController extends GetxController
               }
             }
           }
-          listFriendTOP3.add(userfriendSummary.oyuncuMinnakAvatar);
+          listFriendTOP3.add(userfriendSummary.oyuncuMinnakAvatar.minURL);
 
           countorder++;
         }
@@ -634,8 +619,7 @@ class ProfileController extends GetxController
         ///////
       } else {
         log("->>ID ye göre oyuncu bul!");
-        FunctionService f =
-            FunctionService(currentUser: currentUserAccounts.value.user.value);
+        FunctionService f = FunctionService();
         response = await f.lookProfile(profileUser.value!.userID!);
         if (!response.result.status) {
           log("Oyuncu bulunamadı");
@@ -661,7 +645,7 @@ class ProfileController extends GetxController
         friendTextLine.value = "";
         int countorder = 0;
 
-        for (var userfriendSummary in oyuncubilgi.ortakarkadasliste!) {
+        for (Friend userfriendSummary in oyuncubilgi.ortakarkadasliste!) {
           if (countorder < 2) {
             if (countorder == 0) {
               friendTextLine.value +=
@@ -676,7 +660,7 @@ class ProfileController extends GetxController
               }
             }
           }
-          listFriendTOP3.add(userfriendSummary.oyuncuMinnakAvatar);
+          listFriendTOP3.add(userfriendSummary.oyuncuMinnakAvatar.minURL);
 
           countorder++;
         }
@@ -767,10 +751,7 @@ class ProfileController extends GetxController
 
     changeavatarStatus.value = true;
 
-    ProfileAPI f = ProfileAPI(
-      currentUser: currentUserAccounts.value.user.value,
-    );
-    ServiceResult response = await f.defaultavatar();
+    ServiceResult response = await API.service.profileServices.defaultavatar();
     if (!response.status) {
       log(response.description);
       ARMOYUWidget.toastNotification(response.description);
@@ -810,9 +791,7 @@ class ProfileController extends GetxController
 
     changebannerStatus.value = true;
 
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
-    ServiceResult response = await f.defaultavatar();
+    ServiceResult response = await API.service.profileServices.defaultavatar();
     if (!response.status) {
       log(response.description);
       ARMOYUWidget.toastNotification(response.description);
@@ -861,11 +840,10 @@ class ProfileController extends GetxController
 
     changeavatarStatus.value = true;
 
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
-    ServiceResult response = await f.changeavatar(files: imagePath);
+    ServiceResult response =
+        await API.service.profileServices.changeavatar(files: imagePath);
     if (!response.status) {
       log(response.description);
       ARMOYUWidget.toastNotification(response.description);
@@ -906,11 +884,10 @@ class ProfileController extends GetxController
 
     changebannerStatus.value = true;
 
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
     List<XFile> imagePath = [];
     imagePath.add(selectedImage);
-    ServiceResult response = await f.changebanner(files: imagePath);
+    ServiceResult response =
+        await API.service.profileServices.changebanner(files: imagePath);
     if (!response.status) {
       log(response.description);
       ARMOYUWidget.toastNotification(response.description);
@@ -934,10 +911,8 @@ class ProfileController extends GetxController
   }
 
   Future<void> friendrequest() async {
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
-    ServiceResult response =
-        await f.friendrequest(userID: userProfile.value.userID!);
+    ServiceResult response = await API.service.profileServices
+        .friendrequest(userID: userProfile.value.userID!);
 
     if (!response.status) {
       log(response.description);
@@ -1377,7 +1352,8 @@ class ProfileController extends GetxController
         }
 
         Get.toNamed("profile/friendlist", arguments: {
-          "user": UserAccounts(user: userProfile.value.obs),
+          "user":
+              UserAccounts(user: userProfile.value.obs, sessionTOKEN: Rx("")),
         });
       },
       child: userProfile.value.friendsCount == null
@@ -1840,10 +1816,8 @@ class ProfileController extends GetxController
                     visible: isFriend.value,
                     child: InkWell(
                       onTap: () async {
-                        ProfileAPI f = ProfileAPI(
-                          currentUser: currentUserAccounts.value.user.value,
-                        );
-                        ServiceResult response = await f.friendremove(
+                        ServiceResult response =
+                            await API.service.profileServices.friendremove(
                           userID: userProfile.value.userID!,
                         );
                         if (!response.status) {
@@ -1865,10 +1839,8 @@ class ProfileController extends GetxController
                     visible: isFriend.value,
                     child: InkWell(
                       onTap: () async {
-                        ProfileAPI f = ProfileAPI(
-                          currentUser: currentUserAccounts.value.user.value,
-                        );
-                        ServiceResult response = await f.userdurting(
+                        ServiceResult response =
+                            await API.service.profileServices.userdurting(
                           userID: userProfile.value.userID!,
                         );
                         if (!response.status) {

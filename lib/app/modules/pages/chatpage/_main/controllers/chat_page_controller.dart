@@ -23,7 +23,8 @@ class ChatPageController extends GetxController {
   var chatcontroller = TextEditingController().obs;
   var chatScrollController = ScrollController().obs;
   var searchStatus = false.obs;
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   @override
   void onInit() {
@@ -90,9 +91,7 @@ class ChatPageController extends GetxController {
     }
 
     chatsearchprocess.value = true;
-    FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.value.user.value,
-    );
+    FunctionService f = FunctionService();
     ChatListResponse response = await f.getchats(chatPage.value);
     if (!response.result.status) {
       chatsearchprocess.value = false;

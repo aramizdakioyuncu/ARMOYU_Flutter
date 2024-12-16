@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/search_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Mention/mention.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -144,9 +144,8 @@ class CustomTextfields {
         //Oyuncu listesi bomboşsa
         if (WidgetMention.peopleList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
-            SearchAPI f = SearchAPI(currentUser: currentUser);
-            SearchListResponse response =
-                await f.onlyusers(searchword: "", page: 1);
+            SearchListResponse response = await API.service.searchServices
+                .onlyusers(searchword: "", page: 1);
             if (!response.result.status) {
               log(response.result.description);
               return;
@@ -166,9 +165,8 @@ class CustomTextfields {
         //Hashtag listesi bomboşsa
         if (WidgetMention.hashtagList.isEmpty) {
           searchTimer = Timer(const Duration(milliseconds: 500), () async {
-            SearchAPI f = SearchAPI(currentUser: currentUser);
             SearchHashtagListResponse response =
-                await f.hashtag(hashtag: "", page: 1);
+                await API.service.searchServices.hashtag(hashtag: "", page: 1);
             if (!response.result.status) {
               log(response.result.description);
               return;
@@ -198,11 +196,9 @@ class CustomTextfields {
         // Eğer buraya kadar gelindi ise, yeni bir kelime girilmiştir, mevcut sorguyu iptal eder
         searchTimer?.cancel();
         searchTimer = Timer(const Duration(milliseconds: 500), () async {
-          SearchAPI f = SearchAPI(currentUser: currentUser);
-
           if (lastWord[0] == "@") {
-            SearchListResponse response =
-                await f.onlyusers(searchword: lastWord.substring(1), page: 1);
+            SearchListResponse response = await API.service.searchServices
+                .onlyusers(searchword: lastWord.substring(1), page: 1);
 
             if (!response.result.status) {
               log(response.result.description);
@@ -220,8 +216,9 @@ class CustomTextfields {
               }
             }
           } else if (lastWord[0] == "#") {
-            SearchHashtagListResponse response =
-                await f.hashtag(hashtag: lastWord.substring(1), page: 1);
+            SearchHashtagListResponse response = await API
+                .service.searchServices
+                .hashtag(hashtag: lastWord.substring(1), page: 1);
 
             if (!response.result.status) {
               log(response.result.description);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 
@@ -12,10 +13,6 @@ import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/country_api.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
-import 'package:ARMOYU/app/services/API/teams_api.dart';
-import 'package:ARMOYU/app/services/API/utils_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -34,11 +31,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ARMOYUFunctions {
   final UserAccounts currentUserAccounts;
-  late final UtilsAPI apiService;
 
-  ARMOYUFunctions({required this.currentUserAccounts}) {
-    apiService = UtilsAPI(currentUser: currentUserAccounts.user.value);
-  }
+  ARMOYUFunctions({required this.currentUserAccounts});
 
   static User userfetch(APILogin response) {
     return User(
@@ -115,8 +109,8 @@ class ARMOYUFunctions {
         name: response.roleName!,
         color: response.roleColor!,
       ),
-      birthdayDate: Rxn<String>(response.detailInfo!.birthdayDate!),
-      phoneNumber: Rxn<String>(response.detailInfo!.phoneNumber!),
+      birthdayDate: Rxn<String>(response.detailInfo!.birthdayDate),
+      phoneNumber: Rxn<String>(response.detailInfo!.phoneNumber),
       favTeam: response.favTeam != null
           ? Team(
               teamID: response.favTeam!.teamID,
@@ -276,8 +270,8 @@ class ARMOYUFunctions {
   }
 
   Future<void> favteamselect(Team? team) async {
-    ProfileAPI f = ProfileAPI(currentUser: currentUserAccounts.user.value);
-    ServiceResult response = await f.selectfavteam(teamID: team?.teamID);
+    ServiceResult response =
+        await API.service.profileServices.selectfavteam(teamID: team?.teamID);
     log(response.toString());
     if (!response.status) {
       log(response.description);
@@ -293,8 +287,7 @@ class ARMOYUFunctions {
 
   Future<void> favteamfetch() async {
     if (currentUserAccounts.favoriteteams == null) {
-      TeamsAPI f = TeamsAPI(currentUser: currentUserAccounts.user.value);
-      TeamListResponse response = await f.fetch();
+      TeamListResponse response = await API.service.teamsServices.fetch();
       if (!response.result.status) {
         log(response.result.description);
         favteamfetch();
@@ -333,8 +326,7 @@ class ARMOYUFunctions {
   }
 
   Future<void> fetchCountry() async {
-    CountryAPI f = CountryAPI(currentUser: currentUserAccounts.user.value);
-    CountryResponse response = await f.fetch();
+    CountryResponse response = await API.service.countryServices.countryfetch();
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -372,8 +364,9 @@ class ARMOYUFunctions {
       }
       return;
     }
-    CountryAPI f = CountryAPI(currentUser: currentUserAccounts.user.value);
-    ProvinceResponse response = await f.fetchprovince(countryID: countryID);
+
+    ProvinceResponse response =
+        await API.service.countryServices.fetchprovince(countryID: countryID);
     if (!response.result.status) {
       log(response.result.description);
       return;
@@ -797,11 +790,9 @@ class ARMOYUFunctions {
                                 profileeditProcess.value = true;
                                 // setstatefunction();
 
-                                ProfileAPI f = ProfileAPI(
-                                  currentUser: currentUserAccounts.user.value,
-                                );
-                                ServiceResult response =
-                                    await f.saveprofiledetails(
+                                ServiceResult response = await API
+                                    .service.profileServices
+                                    .saveprofiledetails(
                                   firstname: firstName.value.text,
                                   lastname: lastName.value.text,
                                   aboutme: aboutme.value.text,

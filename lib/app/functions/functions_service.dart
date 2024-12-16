@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/utils_api.dart';
 import 'package:ARMOYU/app/services/socketio_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/login.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -16,19 +16,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/app/Services/Utility/onesignal.dart';
 
 class FunctionService {
-  final User currentUser;
-  late final UtilsAPI apiService;
-
-  FunctionService({required this.currentUser}) {
-    apiService = UtilsAPI(currentUser: currentUser);
-  }
-
   String generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
   }
 
   Future<ServiceResult> getappdetail() async {
-    ServiceResult jsonData = await apiService.getappdetail();
+    ServiceResult jsonData = await API.service.utilsServices.getappdetail();
     return jsonData;
   }
 
@@ -36,12 +29,12 @@ class FunctionService {
 
   Future<LoginResponse> adduserAccount(
     String username,
-    String password,
+    String userpass,
   ) async {
-    password = generateMd5(password);
+    // password = generateMd5(password);
 
-    LoginResponse response =
-        await apiService.previuslogin(username: username, password: password);
+    LoginResponse response = await API.service.authServices
+        .login(username: username, password: userpass);
 
     if (!response.result.status ||
         response.result.description == "Oyuncu bilgileri yanlış!") {
@@ -52,8 +45,6 @@ class FunctionService {
 
     User userdetail = ARMOYUFunctions.userfetch(oyuncubilgi);
 
-    userdetail.password = password.obs;
-
     int isUserAccountHas = ARMOYU.appUsers.indexWhere(
         (element) => element.user.value.userID == userdetail.userID);
 
@@ -61,7 +52,12 @@ class FunctionService {
       log("Zaten Kullanıcı Oturum Açmış!");
       return response;
     }
-    ARMOYU.appUsers.add(UserAccounts(user: userdetail.obs));
+    ARMOYU.appUsers.add(
+      UserAccounts(
+        user: userdetail.obs,
+        sessionTOKEN: Rx(response.result.description),
+      ),
+    );
 
     // Kullanıcı listesini SharedPreferences'e kaydetme
     List<String> usersJson =
@@ -73,7 +69,7 @@ class FunctionService {
   }
 
   Future<User?> fetchUserInfo({required int userID}) async {
-    FunctionService f = FunctionService(currentUser: currentUser);
+    FunctionService f = FunctionService();
     LookProfileResponse response = await f.lookProfile(userID);
 
     if (!response.result.status ||
@@ -86,14 +82,9 @@ class FunctionService {
     return userdetail;
   }
 
-  Future<LoginResponse> login(
-      String username, String password, bool system) async {
-    if (!system) {
-      password = generateMd5(password);
-    }
-
-    LoginResponse response =
-        await apiService.previuslogin(username: username, password: password);
+  Future<LoginResponse> login(String username, String password) async {
+    LoginResponse response = await API.service.authServices
+        .login(username: username, password: password);
 
     if (!response.result.status ||
         response.result.description == "Oyuncu bilgileri yanlış!") {
@@ -106,9 +97,10 @@ class FunctionService {
 
     APILogin oyuncubilgi = response.response!;
 
-    UserAccounts userdetail =
-        UserAccounts(user: ARMOYUFunctions.userfetch(oyuncubilgi).obs);
-    userdetail.user.value.password = password.obs;
+    UserAccounts userdetail = UserAccounts(
+      user: ARMOYUFunctions.userfetch(oyuncubilgi).obs,
+      sessionTOKEN: Rx(response.result.description),
+    );
 
     //İlk defa giriş yapılıyorsa
     if (ARMOYU.appUsers.isEmpty) {
@@ -137,20 +129,13 @@ class FunctionService {
     socketio.registerUser(userdetail.user.value);
     //Socket Güncelle
 
-    // Map<String, dynamic> jsonData = {
-    //   'durum': 1,
-    //   'aciklama': "Başarılı.",
-    //   'aciklamadetay': response.result.descriptiondetail,
-    //   'icerik': ARMOYU.appUsers.last.user.toJson()
-    // };
-
     LoginResponse ll = LoginResponse(
       result: ServiceResult(
         status: true,
         description: "Başarılı",
         descriptiondetail: response.result.descriptiondetail,
       ),
-      response: ARMOYU.appUsers.last.user.toJson(),
+      response: oyuncubilgi,
     );
 
     return ll;
@@ -165,9 +150,9 @@ class FunctionService {
     String rpassword,
     String inviteCode,
   ) async {
-    RegisterResponse jsonData = await apiService.previusregister(
+    RegisterResponse jsonData = await API.service.authServices.register(
       username: username,
-      name: name,
+      firstname: name,
       lastname: lastname,
       email: email,
       password: password,
@@ -200,7 +185,7 @@ class FunctionService {
 
   Future<ServiceResult> forgotpassword(
       String username, String useremail, String userresettype) async {
-    ServiceResult jsonData = await apiService.forgotpassword(
+    ServiceResult jsonData = await API.service.utilsServices.forgotpassword(
       username: username,
       useremail: useremail,
       userresettype: userresettype,
@@ -210,7 +195,7 @@ class FunctionService {
 
   Future<ServiceResult> forgotpassworddone(String username, String useremail,
       String securitycode, String password, String repassword) async {
-    ServiceResult jsonData = await apiService.forgotpassworddone(
+    ServiceResult jsonData = await API.service.utilsServices.forgotpassworddone(
       username: username,
       useremail: useremail,
       securitycode: securitycode,
@@ -221,35 +206,39 @@ class FunctionService {
   }
 
   Future<LookProfileResponse> lookProfile(int userID) async {
-    LookProfileResponse jsonData = await apiService.lookProfile(userID: userID);
+    LookProfileResponse jsonData =
+        await API.service.utilsServices.lookProfile(userID: userID);
     return jsonData;
   }
 
   Future<LookProfilewithUsernameResponse> lookProfilewithusername(
       String username) async {
-    LookProfilewithUsernameResponse jsonData =
-        await apiService.lookProfilewithusername(userusername: username);
+    LookProfilewithUsernameResponse jsonData = await API.service.utilsServices
+        .lookProfilewithusername(userusername: username);
     return jsonData;
   }
 
   Future<APIMyGroupListResponse> myGroups() async {
-    APIMyGroupListResponse jsonData = await apiService.myGroups();
+    APIMyGroupListResponse jsonData =
+        await API.service.utilsServices.myGroups();
     return jsonData;
   }
 
   Future<APIMySchoolListResponse> mySchools() async {
-    APIMySchoolListResponse jsonData = await apiService.mySchools();
+    APIMySchoolListResponse jsonData =
+        await API.service.utilsServices.mySchools();
     return jsonData;
   }
 
   Future<ServiceResult> myStations() async {
-    ServiceResult jsonData = await apiService.myStations();
+    ServiceResult jsonData = await API.service.utilsServices.myStations();
     return jsonData;
   }
 
   Future<PostFetchListResponse> getprofilePosts(
       int page, int userID, String category) async {
-    PostFetchListResponse jsonData = await apiService.getprofilePosts(
+    PostFetchListResponse jsonData =
+        await API.service.postsServices.getprofilePosts(
       userID: userID.toString(),
       page: page,
       category: category,
@@ -258,18 +247,21 @@ class FunctionService {
   }
 
   Future<PlayerPopResponse> getplayerxp(int page) async {
-    PlayerPopResponse jsonData = await apiService.getplayerxp(page: page);
+    PlayerPopResponse jsonData =
+        await API.service.utilsServices.getplayerxp(page: page);
     return jsonData;
   }
 
   Future<PlayerPopResponse> getplayerpop(int page) async {
-    PlayerPopResponse jsonData = await apiService.getplayerpop(page: page);
+    PlayerPopResponse jsonData =
+        await API.service.utilsServices.getplayerpop(page: page);
     return jsonData;
   }
 
   Future<NotificationListResponse> getnotifications(
       String kategori, String kategoridetay, int page) async {
-    NotificationListResponse jsonData = await apiService.getnotifications(
+    NotificationListResponse jsonData =
+        await API.service.notificationServices.getnotifications(
       kategori: kategori,
       kategoridetay: kategoridetay,
       page: page,
@@ -278,24 +270,26 @@ class FunctionService {
   }
 
   Future<ChatListResponse> getchats(int page) async {
-    ChatListResponse jsonData = await apiService.getchats(page: page);
+    ChatListResponse jsonData =
+        await API.service.utilsServices.getchats(page: page);
     return jsonData;
   }
 
   Future<ServiceResult> getnewchatfriendlist(int page) async {
-    ServiceResult jsonData = await apiService.getnewchatfriendlist(page: page);
+    ServiceResult jsonData =
+        await API.service.utilsServices.getnewchatfriendlist(page: page);
     return jsonData;
   }
 
   Future<ChatFetchDetailResponse> getdeailchats(int chatID) async {
     ChatFetchDetailResponse jsonData =
-        await apiService.getdeailchats(chatID: chatID);
+        await API.service.utilsServices.getdetailchats(chatID: chatID);
     return jsonData;
   }
 
   Future<ServiceResult> sendchatmessage(
       int userID, String message, String type) async {
-    ServiceResult jsonData = await apiService.sendchatmessage(
+    ServiceResult jsonData = await API.service.utilsServices.sendchatmessage(
       userID: userID,
       message: message,
       type: type,

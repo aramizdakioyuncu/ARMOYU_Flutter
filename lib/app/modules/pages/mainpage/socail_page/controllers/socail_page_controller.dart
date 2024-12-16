@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Social/comment.dart';
@@ -10,8 +11,6 @@ import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/services/API/posts_api.dart';
-import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
@@ -48,7 +47,12 @@ class SocailPageController extends GetxController {
 
   var widgetStories = Rx<Widget?>(null);
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+    ),
+  );
 
   @override
   void onInit() {
@@ -106,8 +110,8 @@ class SocailPageController extends GetxController {
 
     fetchStoryStatus.value = true;
 
-    StoryAPI f = StoryAPI(currentUser: currentUserAccounts.value.user.value);
-    StoryFetchListResponse response = await f.stories(page: storypage.value);
+    StoryFetchListResponse response =
+        await API.service.storyServices.stories(page: storypage.value);
     if (!response.result.status) {
       log(response.result.description);
 
@@ -223,8 +227,8 @@ class SocailPageController extends GetxController {
 
     fetchPostStatus.value = true;
 
-    PostsAPI f = PostsAPI(currentUser: currentUserAccounts.value.user.value);
-    PostFetchListResponse response = await f.getPosts(page: postpage.value);
+    PostFetchListResponse response =
+        await API.service.postsServices.getPosts(page: postpage.value);
     if (!response.result.status) {
       log(response.result.description);
 
@@ -249,7 +253,7 @@ class SocailPageController extends GetxController {
           media.add(
             Media(
               mediaID: mediaInfo.mediaID,
-              ownerID: mediaInfo.owner!.userID,
+              ownerID: element.postOwner.ownerID,
               mediaType: mediaInfo.mediaType,
               mediaDirection: mediaInfo.mediaDirection,
               mediaURL: MediaURL(
@@ -329,7 +333,7 @@ class SocailPageController extends GetxController {
       Post post = Post(
         postID: element.postID,
         content: element.content,
-        postDate: element.date,
+        postDate: element.datecounting,
         sharedDevice: element.postdevice,
         likesCount: element.likeCount,
         isLikeme: ismelike,

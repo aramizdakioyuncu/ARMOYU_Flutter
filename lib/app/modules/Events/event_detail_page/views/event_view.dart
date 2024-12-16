@@ -689,7 +689,7 @@ class EventView extends StatelessWidget {
           Obx(
             () => SliverToBoxAdapter(
               child: Visibility(
-                visible: controller.event.value!.status != 0 &&
+                visible: controller.event.value!.status != false &&
                     !controller.fetchParticipantProccess.value,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -755,7 +755,7 @@ class EventView extends StatelessWidget {
           Obx(
             () => SliverToBoxAdapter(
               child: Visibility(
-                visible: controller.event.value!.status == 0,
+                visible: controller.event.value!.status == false,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

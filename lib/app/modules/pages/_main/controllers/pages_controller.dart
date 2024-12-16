@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/services/API/app_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
@@ -91,13 +91,8 @@ class PagesController extends GetxController {
       return;
     }
     siteMessagesProcces.value = true;
-    // FunctionsApp f = FunctionsApp(
-    //   currentUser: currentUserAccount.user.value,
-    // );
 
-    AppAPI f = AppAPI(currentUser: currentUserAccount.user.value);
-
-    SitemessageResponse response = await f.sitemesaji();
+    SitemessageResponse response = await API.service.appServices.sitemesaji();
 
     if (!response.result.status) {
       if (response.result.description == "Lütfen Geçerli API_KEY giriniz!") {

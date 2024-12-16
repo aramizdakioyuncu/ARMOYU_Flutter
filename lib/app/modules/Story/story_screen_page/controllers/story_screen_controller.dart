@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/Story/story.dart';
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -79,8 +79,8 @@ class StoryScreenController extends GetxController {
 
     storyviewProcess.value = true;
 
-    StoryAPI funct = StoryAPI(currentUser: currentUser.value!);
-    ServiceResult response = await funct.view(storyID: story.storyID);
+    ServiceResult response =
+        await API.service.storyServices.view(storyID: story.storyID);
     if (!response.status) {
       log(response.description);
       storyviewProcess.value = false;
@@ -163,9 +163,9 @@ class StoryScreenController extends GetxController {
     }
 
     viewlistProcess.value = true;
-    StoryAPI funct = StoryAPI(currentUser: currentUser.value!);
+
     StoryViewListResponse response =
-        await funct.fetchviewlist(storyID: storyID);
+        await API.service.storyServices.fetchviewlist(storyID: storyID);
     if (!response.result.status) {
       log(response.result.description);
       viewlistProcess.value = false;

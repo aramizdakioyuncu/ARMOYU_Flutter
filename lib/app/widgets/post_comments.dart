@@ -1,11 +1,11 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -38,10 +38,8 @@ class _WidgetPostComments extends State<WidgetPostComments> {
   Future<void> removeComment() async {
     isvisiblecomment = false;
 
-    PostsAPI funct =
-        PostsAPI(currentUser: widget.currentUserAccounts.user.value);
-    PostRemoveCommentResponse response =
-        await funct.removecomment(commentID: widget.comment.commentID);
+    PostRemoveCommentResponse response = await API.service.postsServices
+        .removecomment(commentID: widget.comment.commentID);
     ARMOYUWidget.toastNotification(response.result.description.toString());
 
     if (!response.result.status) {
@@ -59,11 +57,10 @@ class _WidgetPostComments extends State<WidgetPostComments> {
       widget.comment.didIlike = true;
       widget.comment.likeCount++;
     }
-    PostsAPI funct =
-        PostsAPI(currentUser: widget.currentUserAccounts.user.value);
+
     if (!widget.comment.didIlike) {
-      PostCommentUnLikeResponse response =
-          await funct.commentunlike(commentID: widget.comment.commentID);
+      PostCommentUnLikeResponse response = await API.service.postsServices
+          .commentunlike(commentID: widget.comment.commentID);
 
       if (!response.result.status) {
         log(response.result.description);
@@ -76,8 +73,8 @@ class _WidgetPostComments extends State<WidgetPostComments> {
         return;
       }
     } else {
-      PostCommentLikeResponse response =
-          await funct.commentlike(commentID: widget.comment.commentID);
+      PostCommentLikeResponse response = await API.service.postsServices
+          .commentlike(commentID: widget.comment.commentID);
 
       if (!response.result.status) {
         log(response.result.description);

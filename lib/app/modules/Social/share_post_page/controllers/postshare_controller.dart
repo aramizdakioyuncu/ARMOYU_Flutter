@@ -1,7 +1,7 @@
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,8 @@ class PostshareController extends GetxController {
   var key = GlobalKey<FlutterMentionsState>().obs;
   var userLocation = Rx<String?>(null);
 
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   @override
   void onInit() {
@@ -35,9 +36,8 @@ class PostshareController extends GetxController {
     }
 
     postshareProccess.value = true;
-    PostsAPI funct =
-        PostsAPI(currentUser: currentUserAccounts.value.user.value);
-    PostShareResponse response = await funct.share(
+
+    PostShareResponse response = await API.service.postsServices.share(
       text: key.value.currentState!.controller!.text,
       files: media.map((media) => media.mediaXFile!).toList(),
       location: userLocation.value,

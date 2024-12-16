@@ -1,10 +1,10 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/profile/profile_invitelist.dart';
@@ -52,9 +52,8 @@ class InviteController extends GetxController {
   }
 
   Future<void> refreshInviteCode() async {
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
-    ServiceResult response = await f.invitecoderefresh();
+    ServiceResult response =
+        await API.service.profileServices.invitecoderefresh();
 
     if (!response.status) {
       log(response.description);
@@ -68,9 +67,8 @@ class InviteController extends GetxController {
   }
 
   Future<void> sendmailURL(int userID) async {
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
-    ServiceResult response = await f.sendauthmailURL(userID: userID);
+    ServiceResult response =
+        await API.service.profileServices.sendauthmailURL(userID: userID);
     if (!response.status) {
       log(response.description);
       return;
@@ -88,10 +86,9 @@ class InviteController extends GetxController {
     if (invitePage.value == 1) {
       invitelist.clear();
     }
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value!.user.value);
+
     ProfileInviteListResponse response =
-        await f.invitelist(page: invitePage.value);
+        await API.service.profileServices.invitelist(page: invitePage.value);
 
     if (!response.result.status) {
       log(response.result.description);

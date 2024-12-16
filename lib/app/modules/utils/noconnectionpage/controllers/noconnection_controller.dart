@@ -29,7 +29,7 @@ class NoconnectionapageController extends GetxController {
       List<String>? usersJson = prefs.getStringList('users');
 
       String? username;
-      String? password;
+      String? sesssionTOKEN;
 
       if (usersJson != null) {
         //Listeye Yükle
@@ -38,14 +38,14 @@ class NoconnectionapageController extends GetxController {
             .toList();
         for (var element in usersJson) {
           username = ARMOYU.appUsers.first.user.value.userName!.value;
-          password = ARMOYU.appUsers.first.user.value.password!.value;
+          sesssionTOKEN = ARMOYU.appUsers.first.value.sesssionTOKEN!.value;
           log(element.toString());
         }
       }
       log(ARMOYU.appUsers.length.toString());
 
       //Kullanıcı adı veya şifre kısmı null ise daha ileri kodlara gitmesini önler
-      if (username == null || password == null) {
+      if (username == null || sesssionTOKEN == null) {
         // if (mounted) {
         //   Navigator.pushReplacement(
         //     context,
@@ -58,7 +58,7 @@ class NoconnectionapageController extends GetxController {
         // }
         Get.offNamed(
           "/Login",
-          arguments: {"currentUser": User(userName: "".obs, password: "".obs)},
+          arguments: {"currentUser": User(userName: "".obs)},
         );
 
         // setState(() {
@@ -67,11 +67,10 @@ class NoconnectionapageController extends GetxController {
         // });
         return;
       }
-      FunctionService f = FunctionService(
-          currentUser: User(userName: "".obs, password: "".obs));
+      FunctionService f = FunctionService();
 
       LoginResponse response =
-          await f.login(username.toString(), password.toString(), true);
+          await f.login(username.toString(), sesssionTOKEN.toString());
       log("Durum ${response.result.status}");
       log("aciklama ${response.result.description}");
 
@@ -81,9 +80,7 @@ class NoconnectionapageController extends GetxController {
 
           Get.offNamed(
             "/Login",
-            arguments: {
-              "currentUser": User(userName: "".obs, password: "".obs)
-            },
+            arguments: {"currentUser": User(userName: "".obs)},
           );
           isConnected.value = false;
           connectionProcess.value = false;

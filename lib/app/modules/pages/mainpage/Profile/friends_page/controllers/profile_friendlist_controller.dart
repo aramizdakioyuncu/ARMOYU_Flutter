@@ -1,9 +1,9 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +15,10 @@ class ProfileFriendlistController extends GetxController {
   var proccessStatus = false.obs;
   var firstproccessStatus = false.obs;
 
-  var user = Rx<UserAccounts>(UserAccounts(user: User().obs));
-  var currentUserAccounts = Rx<UserAccounts>(UserAccounts(user: User().obs));
+  var user =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  var currentUserAccounts =
+      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
 
   @override
   void onInit() {
@@ -55,10 +57,10 @@ class ProfileFriendlistController extends GetxController {
     proccessStatus.value = true;
 
     // Verinin çekilmesi
-    ProfileAPI f =
-        ProfileAPI(currentUser: currentUserAccounts.value.user.value);
-    ProfileFriendListResponse response = await f.friendlist(
-        userID: user.value.user.value.userID!, page: pagecounter.value);
+
+    ProfileFriendListResponse response = await API.service.profileServices
+        .friendlist(
+            userID: user.value.user.value.userID!, page: pagecounter.value);
 
     if (!response.result.status) {
       log(response.result.description);

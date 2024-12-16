@@ -1,8 +1,8 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -34,8 +34,7 @@ class StoryScreenPageWidget extends State<StoryPublishPage> {
   }
 
   Future<void> publishstory(String storyURL, bool isEveryonepublish) async {
-    StoryAPI f = StoryAPI(currentUser: widget.currentUser);
-    ServiceResult response = await f.addstory(
+    ServiceResult response = await API.service.storyServices.addstory(
       imageURL: storyURL,
       isEveryonePublish: isEveryonepublish,
     );

@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -9,8 +10,6 @@ import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/services/API/blocking_api.dart';
-import 'package:ARMOYU/app/services/API/posts_api.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/likers.dart';
 import 'package:ARMOYU/app/widgets/post_comments.dart';
@@ -106,9 +105,8 @@ class PostController extends GetxController {
     }
     fetchCommentStatus.value = true;
 
-    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
     PostCommentsFetchResponse response =
-        await funct.commentsfetch(postID: postID);
+        await API.service.postsServices.commentsfetch(postID: postID);
     if (!response.result.status) {
       log(response.result.description);
       fetchCommentStatus.value = false;
@@ -170,8 +168,8 @@ class PostController extends GetxController {
     }
     fetchlikersStatus.value = true;
 
-    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    PostLikesListResponse response = await funct.postlikeslist(postID: postID);
+    PostLikesListResponse response =
+        await API.service.postsServices.postlikeslist(postID: postID);
     if (!response.result.status) {
       log(response.result.description.toString());
       fetchlikersStatus.value = false;
@@ -213,9 +211,8 @@ class PostController extends GetxController {
   Future<void> removepost() async {
     postVisible.value = false;
 
-    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
     PostRemoveResponse response =
-        await funct.remove(postID: postInfo.value.postID);
+        await API.service.postsServices.remove(postID: postInfo.value.postID);
 
     ARMOYUWidget.toastNotification(response.result.description.toString());
 
@@ -347,10 +344,8 @@ class PostController extends GetxController {
                           padding: const EdgeInsets.all(5.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              PostsAPI funct = PostsAPI(
-                                  currentUser: currentUserAccounts.user.value);
                               PostCreateCommentResponse response =
-                                  await funct.createcomment(
+                                  await API.service.postsServices.createcomment(
                                 postID: postInfo.value.postID,
                                 text: controllerMessage.value.text,
                               );
@@ -391,8 +386,8 @@ class PostController extends GetxController {
 
     likeunlikeProcces.value = true;
 
-    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    PostLikeResponse response = await funct.like(postID: postID);
+    PostLikeResponse response =
+        await API.service.postsServices.like(postID: postID);
     if (!response.result.status) {
       log(response.result.description.toString());
       widgetlike = widgetlike;
@@ -411,8 +406,8 @@ class PostController extends GetxController {
     }
     likeunlikeProcces.value = true;
 
-    PostsAPI funct = PostsAPI(currentUser: currentUserAccounts.user.value);
-    PostUnLikeResponse response = await funct.unlike(postID: postID);
+    PostUnLikeResponse response =
+        await API.service.postsServices.unlike(postID: postID);
     if (!response.result.status) {
       log(response.result.description.toString());
       widgetlike = widgetlike;
@@ -547,10 +542,9 @@ class PostController extends GetxController {
                   Visibility(
                     child: InkWell(
                       onTap: () async {
-                        PostsAPI funct = PostsAPI(
-                            currentUser: currentUserAccounts.user.value);
-                        PostRemoveResponse response =
-                            await funct.remove(postID: postInfo.value.postID);
+                        PostRemoveResponse response = await API
+                            .service.postsServices
+                            .remove(postID: postInfo.value.postID);
                         if (!response.result.status) {
                           log(response.result.description);
                           return;
@@ -604,10 +598,9 @@ class PostController extends GetxController {
                       onTap: () async {
                         Get.back();
 
-                        BlockingAPI f = BlockingAPI(
-                            currentUser: currentUserAccounts.user.value);
-                        BlockingAddResponse response =
-                            await f.add(userID: postInfo.value.owner.userID!);
+                        BlockingAddResponse response = await API
+                            .service.blockingServices
+                            .add(userID: postInfo.value.owner.userID!);
 
                         ARMOYUWidget.toastNotification(
                           response.result.description,

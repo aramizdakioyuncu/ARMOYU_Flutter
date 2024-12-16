@@ -2,10 +2,10 @@
 
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/API/profile_api.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
@@ -44,9 +44,8 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   Future<void> friendrequest() async {
-    ProfileAPI f =
-        ProfileAPI(currentUser: widget.currentUserAccounts.user.value);
-    ServiceResult response = await f.friendrequest(userID: widget.userID);
+    ServiceResult response =
+        await API.service.profileServices.friendrequest(userID: widget.userID);
 
     if (!response.status) {
       log(response.description);
@@ -61,9 +60,8 @@ class _UserListWidgetState extends State<UserListWidget> {
   }
 
   Future<void> removefriend() async {
-    ProfileAPI f =
-        ProfileAPI(currentUser: widget.currentUserAccounts.user.value);
-    ServiceResult response = await f.friendremove(userID: widget.userID);
+    ServiceResult response =
+        await API.service.profileServices.friendremove(userID: widget.userID);
     if (!response.status) {
       log(response.description);
       return;

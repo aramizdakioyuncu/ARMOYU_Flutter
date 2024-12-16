@@ -57,9 +57,7 @@ class ChatdetailController extends GetxController {
   }
 
   Future<void> getchat() async {
-    FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.value!.user.value,
-    );
+    FunctionService f = FunctionService();
     ChatFetchDetailResponse response =
         await f.getdeailchats(chat.value!.user.userID!);
     if (!response.result.status) {
@@ -160,9 +158,7 @@ class ChatdetailController extends GetxController {
     );
 
     currentUserAccounts.value!.user.value.chatlist!.refresh();
-    FunctionService f = FunctionService(
-      currentUser: currentUserAccounts.value!.user.value,
-    );
+    FunctionService f = FunctionService();
     ServiceResult response =
         await f.sendchatmessage(chat.value!.user.userID!, message, "ozel");
     if (!response.status) {

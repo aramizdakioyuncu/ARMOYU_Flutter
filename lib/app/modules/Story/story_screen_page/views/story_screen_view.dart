@@ -1,7 +1,7 @@
 import 'dart:developer';
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/Story/story_screen_page/controllers/story_screen_controller.dart';
-import 'package:ARMOYU/app/services/API/story_api.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -367,11 +367,10 @@ class StoryScreenView extends StatelessWidget {
                                                         .story![index]
                                                         .isLike ==
                                                     0) {
-                                                  StoryAPI funct = StoryAPI(
-                                                      currentUser: controller
-                                                          .currentUser.value!);
                                                   ServiceResult response =
-                                                      await funct.like(
+                                                      await API
+                                                          .service.storyServices
+                                                          .like(
                                                     storyID: controller
                                                         .storyList
                                                         .value[indexstoryList]
@@ -391,12 +390,10 @@ class StoryScreenView extends StatelessWidget {
 
                                                   // setstatefunction();
                                                 } else {
-                                                  StoryAPI funct = StoryAPI(
-                                                    currentUser: controller
-                                                        .currentUser.value!,
-                                                  );
                                                   ServiceResult response =
-                                                      await funct.likeremove(
+                                                      await API
+                                                          .service.storyServices
+                                                          .likeremove(
                                                     storyID: controller
                                                         .storyList
                                                         .value[indexstoryList]
