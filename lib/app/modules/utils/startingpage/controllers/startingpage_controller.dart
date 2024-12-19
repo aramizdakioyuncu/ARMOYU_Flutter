@@ -128,10 +128,6 @@ class StartingpageController extends GetxController {
         Get.offAndToNamed("/login");
         return;
       }
-
-      accountController.changeUser(ARMOYU.appUsers.first);
-      Get.offAndToNamed("/app");
-      return;
     }
   }
 }
