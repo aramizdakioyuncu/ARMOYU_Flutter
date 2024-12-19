@@ -1,7 +1,7 @@
 name: ARMOYU
 description: Resmi ARMOYU Flutter projesidir.
 publish_to: "none" 
-version: 1.0.12+95
+version: 1.0.13+96
 
 environment:
   sdk: ">=3.0.2 <4.0.0"
@@ -14,7 +14,6 @@ dependencies:
   http: ^1.2.2
   cached_network_image: ^3.3.0
   crypto: ^3.0.3
-  shared_preferences: ^2.2.2
   provider: ^6.0.5
   theme_provider: ^0.6.0
   flutter_barcode_scanner: ^2.0.0
@@ -54,7 +53,8 @@ dependencies:
   pinch_zoom: ^2.0.0
   qr_flutter: ^4.1.0
   get: ^4.6.6
-  armoyu_services: ^1.0.0+31
+  get_storage: ^2.1.1
+  armoyu_services: ^1.0.0+32
   armoyu_widgets: ^1.0.0+3
 
   share_plus: ^10.1.2

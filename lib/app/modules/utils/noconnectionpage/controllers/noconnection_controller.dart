@@ -9,7 +9,6 @@ import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/views/app_page_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NoconnectionapageController extends GetxController {
   var isConnected = false.obs;
@@ -23,10 +22,8 @@ class NoconnectionapageController extends GetxController {
     if (await AppCore.checkInternetConnection()) {
       isConnected.value = true;
 
-      final prefs = await SharedPreferences.getInstance();
-
-      // Kullanıcı listesini SharedPreferences'den yükleme
-      List<String>? usersJson = prefs.getStringList('users');
+      // Bellekteki Kullanıcı listesini Storeage'den yükleme
+      List<dynamic>? usersJson = ARMOYU.storage.read("users");
 
       String? username;
       String? sesssionTOKEN;

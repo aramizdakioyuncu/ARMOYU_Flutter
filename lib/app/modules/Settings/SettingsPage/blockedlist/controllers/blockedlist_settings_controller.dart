@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -16,12 +14,12 @@ class BlockedlistSettingsController extends GetxController {
   var blockedList = <Map<int, Widget>>[].obs;
   var blockedProcces = false.obs;
   var isFirstProcces = true.obs;
-  var currentUserAccounts = Rx<UserAccounts>(
-    UserAccounts(
-      user: User().obs,
-      sessionTOKEN: Rx(""),
-    ),
-  );
+  // var currentUserAccounts = Rx<UserAccounts>(
+  //   UserAccounts(
+  //     user: User().obs,
+  //     sessionTOKEN: Rx(""),
+  //   ),
+  // );
 
   @override
   void onInit() {
@@ -31,8 +29,8 @@ class BlockedlistSettingsController extends GetxController {
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     //* *//
-    currentUserAccounts.value =
-        findCurrentAccountController.currentUserAccounts.value;
+    // currentUserAccounts.value =
+    //     findCurrentAccountController.currentUserAccounts.value;
     if (isFirstProcces.value) {
       getblockedlist();
     }

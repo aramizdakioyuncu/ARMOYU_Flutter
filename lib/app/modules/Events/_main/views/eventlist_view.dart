@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/modules/Events/_main/controllers/eventlist_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,9 +12,7 @@ class EventlistPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(EventlistController());
     return Scaffold(
-      appBar: AppBar(
-        title: Text(DrawerKeys.drawerEvents.tr),
-      ),
+      appBar: AppbarWidget.standart(title: DrawerKeys.drawerEvents.tr),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

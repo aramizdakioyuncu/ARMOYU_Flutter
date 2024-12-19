@@ -16,10 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:get/get.dart';
-import 'detectabletext.dart';
+import '../detectabletext.dart';
 
 // ignore: must_be_immutable
-class CustomMenusNotificationbars extends StatefulWidget {
+class CustomMenusNotificationbars extends StatelessWidget {
   final UserAccounts currentUserAccounts;
   final User user;
   final String text;
@@ -43,27 +43,9 @@ class CustomMenusNotificationbars extends StatefulWidget {
   });
 
   @override
-  State<CustomMenusNotificationbars> createState() =>
-      _CustomMenusNotificationbarsState();
-}
-
-class _CustomMenusNotificationbarsState
-    extends State<CustomMenusNotificationbars> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void setstatefunction() {
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: widget.natificationisVisible,
+      visible: natificationisVisible,
       child: Container(
         // color: ARMOYU.appbarColor,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -71,27 +53,27 @@ class _CustomMenusNotificationbarsState
           children: [
             InkWell(
               onTap: () {
-                log(widget.category.toString());
-                log(widget.categorydetail.toString());
-                log(widget.categorydetailID.toString());
+                log(category.toString());
+                log(categorydetail.toString());
+                log(categorydetailID.toString());
 
-                if (widget.categorydetail == "post") {
+                if (categorydetail == "post") {
                   Get.toNamed("/social/detail", arguments: {
-                    "postID": widget.categorydetailID,
+                    "postID": categorydetailID,
                   });
-                } else if (widget.categorydetail == "postyorum") {
+                } else if (categorydetail == "postyorum") {
                   Get.toNamed("/social/detail", arguments: {
-                    "commentID": widget.categorydetailID,
+                    "commentID": categorydetailID,
                   });
-                } else if (widget.category == "gruplar") {
+                } else if (category == "gruplar") {
                   Get.toNamed("/group/detail", arguments: {
-                    'user': widget.currentUserAccounts.user,
-                    'group': Group(groupID: widget.categorydetailID)
+                    'user': currentUserAccounts.user,
+                    'group': Group(groupID: categorydetailID)
                   });
-                } else if (widget.category == "arkadaslik") {
-                  if (widget.categorydetail == "kabul") {
+                } else if (category == "arkadaslik") {
+                  if (categorydetail == "kabul") {
                     Get.to("/profile", arguments: {
-                      "profileUser": User(userID: widget.user.userID),
+                      "profileUser": User(userID: user.userID),
                     });
                   }
                 }
@@ -101,21 +83,16 @@ class _CustomMenusNotificationbarsState
                 children: [
                   InkWell(
                     onTap: () {
-                      PageFunctions functions = PageFunctions(
-                        currentUser: widget.currentUserAccounts.user.value,
-                      );
+                      PageFunctions functions = PageFunctions();
                       functions.pushProfilePage(
                         context,
-                        User(
-                          userID: widget.user.userID,
-                        ),
-                        ScrollController(),
+                        User(userID: user.userID),
                       );
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       foregroundImage: CachedNetworkImageProvider(
-                        widget.user.avatar!.mediaURL.minURL.value,
+                        user.avatar!.mediaURL.minURL.value,
                       ),
                       radius: 25,
                     ),
@@ -128,11 +105,11 @@ class _CustomMenusNotificationbarsState
                         Row(
                           children: [
                             CustomText.costum1(
-                              widget.user.displayName!.value,
+                              user.displayName!.value,
                               weight: FontWeight.bold,
                             ),
                             const Spacer(),
-                            CustomText.costum1(widget.date
+                            CustomText.costum1(date
                                 .replaceAll('Saniye', CommonKeys.second.tr)
                                 .replaceAll('Dakika', CommonKeys.minute.tr)
                                 .replaceAll('Saat', CommonKeys.hour.tr)
@@ -141,69 +118,62 @@ class _CustomMenusNotificationbarsState
                                 .replaceAll('Yıl', CommonKeys.year.tr)),
                           ],
                         ),
-                        CustomDedectabletext.costum1(widget.text, 2, 15),
+                        CustomDedectabletext.costum1(text, 2, 15),
                         const SizedBox(height: 10),
                         Visibility(
-                          visible: widget.enableButtons,
+                          visible: enableButtons,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomButtons.costum1(
                                 text: CommonKeys.accept.tr,
                                 onPressed: () async {
-                                  if (widget.category == "arkadaslik") {
-                                    widget.natificationisVisible = false;
-                                    widget.currentUserAccounts
+                                  if (category == "arkadaslik") {
+                                    natificationisVisible = false;
+                                    currentUserAccounts
                                             .friendRequestCount.value ==
-                                        widget.currentUserAccounts
+                                        currentUserAccounts
                                                 .friendRequestCount.value -
                                             1;
 
-                                    setstatefunction();
-
-                                    if (widget.categorydetail == "istek") {
+                                    if (categorydetail == "istek") {
                                       ServiceResult response = await API
                                           .service.profileServices
                                           .friendrequestanswer(
-                                        userID: widget.user.userID!,
+                                        userID: user.userID!,
                                         answer: 1,
                                       );
                                       if (!response.status) {
                                         ARMOYUWidget.toastNotification(
                                             response.description.toString());
-                                        widget.natificationisVisible = true;
-                                        // widget.currentUserAccounts
+                                        natificationisVisible = true;
+                                        // currentUserAccounts
                                         //     .friendRequestCount++;
-                                        widget.currentUserAccounts
-                                            .friendRequestCount.value = widget
-                                                .currentUserAccounts
-                                                .friendRequestCount
-                                                .value +
+                                        currentUserAccounts.friendRequestCount
+                                            .value = currentUserAccounts
+                                                .friendRequestCount.value +
                                             1;
                                         1;
-                                        setstatefunction();
+
                                         return;
                                       }
                                     }
-                                  } else if (widget.category == "gruplar") {
-                                    if (widget.categorydetail == "davet") {
-                                      // widget.currentUserAccounts
+                                  } else if (category == "gruplar") {
+                                    if (categorydetail == "davet") {
+                                      // currentUserAccounts
                                       //     .groupInviteCount--;
 
-                                      widget.currentUserAccounts
-                                          .groupInviteCount.value = widget
-                                              .currentUserAccounts
-                                              .groupInviteCount
-                                              .value -
+                                      currentUserAccounts.groupInviteCount
+                                          .value = currentUserAccounts
+                                              .groupInviteCount.value -
                                           1;
 
-                                      widget.natificationisVisible = false;
-                                      setstatefunction();
+                                      natificationisVisible = false;
 
                                       GroupRequestAnswerResponse response =
                                           await API.service.groupServices
                                               .grouprequestanswer(
-                                        groupID: widget.categorydetailID,
+                                        groupID: categorydetailID,
                                         answer: "1",
                                       );
                                       if (!response.result.status) {
@@ -211,15 +181,12 @@ class _CustomMenusNotificationbarsState
                                             .result.description
                                             .toString());
 
-                                        widget.currentUserAccounts
-                                            .groupInviteCount.value = widget
-                                                .currentUserAccounts
-                                                .groupInviteCount
-                                                .value +
+                                        currentUserAccounts.groupInviteCount
+                                            .value = currentUserAccounts
+                                                .groupInviteCount.value +
                                             1;
 
-                                        widget.natificationisVisible = true;
-                                        setstatefunction();
+                                        natificationisVisible = true;
 
                                         return;
                                       }
@@ -232,80 +199,68 @@ class _CustomMenusNotificationbarsState
                               CustomButtons.costum1(
                                 text: CommonKeys.decline.tr,
                                 onPressed: () async {
-                                  if (widget.category == "arkadaslik") {
-                                    if (widget.categorydetail == "istek") {
-                                      // widget.currentUserAccounts
+                                  if (category == "arkadaslik") {
+                                    if (categorydetail == "istek") {
+                                      // currentUserAccounts
                                       //     .friendRequestCount--;
-                                      widget.currentUserAccounts
-                                          .friendRequestCount.value = widget
-                                              .currentUserAccounts
-                                              .friendRequestCount
-                                              .value -
+                                      currentUserAccounts.friendRequestCount
+                                          .value = currentUserAccounts
+                                              .friendRequestCount.value -
                                           1;
-                                      widget.natificationisVisible = false;
-                                      setstatefunction();
+                                      natificationisVisible = false;
 
                                       ServiceResult response = await API
                                           .service.profileServices
                                           .friendrequestanswer(
-                                        userID: widget.user.userID!,
+                                        userID: user.userID!,
                                         answer: 0,
                                       );
                                       if (!response.status) {
                                         ARMOYUWidget.toastNotification(
                                             response.description.toString());
-                                        // widget.currentUserAccounts
+                                        // currentUserAccounts
                                         //     .friendRequestCount++;
 
-                                        widget.currentUserAccounts
-                                            .friendRequestCount.value = widget
-                                                .currentUserAccounts
-                                                .friendRequestCount
-                                                .value +
+                                        currentUserAccounts.friendRequestCount
+                                            .value = currentUserAccounts
+                                                .friendRequestCount.value +
                                             1;
 
-                                        widget.natificationisVisible = true;
+                                        natificationisVisible = true;
 
-                                        setstatefunction();
                                         return;
                                       }
                                     }
-                                  } else if (widget.category == "gruplar") {
-                                    if (widget.categorydetail == "davet") {
-                                      // widget.currentUserAccounts
+                                  } else if (category == "gruplar") {
+                                    if (categorydetail == "davet") {
+                                      // currentUserAccounts
                                       //     .groupInviteCount--;
 
-                                      widget.currentUserAccounts
-                                          .groupInviteCount.value = widget
-                                              .currentUserAccounts
-                                              .groupInviteCount
-                                              .value -
+                                      currentUserAccounts.groupInviteCount
+                                          .value = currentUserAccounts
+                                              .groupInviteCount.value -
                                           1;
-                                      widget.natificationisVisible = false;
-                                      setstatefunction();
+                                      natificationisVisible = false;
 
                                       GroupRequestAnswerResponse response =
                                           await API.service.groupServices
                                               .grouprequestanswer(
-                                        groupID: widget.categorydetailID,
+                                        groupID: categorydetailID,
                                         answer: "0",
                                       );
                                       if (!response.result.status) {
                                         ARMOYUWidget.toastNotification(response
                                             .result.description
                                             .toString());
-                                        // widget.currentUserAccounts
+                                        // currentUserAccounts
                                         //     .groupInviteCount++;
 
-                                        widget.currentUserAccounts
-                                            .groupInviteCount.value = widget
-                                                .currentUserAccounts
-                                                .groupInviteCount
-                                                .value +
+                                        currentUserAccounts.groupInviteCount
+                                            .value = currentUserAccounts
+                                                .groupInviteCount.value +
                                             1;
-                                        widget.natificationisVisible = true;
+                                        natificationisVisible = true;
 
-                                        setstatefunction();
                                         return;
                                       }
                                     }

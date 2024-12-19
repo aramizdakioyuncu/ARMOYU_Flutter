@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
@@ -10,7 +8,7 @@ import 'package:get/get.dart';
 class News {
   int newsID;
   String newsTitle;
-  String newsContent;
+  Rx<String>? newsContent;
   String newssummary;
   String newsImage;
   String author;
@@ -20,7 +18,7 @@ class News {
   News({
     required this.newsID,
     required this.newsTitle,
-    required this.newsContent,
+    this.newsContent,
     required this.newssummary,
     required this.newsImage,
     required this.author,
@@ -33,7 +31,7 @@ class News {
     return {
       'newsID': newsID,
       'newsTitle': newsTitle,
-      'newsContent': newsContent,
+      'newsContent': newsContent?.value,
       'newssummary': newssummary,
       'newsImage': newsImage,
       'author': author,
@@ -47,7 +45,8 @@ class News {
     return News(
       newsID: json['newsID'],
       newsTitle: json['newsTitle'],
-      newsContent: json['newsContent'],
+      newsContent:
+          json['newsContent'] == null ? null : Rx<String>(json['newsContent']),
       newssummary: json['newssummary'],
       newsImage: json['newsImage'],
       author: json['author'],
@@ -63,7 +62,6 @@ class News {
         color: Get.theme.cardColor,
         child: InkWell(
           onTap: () {
-            log("sa");
             Get.toNamed("/news/detail", arguments: {
               "user": currentUser,
               "news": this,

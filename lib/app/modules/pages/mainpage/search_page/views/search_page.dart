@@ -88,16 +88,9 @@ class _SearchPagePage extends State<SearchPage>
                         return controller.newsList.isNotEmpty
                             ? InkWell(
                                 onTap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => NewsPage(
-                                  //       currentUser:
-                                  //           widget.currentUserAccounts.user,
-                                  //       news: newsList[index],
-                                  //     ),
-                                  //   ),
-                                  // );
+                                  Get.toNamed("/news/detail", arguments: {
+                                    "news": controller.newsList[index],
+                                  });
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(

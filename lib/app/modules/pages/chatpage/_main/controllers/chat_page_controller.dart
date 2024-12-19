@@ -23,8 +23,13 @@ class ChatPageController extends GetxController {
   var chatcontroller = TextEditingController().obs;
   var chatScrollController = ScrollController().obs;
   var searchStatus = false.obs;
-  var currentUserAccounts =
-      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
+  );
 
   @override
   void onInit() {

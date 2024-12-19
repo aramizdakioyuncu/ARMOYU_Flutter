@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/modules/poll/_main/controllers/poll_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,10 +12,8 @@ class PollView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(PollController());
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          DrawerKeys.drawerPolls.tr,
-        ),
+      appBar: AppbarWidget.standart(
+        title: DrawerKeys.drawerPolls.tr,
       ),
       body: CustomScrollView(
         controller: controller.controller.value,

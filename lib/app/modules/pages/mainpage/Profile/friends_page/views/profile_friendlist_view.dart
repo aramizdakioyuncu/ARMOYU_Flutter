@@ -4,7 +4,7 @@ import 'package:ARMOYU/app/modules/pages/mainpage/Profile/friends_page/controlle
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
-import 'package:ARMOYU/app/widgets/userlist.dart';
+import 'package:ARMOYU/app/widgets/userlist/userlist_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

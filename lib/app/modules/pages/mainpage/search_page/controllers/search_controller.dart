@@ -41,14 +41,10 @@ class SearchPageController extends GetxController {
     super.onInit();
 
     widgetTPCard.value = ARMOYUWidget(
-      currentUserAccounts: currentUserAccounts,
-      scrollController: ScrollController(),
       content: [],
       firstFetch: true,
     ).widgetTPlist();
     widgetPOPCard.value = ARMOYUWidget(
-      currentUserAccounts: currentUserAccounts,
-      scrollController: ScrollController(),
       content: [],
       firstFetch: true,
     ).widgetPOPlist();
@@ -84,9 +80,8 @@ class SearchPageController extends GetxController {
         News(
           newsID: element.newsID,
           newsTitle: element.title,
-          newsContent: "",
           author: element.newsOwner.displayname,
-          newsImage: element.newsOwner.avatar.minURL,
+          newsImage: element.media.mediaURL.minURL,
           newssummary: element.summary,
           authoravatar: element.newsOwner.avatar.minURL,
           newsViews: element.views,
@@ -172,15 +167,10 @@ class SearchPageController extends GetxController {
                       : const Icon(Icons.groups),
               onTap: () {
                 if (element.turu == "oyuncu") {
-                  PageFunctions functions = PageFunctions(
-                    currentUser: currentUserAccounts.user.value,
-                  );
+                  PageFunctions functions = PageFunctions();
                   functions.pushProfilePage(
                     Get.context!,
-                    User(
-                      userID: element.id,
-                    ),
-                    ScrollController(),
+                    User(userID: element.id),
                   );
                 } else if (element.turu == "gruplar") {
                   Get.toNamed("/group/detail", arguments: {

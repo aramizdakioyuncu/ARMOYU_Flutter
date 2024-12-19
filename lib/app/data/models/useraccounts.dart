@@ -12,6 +12,8 @@ import 'package:get/get.dart';
 class UserAccounts {
   Rx<User> user;
   Rx<String> sessionTOKEN;
+
+  Rx<String> language;
   //Sosyal KISIM
   List<Post>? widgetPosts;
   List<StoryList>? widgetStoriescard;
@@ -46,6 +48,7 @@ class UserAccounts {
   UserAccounts({
     required this.user,
     required this.sessionTOKEN,
+    required this.language,
     this.widgetPosts,
     this.widgetStoriescard,
     this.widgettaggedPosts,
@@ -58,12 +61,6 @@ class UserAccounts {
     this.lastviewgroupsList,
     this.lastviewschoolsList,
     this.lastviewstationsList,
-    // this.chatNotificationCount = 0,
-    // this.surveyNotificationCount = 0,
-    // this.eventsNotificationCount = 0,
-    // this.downloadableCount = 0,
-    // this.friendRequestCount,
-    // this.groupInviteCount,
     this.favoriteteams,
     this.favTeam,
     this.favteamRequest = false,
@@ -87,6 +84,7 @@ class UserAccounts {
     return {
       'user': user.value.toJson(),
       'sessionTOKEN': sessionTOKEN.value,
+      'language': language.value,
       'widgetPosts': widgetPosts?.map((post) => post.toJson()).toList(),
       'widgetStoriescard':
           widgetStoriescard?.map((story) => story.toJson()).toList(),
@@ -123,6 +121,7 @@ class UserAccounts {
     return UserAccounts(
       user: User.fromJson(json['user']).obs,
       sessionTOKEN: Rx(json['sessionTOKEN']),
+      language: Rx(json['language']),
       widgetPosts: (json['widgetPosts'] as List<dynamic>?)
           ?.map((post) => Post.fromJson(post))
           .toList(),

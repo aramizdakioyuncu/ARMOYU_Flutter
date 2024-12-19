@@ -15,10 +15,20 @@ class ProfileFriendlistController extends GetxController {
   var proccessStatus = false.obs;
   var firstproccessStatus = false.obs;
 
-  var user =
-      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
-  var currentUserAccounts =
-      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  var user = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
+  );
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
+  );
 
   @override
   void onInit() {

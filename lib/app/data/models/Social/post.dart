@@ -2,6 +2,7 @@ import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class Post {
   int postID;
@@ -14,9 +15,9 @@ class Post {
   bool iscommentMe;
   User owner;
   List<Media> media;
-  List<Comment> firstthreecomment;
+  List<Comment>? firstthreecomment;
   List<Comment>? comments;
-  List<Like> firstthreelike;
+  List<Like>? firstthreelike;
   List<Like>? likers;
 
   String? location;
@@ -52,9 +53,9 @@ class Post {
       'iscommentMe': iscommentMe,
       'owner': owner.toJson(),
       'media': media.map((m) => m.toJson()).toList(),
-      'firstthreecomment': firstthreecomment.map((c) => c.toJson()).toList(),
+      'firstthreecomment': firstthreecomment?.map((c) => c.toJson()).toList(),
       'comments': comments?.map((c) => c.toJson()).toList(),
-      'firstthreelike': firstthreelike.map((l) => l.toJson()).toList(),
+      'firstthreelike': firstthreelike?.map((l) => l.toJson()).toList(),
       'likers': likers?.map((l) => l.toJson()).toList(),
       'location': location,
     };
@@ -73,17 +74,26 @@ class Post {
       iscommentMe: json['iscommentMe'],
       owner: User.fromJson(json['owner']),
       media: (json['media'] as List).map((m) => Media.fromJson(m)).toList(),
-      firstthreecomment: (json['firstthreecomment'] as List)
-          .map((c) => Comment.fromJson(c))
-          .toList(),
-      comments: json['comments'] != null
-          ? (json['comments'] as List).map((c) => Comment.fromJson(c)).toList()
+      firstthreecomment: json['firstthreecomment'] != null
+          ? (json['firstthreecomment'] as List)
+              .map((c) => Comment.fromJson(c))
+              .toList()
+              .obs
           : null,
-      firstthreelike: (json['firstthreelike'] as List)
-          .map((l) => Like.fromJson(l))
-          .toList(),
+      comments: json['comments'] != null
+          ? (json['comments'] as List)
+              .map((c) => Comment.fromJson(c))
+              .toList()
+              .obs
+          : null,
+      firstthreelike: json['firstthreelike'] != null
+          ? (json['firstthreelike'] as List)
+              .map((l) => Like.fromJson(l))
+              .toList()
+              .obs
+          : null,
       likers: json['likers'] != null
-          ? (json['likers'] as List).map((l) => Like.fromJson(l)).toList()
+          ? (json['likers'] as List).map((l) => Like.fromJson(l)).toList().obs
           : null,
       location: json['location'],
     );

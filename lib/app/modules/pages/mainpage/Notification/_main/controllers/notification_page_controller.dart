@@ -6,7 +6,7 @@ import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/notification_bars.dart';
+import 'package:ARMOYU/app/widgets/notification_bars/notification_bars_view.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';

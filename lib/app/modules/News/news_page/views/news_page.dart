@@ -1,9 +1,9 @@
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/News/news_page/controllers/news_page_controller.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -14,19 +14,18 @@ class NewsPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     final NewsPageController controller = Get.put(NewsPageController());
     return Scaffold(
-      appBar: AppBar(
-        title: Text(controller.news.value!.newsTitle.toString()),
-        actions: [
-          IconButton(
-            onPressed: () async {
-              await Share.share(
-                'https://aramizdakioyuncu.com/haberler/oyun/${controller.news.value!.newsTitle}',
-              );
-            },
-            icon: const Icon(Icons.share),
-          ),
-        ],
-      ),
+      appBar: AppbarWidget.standart(
+          title: controller.news.value!.newsTitle.toString(),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await Share.share(
+                  'https://aramizdakioyuncu.com/haberler/oyun/${controller.news.value!.newsTitle}',
+                );
+              },
+              icon: const Icon(Icons.share),
+            ),
+          ]),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -60,8 +59,8 @@ class NewsPageView extends StatelessWidget {
                 : SliverFillRemaining(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Html(
-                        data: controller.news.value!.newsContent,
+                      child: Text(
+                        controller.news.value!.newsContent.toString(),
                       ),
                     ),
                   ),

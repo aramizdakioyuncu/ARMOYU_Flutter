@@ -3,6 +3,7 @@ import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/Settings/_main/controller/settings_controller.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,7 @@ class SettingsView extends StatelessWidget {
     final controller = Get.put(SettingsController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: CustomText.costum1(SettingsKeys.settings.tr),
-      ),
+      appBar: AppbarWidget.standart(title: SettingsKeys.settings.tr),
       body: SingleChildScrollView(
         child: Column(
           children: [

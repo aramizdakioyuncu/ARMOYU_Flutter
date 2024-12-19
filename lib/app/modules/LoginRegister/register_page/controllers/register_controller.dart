@@ -113,6 +113,7 @@ class RegisterpageController extends GetxController {
           UserAccounts(
             user: newUser.user,
             sessionTOKEN: Rx(loginresponse.result.descriptiondetail),
+            language: Rx(""),
           ),
         );
 
@@ -144,8 +145,13 @@ class RegisterpageController extends GetxController {
     }
   }
 
-  var currentUserAccounts =
-      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
+  );
 
   late AccountUserController accountController;
   @override

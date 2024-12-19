@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class MediaViewer extends StatefulWidget {
-  final User currentUser;
+  final int currentUserID;
   final List<Media> media; // Gezdirilecek fotoğrafların ID listesi
   final int initialIndex; // Başlangıçtaki fotoğrafin indexi
   final bool? isFile; // Yerel mi
@@ -23,7 +22,7 @@ class MediaViewer extends StatefulWidget {
     required this.initialIndex,
     this.isFile = false,
     this.isMemory = false,
-    required this.currentUser,
+    required this.currentUserID,
   });
   @override
   State<MediaViewer> createState() => _MediaViewerPage();
@@ -118,7 +117,7 @@ class _MediaViewerPage extends State<MediaViewer> {
           ),
           Visibility(
             visible: (widget.media[widget.initialIndex].ownerID ==
-                        widget.currentUser.userID) &&
+                        widget.currentUserID) &&
                     !isRotationprocces
                 ? true
                 : false,

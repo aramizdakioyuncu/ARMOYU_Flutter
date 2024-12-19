@@ -4,7 +4,6 @@ import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +11,13 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class WidgetUtility {
-  static Widget specialText(BuildContext context, String text,
-      {TextAlign textAlign = TextAlign.start,
-      FontWeight fontWeight = FontWeight.normal,
-      Color? color,
-      required UserAccounts currentUserAccounts}) {
+  static Widget specialText(
+    BuildContext context,
+    String text, {
+    TextAlign textAlign = TextAlign.start,
+    FontWeight fontWeight = FontWeight.normal,
+    Color? color,
+  }) {
     final lines = text.split('\n');
     final textSpans = <TextSpan>[];
 
@@ -58,16 +59,11 @@ class WidgetUtility {
                 ..onTap = () {
                   // Burada @ işaretine tıklandığında yapılacak işlemi ekleyin
                   log('Tapped on username: $username');
-                  PageFunctions functions = PageFunctions(
-                    currentUser: currentUserAccounts.user.value,
-                  );
+                  PageFunctions functions = PageFunctions();
 
                   functions.pushProfilePage(
                     context,
-                    User(
-                      userName: username.substring(1).obs,
-                    ),
-                    ScrollController(),
+                    User(userName: username.substring(1).obs),
                   );
                 },
             ));

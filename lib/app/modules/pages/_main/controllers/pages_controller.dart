@@ -10,7 +10,6 @@ import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PagesController extends GetxController {
   late UserAccounts currentUserAccount;
@@ -64,21 +63,18 @@ class PagesController extends GetxController {
   }
 
   Future<void> saveCacheData() async {
-    // Kullanıcı listesini SharedPreferences'e kaydetme
     log("-> Önbellekleme İşlemi");
-    final prefs = await SharedPreferences.getInstance();
-
     try {
+      // Kullanıcı listesini Storeage'e kaydetme
       List<String> usersJson =
           ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-      prefs.setStringList('users', usersJson);
+      ARMOYU.storage.write("users", usersJson);
+      // Kullanıcı listesini Storeage'e kaydetme
       log("-> Önbellekleme İşlemi -- <<TAMAMLANDI>>");
     } catch (e) {
-      log("-> Önbellekleme HATASI HATASI HATASI");
+      log("-> Önbellekleme İşlemi -- <<HATASI>>");
       log(e.toString());
     }
-
-    //
   }
 
   Future<void> siteMessage() async {

@@ -5,7 +5,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
-import 'package:ARMOYU/app/widgets/notification_bars.dart';
+import 'package:ARMOYU/app/widgets/notification_bars/notification_bars_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,11 @@ class FriendrequestController extends GetxController {
   var scrollController = ScrollController().obs;
 
   var currentUserAccounts = Rx<UserAccounts>(
-    UserAccounts(user: User().obs, sessionTOKEN: Rx("")),
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
   );
 
   @override

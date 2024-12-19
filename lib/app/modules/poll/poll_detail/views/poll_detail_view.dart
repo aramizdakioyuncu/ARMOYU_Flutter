@@ -65,8 +65,8 @@ class PollDetailView extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => MediaViewer(
-                              currentUser: controller
-                                  .currentUserAccounts.value.user.value,
+                              currentUserID: controller
+                                  .currentUserAccounts.value.user.value.userID!,
                               media: controller
                                   .survey.value!.surveyQuestion.questionImages!,
                               initialIndex: index,
@@ -102,8 +102,6 @@ class PollDetailView extends StatelessWidget {
                             padding: const EdgeInsets.only(left: 8.0),
                             child: WidgetUtility.specialText(
                               context,
-                              currentUserAccounts:
-                                  controller.currentUserAccounts.value,
                               controller
                                   .survey.value!.surveyQuestion.questionValue,
                               textAlign: TextAlign.center,

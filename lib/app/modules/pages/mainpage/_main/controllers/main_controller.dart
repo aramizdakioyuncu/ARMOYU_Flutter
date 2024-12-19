@@ -349,9 +349,9 @@ class MainPageController extends GetxController {
         schoolBanner: Media(
           mediaID: 0,
           mediaURL: MediaURL(
-            bigURL: Rx<String>(element.schoolLogo.mediaURL.bigURL),
-            normalURL: Rx<String>(element.schoolLogo.mediaURL.normalURL),
-            minURL: Rx<String>(element.schoolLogo.mediaURL.minURL),
+            bigURL: Rx<String>(element.schoolBanner.mediaURL.bigURL),
+            normalURL: Rx<String>(element.schoolBanner.mediaURL.normalURL),
+            minURL: Rx<String>(element.schoolBanner.mediaURL.minURL),
           ),
         ),
       );
@@ -492,12 +492,6 @@ class MainPageController extends GetxController {
           ),
           title: Text(school.schoolName!),
           onTap: () {
-            // Get.to(const SchoolPageView(), arguments: {
-            //   "user": currentUserAccounts.value!.user,
-            //   "school": school,
-            //   "schoolID": school.schoolID!,
-            // });
-
             Get.toNamed("/school", arguments: {
               "school": school,
               "schoolID": school.schoolID!,

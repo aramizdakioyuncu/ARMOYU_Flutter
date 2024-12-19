@@ -78,13 +78,10 @@ class ChatDetailView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50.0),
                 child: GestureDetector(
                   onTap: () {
-                    PageFunctions functions = PageFunctions(
-                      currentUser: controller.currentUserAccounts.value!.value,
-                    );
+                    PageFunctions functions = PageFunctions();
                     functions.pushProfilePage(
                       context,
                       User(userID: controller.chat.value!.user.userID!),
-                      ScrollController(),
                     );
                   },
                   child: CachedNetworkImage(

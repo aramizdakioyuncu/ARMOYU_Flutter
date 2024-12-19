@@ -13,10 +13,10 @@ packages:
     dependency: "direct main"
     description:
       name: armoyu_services
-      sha256: f460c662a99b1ddbefc035a6b4594cdd181b0a31d3e22cb007c1a59196a99b54
+      sha256: "237d88cf7fd513a20c3cf44e74b5632692b4783a6cac048e49fb0f2d259e7af6"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+31"
+    version: "1.0.0+32"
   armoyu_widgets:
     dependency: "direct main"
     description:
@@ -605,6 +605,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.6.6"
+  get_storage:
+    dependency: "direct main"
+    description:
+      name: get_storage
+      sha256: "39db1fffe779d0c22b3a744376e86febe4ade43bf65e06eab5af707dc84185a2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.1"
   google_maps:
     dependency: transitive
     description:
@@ -1174,7 +1182,7 @@ packages:
     source: hosted
     version: "5.0.1"
   shared_preferences:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: shared_preferences
       sha256: "95f9997ca1fb9799d494d0cb2a780fd7be075818d59f00c43832ed112b158a82"

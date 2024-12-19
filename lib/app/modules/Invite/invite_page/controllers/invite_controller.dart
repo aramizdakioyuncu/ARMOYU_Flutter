@@ -60,8 +60,9 @@ class InviteController extends GetxController {
       return;
     }
 
-    currentUserAccounts.value!.user.value.invitecode =
-        Rx<String>(response.description);
+    currentUserAccounts.value!.user.value.invitecode = Rx<String>(
+      response.descriptiondetail,
+    );
 
     currentUserAccounts.value!.user.refresh();
   }
@@ -111,15 +112,12 @@ class InviteController extends GetxController {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
           onTap: () {
-            PageFunctions functions = PageFunctions(
-              currentUser: currentUserAccounts.value!.user.value,
-            );
+            PageFunctions functions = PageFunctions();
             functions.pushProfilePage(
               Get.context!,
               User(
                 userName: Rx<String>(element.username),
               ),
-              ScrollController(),
             );
           },
           leading: CircleAvatar(

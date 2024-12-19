@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/School/school_login/controllers/school_login_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 
 import 'package:ARMOYU/app/widgets/textfields.dart';
@@ -21,10 +22,7 @@ class SchoolLoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(SchoolLoginController());
     return Scaffold(
-      appBar: AppBar(
-        title: Text(SchoolKeys.joinSchool.tr),
-        backgroundColor: Get.theme.scaffoldBackgroundColor,
-      ),
+      appBar: AppbarWidget.standart(title: SchoolKeys.joinSchool.tr),
       body: RefreshIndicator(
         onRefresh: () => controller.handleRefresh(),
         child: SingleChildScrollView(

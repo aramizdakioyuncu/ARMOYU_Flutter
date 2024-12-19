@@ -6,7 +6,7 @@ import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/modules/Story/publish_story_page/views/storypublish_page.dart';
+import 'package:ARMOYU/app/modules/Story/publish_story_page/views/storypublish_view.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -89,7 +89,7 @@ class Media {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => StoryPublishPage(
+              builder: (context) => StorypublishView(
                 currentUser: currentUser,
                 imageID: 1,
                 imageURL: medialist[index].mediaURL.bigURL.value,
@@ -102,7 +102,7 @@ class Media {
           context,
           MaterialPageRoute(
             builder: (context) => MediaViewer(
-              currentUser: currentUser,
+              currentUserID: currentUser.userID!,
               media: medialist,
               initialIndex: index,
             ),
@@ -264,7 +264,7 @@ class Media {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => MediaViewer(
-                      currentUser: currentUser,
+                      currentUserID: currentUser.userID!,
                       media: list,
                       initialIndex: index,
                       isFile: true,

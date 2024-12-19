@@ -112,8 +112,8 @@ class _ProfilePageState extends State<ProfileView>
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => MediaViewer(
-                          currentUser: currentAccountController
-                              .currentUserAccount.user.value,
+                          currentUserID: currentAccountController
+                              .currentUserAccount.user.value.userID!,
                           media: [controller.userProfile.value.banner!],
                           initialIndex: 0,
                         ),

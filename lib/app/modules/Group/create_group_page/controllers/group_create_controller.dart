@@ -76,10 +76,10 @@ class GroupCreateController extends GetxController {
     }
 
     listname.clear();
-    for (dynamic element in response.response!) {
+    for (APICategory element in response.response!) {
       listname.add({
-        'ID': element["kategori_ID"].toString(),
-        'value': element["kategori_adi"]
+        'ID': element.categoryID.toString(),
+        'value': element.name,
       });
     }
   }

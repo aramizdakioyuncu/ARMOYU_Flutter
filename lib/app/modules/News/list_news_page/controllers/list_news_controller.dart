@@ -80,7 +80,6 @@ class ListNewsController extends GetxController {
         News(
           newsID: element.newsID,
           newsTitle: element.title,
-          newsContent: "",
           author: element.newsOwner.displayname,
           newsImage: element.media.mediaURL.minURL,
           newssummary: element.summary,

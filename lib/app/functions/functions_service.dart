@@ -12,7 +12,6 @@ import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ARMOYU/app/Services/Utility/onesignal.dart';
 
 class FunctionService {
@@ -56,15 +55,15 @@ class FunctionService {
       UserAccounts(
         user: userdetail.obs,
         sessionTOKEN: Rx(response.result.description),
+        language: Rx(""),
       ),
     );
 
-    // Kullanıcı listesini SharedPreferences'e kaydetme
+    // Kullanıcı listesini Storeage'e kaydetme
     List<String> usersJson =
         ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('users', usersJson);
-    //
+    ARMOYU.storage.write("users", usersJson);
+    // Kullanıcı listesini Storeage'e kaydetme
     return response;
   }
 
@@ -100,6 +99,7 @@ class FunctionService {
     UserAccounts userdetail = UserAccounts(
       user: ARMOYUFunctions.userfetch(oyuncubilgi).obs,
       sessionTOKEN: Rx(response.result.description),
+      language: Rx(""),
     );
 
     //İlk defa giriş yapılıyorsa
@@ -107,13 +107,11 @@ class FunctionService {
       ARMOYU.appUsers.add(userdetail);
     }
 
-    // Kullanıcı listesini SharedPreferences'e kaydetme
-    final prefs = await SharedPreferences.getInstance();
-
+    // Kullanıcı listesini Storeage'e kaydetme
     List<String> usersJson =
         ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-    prefs.setStringList('users', usersJson);
-    //
+    ARMOYU.storage.write("users", usersJson);
+    // Kullanıcı listesini Storeage'e kaydetme
 
     userdetail.updateUser(targetUser: ARMOYU.appUsers.first.user.value);
 
@@ -168,11 +166,11 @@ class FunctionService {
         .removeWhere((element) => element.user.value.userID == userID);
     //Oturumunu Kapat Bitiş
 
-    // Kullanıcı listesini SharedPreferences'e kaydetme
+    // Kullanıcı listesini Storeage'e kaydetme
     List<String> usersJson =
         ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('users', usersJson);
+    ARMOYU.storage.write("users", usersJson);
+    // Kullanıcı listesini Storeage'e kaydetme
     //
     Map<String, dynamic> jsonData = {
       'durum': 1,

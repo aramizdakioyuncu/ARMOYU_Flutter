@@ -21,8 +21,13 @@ class PollDetailController extends GetxController {
 
   var answerSurveyProccess = false.obs;
 
-  var currentUserAccounts =
-      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  var currentUserAccounts = Rx<UserAccounts>(
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
+  );
   late var survey = Rxn<Survey>();
 
   @override

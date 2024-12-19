@@ -51,6 +51,7 @@ class SocailPageController extends GetxController {
     UserAccounts(
       user: User().obs,
       sessionTOKEN: Rx(""),
+      language: Rx(""),
     ),
   );
 
@@ -112,12 +113,13 @@ class SocailPageController extends GetxController {
 
     StoryFetchListResponse response =
         await API.service.storyServices.stories(page: storypage.value);
+
     if (!response.result.status) {
       log(response.result.description);
-
       fetchStoryStatus.value = false;
       return;
     }
+    log("Hikaye Sayısı ${response.response!.length}");
 
     if (storypage.value == 1) {
       currentUserAccounts.value.user.value.widgetStoriescard =
@@ -140,6 +142,8 @@ class SocailPageController extends GetxController {
 
     int sirasay = -1;
     for (APIStoryList element in response.response!) {
+      log("Hikaye ${element.oyuncuAdSoyad}");
+
       sirasay++;
       List<Story> widgetStory = [];
 
@@ -244,9 +248,9 @@ class SocailPageController extends GetxController {
     List<Post> cachedPostlist = [];
 
     for (APIPostList element in response.response!) {
-      List<Media> media = [];
-      List<Comment> comments = [];
-      List<Like> likers = [];
+      List<Media>? media = [];
+      RxList<Comment> comments = RxList<Comment>([]);
+      RxList<Like>? likers = RxList<Like>([]);
 
       if (element.media!.isNotEmpty) {
         for (armoyumedia.Media mediaInfo in element.media!) {
@@ -384,18 +388,13 @@ class SocailPageController extends GetxController {
 
       //Postu ekle
       widgetPosts.add(
-        TwitterPostWidget(
-          currentUserAccounts: currentUserAccounts.value,
-          post: postsInfo,
-        ),
+        TwitterPostWidget(post: postsInfo),
       );
 
       //Popülerlik Kartını ekle
       if (counter / 3 == 1 || counter / 12 == 1) {
         widgetPosts.add(
           ARMOYUWidget(
-            currentUserAccounts: currentUserAccounts.value,
-            scrollController: ScrollController(),
             content: listPOPCard,
             firstFetch: listPOPCard.isEmpty,
           ).widgetPOPlist(),
@@ -406,8 +405,6 @@ class SocailPageController extends GetxController {
       if (counter / 8 == 1 || counter / 17 == 1) {
         widgetPosts.add(
           ARMOYUWidget(
-            currentUserAccounts: currentUserAccounts.value,
-            scrollController: ScrollController(),
             content: listTPCard,
             firstFetch: listTPCard.isEmpty,
           ).widgetTPlist(),

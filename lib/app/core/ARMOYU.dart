@@ -1,9 +1,8 @@
-// ignore_for_file: file_names
 import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:camera/camera.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ARMOYU {
   static String appName = "";
@@ -31,5 +30,5 @@ class ARMOYU {
   static int onlineMembersCount = 0;
   static int totalPlayerCount = 0;
 
-  static SharedPreferences? sharedprefences;
+  static GetStorage storage = GetStorage();
 }

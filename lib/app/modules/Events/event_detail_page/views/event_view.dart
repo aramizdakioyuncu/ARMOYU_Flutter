@@ -6,6 +6,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Events/event_detail_page/controllers/event_controller.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,10 +23,7 @@ class EventView extends StatelessWidget {
     final controller = Get.put(EventController());
     return Scaffold(
       backgroundColor: Get.theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        title: Text("${controller.event.value!.name} Etkinliği"),
-        // backgroundColor: ARMOYU.appbarColor,
-      ),
+      appBar: AppbarWidget.standart(title: controller.event.value!.name!),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -46,7 +44,7 @@ class EventView extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => MediaViewer(
-                        currentUser: controller.currentUser.value!,
+                        currentUserID: controller.currentUser.value!.userID!,
                         media: [
                           Media(
                             mediaID: 0,
@@ -116,7 +114,8 @@ class EventView extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MediaViewer(
-                                currentUser: controller.currentUser.value!,
+                                currentUserID:
+                                    controller.currentUser.value!.userID!,
                                 media: [
                                   Media(
                                     mediaID: 0,
@@ -246,17 +245,13 @@ class EventView extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    PageFunctions functions = PageFunctions(
-                                      currentUser:
-                                          controller.currentUser.value!,
-                                    );
+                                    PageFunctions functions = PageFunctions();
                                     functions.pushProfilePage(
                                       context,
                                       User(
                                         userID: controller.event.value!
                                             .eventorganizer![index].userID,
                                       ),
-                                      ScrollController(),
                                     );
                                   },
                                   child: ClipOval(
@@ -507,12 +502,7 @@ class EventView extends StatelessWidget {
                                                         onTap: () {
                                                           PageFunctions
                                                               functions =
-                                                              PageFunctions(
-                                                            currentUser:
-                                                                controller
-                                                                    .currentUser
-                                                                    .value!,
-                                                          );
+                                                              PageFunctions();
 
                                                           functions
                                                               .pushProfilePage(
@@ -525,7 +515,6 @@ class EventView extends StatelessWidget {
                                                                       index2]
                                                                   .userID,
                                                             ),
-                                                            ScrollController(),
                                                           );
                                                         },
                                                         child: CircleAvatar(
@@ -652,10 +641,7 @@ class EventView extends StatelessWidget {
                                         .toString(),
                                   ),
                                   onTap: () {
-                                    PageFunctions functions = PageFunctions(
-                                      currentUser:
-                                          controller.currentUser.value!,
-                                    );
+                                    PageFunctions functions = PageFunctions();
 
                                     functions.pushProfilePage(
                                       context,
@@ -666,7 +652,6 @@ class EventView extends StatelessWidget {
                                             .participantpeopleList![index]
                                             .userID,
                                       ),
-                                      ScrollController(),
                                     );
                                   },
                                 );

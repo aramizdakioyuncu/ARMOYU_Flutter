@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/modules/News/list_news_page/controllers/list_news_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,9 +13,7 @@ class ListNewsView extends StatelessWidget {
     final ListNewsController controller = Get.put(ListNewsController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(DrawerKeys.drawerNews.tr),
-      ),
+      appBar: AppbarWidget.standart(title: DrawerKeys.drawerNews.tr),
       body: Obx(
         () => CustomScrollView(
           physics: const BouncingScrollPhysics(),

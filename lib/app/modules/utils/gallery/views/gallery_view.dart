@@ -122,7 +122,7 @@ class GalleryView extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MediaViewer(
-                                currentUser: currentUser,
+                                currentUserID: currentUser.userID!,
                                 isMemory: true,
                                 media: controller.memorymedia,
                                 initialIndex: index,

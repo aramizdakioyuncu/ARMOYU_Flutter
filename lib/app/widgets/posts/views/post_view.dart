@@ -1,7 +1,7 @@
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/posts/controllers/post_controller.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
@@ -12,27 +12,19 @@ import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
 class TwitterPostWidget extends StatelessWidget {
-  final UserAccounts currentUserAccounts;
   final Post post;
   final bool? isPostdetail = false;
 
-  const TwitterPostWidget({
-    super.key,
-    required this.currentUserAccounts,
-    required this.post,
-  });
+  const TwitterPostWidget({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
+    final findCurrentAccountController = Get.find<AccountUserController>();
     String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
-
     final controller = Get.put(
-      PostController(
-        currentUserAccounts: currentUserAccounts,
-        post: post,
-      ),
+      PostController(post: post),
       tag:
-          "${currentUserAccounts.user.value.userID}postUniq${post.postID}-$uniqueTag",
+          "${findCurrentAccountController.currentUserAccounts.value.user.value.userID}postUniq${post.postID}-$uniqueTag",
     );
 
     return Obx(
@@ -51,16 +43,11 @@ class TwitterPostWidget extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: InkWell(
                   onTap: () {
-                    PageFunctions functions = PageFunctions(
-                      currentUser: currentUserAccounts.user.value,
-                    );
+                    PageFunctions functions = PageFunctions();
 
                     functions.pushProfilePage(
                       context,
-                      User(
-                        userID: post.owner.userID,
-                      ),
-                      ScrollController(),
+                      User(userID: post.owner.userID),
                     );
                   },
                   child: Row(
@@ -176,7 +163,6 @@ class TwitterPostWidget extends StatelessWidget {
                           width: double.infinity,
                           child: WidgetUtility.specialText(
                             context,
-                            currentUserAccounts: currentUserAccounts,
                             controller.postInfo.value.content,
                           ),
                         ),
@@ -206,7 +192,7 @@ class TwitterPostWidget extends StatelessWidget {
                     InkWell(
                       onLongPress: () {
                         if (isPostdetail == false) {
-                          controller.postcommentlikeslist();
+                          controller.showpostlikers();
                         }
                       },
                       child: Obx(
@@ -262,10 +248,10 @@ class TwitterPostWidget extends StatelessWidget {
                         children: [
                           const SizedBox(height: 20),
                           ...List.generate(
-                              controller.postInfo.value.firstthreelike.length,
+                              controller.postInfo.value.firstthreelike!.length,
                               (index) {
                             int left = controller
-                                        .postInfo.value.firstthreelike.length *
+                                        .postInfo.value.firstthreelike!.length *
                                     10 -
                                 (index + 1) * 10;
                             return Obx(
@@ -275,8 +261,8 @@ class TwitterPostWidget extends StatelessWidget {
                                   backgroundColor: Colors.transparent,
                                   foregroundImage: CachedNetworkImageProvider(
                                     post
-                                        .firstthreelike[controller.postInfo
-                                                .value.firstthreelike.length -
+                                        .firstthreelike![controller.postInfo
+                                                .value.firstthreelike!.length -
                                             index -
                                             1]
                                         .user
@@ -292,21 +278,18 @@ class TwitterPostWidget extends StatelessWidget {
                           }),
                           Obx(
                             () => Positioned(
-                              left: controller.postInfo.value.firstthreelike
+                              left: controller.postInfo.value.firstthreelike!
                                           .length *
                                       10 +
                                   15,
                               child: controller
-                                      .postInfo.value.firstthreelike.isNotEmpty
+                                      .postInfo.value.firstthreelike!.isNotEmpty
                                   ? GestureDetector(
-                                      onTap: () =>
-                                          controller.postcommentlikeslist(),
+                                      onTap: () => controller.showpostlikers(),
                                       child: Obx(
                                         () => WidgetUtility.specialText(
                                           context,
-                                          currentUserAccounts:
-                                              currentUserAccounts,
-                                          "@${controller.postInfo.value.firstthreelike[0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) == 0 ? SocialKeys.socialLiked.tr : SocialKeys.socialandnumberpersonLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
+                                          "@${controller.postInfo.value.firstthreelike![0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) == 0 ? SocialKeys.socialLiked.tr : SocialKeys.socialandnumberpersonLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
                                         ),
                                       ),
                                     )
@@ -320,14 +303,13 @@ class TwitterPostWidget extends StatelessWidget {
                     Obx(
                       () => Column(
                         children: List.generate(
-                            controller.postInfo.value.firstthreecomment.length,
+                            controller.postInfo.value.firstthreecomment!.length,
                             (index) {
                           return controller
-                              .postInfo.value.firstthreecomment[index]
+                              .postInfo.value.firstthreecomment![index]
                               .commentlist(
                             context,
                             () {},
-                            currentUserAccounts: currentUserAccounts,
                           );
                         }),
                       ),

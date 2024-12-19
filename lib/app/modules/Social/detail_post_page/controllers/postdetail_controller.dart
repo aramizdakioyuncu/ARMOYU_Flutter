@@ -7,9 +7,7 @@ import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
-import 'package:ARMOYU/app/widgets/post_comments.dart';
+import 'package:ARMOYU/app/widgets/post_comments/post_comments_view.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -48,7 +46,6 @@ class PostdetailController extends GetxController {
 
       listComments.add(
         WidgetPostComments(
-          currentUserAccounts: currentUserAccounts.value,
           comment: Comment(
             commentID: yorumID,
             content: text,
@@ -95,8 +92,8 @@ class PostdetailController extends GetxController {
     }
 
     List<Media> media = [];
-    List<Comment> comments = [];
-    List<Like> likers = [];
+    RxList<Comment> comments = RxList<Comment>([]);
+    RxList<Like>? likers = RxList<Like>([]);
 
     getcommentsfetch(response.response!.postID, listComments);
 
@@ -197,22 +194,21 @@ class PostdetailController extends GetxController {
       location: response.response!.location,
     );
     widget.value = TwitterPostWidget(
-      currentUserAccounts: currentUserAccounts.value,
       post: post,
     );
   }
 
-  var currentUserAccounts =
-      Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  // var currentUserAccounts =
+  //     Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
   var postID = Rx<int?>(null);
   var commentID = Rx<int?>(null);
   @override
   void onInit() {
     super.onInit();
     //* *//
-    final findCurrentAccountController = Get.find<AccountUserController>();
-    currentUserAccounts.value =
-        findCurrentAccountController.currentUserAccounts.value;
+    // final findCurrentAccountController = Get.find<AccountUserController>();
+    // currentUserAccounts.value =
+    //     findCurrentAccountController.currentUserAccounts.value;
     //* *//
 
     Map<String, dynamic> arguments = Get.arguments;

@@ -8,11 +8,11 @@ import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
+import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/likers.dart';
-import 'package:ARMOYU/app/widgets/post_comments.dart';
+import 'package:ARMOYU/app/widgets/post_comments/post_comments_view.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
@@ -27,24 +27,23 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:video_player/video_player.dart';
 
 class PostController extends GetxController {
-  final UserAccounts currentUserAccounts;
   final Post post;
 
-  PostController({
-    required this.currentUserAccounts,
-    required this.post,
-  });
+  PostController({required this.post});
 
   var likeButtonKey = GlobalKey<LikeButtonState>().obs;
 
   late var likebutton = Rx<LikeButton?>(null);
 
   late Rx<Post> postInfo;
-
+  User? currentUser;
   @override
   void onInit() {
     super.onInit();
 
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    currentUser =
+        findCurrentAccountController.currentUserAccounts.value.user.value;
     // postInfo.value = post;
     postInfo = Rx<Post>(post);
     likebutton = LikeButton(
@@ -94,9 +93,10 @@ class PostController extends GetxController {
   var fetchCommentStatus = false.obs;
   var fetchlikersStatus = false.obs;
 
-  Future<void> getcommentsfetch(int postID, {bool fetchRestart = false}) async {
+  Future<void> getcommentsfetch(Rxn<List<Comment>> comments, int postID,
+      {bool fetchRestart = false}) async {
     //Eğer önceden yüklenmişse tekrar yüklemeye çalışma
-    if (!fetchRestart && postInfo.value.comments != null) {
+    if (!fetchRestart && comments.value != null) {
       return;
     }
 
@@ -115,7 +115,8 @@ class PostController extends GetxController {
     }
 
     //Yorumları Temizle
-    postInfo.value.comments = [];
+    // postInfo.value.comments = RxList<Comment>([]);
+    comments.value ??= [];
 
     //Veriler çek
 
@@ -151,15 +152,18 @@ class PostController extends GetxController {
       );
 
       //Post yorumlarına ekler
-      postInfo.value.comments!.add(comment);
+      // postInfo.value.comments!.add(comment);
+      comments.value!.add(comment);
+
       fetchCommentStatus.value = false;
     }
 
-    postInfo.refresh();
+    comments.refresh();
   }
 
-  Future<void> getcommentslikes(int postID, {bool fetchRestart = false}) async {
-    if (!fetchRestart && postInfo.value.likers != null) {
+  Future<void> postlikesfetch(Rxn<List<Like>> likers, int postID,
+      {bool fetchRestart = false}) async {
+    if (!fetchRestart && post.likers != null) {
       return;
     }
 
@@ -173,12 +177,10 @@ class PostController extends GetxController {
     if (!response.result.status) {
       log(response.result.description.toString());
       fetchlikersStatus.value = false;
-
       return;
     }
 
-    //Beğenenleri Temizle
-    postInfo.value.likers = [];
+    likers.value ??= [];
 
     for (APIPostLiker element in response.response!) {
       String displayname = element.likerdisplayname.toString();
@@ -186,7 +188,7 @@ class PostController extends GetxController {
       String date = element.likedate.toString();
       int userID = element.likerID;
 
-      postInfo.value.likers!.add(
+      likers.value!.add(
         Like(
           likeID: 1,
           user: User(
@@ -205,6 +207,8 @@ class PostController extends GetxController {
         ),
       );
     }
+    post.likers = likers.value;
+    likers.refresh();
     fetchlikersStatus.value = false;
   }
 
@@ -224,8 +228,10 @@ class PostController extends GetxController {
   }
 
   void postcomments(int postID) {
+    Rxn<List<Comment>> comments = Rxn<List<Comment>>();
+
     //Yorumları Çekmeye başla
-    getcommentsfetch(postID);
+    getcommentsfetch(comments, postID);
 
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -241,6 +247,7 @@ class PostController extends GetxController {
           heightFactor: 0.8,
           child: RefreshIndicator(
             onRefresh: () async => await getcommentsfetch(
+              comments,
               postID,
               fetchRestart: true,
             ),
@@ -259,7 +266,7 @@ class PostController extends GetxController {
                       child: Container(
                         alignment: Alignment.center,
                         child: Obx(
-                          () => postInfo.value.comments == null
+                          () => comments.value == null
                               ? Column(
                                   children: [
                                     ShimmerPlaceholder.listTilePlaceholder(
@@ -279,18 +286,14 @@ class PostController extends GetxController {
                                     ),
                                   ],
                                 )
-                              : postInfo.value.comments!.isEmpty
+                              : comments.value!.isEmpty
                                   ? CustomText.costum1(
                                       SocialKeys.socialWriteFirstComment.tr)
                                   : ListView.builder(
-                                      itemCount:
-                                          postInfo.value.comments!.length,
+                                      itemCount: comments.value!.length,
                                       itemBuilder: (context, index) {
                                         return WidgetPostComments(
-                                          currentUserAccounts:
-                                              currentUserAccounts,
-                                          comment:
-                                              postInfo.value.comments![index],
+                                          comment: comments.value![index],
                                         );
                                       },
                                     ),
@@ -309,8 +312,7 @@ class PostController extends GetxController {
                           child: CircleAvatar(
                             backgroundColor: Colors.transparent,
                             foregroundImage: CachedNetworkImageProvider(
-                              currentUserAccounts
-                                  .user.value.avatar!.mediaURL.minURL.value,
+                              currentUser!.avatar!.mediaURL.minURL.value,
                             ),
                             radius: 20,
                           ),
@@ -355,6 +357,7 @@ class PostController extends GetxController {
                                 return;
                               }
                               await getcommentsfetch(
+                                comments,
                                 postInfo.value.postID,
                                 fetchRestart: true,
                               );
@@ -434,9 +437,10 @@ class PostController extends GetxController {
     return !isLiked;
   }
 
-  void postcommentlikeslist() {
-    //Yorumları Çekmeye başla
-    getcommentslikes(postInfo.value.postID);
+  void showpostlikers() {
+    Rxn<List<Like>> likers = Rxn<List<Like>>();
+
+    postlikesfetch(likers, postInfo.value.postID);
 
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -451,7 +455,8 @@ class PostController extends GetxController {
         return FractionallySizedBox(
           heightFactor: 0.8,
           child: RefreshIndicator(
-            onRefresh: () => getcommentslikes(
+            onRefresh: () => postlikesfetch(
+              likers,
               postInfo.value.postID,
               fetchRestart: true,
             ),
@@ -470,7 +475,7 @@ class PostController extends GetxController {
                       child: Container(
                         alignment: Alignment.center,
                         child: Obx(
-                          () => postInfo.value.likers == null
+                          () => likers.value == null
                               ? Column(
                                   children: [
                                     ShimmerPlaceholder.listTilePlaceholder(),
@@ -481,19 +486,15 @@ class PostController extends GetxController {
                                     ShimmerPlaceholder.listTilePlaceholder(),
                                   ],
                                 )
-                              : postInfo.value.likers!.isEmpty
+                              : likers.value!.isEmpty
                                   ? CustomText.costum1(CommonKeys.empty.tr)
                                   : ListView.builder(
-                                      itemCount: postInfo.value.likers!.length,
+                                      itemCount: likers.value!.length,
                                       itemBuilder: (context, index) {
                                         return LikersListWidget(
-                                          currentUserAccounts:
-                                              currentUserAccounts,
-                                          date: postInfo
-                                              .value.likers![index].date,
+                                          date: likers.value![index].date,
                                           islike: 1,
-                                          user: postInfo
-                                              .value.likers![index].user,
+                                          user: likers.value![index].user,
                                         );
                                       },
                                     ),
@@ -560,8 +561,7 @@ class PostController extends GetxController {
                     ),
                   ),
                   Visibility(
-                    visible: postInfo.value.owner.userID ==
-                        currentUserAccounts.user.value.userID,
+                    visible: postInfo.value.owner.userID == currentUser!.userID,
                     child: InkWell(
                       onTap: () async {},
                       child: ListTile(
@@ -577,8 +577,7 @@ class PostController extends GetxController {
                     child: Divider(),
                   ),
                   Visibility(
-                    visible: postInfo.value.owner.userID !=
-                        currentUserAccounts.user.value.userID,
+                    visible: postInfo.value.owner.userID != currentUser!.userID,
                     child: InkWell(
                       onTap: () {},
                       child: ListTile(
@@ -592,8 +591,7 @@ class PostController extends GetxController {
                     ),
                   ),
                   Visibility(
-                    visible: postInfo.value.owner.userID !=
-                        currentUserAccounts.user.value.userID,
+                    visible: postInfo.value.owner.userID != currentUser!.userID,
                     child: InkWell(
                       onTap: () async {
                         Get.back();
@@ -617,8 +615,7 @@ class PostController extends GetxController {
                     ),
                   ),
                   Visibility(
-                    visible: postInfo.value.owner.userID ==
-                        currentUserAccounts.user.value.userID,
+                    visible: postInfo.value.owner.userID == currentUser!.userID,
                     child: InkWell(
                       onTap: () async => ARMOYUWidget.showConfirmationDialog(
                         context,
@@ -779,7 +776,7 @@ class PostController extends GetxController {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => MediaViewer(
-                  currentUser: currentUserAccounts.user.value,
+                  currentUserID: currentUser!.userID!,
                   media: postInfo.value.media,
                   initialIndex: i,
                 ),

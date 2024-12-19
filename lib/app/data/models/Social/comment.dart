@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
@@ -56,8 +55,9 @@ class Comment {
   bool likeunlikeProcces = false;
   final GlobalKey<LikeButtonState> _likeButtonKey =
       GlobalKey<LikeButtonState>();
-  Future<void> likefunction(Function setstatefunction,
-      {required User currentUser}) async {
+  Future<void> likefunction(
+    Function setstatefunction,
+  ) async {
     if (likeunlikeProcces) {
       return;
     }
@@ -77,8 +77,9 @@ class Comment {
     setstatefunction();
   }
 
-  Future<void> dislikefunction(Function setstatefunction,
-      {required User currentUser}) async {
+  Future<void> dislikefunction(
+    Function setstatefunction,
+  ) async {
     if (likeunlikeProcces) {
       return;
     }
@@ -99,22 +100,26 @@ class Comment {
     setstatefunction();
   }
 
-  Future<bool> postLike(bool isLiked, setstatefunction,
-      {required User currentUser}) async {
+  Future<bool> postLike(
+    bool isLiked,
+    setstatefunction,
+  ) async {
     if (likeunlikeProcces) {
       return isLiked;
     }
 
     if (isLiked) {
-      dislikefunction(setstatefunction, currentUser: currentUser);
+      dislikefunction(setstatefunction);
     } else {
-      likefunction(setstatefunction, currentUser: currentUser);
+      likefunction(setstatefunction);
     }
     return !isLiked;
   }
 
-  Widget commentlist(BuildContext context, Function setstatefunction,
-      {required UserAccounts currentUserAccounts}) {
+  Widget commentlist(
+    BuildContext context,
+    Function setstatefunction,
+  ) {
     return GestureDetector(
       onDoubleTap: () {
         _likeButtonKey.currentState?.onTap();
@@ -129,7 +134,6 @@ class Comment {
                 children: [
                   CustomText.usercomments(
                     context,
-                    currentUserAccounts: currentUserAccounts,
                     text: content,
                     user: user,
                   ),
@@ -143,8 +147,9 @@ class Comment {
                 isLiked: didIlike,
                 likeCount: likeCount,
                 onTap: (isLiked) async => await postLike(
-                    isLiked, setstatefunction,
-                    currentUser: currentUserAccounts.user.value),
+                  isLiked,
+                  setstatefunction,
+                ),
                 likeBuilder: (bool isLiked) {
                   return Icon(
                     isLiked ? Icons.favorite : Icons.favorite_outline,

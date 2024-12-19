@@ -138,6 +138,7 @@ class LoginPageController extends GetxController {
       UserAccounts(
         user: newUser.obs,
         sessionTOKEN: Rx(response.result.description),
+        language: Rx(Get.deviceLocale!.languageCode),
       ),
     );
 

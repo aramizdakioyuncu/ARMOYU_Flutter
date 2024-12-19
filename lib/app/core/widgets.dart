@@ -1,31 +1,23 @@
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/cards.dart';
+import 'package:ARMOYU/app/widgets/cards/cards_view.dart.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class ARMOYUWidget {
-  final UserAccounts currentUserAccounts;
-
-  final ScrollController scrollController;
   List<Map<String, String>> content;
   final bool firstFetch;
 
   ARMOYUWidget({
-    required this.scrollController,
     required this.content,
     required this.firstFetch,
-    required this.currentUserAccounts,
   });
 
   Widget widgetTPlist() {
     return CustomCards(
-      currentUserAccounts: currentUserAccounts,
       firstFetch: firstFetch,
       title: "TP",
-      scrollController: scrollController,
       effectcolor: const Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
       content: content,
       icon: const Icon(
@@ -38,9 +30,7 @@ class ARMOYUWidget {
 
   Widget widgetPOPlist() {
     return CustomCards(
-      currentUserAccounts: currentUserAccounts,
       firstFetch: firstFetch,
-      scrollController: scrollController,
       title: "POP",
       effectcolor: const Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
       content: content,

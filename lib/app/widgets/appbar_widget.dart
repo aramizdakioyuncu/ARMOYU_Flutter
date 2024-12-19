@@ -9,6 +9,17 @@ import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AppbarWidget {
+  static standart({required String title, List<Widget>? actions}) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kToolbarHeight),
+      child: AppBar(
+        forceMaterialTransparency: true,
+        title: Text(title),
+        actions: actions,
+      ),
+    );
+  }
+
   static custom() {
     //* *//
     final findCurrentAccountController = Get.find<AccountUserController>();

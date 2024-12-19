@@ -92,7 +92,11 @@ class ProfileController extends GetxController
   }
 
   var currentUserAccounts = Rx<UserAccounts>(
-    UserAccounts(user: User().obs, sessionTOKEN: Rx("")),
+    UserAccounts(
+      user: User().obs,
+      sessionTOKEN: Rx(""),
+      language: Rx(""),
+    ),
   );
 
   @override
@@ -324,10 +328,7 @@ class ProfileController extends GetxController
       );
 
       list.value!.add(
-        TwitterPostWidget(
-          currentUserAccounts: currentUserAccounts.value,
-          post: post,
-        ),
+        TwitterPostWidget(post: post),
       );
     }
     postscounter++;
@@ -519,10 +520,7 @@ class ProfileController extends GetxController
       );
 
       list.value!.add(
-        TwitterPostWidget(
-          currentUserAccounts: currentUserAccounts.value,
-          post: post,
-        ),
+        TwitterPostWidget(post: post),
       );
     }
     postscounterv2++;
@@ -1119,7 +1117,7 @@ class ProfileController extends GetxController
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MediaViewer(
-              currentUser: currentUserAccounts.value.user.value,
+              currentUserID: currentUserAccounts.value.user.value.userID!,
               media: [userProfile.value.avatar!],
               initialIndex: 0,
             ),
@@ -1352,8 +1350,11 @@ class ProfileController extends GetxController
         }
 
         Get.toNamed("profile/friendlist", arguments: {
-          "user":
-              UserAccounts(user: userProfile.value.obs, sessionTOKEN: Rx("")),
+          "user": UserAccounts(
+            user: userProfile.value.obs,
+            sessionTOKEN: Rx(""),
+            language: Rx(""),
+          ),
         });
       },
       child: userProfile.value.friendsCount == null
@@ -1588,7 +1589,6 @@ class ProfileController extends GetxController
               const SizedBox(height: 20),
               WidgetUtility.specialText(
                 context,
-                currentUserAccounts: currentUserAccounts.value,
                 friendTextLine.value,
               ),
             ],

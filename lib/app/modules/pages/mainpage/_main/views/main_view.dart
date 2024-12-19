@@ -227,10 +227,6 @@ class MainView extends StatelessWidget {
                               ),
                               title: Text(DrawerKeys.drawerMySchoolsjoin.tr),
                               onTap: () {
-                                // Get.to(const SchoolLoginPageView(), arguments: {
-                                //   "currentUser": controller
-                                //       .currentUserAccounts.value!.user,
-                                // });
                                 Get.toNamed("/school/login");
                               },
                             ),

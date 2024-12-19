@@ -366,9 +366,7 @@ class GroupView extends StatelessWidget {
                             (context, index) {
                               return ListTile(
                                 onTap: () {
-                                  PageFunctions functions = PageFunctions(
-                                    currentUser: controller.user.value!,
-                                  );
+                                  PageFunctions functions = PageFunctions();
 
                                   functions.pushProfilePage(
                                     context,
@@ -376,7 +374,6 @@ class GroupView extends StatelessWidget {
                                       userID: controller.group.value!
                                           .groupUsers![index].userID,
                                     ),
-                                    ScrollController(),
                                   );
                                 },
                                 onLongPress: () {

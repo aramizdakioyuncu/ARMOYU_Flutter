@@ -1,5 +1,6 @@
 import 'package:ARMOYU/app/modules/Business/applications_page/controllers/applications_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,8 @@ class ApplicationsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ApplicationsController());
     return Scaffold(
-      appBar: AppBar(
-        title: CustomText.costum1(DrawerKeys.drawerJoinUs.tr),
+      appBar: AppbarWidget.standart(
+        title: DrawerKeys.drawerJoinUs.tr,
         actions: [
           IconButton(
             onPressed: () async =>

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/controllers/group_create_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 
 import 'package:ARMOYU/app/widgets/textfields.dart';
@@ -19,9 +20,7 @@ class GroupCreateView extends StatelessWidget {
     final GroupCreateController controller = Get.put(GroupCreateController());
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(GroupKeys.createGroup.tr),
-      ),
+      appBar: AppbarWidget.standart(title: GroupKeys.createGroup.tr),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
