@@ -11,6 +11,7 @@ import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_vie
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/services/socketio_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class StartingpageController extends GetxController {
@@ -25,7 +26,10 @@ class StartingpageController extends GetxController {
   void onInit() {
     super.onInit();
     log("Anasayfaya Hoşgeldiniz");
-    staringfunctions();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      staringfunctions();
+    });
   }
 
   @override
@@ -64,7 +68,7 @@ class StartingpageController extends GetxController {
 
     if (ARMOYU.appUsers.isEmpty) {
       //Oturum Kaydı olmadığı için Giriş ekranına yönlendiriliyor
-      Get.offAllNamed("/login");
+      Get.offAndToNamed("/login");
       return;
     }
 
@@ -96,13 +100,13 @@ class StartingpageController extends GetxController {
     if (!statusinternet) {
       //Oturum Kaydı var internet yok app ekranına yönlendiriliyor
       accountController.changeUser(ARMOYU.appUsers.first);
-      Get.offAllNamed("/app");
+      Get.offAndToNamed("/app");
       return;
     }
     appstatuscheck(sesssionTOKEN);
 
     accountController.changeUser(ARMOYU.appUsers.first);
-    Get.offNamed("/app");
+    Get.offAndToNamed("/app");
     return;
   }
 
@@ -121,12 +125,12 @@ class StartingpageController extends GetxController {
       }
 
       if (response.result.description == "Oyuncu bilgileri yanlış!") {
-        Get.offNamed("/login");
+        Get.offAndToNamed("/login");
         return;
       }
 
       accountController.changeUser(ARMOYU.appUsers.first);
-      Get.offNamed("/app");
+      Get.offAndToNamed("/app");
       return;
     }
   }
