@@ -11,11 +11,14 @@ class PostCommentsController extends GetxController {
   final Comment comment;
   PostCommentsController({required this.comment});
 
+  Rxn<Comment>? xcomment;
   @override
   void onInit() {
     super.onInit();
 
-    if (comment.didIlike == true) {
+    xcomment = Rxn<Comment>(comment);
+
+    if (xcomment!.value!.didIlike == true) {
       favoritestatus = const Icon(
         Icons.favorite_rounded,
         color: Colors.red,
@@ -38,7 +41,7 @@ class PostCommentsController extends GetxController {
     isvisiblecomment = false;
 
     PostRemoveCommentResponse response = await API.service.postsServices
-        .removecomment(commentID: comment.commentID);
+        .removecomment(commentID: xcomment!.value!.commentID);
     ARMOYUWidget.toastNotification(response.result.description.toString());
 
     if (!response.result.status) {
@@ -48,41 +51,41 @@ class PostCommentsController extends GetxController {
   }
 
   Future<void> likeunlikefunction() async {
-    bool currentstatus = comment.didIlike;
+    bool currentstatus = xcomment!.value!.didIlike;
     if (currentstatus) {
-      comment.didIlike = false;
-      comment.likeCount--;
+      xcomment!.value!.didIlike = false;
+      xcomment!.value!.likeCount--;
     } else {
-      comment.didIlike = true;
-      comment.likeCount++;
+      xcomment!.value!.didIlike = true;
+      xcomment!.value!.likeCount++;
     }
 
-    if (!comment.didIlike) {
+    if (!xcomment!.value!.didIlike) {
       PostCommentUnLikeResponse response = await API.service.postsServices
-          .commentunlike(commentID: comment.commentID);
+          .commentunlike(commentID: xcomment!.value!.commentID);
 
       if (!response.result.status) {
         log(response.result.description);
         if (currentstatus) {
-          comment.likeCount--;
+          xcomment!.value!.likeCount--;
         } else {
-          comment.likeCount++;
+          xcomment!.value!.likeCount++;
         }
-        comment.didIlike = !comment.didIlike;
+        xcomment!.value!.didIlike = !xcomment!.value!.didIlike;
         return;
       }
     } else {
       PostCommentLikeResponse response = await API.service.postsServices
-          .commentlike(commentID: comment.commentID);
+          .commentlike(commentID: xcomment!.value!.commentID);
 
       if (!response.result.status) {
         log(response.result.description);
         if (currentstatus) {
-          comment.likeCount--;
+          xcomment!.value!.likeCount--;
         } else {
-          comment.likeCount++;
+          xcomment!.value!.likeCount++;
         }
-        comment.didIlike = !comment.didIlike;
+        xcomment!.value!.didIlike = !xcomment!.value!.didIlike;
         return;
       }
     }

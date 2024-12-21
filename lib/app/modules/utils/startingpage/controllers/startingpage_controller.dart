@@ -10,6 +10,7 @@ import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/services/socketio_services.dart';
+import 'package:ARMOYU/app/services/utility/onesignal.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -100,12 +101,15 @@ class StartingpageController extends GetxController {
     if (!statusinternet) {
       //Oturum Kaydı var internet yok app ekranına yönlendiriliyor
       accountController.changeUser(ARMOYU.appUsers.first);
+      OneSignalApi.setupOneSignal(currentUserAccounts: ARMOYU.appUsers.first);
       Get.offAndToNamed("/app");
       return;
     }
     appstatuscheck(sesssionTOKEN);
 
     accountController.changeUser(ARMOYU.appUsers.first);
+    OneSignalApi.setupOneSignal(currentUserAccounts: ARMOYU.appUsers.first);
+
     Get.offAndToNamed("/app");
     return;
   }

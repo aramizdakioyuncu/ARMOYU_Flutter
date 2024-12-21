@@ -117,9 +117,7 @@ class FunctionService {
 
     if (ARMOYU.deviceModel != "Bilinmeyen") {
       log("Onesignal işlemleri!");
-      OneSignalApi.setupOneSignal(
-        currentUserAccounts: userdetail,
-      );
+      OneSignalApi.setupOneSignal(currentUserAccounts: userdetail);
     }
 
     //Socket Güncelle

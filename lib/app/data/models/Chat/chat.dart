@@ -55,7 +55,7 @@ class Chat {
     );
   }
 
-  Widget listtilechat(context, {required UserAccounts currentUserAccounts}) {
+  Widget listtilechat(context, {required VoidCallback onDelete}) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
       leading: CircleAvatar(
@@ -108,7 +108,40 @@ class Chat {
         chatNotification.value = false;
         Get.toNamed(
           "/chat/detail",
-          arguments: {"chat": this, "CurrentUserAccounts": currentUserAccounts},
+          arguments: {"chat": this},
+        );
+      },
+      onLongPress: () {
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (context) {
+            return SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.delete, color: Colors.red),
+                      title: const Text('Sil'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        onDelete();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Öğe silindi.'),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );

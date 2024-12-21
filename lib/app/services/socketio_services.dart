@@ -160,9 +160,9 @@ class SocketioController extends GetxController {
 
       log("$socketPREFIX${chatData.user.displayName} - ${chatData.messageContext}");
 
-      currentUserAccounts.value.user.value.chatlist ??= <Chat>[].obs;
+      currentUserAccounts.value.chatList ??= <Chat>[].obs;
 
-      bool chatisthere = currentUserAccounts.value.user.value.chatlist!.any(
+      bool chatisthere = currentUserAccounts.value.chatList!.any(
         (chat) => chat.user.userID == chatData.user.userID,
       );
 
@@ -176,7 +176,7 @@ class SocketioController extends GetxController {
         isMe: false,
       );
       if (!chatisthere) {
-        currentUserAccounts.value.user.value.chatlist!.add(
+        currentUserAccounts.value.chatList!.add(
           Chat(
             user: chatData.user,
             chatNotification: false.obs,
@@ -186,7 +186,7 @@ class SocketioController extends GetxController {
         );
       }
 
-      Chat a = currentUserAccounts.value.user.value.chatlist!.firstWhere(
+      Chat a = currentUserAccounts.value.chatList!.firstWhere(
         (chat) => chat.user.userID == chatData.user.userID,
       );
 
@@ -198,7 +198,7 @@ class SocketioController extends GetxController {
         a.lastmessage!.value = chat;
       }
       a.chatNotification = true.obs;
-      currentUserAccounts.value.user.value.chatlist!.refresh();
+      currentUserAccounts.value.chatList!.refresh();
     });
 
     // Otomatik olarak bağlanma

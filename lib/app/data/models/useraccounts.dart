@@ -21,7 +21,8 @@ class UserAccounts {
 
   List<Post>? lastsharingpost;
 
-  RxList<Chat>? chatList = <Chat>[].obs;
+  RxList<Chat>? chatList;
+
   List<News>? newsList = [];
 
   List<User>? searchList = [];
@@ -137,7 +138,7 @@ class UserAccounts {
       chatList: json['chatList'] == null
           ? null
           : (json['chatList'] as List<dynamic>?)
-              ?.map((member) => Chat.fromJson(member))
+              ?.map((chatList) => Chat.fromJson(chatList))
               .toList()
               .obs,
       newsList: (json['newsList'] as List<dynamic>?)

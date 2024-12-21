@@ -119,7 +119,7 @@ class StorypublishView extends StatelessWidget {
                                   color: storyText.color.value,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  shadows: [
+                                  shadows: const [
                                     Shadow(
                                       color: Colors.black,
                                       blurRadius: 4,

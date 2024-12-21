@@ -41,6 +41,24 @@ class ChatdetailController extends GetxController {
       chat.value = arguments['chat'];
     }
 
+    final chatList = currentUserAccounts.value!.chatList!;
+    final targetUserID = chat.value!.user.userID;
+
+    // Var olan sohbeti bul
+    Chat? existingChat = chatList.firstWhereOrNull(
+      (chatItem) => chatItem.user.userID == targetUserID,
+    );
+
+    // Yoksa ekle
+    if (existingChat == null) {
+      Future.microtask(() => chatList.add(chat.value!));
+      existingChat = chat.value!;
+      Future.microtask(() => currentUserAccounts.value!.chatList!.refresh());
+    }
+
+    // Güncel sohbeti ayarla
+    chat.value = existingChat;
+
     chat.value!.messages ??= <ChatMessage>[].obs;
     if (chat.value!.messages!.isEmpty) {
       getchat().then((_) {});
@@ -157,7 +175,7 @@ class ChatdetailController extends GetxController {
       chat.value!.user.userID,
     );
 
-    currentUserAccounts.value!.user.value.chatlist!.refresh();
+    currentUserAccounts.value!.chatList!.refresh();
     FunctionService f = FunctionService();
     ServiceResult response =
         await f.sendchatmessage(chat.value!.user.userID!, message, "ozel");

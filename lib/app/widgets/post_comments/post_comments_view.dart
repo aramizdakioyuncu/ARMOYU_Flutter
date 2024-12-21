@@ -41,13 +41,14 @@ class WidgetPostComments extends StatelessWidget {
                     PageFunctions functions = PageFunctions();
                     functions.pushProfilePage(
                       context,
-                      User(userID: comment.user.userID),
+                      User(userID: controller.xcomment!.value!.user.userID),
                     );
                   },
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
                     foregroundImage: CachedNetworkImageProvider(
-                      comment.user.avatar!.mediaURL.minURL.value,
+                      controller
+                          .xcomment!.value!.user.avatar!.mediaURL.minURL.value,
                     ),
                     radius: 20,
                   ),
@@ -55,8 +56,8 @@ class WidgetPostComments extends StatelessWidget {
               ],
             ),
           ),
-          title: Text(comment.user.displayName!.value),
-          subtitle: Text(comment.content),
+          title: Text(controller.xcomment!.value!.user.displayName!.value),
+          subtitle: Text(controller.xcomment!.value!.content),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -72,7 +73,7 @@ class WidgetPostComments extends StatelessWidget {
                       controller.favoritestatus,
                       const SizedBox(height: 3),
                       CustomText.costum1(
-                        comment.likeCount.toString(),
+                        controller.xcomment!.value!.likeCount.toString(),
                         weight: FontWeight.bold,
                       ),
                     ],
@@ -83,7 +84,7 @@ class WidgetPostComments extends StatelessWidget {
                 () => Visibility(
                   visible: findCurrentAccountController
                           .currentUserAccounts.value.user.value.userID ==
-                      comment.user.userID,
+                      controller.xcomment!.value!.user.userID,
                   child: IconButton(
                     onPressed: () async => ARMOYUWidget.showConfirmationDialog(
                       context,

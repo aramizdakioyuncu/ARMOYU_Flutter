@@ -152,9 +152,7 @@ class GroupCreateView extends StatelessWidget {
                         initialItem: controller.selectedcupertinolist2.value,
                       ),
                       onSelectedItemChanged: (int selectedItem) async {
-                        // setState(() {
                         controller.selectedcupertinolist2.value = selectedItem;
-                        // });
                       },
                       children: List<Widget>.generate(
                           controller.cupertinolist2.length, (int index) {
@@ -194,16 +192,14 @@ class GroupCreateView extends StatelessWidget {
                         initialItem: controller.selectedcupertinolist3.value,
                       ),
                       onSelectedItemChanged: (int selectedItem) {
-                        // setState(() {
                         controller.selectedcupertinolist3.value = selectedItem;
-                        // });
                       },
                       children: List<Widget>.generate(
                           controller.cupertinolist3.length, (int index) {
                         return Center(
-                            child: Text(controller.cupertinolist3[index]
-                                    ["value"]
-                                .toString()));
+                          child: Text(controller.cupertinolist3[index]["value"]
+                              .toString()),
+                        );
                       }),
                     ),
                   ),

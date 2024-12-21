@@ -2,7 +2,6 @@ import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/job.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/province.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
-import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/data/models/Story/storylist.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
@@ -61,7 +60,7 @@ class User {
   RxList<User>? mycloseFriends;
 
   // //ARAÇ GEREÇ
-  RxList<Chat>? chatlist;
+  // RxList<Chat>? chatlist;
 
   // //Gruplarım & Okullarım & İşyerlerim
   List<Group>? myGroups = [];
@@ -104,7 +103,7 @@ class User {
     this.phoneNumber,
     this.birthdayDate,
     this.myFriends,
-    this.chatlist,
+    // this.chatlist,
     this.mycloseFriends,
     this.myGroups,
     this.mySchools,
@@ -178,12 +177,12 @@ class User {
               ?.map((friendJson) => User.fromJson(friendJson))
               .toList()
               .obs,
-      chatlist: json['chatlist'] == null
-          ? null
-          : (json['chatlist'] as List<dynamic>?)
-              ?.map((chatlist) => Chat.fromJson(chatlist))
-              .toList()
-              .obs,
+      // chatlist: json['chatlist'] == null
+      //     ? null
+      //     : (json['chatlist'] as List<dynamic>?)
+      //         ?.map((chatlist) => Chat.fromJson(chatlist))
+      //         .toList()
+      //         .obs,
       myGroups: json['myGroups'] == null
           ? null
           : (json['myGroups'] as List<dynamic>?)
@@ -256,7 +255,7 @@ class User {
             }
           : null,
       'myfriends': myFriends?.map((friend) => friend.toJson()).toList(),
-      'chatlist': chatlist?.map((chat) => chat.toJson()).toList(),
+      // 'chatlist': chatlist?.map((chat) => chat.toJson()).toList(),
       'myGroups': myGroups?.map((myGroups) => myGroups.toJson()).toList(),
       'lastlogin': lastlogin?.value,
       'lastloginv2': lastloginv2?.value,
@@ -330,9 +329,9 @@ class User {
       targetUser.myFriends = myFriends;
     }
 
-    if (chatlist != null) {
-      targetUser.chatlist = chatlist;
-    }
+    // if (chatlist != null) {
+    //   targetUser.chatlist = chatlist;
+    // }
     if (mycloseFriends != null) {
       targetUser.mycloseFriends = mycloseFriends;
     }

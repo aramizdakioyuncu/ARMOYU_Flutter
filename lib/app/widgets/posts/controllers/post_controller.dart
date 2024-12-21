@@ -95,7 +95,6 @@ class PostController extends GetxController {
 
   Future<void> getcommentsfetch(Rxn<List<Comment>> comments, int postID,
       {bool fetchRestart = false}) async {
-    //Eğer önceden yüklenmişse tekrar yüklemeye çalışma
     if (!fetchRestart && comments.value != null) {
       return;
     }
@@ -105,6 +104,9 @@ class PostController extends GetxController {
     }
     fetchCommentStatus.value = true;
 
+    if (fetchRestart) {
+      comments.value = null;
+    }
     PostCommentsFetchResponse response =
         await API.service.postsServices.commentsfetch(postID: postID);
     if (!response.result.status) {
@@ -114,8 +116,7 @@ class PostController extends GetxController {
       return;
     }
 
-    //Yorumları Temizle
-    // postInfo.value.comments = RxList<Comment>([]);
+    //Eğer veri null ise nullu boz Yorumları başlatma dizisi eşitle
     comments.value ??= [];
 
     //Veriler çek
@@ -172,6 +173,9 @@ class PostController extends GetxController {
     }
     fetchlikersStatus.value = true;
 
+    if (fetchRestart) {
+      likers.value = null;
+    }
     PostLikesListResponse response =
         await API.service.postsServices.postlikeslist(postID: postID);
     if (!response.result.status) {
@@ -222,9 +226,10 @@ class PostController extends GetxController {
 
     if (!response.result.status) {
       postVisible.value = true;
-
       return;
     }
+
+    Get.back();
   }
 
   void postcomments(int postID) {
@@ -288,7 +293,8 @@ class PostController extends GetxController {
                                 )
                               : comments.value!.isEmpty
                                   ? CustomText.costum1(
-                                      SocialKeys.socialWriteFirstComment.tr)
+                                      SocialKeys.socialWriteFirstComment.tr,
+                                    )
                                   : ListView.builder(
                                       itemCount: comments.value!.length,
                                       itemBuilder: (context, index) {

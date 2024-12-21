@@ -35,6 +35,7 @@ class ChatPage extends StatelessWidget {
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Obx(
           () => AppBar(
+            forceMaterialTransparency: true,
             leading: IconButton(
               onPressed: () {
                 currentAccountController.changePage(0);
@@ -135,12 +136,23 @@ class ChatPage extends StatelessWidget {
                               (context, index) {
                                 return Obx(
                                   () => controller.filteredItems.value![index]
-                                      .listtilechat(
-                                    context,
-                                    currentUserAccounts:
-                                        findCurrentAccountController
-                                            .currentUserAccounts.value,
-                                  ),
+                                      .listtilechat(context, onDelete: () {
+                                    //
+                                    controller
+                                        .currentUserAccounts.value.chatList!
+                                        .removeWhere(
+                                      (element) =>
+                                          element.user.userID ==
+                                          controller.filteredItems.value![index]
+                                              .user.userID,
+                                    );
+                                    controller
+                                        .currentUserAccounts.value.chatList!
+                                        .refresh();
+
+                                    controller.filteredItems.value = controller
+                                        .currentUserAccounts.value.chatList!;
+                                  }),
                                 );
                               },
                             ),

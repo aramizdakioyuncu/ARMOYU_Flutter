@@ -48,8 +48,7 @@ class ChatPageController extends GetxController {
     chatcontroller.value.addListener(() {
       String newText = chatcontroller.value.text.toLowerCase();
       // Filtreleme işlemi
-      filteredItems.value =
-          currentUserAccounts.value.user.value.chatlist!.where((item) {
+      filteredItems.value = currentUserAccounts.value.chatList!.where((item) {
         return item.user.displayName!.toLowerCase().contains(newText);
       }).toList();
     });
@@ -74,13 +73,13 @@ class ChatPageController extends GetxController {
 
     if (fetchRestart) {
       chatPage.value = 1;
-      currentUserAccounts.value.user.value.chatlist = <Chat>[].obs;
+      currentUserAccounts.value.chatList = <Chat>[].obs;
       filteredItems.value = null;
     }
 
     if (chatPage.value == 1 && !fetchRestart) {
-      if (currentUserAccounts.value.user.value.chatlist != null) {
-        filteredItems.value = currentUserAccounts.value.user.value.chatlist!;
+      if (currentUserAccounts.value.chatList != null) {
+        filteredItems.value = currentUserAccounts.value.chatList!;
 
         int pageCount =
             (currentUserAccounts.value.user.value.widgetStoriescard!.length /
@@ -91,7 +90,7 @@ class ChatPageController extends GetxController {
         chatPage.value = pageCount;
         chatPage++;
       } else {
-        currentUserAccounts.value.user.value.chatlist = <Chat>[].obs;
+        currentUserAccounts.value.chatList = <Chat>[].obs;
       }
     }
 
@@ -126,8 +125,8 @@ class ChatPageController extends GetxController {
       if (element.bildirim == 1) {
         notification = true;
       }
-      currentUserAccounts.value.user.value.chatlist ?? <Chat>[];
-      currentUserAccounts.value.user.value.chatlist!.add(
+      currentUserAccounts.value.chatList ?? <Chat>[];
+      currentUserAccounts.value.chatList!.add(
         Chat(
           chatID: 1,
           user: User(
@@ -158,7 +157,7 @@ class ChatPageController extends GetxController {
       );
     }
 
-    filteredItems.value = currentUserAccounts.value.user.value.chatlist!;
+    filteredItems.value = currentUserAccounts.value.chatList!;
 
     filteredItems.refresh();
 

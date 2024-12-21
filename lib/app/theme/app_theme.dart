@@ -68,9 +68,9 @@ final ThemeData appDarkThemeData = ThemeData.dark().copyWith(
       foregroundColor: WidgetStateProperty.all(Colors.white),
     ),
   ),
-  snackBarTheme: const SnackBarThemeData(
-    backgroundColor: Color(0xFF3C4CBD),
-    contentTextStyle: TextStyle(
+  snackBarTheme: SnackBarThemeData(
+    backgroundColor: (Colors.grey.shade900),
+    contentTextStyle: const TextStyle(
       color: Colors.white,
     ),
     actionTextColor: Colors.yellow,

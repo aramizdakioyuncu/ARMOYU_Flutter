@@ -20,6 +20,26 @@ class PostdetailController extends GetxController {
   var controllerMessage = TextEditingController().obs;
   var listComments = <Widget>[].obs;
 
+  // var currentUserAccounts =
+  //     Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
+  var postID = Rx<int?>(null);
+  var commentID = Rx<int?>(null);
+  @override
+  void onInit() {
+    super.onInit();
+    //* *//
+    // final findCurrentAccountController = Get.find<AccountUserController>();
+    // currentUserAccounts.value =
+    //     findCurrentAccountController.currentUserAccounts.value;
+    //* *//
+
+    Map<String, dynamic> arguments = Get.arguments;
+    postID.value = arguments['postID'];
+    commentID.value = arguments['commentID'];
+    log(commentID.value.toString());
+    postdetailfetch();
+  }
+
   Future<void> getcommentsfetch(int postID, List<Widget> listComments) async {
     listComments.clear();
     listComments.add(
@@ -196,25 +216,5 @@ class PostdetailController extends GetxController {
     widget.value = TwitterPostWidget(
       post: post,
     );
-  }
-
-  // var currentUserAccounts =
-  //     Rx<UserAccounts>(UserAccounts(user: User().obs, sessionTOKEN: Rx("")));
-  var postID = Rx<int?>(null);
-  var commentID = Rx<int?>(null);
-  @override
-  void onInit() {
-    super.onInit();
-    //* *//
-    // final findCurrentAccountController = Get.find<AccountUserController>();
-    // currentUserAccounts.value =
-    //     findCurrentAccountController.currentUserAccounts.value;
-    //* *//
-
-    Map<String, dynamic> arguments = Get.arguments;
-    postID.value = arguments['postID'];
-    commentID.value = arguments['commentID'];
-    log(commentID.value.toString());
-    postdetailfetch();
   }
 }

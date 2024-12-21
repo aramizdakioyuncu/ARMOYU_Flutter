@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/app/core/api.dart';
+import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
+import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
+import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
+import 'package:ARMOYU/app/data/models/Chat/chat.dart';
+import 'package:ARMOYU/app/data/models/user.dart';
 
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
@@ -64,69 +69,113 @@ class OneSignalApi {
 
     OneSignal.Location.setShared(true);
 
-    OneSignal.Notifications.addClickListener((event) {
+    OneSignal.Notifications.addClickListener((event) async {
       final findCurrentAccountController = Get.find<AccountUserController>();
 
       findCurrentAccountController.currentUserAccounts.value.user.value;
 
-      log("${findCurrentAccountController.currentUserAccounts.value.user.value.userName}--------");
+      log("---Onesignal-----${findCurrentAccountController.currentUserAccounts.value.user.value.userName}--------");
       try {
         String jsonAdditionalData =
             json.encode(event.notification.additionalData);
         Map<String, dynamic> responseData = json.decode(jsonAdditionalData);
 
-        log(event.notification.additionalData.toString());
+        log("OneSignal | ${event.notification.additionalData}");
 
-        log("Kategori: ${responseData["category"]}");
+        log("OneSignal | Kategori: ${responseData["category"]}");
 
-        String? userID;
         if (responseData["category"].toString() == "chat") {
+          dynamic categorydetail = responseData["categorydetail"];
+          dynamic value = responseData["categoryvalue"];
+          log("OneSignal | $categorydetail => $value");
+
+          String? userDisplayname;
+          String? userAvatar;
+          int? userID;
           for (Map<String, dynamic> element in responseData["content"]) {
+            userDisplayname = element["displayname"];
+            userAvatar = element["avatar"];
             userID = element["userID"];
           }
-          log(userID.toString());
-          // AppCore.navigatorKey.currentState?.push(
 
-          // Get.toNamed("/chat/detail", arguments: {
-          //   "chat": Chat(
-          //     user: User(userID: int.parse(userID!)),
-          //     chatNotification: false.obs,
-          //   ),
-          // });
+          // await Future.delayed(Duration(seconds: 10)); // Örnek asenkron işlem
+          Get.toNamed("/chat/detail", arguments: {
+            "chat": Chat(
+              chatType: "ozel",
+              user: User(
+                userID: userID!,
+                displayName: Rx(userDisplayname!),
+                avatar: Media(
+                  mediaID: userID,
+                  mediaURL: MediaURL(
+                    bigURL: Rx(userAvatar!),
+                    normalURL: Rx(userAvatar),
+                    minURL: Rx(userAvatar),
+                  ),
+                ),
+              ),
+              chatNotification: false.obs,
+            )
+          });
         } else if (responseData["category"].toString() == "profile") {
+          dynamic categorydetail = responseData["categorydetail"];
+          dynamic value = responseData["categoryvalue"];
+          log("OneSignal | $categorydetail => $value");
+          int? userID;
+
           for (Map<String, dynamic> element in responseData["content"]) {
             userID = element["userID"];
           }
 
-          // Get.toNamed("/profile", arguments: {
-          //   "profileUser": User(userID: int.parse(userID!)),
-          // });
+          Get.toNamed("/profile", arguments: {
+            "profileUser": User(userID: userID),
+          });
         } else if (responseData["category"].toString() == "group") {
+          dynamic categorydetail = responseData["categorydetail"];
+          dynamic value = responseData["categoryvalue"];
+          log("OneSignal | $categorydetail => $value");
+
+          int? groupID;
+          String? groupname;
+          String? grouplogo;
           for (Map<String, dynamic> element in responseData["content"]) {
-            userID = element["userID"];
+            groupID = element["groupID"];
+            groupname = element["groupname"];
+            grouplogo = element["grouplogo"];
           }
 
-          // Get.toNamed("/group/detail", arguments: {
-          //   'user': User(userID: int.parse(userID!)),
-          //   'group': Group(groupID: 1)
-          // });
+          log("$groupID $groupname $grouplogo");
+
+          Get.toNamed("/group/detail", arguments: {
+            'group': Group(groupID: groupID),
+          });
         } else if (responseData["category"].toString() == "post") {
+          dynamic categorydetail = responseData["categorydetail"];
+          dynamic value = responseData["categoryvalue"];
+          log("OneSignal | $categorydetail => $value");
+          int? postID;
           for (Map<String, dynamic> element in responseData["content"]) {
-            userID = element["userID"];
+            postID = element["postID"];
           }
 
-          // Get.toNamed("/social/detail", arguments: {"postID": 11});
+          Get.toNamed("/social/detail", arguments: {"postID": postID});
         } else if (responseData["category"].toString() == "event") {
+          dynamic categorydetail = responseData["categorydetail"];
+          dynamic value = responseData["categoryvalue"];
+          log("OneSignal | $categorydetail => $value");
+
+          int? eventID;
+
           for (Map<String, dynamic> element in responseData["content"]) {
-            userID = element["userID"];
+            eventID = element["eventID"];
           }
 
-          // Get.toNamed("/event/detail", arguments: {
-          //   "event": Event(eventID: 1),
-          // });
+          Get.toNamed("/event/detail", arguments: {
+            "event": Event(eventID: eventID!),
+          });
         }
       } catch (e) {
-        log("JSON Decode Hatası: $e");
+        log("OneSignal JSON Decode Hatası: $e");
       }
     });
   }

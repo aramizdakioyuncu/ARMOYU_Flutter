@@ -85,6 +85,11 @@ class GroupCreateController extends GetxController {
   }
 
   Future<void> creategroupfunction() async {
+    log(groupname.value.text);
+    log(groupshortname.value.text);
+    log(selectedcupertinolist.value.toString());
+    log(selectedcupertinolist2.value.toString());
+    log(selectedcupertinolist3.value.toString());
     if (groupcreateProcess.value) {
       return;
     }

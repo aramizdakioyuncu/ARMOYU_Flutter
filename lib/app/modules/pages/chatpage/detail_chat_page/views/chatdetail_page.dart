@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/data/models/Chat/chat.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/pages/chatpage/call_chat_page/views/chatcall_page.dart';
@@ -15,16 +14,12 @@ class ChatDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> arguments =
-        Get.arguments as Map<String, dynamic>;
-    Chat chat = arguments['chat'];
-
-    final controller =
-        Get.put(ChatdetailController(), tag: chat.user.userID.toString());
+    final controller = Get.put(ChatdetailController());
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        forceMaterialTransparency: true,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
