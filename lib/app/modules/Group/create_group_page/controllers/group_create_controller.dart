@@ -118,7 +118,7 @@ class GroupCreateController extends GetxController {
 
       log(groupname.value.text);
       log(groupshortname.value.text);
-      log(select1.selectID.toString() + " " + select1.title);
+      log("${select1.selectID} ${select1.title}");
       log(select2.selectID.toString());
       log(select3.selectID.toString());
 

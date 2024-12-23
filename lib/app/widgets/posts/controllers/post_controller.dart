@@ -11,7 +11,6 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/post_comments/post_comments_view.dart';
 import 'package:ARMOYU/app/widgets/post_likers/post_likers_view.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
 import 'package:ARMOYU/app/widgets/text.dart';

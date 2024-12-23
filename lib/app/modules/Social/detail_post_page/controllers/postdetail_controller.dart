@@ -7,7 +7,6 @@ import 'package:ARMOYU/app/data/models/Social/comment.dart';
 import 'package:ARMOYU/app/data/models/Social/like.dart';
 import 'package:ARMOYU/app/data/models/Social/post.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/widgets/post_comments/post_comments_view.dart';
 import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -211,8 +210,6 @@ class PostdetailController extends GetxController {
       firstthreelike: likers,
       location: response.response!.location,
     );
-    widget.value = TwitterPostWidget(
-      post: post,
-    );
+    widget.value = TwitterPostWidget(post: post);
   }
 }
