@@ -40,7 +40,7 @@ class PostdetailController extends GetxController {
     postdetailfetch();
   }
 
-  Future<void> getcommentsfetch(int postID, List<Widget> listComments) async {
+  Future<void> getcommentsfetch(int postID, List listComments) async {
     listComments.clear();
     listComments.add(
       const CupertinoActivityIndicator(),
@@ -65,27 +65,25 @@ class PostdetailController extends GetxController {
       int commentlikescount = element.likeCount;
 
       listComments.add(
-        WidgetPostComments(
-          comment: Comment(
-            commentID: yorumID,
-            content: text,
-            didIlike: islike,
-            likeCount: commentlikescount,
-            postID: postID,
-            user: User(
-              userID: userID,
-              displayName: displayname.obs,
-              avatar: Media(
-                mediaID: userID,
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(avatar),
-                  normalURL: Rx<String>(avatar),
-                  minURL: Rx<String>(avatar),
-                ),
+        Comment(
+          commentID: yorumID,
+          content: text,
+          didIlike: islike,
+          likeCount: commentlikescount,
+          postID: postID,
+          user: User(
+            userID: userID,
+            displayName: displayname.obs,
+            avatar: Media(
+              mediaID: userID,
+              mediaURL: MediaURL(
+                bigURL: Rx<String>(avatar),
+                normalURL: Rx<String>(avatar),
+                minURL: Rx<String>(avatar),
               ),
             ),
-            date: "",
           ),
+          date: "",
         ),
       );
     }

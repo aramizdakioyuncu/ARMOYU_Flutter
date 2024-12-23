@@ -11,6 +11,7 @@ import 'package:ARMOYU/app/data/models/ARMOYU/province.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
+import 'package:ARMOYU/app/data/models/select.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
@@ -606,13 +607,17 @@ class ARMOYUFunctions {
                                                       countryID, selectedIndex);
                                                 });
                                               },
-                                              list: ARMOYU.countryList
-                                                  .map((item) {
-                                                return {
-                                                  item.countryID:
-                                                      item.name.toString(),
-                                                };
-                                              }).toList(),
+                                              selectionList: Selection(
+                                                list: ARMOYU.countryList
+                                                    .map((country) {
+                                                  return Select(
+                                                    selectID: country.countryID,
+                                                    title: country.name,
+                                                    value: country.name,
+                                                    selectionList: null,
+                                                  );
+                                                }).toList(),
+                                              ).obs,
                                             );
                                           },
                                           loadingStatus: false.obs,
@@ -635,15 +640,31 @@ class ARMOYUFunctions {
                                                 provinceIndex = selectedIndex;
                                                 province.value = selectedValue;
                                               },
-                                              list: ARMOYU
-                                                  .countryList[countryIndex!]
-                                                  .provinceList!
-                                                  .map((item) {
-                                                return {
-                                                  item.provinceID:
-                                                      item.name.toString(),
-                                                };
-                                              }).toList(),
+
+                                              selectionList: Selection(
+                                                selectedIndex: Rxn(0),
+                                                list: ARMOYU
+                                                    .countryList[countryIndex!]
+                                                    .provinceList!
+                                                    .map((country) {
+                                                  return Select(
+                                                    selectID:
+                                                        country.provinceID,
+                                                    title: country.name,
+                                                    value: country.name,
+                                                    selectionList: null,
+                                                  );
+                                                }).toList(),
+                                              ).obs,
+                                              // list: ARMOYU
+                                              //     .countryList[countryIndex!]
+                                              //     .provinceList!
+                                              //     .map((item) {
+                                              //   return {
+                                              //     item.provinceID:
+                                              //         item.name.toString(),
+                                              //   };
+                                              // }).toList(),
                                             );
                                           },
                                           loadingStatus: false.obs,

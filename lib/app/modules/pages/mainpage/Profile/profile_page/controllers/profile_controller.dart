@@ -616,7 +616,7 @@ class ProfileController extends GetxController
         }
         ///////
       } else {
-        log("->>ID ye göre oyuncu bul!");
+        log("->>ID ye göre oyuncu bul! ID-> ${profileUser.value!.userID}");
         FunctionService f = FunctionService();
         response = await f.lookProfile(profileUser.value!.userID!);
         if (!response.result.status) {

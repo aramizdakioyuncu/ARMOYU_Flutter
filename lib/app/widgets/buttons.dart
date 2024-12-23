@@ -69,6 +69,7 @@ class CustomButtons {
     Color? background,
     required onPressed,
     bool loadingStatus = false,
+    bool enabled = true,
   }) {
     // background = ARMOYU.buttonColor;
 
@@ -84,9 +85,11 @@ class CustomButtons {
     return loadingStatus
         ? const CupertinoActivityIndicator()
         : ElevatedButton(
-            onPressed: onPressed,
+            onPressed: !enabled ? null : onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: background,
+              backgroundColor: enabled
+                  ? Get.theme.highlightColor.withOpacity(0.3)
+                  : Colors.red,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               shape: RoundedRectangleBorder(

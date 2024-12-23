@@ -213,7 +213,10 @@ class NotificationPageController extends GetxController {
             (index) {
               return Column(
                 children: [
-                  widgetNotifications[index],
+                  widgetNotifications[index].notificationWidget(Get.context!,
+                      deleteFunction: () {
+                    widgetNotifications.removeAt(index);
+                  }),
                   const SizedBox(height: 1)
                 ],
               );

@@ -245,6 +245,8 @@ class GroupController extends GetxController {
 
     group.value!.groupUsers!.removeWhere(
         (element) => element.userID == group.value!.groupUsers![index].userID);
+
+    Get.back();
   }
 
   Future<void> groupdetailSave() async {

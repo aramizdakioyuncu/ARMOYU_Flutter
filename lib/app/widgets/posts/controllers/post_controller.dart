@@ -11,8 +11,8 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/likers.dart';
 import 'package:ARMOYU/app/widgets/post_comments/post_comments_view.dart';
+import 'package:ARMOYU/app/widgets/post_likers/post_likers_view.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
@@ -120,7 +120,6 @@ class PostController extends GetxController {
     comments.value ??= [];
 
     //Veriler çek
-
     for (APIPostComments element in response.response!) {
       String displayname = element.postcommenter.displayname.toString();
       String avatar = element.postcommenter.avatar.minURL.toString();
@@ -153,18 +152,16 @@ class PostController extends GetxController {
       );
 
       //Post yorumlarına ekler
-      // postInfo.value.comments!.add(comment);
       comments.value!.add(comment);
-
-      fetchCommentStatus.value = false;
     }
-
+    postInfo.value.comments = comments.value;
     comments.refresh();
+    fetchCommentStatus.value = false;
   }
 
   Future<void> postlikesfetch(Rxn<List<Like>> likers, int postID,
       {bool fetchRestart = false}) async {
-    if (!fetchRestart && post.likers != null) {
+    if (!fetchRestart && likers.value != null) {
       return;
     }
 
@@ -184,6 +181,7 @@ class PostController extends GetxController {
       return;
     }
 
+    //Eğer veri null ise nullu boz Yorumları başlatma dizisi eşitle
     likers.value ??= [];
 
     for (APIPostLiker element in response.response!) {
@@ -191,27 +189,27 @@ class PostController extends GetxController {
       String avatar = element.likeravatar.minURL.toString();
       String date = element.likedate.toString();
       int userID = element.likerID;
-
-      likers.value!.add(
-        Like(
-          likeID: 1,
-          user: User(
-            userID: userID,
-            displayName: displayname.obs,
-            avatar: Media(
-              mediaID: userID,
-              mediaURL: MediaURL(
-                bigURL: Rx<String>(avatar),
-                normalURL: Rx<String>(avatar),
-                minURL: Rx<String>(avatar),
-              ),
+      log(userID.toString());
+      Like like = Like(
+        likeID: 1,
+        user: User(
+          userID: userID,
+          displayName: displayname.obs,
+          avatar: Media(
+            mediaID: userID,
+            mediaURL: MediaURL(
+              bigURL: Rx<String>(avatar),
+              normalURL: Rx<String>(avatar),
+              minURL: Rx<String>(avatar),
             ),
           ),
-          date: date,
         ),
+        date: date,
       );
+
+      likers.value!.add(like);
     }
-    post.likers = likers.value;
+    postInfo.value.likers = likers.value;
     likers.refresh();
     fetchlikersStatus.value = false;
   }
@@ -232,7 +230,7 @@ class PostController extends GetxController {
     Get.back();
   }
 
-  void postcomments(int postID) {
+  Future<void> postcomments(int postID) async {
     Rxn<List<Comment>> comments = Rxn<List<Comment>>();
 
     //Yorumları Çekmeye başla
@@ -298,9 +296,13 @@ class PostController extends GetxController {
                                   : ListView.builder(
                                       itemCount: comments.value!.length,
                                       itemBuilder: (context, index) {
-                                        return WidgetPostComments(
-                                          comment: comments.value![index],
-                                        );
+                                        return comments.value![index]
+                                            .postCommentsWidget(context,
+                                                deleteFunction: () {
+                                          comments.value!.removeAt(index);
+
+                                          comments.refresh();
+                                        });
                                       },
                                     ),
                         ),
@@ -444,9 +446,9 @@ class PostController extends GetxController {
   }
 
   void showpostlikers() {
-    Rxn<List<Like>> likers = Rxn<List<Like>>();
+    Rxn<List<Like>> likerList = Rxn<List<Like>>();
 
-    postlikesfetch(likers, postInfo.value.postID);
+    postlikesfetch(likerList, postInfo.value.postID);
 
     showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -462,7 +464,7 @@ class PostController extends GetxController {
           heightFactor: 0.8,
           child: RefreshIndicator(
             onRefresh: () => postlikesfetch(
-              likers,
+              likerList,
               postInfo.value.postID,
               fetchRestart: true,
             ),
@@ -481,7 +483,7 @@ class PostController extends GetxController {
                       child: Container(
                         alignment: Alignment.center,
                         child: Obx(
-                          () => likers.value == null
+                          () => likerList.value == null
                               ? Column(
                                   children: [
                                     ShimmerPlaceholder.listTilePlaceholder(),
@@ -492,15 +494,15 @@ class PostController extends GetxController {
                                     ShimmerPlaceholder.listTilePlaceholder(),
                                   ],
                                 )
-                              : likers.value!.isEmpty
+                              : likerList.value!.isEmpty
                                   ? CustomText.costum1(CommonKeys.empty.tr)
                                   : ListView.builder(
-                                      itemCount: likers.value!.length,
+                                      itemCount: likerList.value!.length,
                                       itemBuilder: (context, index) {
-                                        return LikersListWidget(
-                                          date: likers.value![index].date,
+                                        return WidgetPostLikersView(
+                                          date: likerList.value![index].date,
                                           islike: 1,
-                                          user: likers.value![index].user,
+                                          user: likerList.value![index].user,
                                         );
                                       },
                                     ),

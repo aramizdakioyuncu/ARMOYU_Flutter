@@ -289,7 +289,7 @@ class TwitterPostWidget extends StatelessWidget {
                                       child: Obx(
                                         () => WidgetUtility.specialText(
                                           context,
-                                          "@${controller.postInfo.value.firstthreelike![0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) == 0 ? SocialKeys.socialLiked.tr : SocialKeys.socialandnumberpersonLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
+                                          "@${controller.postInfo.value.firstthreelike![0].user.userName.toString()}  ${(controller.postInfo.value.likesCount - 1) <= 0 ? SocialKeys.socialLiked.tr : SocialKeys.socialandnumberpersonLiked.tr.replaceAll('#NUMBER#', "${controller.postInfo.value.likesCount - 1}")}",
                                         ),
                                       ),
                                     )

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:ARMOYU/app/data/models/select.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/category/category.dart';
@@ -10,23 +11,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class GroupCreateController extends GetxController {
-  var kItemExtent = 32.0.obs;
-  var cupertinolist = [
-    {'ID': '-1', 'value': 'Seç'}
-  ].obs;
-  var cupertinolist2 = [
-    {'ID': '-1', 'value': 'Seç'}
-  ].obs;
-  var cupertinolist3 = [
-    {'ID': '-1', 'value': 'Seç'}
-  ].obs;
+  Rx<Selection> groupcategoryList = Rx(Selection(list: []));
 
-  var selectedcupertinolist = 0.obs;
-  var selectedcupertinolist2 = 0.obs;
-  var selectedcupertinolist3 = 0.obs;
+  var groupcategory = Rxn<String>(null);
+  var groupcategorydetail = Rxn<String>(null);
+  var groupmaingamedetail = Rxn<String>(null);
 
   var groupcreateProcess = false.obs;
-
   var isProcces = false.obs;
 
   late var user = Rxn<User>();
@@ -42,32 +33,43 @@ class GroupCreateController extends GetxController {
     user.value =
         findCurrentAccountController.currentUserAccounts.value.user.value;
 
-    groupcreaterequest("gruplar", cupertinolist);
-    groupdetailfetch("E-spor", cupertinolist2);
-    groupcreaterequest("E-spor", cupertinolist3);
+    groupcreaterequest("gruplar", groupcategoryList);
   }
 
-  Future<void> groupcreaterequest(
-      String category, List<Map<String, String>> listname) async {
+  Future<void> groupcreaterequest(String category, Rx<Selection>? listname,
+      {bool restartfetch = false}) async {
+    // if (!restartfetch && listname!.value.list != null) {
+    //   return;
+    // }
     CategoryResponse response =
         await API.service.categoryServices.category(categoryID: category);
     if (!response.result.status) {
       log(response.result.description);
       return;
     }
+    listname ??= Rx(Selection(list: []));
 
-    listname.clear();
-
+    listname.value = Selection(list: []);
     for (APICategory element in response.response!) {
-      listname.add({
-        'ID': element.categoryID.toString(),
-        'value': element.name,
-      });
+      listname.value.list!.add(
+        Select(
+          selectID: element.categoryID,
+          title: element.name,
+          value: element.name,
+          selectionList: Rx(
+            Selection(list: []),
+          ),
+        ),
+      );
     }
   }
 
-  Future<void> groupdetailfetch(
-      String data, List<Map<String, String>> listname) async {
+  Future<void> groupdetailfetch(String data, Rx<Selection>? listname,
+      {bool restartfetch = false}) async {
+    // if (!restartfetch && listname!.value.list != null) {
+    //   return;
+    // }
+
     CategoryResponse response =
         await API.service.categoryServices.categorydetail(categoryID: data);
     if (!response.result.status) {
@@ -75,42 +77,70 @@ class GroupCreateController extends GetxController {
       return;
     }
 
-    listname.clear();
+    listname!.value = Selection(list: []);
+
     for (APICategory element in response.response!) {
-      listname.add({
-        'ID': element.categoryID.toString(),
-        'value': element.name,
-      });
+      listname.value.list!.add(
+        Select(
+          selectID: element.categoryID,
+          title: element.name,
+          value: element.name,
+          selectionList: Rx(
+            Selection(list: []),
+          ),
+        ),
+      );
     }
+
+    log(listname.value.list!.length.toString());
   }
 
   Future<void> creategroupfunction() async {
-    log(groupname.value.text);
-    log(groupshortname.value.text);
-    log(selectedcupertinolist.value.toString());
-    log(selectedcupertinolist2.value.toString());
-    log(selectedcupertinolist3.value.toString());
     if (groupcreateProcess.value) {
       return;
     }
     groupcreateProcess.value = true;
 
-    GroupCreateResponse response = await API.service.groupServices.groupcreate(
-      grupadi: groupname.value.text,
-      kisaltmaadi: groupshortname.value.text,
-      grupkategori: selectedcupertinolist.value,
-      grupkategoridetay: selectedcupertinolist2.value,
-      varsayilanoyun: selectedcupertinolist3.value,
-    );
-    if (!response.result.status) {
-      String text = response.result.description;
-      // if (mounted) {
-      ARMOYUWidget.stackbarNotification(Get.context!, text);
-      groupcreateProcess.value = false;
-      // }
+    try {
+      int number1 = groupcategoryList.value.selectedIndex!.value!;
 
-      return;
+      int number2 = groupcategoryList
+          .value.list![number1].selectionList!.value.selectedIndex!.value!;
+
+      int number3 = groupcategoryList.value.list![number1].selectionList!.value
+          .list![number2].selectionList!.value.selectedIndex!.value!;
+
+      Select select1 = groupcategoryList.value.list![number1 + 1];
+      Select select2 = groupcategoryList
+          .value.list![number1].selectionList!.value.list![number2];
+      Select select3 = groupcategoryList.value.list![number1].selectionList!
+          .value.list![number2].selectionList!.value.list![number3];
+
+      log(groupname.value.text);
+      log(groupshortname.value.text);
+      log(select1.selectID.toString() + " " + select1.title);
+      log(select2.selectID.toString());
+      log(select3.selectID.toString());
+
+      GroupCreateResponse response =
+          await API.service.groupServices.groupcreate(
+        grupadi: groupname.value.text,
+        kisaltmaadi: groupshortname.value.text,
+        grupkategori: select1.selectID,
+        grupkategoridetay: select2.selectID,
+        varsayilanoyun: select3.selectID,
+      );
+
+      String text = response.result.description;
+
+      ARMOYUWidget.toastNotification(text);
+      groupcreateProcess.value = false;
+
+      Get.back();
+    } catch (e) {
+      log(e.toString());
     }
+
     groupcreateProcess.value = false;
   }
 

@@ -4,7 +4,6 @@ import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
-import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,82 +41,82 @@ class JoinusView extends StatelessWidget {
                   color: Colors.red,
                 ),
               ),
-              Obx(
-                () => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomButtons.costum2(
-                    text: controller.category.value != null
-                        ? '${controller.category.value}'
-                        : JoinUsKeys.selectAnItem.tr,
-                    onPressed: () {
-                      WidgetUtility.cupertinoselector(
-                        context: context,
-                        title: JoinUsKeys.selectAnItem.tr,
-                        // setstatefunction: controller.setstatefunction,
-                        list: controller.departmentList.map((item) {
-                          return item.map((key, value) {
-                            return MapEntry(key, value["category"].toString());
-                          });
-                        }).toList(),
-                        onChanged: (valueID, value) {
-                          if (valueID == -1) {
-                            return;
-                          }
-                          controller.category.value = value;
+              // Obx(
+              //   () => Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: CustomButtons.costum2(
+              //       text: controller.category.value != null
+              //           ? '${controller.category.value}'
+              //           : JoinUsKeys.selectAnItem.tr,
+              //       onPressed: () {
+              //         WidgetUtility.cupertinoselector(
+              //           context: context,
+              //           title: JoinUsKeys.selectAnItem.tr,
+              //           // setstatefunction: controller.setstatefunction,
+              //           list: controller.departmentList.map((item) {
+              //             return item.map((key, value) {
+              //               return MapEntry(key, value["category"].toString());
+              //             });
+              //           }).toList(),
+              //           onChanged: (valueID, value) {
+              //             if (valueID == -1) {
+              //               return;
+              //             }
+              //             controller.category.value = value;
 
-                          controller.filtereddepartmentdetailList.value =
-                              controller.departmentdetailList.where((item) {
-                            return item.values.first["category"] ==
-                                controller.category;
-                          }).toList();
+              //             controller.filtereddepartmentdetailList.value =
+              //                 controller.departmentdetailList.where((item) {
+              //               return item.values.first["category"] ==
+              //                   controller.category;
+              //             }).toList();
 
-                          controller.categorydetail.value =
-                              JoinUsKeys.selectAPosition.tr;
-                          controller.departmentabout.value = "";
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              Obx(
-                () => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomButtons.costum2(
-                    text: controller.categorydetail.value != null
-                        ? '${controller.categorydetail.value}'
-                        : JoinUsKeys.selectAPosition.tr,
-                    onPressed: () {
-                      WidgetUtility.cupertinoselector(
-                        context: context,
-                        title: JoinUsKeys.selectAPosition.tr,
-                        // setstatefunction: controller.setstatefunction,
-                        list:
-                            controller.filtereddepartmentdetailList.map((item) {
-                          return item.map((key, value) {
-                            return MapEntry(key, value["value"].toString());
-                          });
-                        }).toList(),
-                        onChanged: (valueID, value) {
-                          if (valueID == -1) {
-                            return;
-                          }
-                          controller.categorydetail.value = value;
-                          controller.positionID = controller
-                              .filtereddepartmentdetailList[valueID]
-                              .values
-                              .first["ID"];
-                          controller.departmentabout.value = controller
-                              .filtereddepartmentdetailList[valueID]
-                              .values
-                              .first["about"]
-                              .toString();
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
+              //             controller.categorydetail.value =
+              //                 JoinUsKeys.selectAPosition.tr;
+              //             controller.departmentabout.value = "";
+              //           },
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
+              // Obx(
+              //   () => Padding(
+              //     padding: const EdgeInsets.all(8.0),
+              //     child: CustomButtons.costum2(
+              //       text: controller.categorydetail.value != null
+              //           ? '${controller.categorydetail.value}'
+              //           : JoinUsKeys.selectAPosition.tr,
+              //       onPressed: () {
+              //         WidgetUtility.cupertinoselector(
+              //           context: context,
+              //           title: JoinUsKeys.selectAPosition.tr,
+              //           // setstatefunction: controller.setstatefunction,
+              //           list:
+              //               controller.filtereddepartmentdetailList.map((item) {
+              //             return item.map((key, value) {
+              //               return MapEntry(key, value["value"].toString());
+              //             });
+              //           }).toList(),
+              //           onChanged: (valueID, value) {
+              //             if (valueID == -1) {
+              //               return;
+              //             }
+              //             controller.categorydetail.value = value;
+              //             controller.positionID = controller
+              //                 .filtereddepartmentdetailList[valueID]
+              //                 .values
+              //                 .first["ID"];
+              //             controller.departmentabout.value = controller
+              //                 .filtereddepartmentdetailList[valueID]
+              //                 .values
+              //                 .first["about"]
+              //                 .toString();
+              //           },
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
               Obx(
                 () => Padding(
                   padding: const EdgeInsets.all(8.0),

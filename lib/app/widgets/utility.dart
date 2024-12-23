@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:ARMOYU/app/data/models/select.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -460,18 +461,24 @@ class WidgetUtility {
   static Future cupertinoselector({
     required BuildContext context,
     required title,
-    required Function(int, String) onChanged,
-    required List<Map<int, String>> list,
+    required Function(int index, String value) onChanged,
+    required Rx<Selection> selectionList,
     bool looping = false,
   }) {
-    if (list.isEmpty) {
-      list.insert(0, {0: title});
-    } else if (list[0].values.first.toString() != title) {
-      list.insert(0, {0: title});
+    if (selectionList.value.list == null) {
+      selectionList.value.list!.insert(
+        0,
+        Select(selectID: 0, title: title, value: title),
+      );
+    } else if (selectionList.value.list![0].title.toString() != title) {
+      selectionList.value.list!.insert(
+        0,
+        Select(selectID: 0, title: title, value: title),
+      );
     }
 
     var selectedItemID = 0.obs;
-    var selectedItem = list[0].values.first.toString().obs;
+    var selectedItem = selectionList.value.list![0].title.obs;
 
     return showCupertinoModalPopup(
       // barrierDismissible: false,
@@ -513,9 +520,10 @@ class WidgetUtility {
                     child: CupertinoPicker(
                       looping: looping,
                       itemExtent: 32,
-                      children: List.generate(list.length, (index) {
+                      children: List.generate(selectionList.value.list!.length,
+                          (index) {
                         return Text(
-                          list[index].values.first.toString(),
+                          selectionList.value.list![index].title.toString(),
                           style: index == 0
                               ? const TextStyle(color: Colors.grey)
                               : null,
@@ -525,7 +533,7 @@ class WidgetUtility {
                         //
                         selectedItemID.value = value;
                         selectedItem.value =
-                            list[value].values.first.toString();
+                            selectionList.value.list![value].title.toString();
                         //
                         onChanged(selectedItemID.value - 1, selectedItem.value);
                       },

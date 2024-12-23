@@ -26,6 +26,7 @@ class PostshareView extends StatelessWidget {
     final controller = Get.put(PostshareController());
     return Scaffold(
       appBar: AppBar(
+        forceMaterialTransparency: true,
         title: Text(SocialKeys.socialShare.tr),
       ),
       body: Padding(

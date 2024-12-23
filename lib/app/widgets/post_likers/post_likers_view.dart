@@ -1,34 +1,32 @@
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:ARMOYU/app/widgets/post_likers/post_likers_controller.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 // ignore: must_be_immutable
-class LikersListWidget extends StatelessWidget {
+class WidgetPostLikersView extends StatelessWidget {
   final User user;
   final String date;
   int islike;
 
-  LikersListWidget({
+  WidgetPostLikersView({
     super.key,
     required this.user,
     required this.date,
     required this.islike,
   });
 
-  Icon favoritestatus = const Icon(Icons.favorite_outline);
-  Color favoritelikestatus = Colors.grey;
-
   @override
   Widget build(BuildContext context) {
-    if (islike == 1) {
-      favoritestatus = const Icon(Icons.favorite);
-      favoritelikestatus = Colors.red;
-    } else {
-      favoritestatus = const Icon(Icons.favorite_outline);
-      favoritelikestatus = Colors.grey;
-    }
+    String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
+
+    Get.put(
+      PostLikersController(date: date, islike: islike, user: user),
+      tag: uniqueTag,
+    );
 
     return ListTile(
       minLeadingWidth: 1.0,
@@ -58,7 +56,7 @@ class LikersListWidget extends StatelessWidget {
             date,
             style: TextStyle(
               fontSize: 13,
-              color: Colors.grey.shade400,
+              color: Get.theme.primaryColor.withOpacity(0.69),
             ),
           ),
         ],

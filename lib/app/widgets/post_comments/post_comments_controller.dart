@@ -35,19 +35,17 @@ class PostCommentsController extends GetxController {
 
   Icon favoritestatus =
       const Icon(Icons.favorite_outline_rounded, color: Colors.grey, size: 20);
-  bool isvisiblecomment = true;
 
-  Future<void> removeComment() async {
-    isvisiblecomment = false;
-
+  Future<void> removeComment(Function deleteFunction) async {
     PostRemoveCommentResponse response = await API.service.postsServices
         .removecomment(commentID: xcomment!.value!.commentID);
     ARMOYUWidget.toastNotification(response.result.description.toString());
 
     if (!response.result.status) {
-      isvisiblecomment = true;
       return;
     }
+
+    deleteFunction();
   }
 
   Future<void> likeunlikefunction() async {

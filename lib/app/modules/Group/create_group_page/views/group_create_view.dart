@@ -1,15 +1,13 @@
-import 'dart:async';
-
-import 'package:ARMOYU/app/core/armoyu.dart';
+import 'package:ARMOYU/app/data/models/select.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/controllers/group_create_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 
 import 'package:ARMOYU/app/widgets/textfields.dart';
+import 'package:ARMOYU/app/widgets/utility.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class GroupCreateView extends StatelessWidget {
@@ -42,178 +40,162 @@ class GroupCreateView extends StatelessWidget {
                   preicon: const Icon(Icons.label),
                 ),
                 const SizedBox(height: 16),
-                CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () async {
-                    if (controller.isProcces.value) {
-                      return;
-                    }
-
-                    controller.isProcces.value = true;
-                    controller.showDialog(
-                      CupertinoPicker(
-                        magnification: 1.22,
-                        squeeze: 1.2,
-                        useMagnifier: true,
-                        itemExtent: controller.kItemExtent.value,
-                        scrollController: FixedExtentScrollController(
-                          initialItem: controller.selectedcupertinolist.value,
-                        ),
-                        onSelectedItemChanged: (int selectedItem) async {
-                          controller.selectedcupertinolist.value = selectedItem;
-
-                          Timer(const Duration(milliseconds: 700), () async {
-                            if (controller.selectedcupertinolist.value
-                                    .toString() !=
-                                selectedItem.toString()) {
-                              controller.isProcces.value = false;
+                Obx(
+                  () => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomButtons.costum2(
+                      enabled: controller.groupcategoryList.value.list != null,
+                      text: controller.groupcategory.value != null
+                          ? '${controller.groupcategory.value}'
+                          : JoinUsKeys.selectAnItem.tr,
+                      onPressed: () {
+                        WidgetUtility.cupertinoselector(
+                          context: context,
+                          title: JoinUsKeys.selectAnItem.tr,
+                          selectionList: controller.groupcategoryList,
+                          onChanged: (index, value) {
+                            if (index == -1) {
                               return;
                             }
+                            controller.groupcategory.value = value;
+                            controller.groupcategorydetail.value =
+                                JoinUsKeys.selectAnItem.tr;
+                            controller.groupmaingamedetail.value = null;
+
+                            controller.groupcategoryList.value.selectedIndex =
+                                Rxn(index);
+
+                            var categoryList =
+                                controller.groupcategoryList.value;
+
+                            categoryList.list![index].selectionList =
+                                Selection(list: []).obs;
+
+                            int index1 = controller.groupcategoryList.value
+                                    .selectedIndex!.value! +
+                                1;
 
                             controller.groupdetailfetch(
-                              controller.cupertinolist[selectedItem]["ID"]
-                                  .toString(),
-                              controller.cupertinolist2,
-                            );
+                                categoryList.list![index1].selectID.toString(),
+                                categoryList.list![index].selectionList);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Obx(
+                  () => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomButtons.costum2(
+                      enabled:
+                          controller.groupcategoryList.value.selectedIndex !=
+                              null,
+                      text: controller.groupcategorydetail.value != null
+                          ? '${controller.groupcategorydetail.value}'
+                          : JoinUsKeys.selectAnItem.tr,
+                      onPressed: () {
+                        int indexx1 = controller
+                            .groupcategoryList.value.selectedIndex!.value!;
 
-                            if (controller.cupertinolist[selectedItem]["value"]
-                                    .toString() ==
-                                "E-spor") {
-                              controller.groupcreaterequest(
-                                "E-spor",
-                                controller.cupertinolist3,
-                              );
-                              controller.isProcces.value = false;
-
+                        WidgetUtility.cupertinoselector(
+                          context: context,
+                          title: JoinUsKeys.selectAnItem.tr,
+                          selectionList: controller.groupcategoryList.value
+                              .list![indexx1].selectionList!,
+                          onChanged: (index, value) async {
+                            if (index == -1) {
                               return;
                             }
-                            if (controller.cupertinolist[selectedItem]["value"]
-                                    .toString() ==
-                                "Spor") {
-                              controller.groupcreaterequest(
-                                "Spor",
-                                controller.cupertinolist3,
-                              );
-                              controller.isProcces.value = false;
+                            controller.groupcategorydetail.value = value;
 
-                              return;
-                            }
-                            if (controller.cupertinolist[selectedItem]["value"]
+                            controller
+                                .groupcategoryList
+                                .value
+                                .list![indexx1]
+                                .selectionList!
+                                .value
+                                .selectedIndex = Rxn(index + 1);
+
+                            var categoryList = controller.groupcategoryList
+                                .value.list![indexx1].selectionList!.value;
+
+                            categoryList.list![index + 1].selectionList =
+                                Selection(list: []).obs;
+
+                            if (controller.groupcategoryList.value
+                                    .list![indexx1 + 1].title
                                     .toString() ==
                                 "Yazılım & Geliştirme") {
-                              controller.groupcreaterequest(
-                                "projeler",
-                                controller.cupertinolist3,
-                              );
-                              controller.isProcces.value = false;
+                              await controller.groupcreaterequest("Projeler",
+                                  categoryList.list![index + 1].selectionList);
+                            } else if (controller.groupcategoryList.value
+                                    .list![indexx1 + 1].title
+                                    .toString() ==
+                                "E-Spor") {
+                              await controller.groupcreaterequest("E-spor",
+                                  categoryList.list![index + 1].selectionList);
+                            } else {
+                              await controller.groupcreaterequest(
+                                  controller.groupcategoryList.value
+                                      .list![indexx1 + 1].title,
+                                  categoryList.list![index + 1].selectionList);
+                            }
 
+                            controller.groupmaingamedetail.value =
+                                JoinUsKeys.selectAnItem.tr;
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Obx(
+                  () => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomButtons.costum2(
+                      enabled: controller.groupmaingamedetail.value != null
+                          ? true
+                          : false,
+                      text: controller.groupmaingamedetail.value != null
+                          ? '${controller.groupmaingamedetail.value}'
+                          : JoinUsKeys.selectAnItem.tr,
+                      onPressed: () {
+                        int indexx1 = controller
+                            .groupcategoryList.value.selectedIndex!.value!;
+
+                        int indexxx = controller
+                            .groupcategoryList
+                            .value
+                            .list![indexx1]
+                            .selectionList!
+                            .value
+                            .selectedIndex!
+                            .value!;
+                        WidgetUtility.cupertinoselector(
+                          context: context,
+                          title: JoinUsKeys.selectAnItem.tr,
+                          selectionList: controller
+                              .groupcategoryList
+                              .value
+                              .list![indexx1]
+                              .selectionList!
+                              .value
+                              .list![indexxx]
+                              .selectionList!,
+                          onChanged: (index, value) {
+                            if (index == -1) {
                               return;
                             }
-                            controller.isProcces.value = false;
-                          });
-                        },
-                        children: List<Widget>.generate(
-                            controller.cupertinolist.length, (int index) {
-                          return Center(
-                            child: Text(
-                              controller.cupertinolist[index]["value"]
-                                  .toString(),
-                            ),
-                          );
-                        }),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: ARMOYU.screenWidth - 10,
-                    padding: const EdgeInsets.all(16.0),
-                    color: Colors.grey.shade900,
-                    child: Text(
-                      controller
-                          .cupertinolist[controller.selectedcupertinolist.value]
-                              ["value"]
-                          .toString(),
-                      style: const TextStyle(
-                        fontSize: 22.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => controller.showDialog(
-                    CupertinoPicker(
-                      magnification: 1.22,
-                      squeeze: 1.2,
-                      useMagnifier: true,
-                      itemExtent: controller.kItemExtent.value,
-                      scrollController: FixedExtentScrollController(
-                        initialItem: controller.selectedcupertinolist2.value,
-                      ),
-                      onSelectedItemChanged: (int selectedItem) async {
-                        controller.selectedcupertinolist2.value = selectedItem;
-                      },
-                      children: List<Widget>.generate(
-                          controller.cupertinolist2.length, (int index) {
-                        return Center(
-                          child: Text(
-                            controller.cupertinolist2[index]["value"]
-                                .toString(),
-                          ),
+                            controller.groupmaingamedetail.value = value;
+
+                            controller.groupcategoryList.value.list![indexx1]
+                                .selectionList!.value.list![indexxx]
+                              ..selectionList!.value.selectedIndex =
+                                  Rxn(index + 1);
+                          },
                         );
-                      }),
-                    ),
-                  ),
-                  child: Container(
-                    width: ARMOYU.screenWidth - 10,
-                    padding: const EdgeInsets.all(16.0),
-                    color: Colors.grey.shade900,
-                    child: Text(
-                      controller.cupertinolist2[
-                              controller.selectedcupertinolist2.value]["value"]
-                          .toString(),
-                      style: const TextStyle(
-                        fontSize: 22.0,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () => controller.showDialog(
-                    CupertinoPicker(
-                      magnification: 1.22,
-                      squeeze: 1.2,
-                      useMagnifier: true,
-                      itemExtent: controller.kItemExtent.value,
-                      scrollController: FixedExtentScrollController(
-                        initialItem: controller.selectedcupertinolist3.value,
-                      ),
-                      onSelectedItemChanged: (int selectedItem) {
-                        controller.selectedcupertinolist3.value = selectedItem;
                       },
-                      children: List<Widget>.generate(
-                          controller.cupertinolist3.length, (int index) {
-                        return Center(
-                          child: Text(controller.cupertinolist3[index]["value"]
-                              .toString()),
-                        );
-                      }),
-                    ),
-                  ),
-                  child: Container(
-                    width: ARMOYU.screenWidth - 10,
-                    padding: const EdgeInsets.all(16.0),
-                    color: Colors.grey.shade900,
-                    child: Text(
-                      controller.cupertinolist3[
-                              controller.selectedcupertinolist3.value]["value"]
-                          .toString(),
-                      style: const TextStyle(
-                        fontSize: 22.0,
-                      ),
                     ),
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:ARMOYU/app/data/models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CustomText {
   static Text costum1(
@@ -34,8 +35,8 @@ class CustomText {
         children: [
           TextSpan(
             text: user.displayName!.value,
-            style: const TextStyle(
-              // color: ARMOYU.textColor,
+            style: TextStyle(
+              color: Get.theme.primaryColor,
               fontWeight: FontWeight.bold,
             ),
             recognizer: TapGestureRecognizer()
@@ -56,9 +57,9 @@ class CustomText {
     textSpans.add(
       TextSpan(
         text: " $text",
-        style: const TextStyle(
-            // color: ARMOYU.textColor,
-            ),
+        style: TextStyle(
+          color: Get.theme.primaryColor,
+        ),
       ),
     );
 

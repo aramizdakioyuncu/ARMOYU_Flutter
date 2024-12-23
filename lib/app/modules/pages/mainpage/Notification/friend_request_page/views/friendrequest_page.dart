@@ -59,7 +59,11 @@ class FriendRequestView extends StatelessWidget {
                       (context, index) {
                         return Column(
                           children: [
-                            controller.widgetNotifications[index],
+                            controller.widgetNotifications[index]
+                                .notificationWidget(context,
+                                    deleteFunction: () {
+                              controller.widgetNotifications.removeAt(index);
+                            }),
                             const SizedBox(height: 1)
                           ],
                         );
