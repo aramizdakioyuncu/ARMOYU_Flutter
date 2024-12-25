@@ -54,7 +54,7 @@ dependencies:
   qr_flutter: ^4.1.0
   get: ^4.6.6
   get_storage: ^2.1.1
-  armoyu_services: ^1.0.0+35
+  armoyu_services: ^1.0.0+37
   armoyu_widgets: ^1.0.0+3
 
   share_plus: ^10.1.2

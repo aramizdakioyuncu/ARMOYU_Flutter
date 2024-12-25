@@ -134,7 +134,7 @@ class GroupController extends GetxController {
     groupProcces.value = true;
 
     GroupDetailResponse response = await API.service.groupServices
-        .groupFetch(grupID: group.value!.groupID!);
+        .groupFetch(groupID: group.value!.groupID!);
     if (!response.result.status) {
       log(response.result.description.toString());
       groupProcces.value = false;
@@ -195,7 +195,7 @@ class GroupController extends GetxController {
     groupusersfetchProcces.value = true;
 
     GroupUsersResponse response = await API.service.groupServices
-        .groupusersFetch(grupID: group.value!.groupID!);
+        .groupusersFetch(groupID: group.value!.groupID!);
     if (!response.result.status) {
       log(response.result.description.toString());
       groupProcces.value = false;
