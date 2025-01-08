@@ -1,21 +1,21 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/Social/comment.dart';
-import 'package:ARMOYU/app/data/models/Social/like.dart';
-import 'package:ARMOYU/app/data/models/Social/post.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/Social/comment.dart';
+import 'package:armoyu_widgets/data/models/Social/like.dart';
+import 'package:armoyu_widgets/data/models/Social/post.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/post_likers/post_likers_view.dart';
 import 'package:ARMOYU/app/widgets/shimmer/placeholder.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
@@ -267,44 +267,49 @@ class PostController extends GetxController {
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         alignment: Alignment.center,
-                        child: Obx(
-                          () => comments.value == null
-                              ? Column(
-                                  children: [
-                                    ShimmerPlaceholder.listTilePlaceholder(
-                                      trailingIcon: const Icon(Icons.favorite),
-                                    ),
-                                    ShimmerPlaceholder.listTilePlaceholder(
-                                      trailingIcon: const Icon(Icons.favorite),
-                                    ),
-                                    ShimmerPlaceholder.listTilePlaceholder(
-                                      trailingIcon: const Icon(Icons.favorite),
-                                    ),
-                                    ShimmerPlaceholder.listTilePlaceholder(
-                                      trailingIcon: const Icon(Icons.favorite),
-                                    ),
-                                    ShimmerPlaceholder.listTilePlaceholder(
-                                      trailingIcon: const Icon(Icons.favorite),
-                                    ),
-                                  ],
-                                )
-                              : comments.value!.isEmpty
-                                  ? CustomText.costum1(
-                                      SocialKeys.socialWriteFirstComment.tr,
-                                    )
-                                  : ListView.builder(
-                                      itemCount: comments.value!.length,
-                                      itemBuilder: (context, index) {
-                                        return comments.value![index]
-                                            .postCommentsWidget(context,
-                                                deleteFunction: () {
-                                          comments.value!.removeAt(index);
+                        child: Obx(() => comments.value == null
+                                ? Column(
+                                    children: [
+                                      ShimmerPlaceholder.listTilePlaceholder(
+                                        trailingIcon:
+                                            const Icon(Icons.favorite),
+                                      ),
+                                      ShimmerPlaceholder.listTilePlaceholder(
+                                        trailingIcon:
+                                            const Icon(Icons.favorite),
+                                      ),
+                                      ShimmerPlaceholder.listTilePlaceholder(
+                                        trailingIcon:
+                                            const Icon(Icons.favorite),
+                                      ),
+                                      ShimmerPlaceholder.listTilePlaceholder(
+                                        trailingIcon:
+                                            const Icon(Icons.favorite),
+                                      ),
+                                      ShimmerPlaceholder.listTilePlaceholder(
+                                        trailingIcon:
+                                            const Icon(Icons.favorite),
+                                      ),
+                                    ],
+                                  )
+                                : comments.value!.isEmpty
+                                    ? CustomText.costum1(
+                                        SocialKeys.socialWriteFirstComment.tr,
+                                      )
+                                    : Container()
+                            // : ListView.builder(
+                            //     itemCount: comments.value!.length,
+                            //     itemBuilder: (context, index) {
+                            //       return comments.value![index]
+                            //           .postCommentsWidget(context,
+                            //               deleteFunction: () {
+                            //         comments.value!.removeAt(index);
 
-                                          comments.refresh();
-                                        });
-                                      },
-                                    ),
-                        ),
+                            //         comments.refresh();
+                            //       });
+                            //     },
+                            //   ),
+                            ),
                       ),
                     ),
                   ),

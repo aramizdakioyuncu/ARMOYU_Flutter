@@ -1,21 +1,21 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/Chat/chat.dart';
-import 'package:ARMOYU/app/data/models/Chat/chat_message.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/Chat/chat.dart';
+import 'package:armoyu_widgets/data/models/Chat/chat_message.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marquee/marquee.dart';
 
-class ChatPageController extends GetxController {
+class ChatController extends GetxController {
   var chatPage = 1.obs;
   var chatsearchprocess = false.obs;
   var isFirstFetch = true.obs;

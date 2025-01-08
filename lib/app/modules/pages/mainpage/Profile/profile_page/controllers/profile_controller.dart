@@ -1,32 +1,27 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/Chat/chat.dart';
-import 'package:ARMOYU/app/data/models/Social/comment.dart';
-import 'package:ARMOYU/app/data/models/Social/like.dart';
-import 'package:ARMOYU/app/data/models/Social/post.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/functions/page_functions.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/Chat/chat.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/detectabletext.dart';
-import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/widgets/utility.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/login.dart';
-import 'package:armoyu_services/core/models/ARMOYU/API/media/media_fetch.dart';
-import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
-import 'package:armoyu_services/core/models/ARMOYU/media.dart' as armoyumedia;
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,11 +32,6 @@ import 'package:shimmer/shimmer.dart';
 
 class ProfileController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  final ScrollController? scrollController;
-  ProfileController({
-    this.scrollController,
-  });
-
   var ismyProfile = false.obs;
   late TabController tabController;
 
@@ -83,8 +73,10 @@ class ProfileController extends GetxController
 
   var changeavatarStatus = false.obs;
   var changebannerStatus = false.obs;
-  var scrollRefresh = ScrollController().obs;
 
+  Rxn<Widget> widget = Rxn();
+  Rxn<Widget> widget2 = Rxn();
+  Rxn<Widget> widget3 = Rxn();
   @override
   // ignore: unnecessary_overrides
   void onClose() {
@@ -108,17 +100,6 @@ class ProfileController extends GetxController
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     //* *//
     currentUserAccounts = findCurrentAccountController.currentUserAccounts;
-    if (scrollController != null) {
-      profileScrollController.value = scrollController!;
-    } else {
-      profileScrollController.value = ScrollController();
-    }
-
-    tabController = TabController(
-      initialIndex: tabinitialIndex.value,
-      length: 3,
-      vsync: this,
-    );
 
     final Map<String, dynamic>? arguments = Get.arguments;
 
@@ -145,32 +126,25 @@ class ProfileController extends GetxController
       profileUser.value = currentUserAccounts.value.user.value;
     }
 
+    if (ismyProfile.value) {
+      final pagesController = Get.find<MainPageController>(
+        tag: findCurrentAccountController
+            .currentUserAccounts.value.user.value.userID
+            .toString(),
+      );
+
+      profileScrollController.value = pagesController.profileScrollController;
+    } else {
+      profileScrollController.value = ScrollController();
+    }
+
+    tabController = TabController(
+      initialIndex: tabinitialIndex.value,
+      length: 3,
+      vsync: this,
+    );
+
     test();
-
-    scrollRefresh.value.addListener(() {
-      // log(_scrollRefresh.position.pixels.toString());
-
-      if (scrollRefresh.value.position.pixels <= -50) {
-        refreshprofilepageArrow.value = false;
-
-        if (!refreshprofilepageStatus.value) {
-          handleRefresh(myProfileRefresh: true);
-
-          refreshprofilepageStatus.value = true;
-          //
-        }
-      }
-
-      if (scrollRefresh.value.position.pixels < -10) {
-        if (!refreshprofilepageStatus.value) {
-          refreshprofilepageArrow.value = true;
-        }
-      }
-
-      if (scrollRefresh.value.position.pixels == 0) {
-        refreshprofilepageArrow.value = false;
-      }
-    });
   }
 
   Future<void> userblockingfunction() async {
@@ -191,341 +165,6 @@ class ProfileController extends GetxController
   var widgetPosts = Rxn<List>(null);
   var medialist = Rxn<List<Media>>(null);
   var widgetTaggedPosts = Rxn<List>(null);
-
-  profileloadPosts(
-      int page, int userID, Rxn<List<dynamic>> list, String category) async {
-    if (postsfetchproccess.value) {
-      return;
-    }
-    postsfetchproccess.value = true;
-
-    FunctionService f = FunctionService();
-    PostFetchListResponse response =
-        await f.getprofilePosts(page, userID, category);
-    if (!response.result.status) {
-      log(response.result.description);
-
-      postsfetchproccess.value = false;
-
-      return;
-    }
-
-    list.value ??= [];
-
-    if (response.response!.isEmpty) {
-      postsfetchproccess.value = false;
-      return;
-    }
-    for (APIPostList element in response.response!) {
-      var media = <Media>[].obs;
-      var comments = <Comment>[].obs;
-      var likers = <Like>[].obs;
-
-      if (element.media!.isNotEmpty) {
-        for (armoyumedia.Media mediaInfo in element.media!) {
-          media.add(
-            Media(
-              mediaID: mediaInfo.mediaID,
-              ownerID: element.postOwner.ownerID,
-              mediaType: mediaInfo.mediaType,
-              mediaDirection: mediaInfo.mediaDirection,
-              mediaURL: MediaURL(
-                bigURL: Rx<String>(mediaInfo.mediaURL.bigURL),
-                normalURL: Rx<String>(mediaInfo.mediaURL.normalURL),
-                minURL: Rx<String>(mediaInfo.mediaURL.minURL),
-              ),
-            ),
-          );
-        }
-      }
-
-      for (APIPostLiker liker in element.firstlikers!) {
-        likers.add(
-          Like(
-            likeID: liker.postlikeID,
-            user: User(
-              userID: liker.likerID,
-              displayName: Rx<String>(liker.likerdisplayname),
-              userName: Rx<String>(liker.likerusername),
-              avatar: Media(
-                mediaID: liker.likerID,
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(liker.likeravatar.bigURL),
-                  normalURL: Rx<String>(liker.likeravatar.normalURL),
-                  minURL: Rx<String>(liker.likeravatar.minURL),
-                ),
-              ),
-            ),
-            date: liker.likedate,
-          ),
-        );
-      }
-
-      for (var commenter in element.firstcomments!) {
-        comments.add(
-          Comment(
-            commentID: commenter.commentID,
-            postID: commenter.postID,
-            user: User(
-              userID: commenter.postcommenter.userID,
-              displayName: Rx<String>(commenter.postcommenter.displayname),
-              avatar: Media(
-                mediaID: commenter.postcommenter.userID,
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(commenter.postcommenter.avatar.bigURL),
-                  normalURL:
-                      Rx<String>(commenter.postcommenter.avatar.normalURL),
-                  minURL: Rx<String>(commenter.postcommenter.avatar.minURL),
-                ),
-              ),
-            ),
-            content: commenter.commentContent,
-            likeCount: commenter.likeCount,
-            didIlike: commenter.isLikedByMe ? true : false,
-            date: commenter.commentElapsedTime,
-          ),
-        );
-      }
-
-      bool ismelike = false;
-      if (element.didilikeit == 1) {
-        ismelike = true;
-      } else {
-        ismelike = false;
-      }
-      bool ismecomment = false;
-
-      if (element.didicommentit == 1) {
-        ismecomment = true;
-      } else {
-        ismecomment = false;
-      }
-      Post post = Post(
-        postID: element.postID,
-        content: element.content,
-        postDate: element.datecounting,
-        sharedDevice: element.postdevice,
-        likesCount: element.likeCount,
-        isLikeme: ismelike,
-        commentsCount: element.commentCount,
-        iscommentMe: ismecomment,
-        media: media,
-        owner: User(
-          userID: element.postOwner.ownerID,
-          userName: Rx<String>(element.postOwner.displayName),
-          avatar: Media(
-            mediaID: element.postOwner.ownerID,
-            mediaURL: MediaURL(
-              bigURL: Rx<String>(element.postOwner.avatar.bigURL),
-              normalURL: Rx<String>(element.postOwner.avatar.normalURL),
-              minURL: Rx<String>(element.postOwner.avatar.minURL),
-            ),
-          ),
-        ),
-        firstthreecomment: comments,
-        firstthreelike: likers,
-        location: element.location,
-      );
-
-      list.value!.add(
-        TwitterPostWidget(post: post),
-      );
-    }
-    postscounter++;
-    postsfetchproccess.value = false;
-  }
-
-  gallery(int page, int userID) async {
-    firstgalleryfetcher.value = true;
-
-    if (galleryproccess.value) {
-      return;
-    }
-
-    galleryproccess.value = true;
-
-    MediaFetchResponse response = await API.service.mediaServices
-        .fetch(uyeID: userID, category: "-1", page: page);
-
-    if (!response.result.status) {
-      log(response.result.description);
-      return;
-    }
-
-    medialist.value ??= [];
-
-    if (response.response!.isEmpty) {
-      log("Sayfa Sonu");
-      galleryproccess.value = false;
-      return;
-    }
-
-    if (page == 1) {
-      medialist.value = [];
-    }
-
-    for (APIMediaFetch element in response.response!) {
-      medialist.value!.add(
-        Media(
-          mediaID: element.media.mediaID,
-          ownerID: element.mediaOwner.userID,
-          ownerusername: element.mediaOwner.displayname,
-          owneravatar: element.mediaOwner.avatar.minURL,
-          mediaTime: element.mediaDate,
-          mediaType: element.mediatype,
-          mediaURL: MediaURL(
-            bigURL: Rx<String>(element.media.mediaURL.bigURL),
-            normalURL: Rx<String>(element.media.mediaURL.normalURL),
-            minURL: Rx<String>(element.media.mediaURL.minURL),
-          ),
-        ),
-      );
-    }
-    galleryproccess.value = false;
-    gallerycounter++;
-  }
-
-  profileloadtaggedPosts(
-      int page, int userID, Rxn<List<dynamic>> list, String category) async {
-    if (postsfetchProccessv2.value) {
-      return;
-    }
-
-    postsfetchProccessv2.value = true;
-
-    FunctionService f = FunctionService();
-    PostFetchListResponse response =
-        await f.getprofilePosts(page, userID, category);
-    if (!response.result.status) {
-      log(response.result.description);
-      postsfetchProccessv2.value = false;
-      return;
-    }
-
-    list.value ??= [];
-
-    if (response.response!.isEmpty) {
-      postsfetchproccess.value = false;
-      return;
-    }
-    for (APIPostList element in response.response!) {
-      var media = <Media>[].obs;
-      var comments = <Comment>[].obs;
-      var likers = <Like>[].obs;
-
-      if (element.media!.isNotEmpty) {
-        for (armoyumedia.Media mediaInfo in element.media!) {
-          media.add(
-            Media(
-              mediaID: mediaInfo.mediaID,
-              ownerID: element.postOwner.ownerID,
-              mediaType: mediaInfo.mediaType,
-              mediaDirection: mediaInfo.mediaDirection,
-              mediaURL: MediaURL(
-                bigURL: Rx<String>(mediaInfo.mediaURL.bigURL),
-                normalURL: Rx<String>(mediaInfo.mediaURL.normalURL),
-                minURL: Rx<String>(mediaInfo.mediaURL.minURL),
-              ),
-            ),
-          );
-        }
-      }
-
-      for (APIPostLiker liker in element.firstlikers!) {
-        likers.add(
-          Like(
-            likeID: liker.postlikeID,
-            user: User(
-              userID: liker.likerID,
-              displayName: Rx<String>(liker.likerdisplayname),
-              userName: Rx<String>(liker.likerusername),
-              avatar: Media(
-                mediaID: liker.likerID,
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(liker.likeravatar.bigURL),
-                  normalURL: Rx<String>(liker.likeravatar.normalURL),
-                  minURL: Rx<String>(liker.likeravatar.minURL),
-                ),
-              ),
-            ),
-            date: liker.likedate,
-          ),
-        );
-      }
-
-      for (var commenter in element.firstcomments!) {
-        comments.add(
-          Comment(
-            commentID: commenter.commentID,
-            postID: commenter.postID,
-            user: User(
-              userID: commenter.postcommenter.userID,
-              displayName: Rx<String>(commenter.postcommenter.displayname),
-              avatar: Media(
-                mediaID: commenter.postcommenter.userID,
-                mediaURL: MediaURL(
-                  bigURL: Rx<String>(commenter.postcommenter.avatar.bigURL),
-                  normalURL:
-                      Rx<String>(commenter.postcommenter.avatar.normalURL),
-                  minURL: Rx<String>(commenter.postcommenter.avatar.minURL),
-                ),
-              ),
-            ),
-            content: commenter.commentContent,
-            likeCount: commenter.likeCount,
-            didIlike: commenter.isLikedByMe ? true : false,
-            date: commenter.commentElapsedTime,
-          ),
-        );
-      }
-
-      bool ismelike = false;
-      if (element.didilikeit == 1) {
-        ismelike = true;
-      } else {
-        ismelike = false;
-      }
-      bool ismecomment = false;
-
-      if (element.didicommentit == 1) {
-        ismecomment = true;
-      } else {
-        ismecomment = false;
-      }
-      Post post = Post(
-        postID: element.postID,
-        content: element.content,
-        postDate: element.datecounting,
-        sharedDevice: element.postdevice,
-        likesCount: element.likeCount,
-        isLikeme: ismelike,
-        commentsCount: element.commentCount,
-        iscommentMe: ismecomment,
-        media: media,
-        owner: User(
-          userID: element.postOwner.ownerID,
-          userName: Rx<String>(element.postOwner.displayName),
-          avatar: Media(
-            mediaID: element.postOwner.ownerID,
-            mediaURL: MediaURL(
-              bigURL: Rx<String>(element.postOwner.avatar.bigURL),
-              normalURL: Rx<String>(element.postOwner.avatar.normalURL),
-              minURL: Rx<String>(element.postOwner.avatar.minURL),
-            ),
-          ),
-        ),
-        firstthreecomment: comments,
-        firstthreelike: likers,
-        location: element.location,
-      );
-
-      list.value!.add(
-        TwitterPostWidget(post: post),
-      );
-    }
-    postscounterv2++;
-    postsfetchProccessv2.value = false;
-  }
 
   Future<void> test({bool myprofilerefresh = false}) async {
     log("----${profileUser.value!.userID == currentUserAccounts.value.user.value.userID}-----");
@@ -689,26 +328,45 @@ class ProfileController extends GetxController
 
     log("yeniden veriler çekiliyor");
 
+    widget.value = API.widgets.social.posts(
+      context: Get.context!,
+      shrinkWrap: true,
+      userID: userProfile.value.userID!,
+      profileFunction: (userID, username) {},
+    );
+
+    widget2.value = API.widgets.gallery.mediaGallery(
+      context: Get.context!,
+      userID: userProfile.value.userID!,
+    );
+
+    widget3.value = API.widgets.social.posts(
+      context: Get.context!,
+      shrinkWrap: true,
+      userID: userProfile.value.userID!,
+      category: "etiketlenmis",
+      profileFunction: (userID, username) {},
+    );
+
     if (firstFetchPosts.value || myprofilerefresh) {
       if (myprofilerefresh) {
         postscounter.value = 1;
       }
-      profileloadPosts(
-        postscounter.value,
-        userProfile.value.userID!,
-        widgetPosts,
-        "",
-      );
+
+      // refreshposts
+      // refreshposts
+      // refreshposts
+
       firstFetchPosts.value = false;
     }
     if (firstFetchGallery.value || myprofilerefresh) {
       if (myprofilerefresh) {
         gallerycounter.value = 1;
       }
-      gallery(
-        gallerycounter.value,
-        userProfile.value.userID!,
-      );
+
+      // refreshgallery
+      // refreshgallery
+      // refreshgallery
 
       firstFetchGallery.value = false;
     }
@@ -717,12 +375,10 @@ class ProfileController extends GetxController
       if (myprofilerefresh) {
         postscounterv2.value = 1;
       }
-      profileloadtaggedPosts(
-        postscounterv2.value,
-        userProfile.value.userID!,
-        widgetTaggedPosts,
-        "etiketlenmis",
-      );
+      // refreshtaggedpost
+      // refreshtaggedpost
+      // refreshtaggedpost
+
       firstFetchTaggedPost.value = false;
     }
 
@@ -962,54 +618,46 @@ class ProfileController extends GetxController
 
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Paylaşım------");
-        profileloadPosts(
-            postscounter.value, userProfile.value.userID!, widgetPosts, "");
+        // profileloadPosts(
+        //     postscounter.value, userProfile.value.userID!, widgetPosts, "");
         return true;
       }
     }
     return false;
   }
 
-  Widget buildPostList() {
-    return firstFetchPosts.value || widgetPosts.value == null
-        ? const Center(
-            child: CupertinoActivityIndicator(),
-          )
-        : widgetPosts.value!.isEmpty
-            ? Center(
-                child: Text(CommonKeys.empty.tr),
-              )
-            : NotificationListener<ScrollNotification>(
-                onNotification: handleScrollNotification,
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  physics: const ClampingScrollPhysics(),
-                  key: const PageStorageKey('Tab1'),
-                  shrinkWrap: true,
-                  children: [
-                    ...List.generate(
-                      widgetPosts.value!.length,
-                      (index) => widgetPosts.value![index],
-                    ),
-                    Visibility(
-                      visible: postsfetchproccess.value,
-                      child: const SizedBox(
-                        height: 100,
-                        width: double.infinity,
-                        child: CupertinoActivityIndicator(),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-  }
+  // Widget buildPostList() {
+  //   return API.widgets.social.posts(
+  //     context: Get.context!,
+  //     key: const PageStorageKey('Tab1'),
+  //     userID: userProfile.value.userID!,
+  //     username: userProfile.value.userName!.value,
+  //     padding: EdgeInsets.zero,
+  //     physics: const ClampingScrollPhysics(),
+  //     shrinkWrap: true,
+  //     profileFunction: (userID, username) {
+  //       log("$userID $username");
+
+  //       PageFunctions().pushProfilePage(
+  //         Get.context!,
+  //         User(
+  //           userName: Rx(username),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   bool handleScrollNotificationGallery(ScrollNotification scrollNotification) {
     if (scrollNotification is ScrollUpdateNotification) {
       final metrics = scrollNotification.metrics;
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Galeri------");
-        gallery(gallerycounter.value, userProfile.value.userID!);
+
+        // refreshgallery
+        // refreshgallery
+        // refreshgallery
+
         return true;
       }
     }
@@ -1041,16 +689,15 @@ class ProfileController extends GetxController
                       ),
                       padding: EdgeInsets.zero,
                       physics: const ClampingScrollPhysics(),
-                      children: List.generate(
-                        medialist.value!.length,
-                        (index) => medialist.value![index].mediaGallery(
-                          currentUser: userProfile.value,
-                          context: Get.context!,
-                          index: index,
-                          medialist: medialist.value!,
-                          setstatefunction: () {},
-                        ),
-                      ),
+                      // children: List.generate(
+                      //   medialist.value!.length,
+                      //   (index) => medialist.value![index].mediaGallery(
+                      //     currentUser: userProfile.value,
+                      //     context: Get.context!,
+                      //     index: index,
+                      //     medialist: medialist.value!,
+                      //   ),
+                      // ),
                     ),
                     Visibility(
                       visible: galleryproccess.value,
@@ -1070,12 +717,12 @@ class ProfileController extends GetxController
       final metrics = scrollNotification.metrics;
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Paylaşım Etiketlenmiş------");
-        profileloadtaggedPosts(
-          postscounterv2.value,
-          userProfile.value.userID!,
-          widgetTaggedPosts,
-          "etiketlenmis",
-        );
+        // profileloadtaggedPosts(
+        //   postscounterv2.value,
+        //   userProfile.value.userID!,
+        //   widgetTaggedPosts,
+        //   "etiketlenmis",
+        // );
         return true;
       }
     }
@@ -1083,27 +730,26 @@ class ProfileController extends GetxController
   }
 
   Widget buildTaggedPosts() {
-    return firstFetchTaggedPost.value || widgetTaggedPosts.value == null
-        ? const Center(child: CupertinoActivityIndicator())
-        : widgetTaggedPosts.value!.isEmpty
-            ? Center(
-                child: Text(CommonKeys.empty.tr),
-              )
-            : NotificationListener<ScrollNotification>(
-                onNotification: handleScrollNotificationTagged,
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  physics: const ClampingScrollPhysics(),
-                  key: const PageStorageKey('Tab3'),
-                  shrinkWrap: true,
-                  children: [
-                    ...List.generate(
-                      widgetTaggedPosts.value!.length,
-                      (index) => widgetTaggedPosts.value![index],
-                    ),
-                  ],
-                ),
-              );
+    return NotificationListener<ScrollNotification>(
+      onNotification: handleScrollNotificationTagged,
+      child: API.widgets.social.posts(
+        context: Get.context!,
+        key: const PageStorageKey('Tab3'),
+        userID: userProfile.value.userID!,
+        username: userProfile.value.userName!.value,
+        category: "etiketlenmis",
+        padding: EdgeInsets.zero,
+        physics: const ClampingScrollPhysics(),
+        shrinkWrap: true,
+        profileFunction: (userID, username) {
+          log("$userID $username");
+          PageFunctions().pushProfilePage(
+            Get.context!,
+            User(userName: Rx(username)),
+          );
+        },
+      ),
+    );
   }
 
   ///WidgetsProfile
@@ -1272,52 +918,10 @@ class ProfileController extends GetxController
             ? null
             : DecorationImage(
                 fit: BoxFit.cover,
-                colorFilter: refreshprofilepageStatus.value
-                    ? ColorFilter.mode(
-                        Colors.black.withOpacity(0.8),
-                        BlendMode.darken,
-                      )
-                    : ColorFilter.mode(
-                        Colors.black.withOpacity(0.0),
-                        BlendMode.darken,
-                      ),
                 image: CachedNetworkImageProvider(
                   userProfile.value.banner!.mediaURL.minURL.value,
                 ),
               ),
-      ),
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        controller: scrollRefresh.value,
-        child: Stack(
-          children: [
-            SizedBox(
-              height: ARMOYU.screenHeight * 0.25,
-              width: ARMOYU.screenWidth,
-              child: changebannerStatus.value
-                  ? const CupertinoActivityIndicator()
-                  : null,
-            ),
-            SizedBox(
-              height: ARMOYU.screenHeight * 0.25,
-              width: ARMOYU.screenWidth,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Visibility(
-                    visible: refreshprofilepageStatus.value,
-                    child: const CupertinoActivityIndicator(),
-                  ),
-                  Visibility(
-                    visible: refreshprofilepageStatus.value,
-                    child: const Icon(Icons.arrow_downward),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

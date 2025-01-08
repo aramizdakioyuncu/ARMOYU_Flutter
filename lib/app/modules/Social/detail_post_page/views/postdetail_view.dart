@@ -1,4 +1,3 @@
-import 'package:ARMOYU/app/modules/Social/detail_post_page/controllers/postdetail_controller.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -9,7 +8,7 @@ class PostdetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controler = Get.put(PostdetailController());
+    // final controler = Get.put(PostdetailController());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Paylaşım', style: TextStyle(fontSize: 18)),
@@ -22,13 +21,6 @@ class PostdetailView extends StatelessWidget {
             CupertinoSliverRefreshControl(
               onRefresh: () async {},
             ),
-            controler.widget.value == null
-                ? const SliverFillRemaining(
-                    child: CupertinoActivityIndicator(),
-                  )
-                : SliverToBoxAdapter(
-                    child: controler.widget.value,
-                  ),
           ],
         ),
       ),

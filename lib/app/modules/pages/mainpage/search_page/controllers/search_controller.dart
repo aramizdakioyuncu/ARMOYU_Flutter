@@ -3,10 +3,10 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/news.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/news.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/app/widgets/text.dart';

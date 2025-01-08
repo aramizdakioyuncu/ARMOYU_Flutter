@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/core/armoyu.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';

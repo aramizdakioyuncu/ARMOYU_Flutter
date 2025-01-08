@@ -1,13 +1,14 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/armoyu.dart';
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:ARMOYU/app/modules/Social/share_post_page/controllers/postshare_controller.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/textfields.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -34,14 +35,19 @@ class PostshareView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Obx(
-                () => Media.mediaList(
-                  controller.media,
-                  big: true,
-                  editable: true,
-                  currentUser: findCurrentAccountController
-                      .currentUserAccounts.value.user.value,
-                ),
+              // Obx(
+              //   () => Media.mediaList(
+              //     controller.media,
+              //     big: true,
+              //     editable: true,
+              //     currentUser: findCurrentAccountController
+              //         .currentUserAccounts.value.user.value,
+              //   ),
+              // ),
+              API.widgets.gallery.mediaList(
+                controller.media,
+                big: true,
+                editable: true,
               ),
               SizedBox(
                 width: Get.width,

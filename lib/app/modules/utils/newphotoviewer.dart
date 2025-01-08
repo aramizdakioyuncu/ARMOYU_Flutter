@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'package:armoyu_widgets/data/models/Chat/chat.dart';
 import 'package:get/get.dart';
 
-class ChatdetailController extends GetxController {
+class ChatcallController extends GetxController {
   var chat = Rx<Chat?>(null);
   @override
   void onInit() {

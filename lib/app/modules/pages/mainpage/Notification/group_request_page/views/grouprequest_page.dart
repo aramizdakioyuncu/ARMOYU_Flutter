@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/group_request_page/controllers/grouprequest_controller.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/data/models/select.dart';
+import 'package:armoyu_widgets/data/models/select.dart';
 import 'package:ARMOYU/app/modules/Group/create_group_page/controllers/group_create_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/appbar_widget.dart';
@@ -189,6 +189,7 @@ class GroupCreateView extends StatelessWidget {
                             }
                             controller.groupmaingamedetail.value = value;
 
+                            // ignore: avoid_single_cascade_in_expression_statements
                             controller.groupcategoryList.value.list![indexx1]
                                 .selectionList!.value.list![indexxx]
                               ..selectionList!.value.selectedIndex =

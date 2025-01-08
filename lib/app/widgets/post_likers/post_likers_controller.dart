@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:get/get.dart';
 
 class PostLikersController extends GetxController {

@@ -1,26 +1,22 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/armoyu.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/controllers/profile_controller.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
+
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ProfileView extends StatefulWidget {
-  final ScrollController? profileScrollController;
-  final UserAccounts? currentUserAccounts;
-
-  const ProfileView({
-    super.key,
-    this.currentUserAccounts,
-    this.profileScrollController,
-  });
+  final bool? ismyprofile;
+  const ProfileView({super.key, this.ismyprofile});
 
   @override
   State<ProfileView> createState() => _ProfilePageState();
@@ -30,10 +26,10 @@ class _ProfilePageState extends State<ProfileView>
     with AutomaticKeepAliveClientMixin<ProfileView>, TickerProviderStateMixin {
   @override
   bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     //* *//
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
@@ -41,13 +37,7 @@ class _ProfilePageState extends State<ProfileView>
 
     //Mevcut Oturum Kullanıcısı Kontrolü Çok Önemli
     late UserAccounts currentUserAccount;
-    if (widget.currentUserAccounts != null) {
-      currentUserAccount = widget.currentUserAccounts!;
-    } else {
-      currentUserAccount =
-          findCurrentAccountController.currentUserAccounts.value;
-    }
-
+    currentUserAccount = findCurrentAccountController.currentUserAccounts.value;
     //Mevcut Oturum Kullanıcısı Kontrolü Çok Önemli
 
     final currentAccountController = Get.find<PagesController>(
@@ -58,31 +48,19 @@ class _ProfilePageState extends State<ProfileView>
     /////
     String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
 
-    //Create dememizin sebebi sürekli oluştursun put dersen bir kere oluştur varsa daha oluşturmaz
-    //bir kullanıcıyı birden fazla ziyaret edebilmemize imkan sağlıyor
-
     final controller = Get.put(
-      ProfileController(
-        // currentUserAccounts: currentAccountController.currentUserAccounts.obs,
-        scrollController: widget.profileScrollController,
-      ),
-      tag: uniqueTag,
+      ProfileController(),
+      tag: widget.ismyprofile == true ? "myprofile" : uniqueTag,
     );
 
     return Scaffold(
-      // backgroundColor: ARMOYU.backgroundcolor,
       appBar: controller.ismyProfile.value ? AppbarWidget.custom() : null,
-
       body: NestedScrollView(
         controller: controller.profileScrollController.value,
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
               pinned: !controller.ismyProfile.value ? true : false,
-              // backgroundColor: ARMOYU.appbarColor,
               expandedHeight: ARMOYU.screenHeight * 0.25,
               leading: Obx(
                 () => controller.buildLeadingWidget(context),
@@ -306,17 +284,55 @@ class _ProfilePageState extends State<ProfileView>
           ];
         },
         body: TabBarView(
-          physics: const ClampingScrollPhysics(),
           controller: controller.tabController,
           children: [
-            Obx(
-              () => controller.buildPostList(),
+            CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                CupertinoSliverRefreshControl(
+                  onRefresh: () async {
+                    await Future.delayed(const Duration(seconds: 2));
+                    await controller.handleRefresh(
+                      myProfileRefresh: true,
+                    );
+                  },
+                ),
+                Obx(
+                  () => SliverToBoxAdapter(
+                    child: Center(child: controller.widget.value),
+                  ),
+                )
+              ],
             ),
-            Obx(
-              () => controller.buildGallery(),
+            CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // CupertinoSliverRefreshControl(
+                //   onRefresh: () async => await controller.handleRefresh(
+                //     myProfileRefresh: true,
+                //   ),
+                // ),
+                Obx(
+                  () => SliverToBoxAdapter(
+                    child: Center(child: controller.widget2.value),
+                  ),
+                ),
+              ],
             ),
-            Obx(
-              () => controller.buildTaggedPosts(),
+            CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // CupertinoSliverRefreshControl(
+                //   onRefresh: () async => await controller.handleRefresh(
+                //     myProfileRefresh: true,
+                //   ),
+                // ),
+                Obx(
+                  () => SliverToBoxAdapter(
+                    child: Center(child: controller.widget3.value),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

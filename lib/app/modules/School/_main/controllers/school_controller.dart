@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/school.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/school.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
 class SchoolController extends GetxController {

@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/_main/controllers/notification_page_controller.dart';
 import 'package:ARMOYU/app/widgets/appbar_widget.dart';
 import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';

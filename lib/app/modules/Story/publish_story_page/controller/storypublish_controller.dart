@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/services/socketio_services.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/login.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:ARMOYU/app/Services/Utility/onesignal.dart';
@@ -121,8 +120,9 @@ class FunctionService {
     }
 
     //Socket Güncelle
-    var socketio = Get.find<SocketioController>();
-    socketio.registerUser(userdetail.user.value);
+    // var socketio = Get.find<SocketioControllereki>();
+    // socketio.registerUser(userdetail.user.value);
+    API.widgets.socketIO.registerUser(userdetail.user.value);
     //Socket Güncelle
 
     LoginResponse ll = LoginResponse(
@@ -233,9 +233,8 @@ class FunctionService {
 
   Future<PostFetchListResponse> getprofilePosts(
       int page, int userID, String category) async {
-    PostFetchListResponse jsonData =
-        await API.service.postsServices.getprofilePosts(
-      userID: userID.toString(),
+    PostFetchListResponse jsonData = await API.service.postsServices.getPosts(
+      userID: userID,
       page: page,
       category: category,
     );

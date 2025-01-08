@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
 class AccountSettingsController extends GetxController {

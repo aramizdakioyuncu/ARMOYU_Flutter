@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/_main/views/notification_page.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_page.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/modules/utils/camera/controllers/cam_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -417,12 +417,7 @@ class MainView extends StatelessWidget {
                   // scrollController: notificationScrollController,
                 ),
               ),
-              Obx(
-                () => ProfileView(
-                  currentUserAccounts: controller.currentUserAccounts.value!,
-                  profileScrollController: profileScrollController,
-                ),
-              )
+              const ProfileView(ismyprofile: true),
             ],
           ),
         ),

@@ -7,10 +7,10 @@ import 'package:ARMOYU/app/modules/School/school_module.dart';
 import 'package:ARMOYU/app/modules/Settings/settings_module.dart';
 import 'package:ARMOYU/app/modules/Social/socail_module.dart';
 import 'package:ARMOYU/app/modules/Story/story_module.dart';
+import 'package:ARMOYU/app/modules/pages/chatpage/call_chat_page/chatcall_module.dart';
 import 'package:ARMOYU/app/modules/poll/poll_module.dart';
 import 'package:ARMOYU/app/modules/utils/camera/cam_module.dart';
-import 'package:ARMOYU/app/modules/utils/gallery/gallery_module.dart';
-import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/module.dart';
+import 'package:ARMOYU/app/modules/pages/chatpage/detail_chat_page/chatdetail_module.dart';
 import 'package:ARMOYU/app/modules/Group/group_module.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/loginregister_module.dart';
 import 'package:ARMOYU/app/modules/News/list_news_page/module.dart';
@@ -22,6 +22,10 @@ import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/module.da
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/noconnection_module.dart';
 import 'package:ARMOYU/app/modules/utils/startingpage/startingpage_module.dart';
 import 'package:ARMOYU/app/modules/apppage/app_page_module.dart';
+
+class AppRoutes {
+  static const initial = StartingpageModule.route;
+}
 
 class AppPages {
   static const initial = StartingpageModule.route;
@@ -36,12 +40,12 @@ class AppPages {
     ...EventModule.routes,
 
     //Utils
-    ...GalleryModule.routes,
     ...StartingpageModule.routes,
     ...NoconnectionpageModule.routes,
 
     //Chat
     ...ChatdetailModule.routes,
+    ...ChatcallModule.routes,
 
     //School
     ...SchoolModule.routes,

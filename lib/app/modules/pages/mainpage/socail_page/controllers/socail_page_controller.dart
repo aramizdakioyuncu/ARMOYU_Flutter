@@ -2,26 +2,25 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/Social/comment.dart';
-import 'package:ARMOYU/app/data/models/Social/like.dart';
-import 'package:ARMOYU/app/data/models/Social/post.dart';
-import 'package:ARMOYU/app/data/models/Story/story.dart';
-import 'package:ARMOYU/app/data/models/Story/storylist.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/Social/comment.dart';
+import 'package:armoyu_widgets/data/models/Social/like.dart';
+import 'package:armoyu_widgets/data/models/Social/post.dart';
+import 'package:armoyu_widgets/data/models/Story/story.dart';
+import 'package:armoyu_widgets/data/models/Story/storylist.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/posts_skeleton.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/storycircle_skeleton.dart';
-import 'package:ARMOYU/app/widgets/posts/views/post_view.dart';
 import 'package:ARMOYU/app/widgets/storycircle.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/post/post_detail.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/story/story_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/media.dart' as armoyumedia;
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -386,10 +385,10 @@ class SocailPageController extends GetxController {
     for (Post postsInfo in list) {
       counter++;
 
-      //Postu ekle
-      widgetPosts.add(
-        TwitterPostWidget(post: postsInfo),
-      );
+      // Postu ekle
+      // widgetPosts.add(
+      //   TwitterPostWidget(post: postsInfo),
+      // );
 
       //Popülerlik Kartını ekle
       if (counter / 3 == 1 || counter / 12 == 1) {

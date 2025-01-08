@@ -1,5 +1,5 @@
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:ARMOYU/app/widgets/post_likers/post_likers_controller.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';

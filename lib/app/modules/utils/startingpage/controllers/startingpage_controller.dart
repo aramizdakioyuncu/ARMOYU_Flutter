@@ -2,16 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
-import 'package:ARMOYU/app/services/socketio_services.dart';
 import 'package:ARMOYU/app/services/utility/onesignal.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,9 +17,9 @@ class StartingpageController extends GetxController {
   var connectionstatus = ''.obs;
   var connectionProcess = false.obs;
 
-  // Aktif Kullanıcı Controller
-  final accountController = Get.put(AccountUserController(), permanent: true);
-  // Aktif Kullanıcı Controller
+  // // Aktif Kullanıcı Controller
+  // final accountController = Get.put(AccountUserController(), permanent: true);
+  // // Aktif Kullanıcı Controller
 
   @override
   void onInit() {
@@ -29,7 +27,7 @@ class StartingpageController extends GetxController {
     log("Anasayfaya Hoşgeldiniz");
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      staringfunctions();
+      startingfunctions();
     });
   }
 
@@ -49,9 +47,9 @@ class StartingpageController extends GetxController {
     return true;
   }
 
-  Future<void> staringfunctions() async {
+  Future<void> startingfunctions() async {
     //Socket Bağlantısı
-    Get.put(SocketioController(), permanent: true);
+    // Get.put(SocketioControllereki(), permanent: true);
     //Socket Bağlantısı
 
     // Bellekteki Kullanıcı listesini Storeage'den yükleme
@@ -100,16 +98,21 @@ class StartingpageController extends GetxController {
     bool statusinternet = await checkInternetConnectionv2();
     if (!statusinternet) {
       //Oturum Kaydı var internet yok app ekranına yönlendiriliyor
-      accountController.changeUser(ARMOYU.appUsers.first);
+      // accountController.changeUser(ARMOYU.appUsers.first);
+      //APIACCOUNTSERVICES
+      API.widgets.accountController.changeUser(ARMOYU.appUsers.first);
+      //APIACCOUNTSERVICES
       OneSignalApi.setupOneSignal(currentUserAccounts: ARMOYU.appUsers.first);
       Get.offAndToNamed("/app");
       return;
     }
     appstatuscheck(sesssionTOKEN);
 
-    accountController.changeUser(ARMOYU.appUsers.first);
+    // accountController.changeUser(ARMOYU.appUsers.first);
+    //APIACCOUNTSERVICES
+    API.widgets.accountController.changeUser(ARMOYU.appUsers.first);
+    //APIACCOUNTSERVICES
     OneSignalApi.setupOneSignal(currentUserAccounts: ARMOYU.appUsers.first);
-
     Get.offAndToNamed("/app");
     return;
   }

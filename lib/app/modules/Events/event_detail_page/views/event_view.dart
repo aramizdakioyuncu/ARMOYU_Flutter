@@ -1,8 +1,8 @@
-import 'package:ARMOYU/app/core/armoyu.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Events/event_detail_page/controllers/event_controller.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';

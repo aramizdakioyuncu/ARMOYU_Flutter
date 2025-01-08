@@ -1,8 +1,7 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/armoyu.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:ARMOYU/app/modules/poll/poll_create/controllers/poll_create_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -30,11 +29,16 @@ class PollCreateView extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              Obx(
-                () => Media.mediaList(
-                  controller.media,
-                  currentUser: controller.user.value!,
-                ),
+              // Obx(
+              //   () => Media.mediaList(
+              //     controller.media,
+              //     currentUser: controller.user.value!,
+              //   ),
+              // ),
+              API.widgets.gallery.mediaList(
+                controller.media,
+                big: true,
+                editable: true,
               ),
               Text(PollKeys.pollquestion.tr),
               CustomTextfields.costum3(

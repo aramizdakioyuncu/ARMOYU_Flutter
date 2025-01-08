@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/armoyu.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 
 import 'package:ARMOYU/app/modules/pages/mainpage/search_page/controllers/search_controller.dart';

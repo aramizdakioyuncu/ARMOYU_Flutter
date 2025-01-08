@@ -2,18 +2,19 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/armoyu.dart';
-import 'package:ARMOYU/app/core/widgets.dart';
 
-import 'package:ARMOYU/app/data/models/ARMOYU/country.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/job.dart' as armoyujob;
-import 'package:ARMOYU/app/data/models/ARMOYU/province.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/team.dart';
-import 'package:ARMOYU/app/data/models/select.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/data/models/useraccounts.dart';
+import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+
+import 'package:armoyu_widgets/data/models/ARMOYU/country.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/job.dart' as armoyujob;
+import 'package:armoyu_widgets/data/models/ARMOYU/province.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/role.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/team.dart';
+import 'package:armoyu_widgets/data/models/select.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
 import 'package:ARMOYU/app/widgets/text.dart';

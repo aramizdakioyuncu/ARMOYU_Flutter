@@ -1,8 +1,9 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/armoyu.dart';
+
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:ARMOYU/app/modules/Group/_main/controllers/group_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';

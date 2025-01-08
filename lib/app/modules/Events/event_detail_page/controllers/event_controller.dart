@@ -2,15 +2,15 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/dlc.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/event.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/file.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/group.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/data/models/ARMOYU/role.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
-import 'package:ARMOYU/app/services/accountuser_services.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/dlc.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/event.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/file.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
+import 'package:armoyu_widgets/data/models/ARMOYU/role.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:get/get.dart';
 
 class EventController extends GetxController {

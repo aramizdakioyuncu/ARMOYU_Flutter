@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

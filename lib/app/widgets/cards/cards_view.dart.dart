@@ -1,5 +1,5 @@
 import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/cards_skeleton.dart';
 import 'package:ARMOYU/app/widgets/cards/cards_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
