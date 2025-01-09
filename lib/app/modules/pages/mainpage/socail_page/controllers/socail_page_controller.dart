@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/Social/comment.dart';
 import 'package:armoyu_widgets/data/models/Social/like.dart';
@@ -393,20 +394,38 @@ class SocailPageController extends GetxController {
       //Popülerlik Kartını ekle
       if (counter / 3 == 1 || counter / 12 == 1) {
         widgetPosts.add(
-          ARMOYUWidget(
-            content: listPOPCard,
+          API.widgets.cards.cardWidget(
+            context: Get.context!,
             firstFetch: listPOPCard.isEmpty,
-          ).widgetPOPlist(),
+            title: "POP",
+            effectcolor:
+                const Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
+            content: listPOPCard,
+            icon: const Icon(
+              Icons.remove_red_eye_outlined,
+              size: 15,
+              color: Colors.white,
+            ),
+          ),
         );
       }
 
       //TP Kartını ekle
       if (counter / 8 == 1 || counter / 17 == 1) {
         widgetPosts.add(
-          ARMOYUWidget(
+          API.widgets.cards.cardWidget(
+            context: Get.context!,
             content: listTPCard,
+            title: "TP",
+            effectcolor:
+                const Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
             firstFetch: listTPCard.isEmpty,
-          ).widgetTPlist(),
+            icon: const Icon(
+              Icons.auto_graph_outlined,
+              size: 15,
+              color: Colors.white,
+            ),
+          ),
         );
       }
     }

@@ -60,7 +60,7 @@ dependencies:
   get: ^4.6.6
   get_storage: ^2.1.1
   armoyu_services: ^1.0.0+40
-  armoyu_widgets: ^1.0.0+25
+  armoyu_widgets: ^1.0.0+27
 
   share_plus: ^10.1.2
   marquee: ^2.3.0

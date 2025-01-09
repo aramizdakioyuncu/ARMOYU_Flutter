@@ -332,6 +332,10 @@ class ProfileController extends GetxController
       context: Get.context!,
       shrinkWrap: true,
       userID: userProfile.value.userID!,
+      sliverWidget: true,
+      refreshPosts: () async {
+        await handleRefresh(myProfileRefresh: true);
+      },
       profileFunction: (userID, username) {},
     );
 
@@ -344,6 +348,10 @@ class ProfileController extends GetxController
       context: Get.context!,
       shrinkWrap: true,
       userID: userProfile.value.userID!,
+      sliverWidget: true,
+      refreshPosts: () async {
+        await handleRefresh(myProfileRefresh: true);
+      },
       category: "etiketlenmis",
       profileFunction: (userID, username) {},
     );

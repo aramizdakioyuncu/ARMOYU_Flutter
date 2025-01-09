@@ -286,23 +286,8 @@ class _ProfilePageState extends State<ProfileView>
         body: TabBarView(
           controller: controller.tabController,
           children: [
-            CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                CupertinoSliverRefreshControl(
-                  onRefresh: () async {
-                    await Future.delayed(const Duration(seconds: 2));
-                    await controller.handleRefresh(
-                      myProfileRefresh: true,
-                    );
-                  },
-                ),
-                Obx(
-                  () => SliverToBoxAdapter(
-                    child: Center(child: controller.widget.value),
-                  ),
-                )
-              ],
+            Obx(
+              () => controller.widget.value ?? Container(),
             ),
             CustomScrollView(
               physics: const BouncingScrollPhysics(),
@@ -314,26 +299,14 @@ class _ProfilePageState extends State<ProfileView>
                 // ),
                 Obx(
                   () => SliverToBoxAdapter(
-                    child: Center(child: controller.widget2.value),
+                    child: Center(
+                      child: controller.widget2.value ?? Container(),
+                    ),
                   ),
                 ),
               ],
             ),
-            CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                // CupertinoSliverRefreshControl(
-                //   onRefresh: () async => await controller.handleRefresh(
-                //     myProfileRefresh: true,
-                //   ),
-                // ),
-                Obx(
-                  () => SliverToBoxAdapter(
-                    child: Center(child: controller.widget3.value),
-                  ),
-                ),
-              ],
-            ),
+            Obx(() => controller.widget3.value!),
           ],
         ),
       ),

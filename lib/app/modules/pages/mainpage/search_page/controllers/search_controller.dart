@@ -40,14 +40,30 @@ class SearchPageController extends GetxController {
   void onInit() {
     super.onInit();
 
-    widgetTPCard.value = ARMOYUWidget(
+    widgetTPCard.value = API.widgets.cards.cardWidget(
+      context: Get.context!,
+      title: "TP",
       content: [],
+      icon: const Icon(
+        Icons.auto_graph_outlined,
+        size: 15,
+        color: Colors.white,
+      ),
+      effectcolor: const Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
       firstFetch: true,
-    ).widgetTPlist();
-    widgetPOPCard.value = ARMOYUWidget(
+    );
+    widgetPOPCard.value = API.widgets.cards.cardWidget(
+      context: Get.context!,
+      title: "POP",
       content: [],
+      icon: const Icon(
+        Icons.remove_red_eye_outlined,
+        size: 15,
+        color: Colors.white,
+      ),
+      effectcolor: const Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
       firstFetch: true,
-    ).widgetPOPlist();
+    );
 
     searchController.addListener(_onSearchTextChanged);
 

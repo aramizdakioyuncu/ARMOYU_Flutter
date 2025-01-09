@@ -54,24 +54,12 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
               await controller.handleRefresh();
             },
           ),
-          // Obx(
-          //   () => SliverToBoxAdapter(child: controller.widgetStories.value),
-          // ),
 
           SliverToBoxAdapter(
             child: API.widgets.social.widgetStorycircle(),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 1)),
-          // Obx(
-          //   () => SliverList(
-          //     delegate: SliverChildBuilderDelegate(
-          //       childCount: controller.widgetPosts.length,
-          //       (BuildContext context, int index) {
-          //         return Obx(() => controller.widgetPosts[index]);
-          //       },
-          //     ),
-          //   ),
-          // ),
+
           SliverToBoxAdapter(
             child: API.widgets.social.posts(
               context: context,
