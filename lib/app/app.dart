@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? language;
+    Locale? locale;
 
     importantstartingfunction();
     if (ARMOYU.appUsers.isNotEmpty) {
@@ -25,7 +26,12 @@ class MyApp extends StatelessWidget {
     }
 
     if (language != null) {
-      log("|+a+|  ${language.split(' ')[0]}, ${language.split(' ')[1]} ");
+      try {
+        log("|+a+|  ${language.split(' ')[0]}, ${language.split(' ')[1]} ");
+        locale = Locale(language.split(' ')[0], language.split(' ')[1]);
+      } catch (e) {
+        log(e.toString());
+      }
     }
 
     return GetMaterialApp(
@@ -35,9 +41,7 @@ class MyApp extends StatelessWidget {
       darkTheme: appDarkThemeData,
       themeMode: ThemeMode.dark,
       translationsKeys: AppTranslation.translationKeys,
-      locale: language != null
-          ? Locale(language.split(' ')[0], language.split(' ')[1])
-          : Get.deviceLocale,
+      locale: locale ?? Get.deviceLocale,
       fallbackLocale: const Locale('en', 'US'),
       initialRoute: AppPages.initial,
       getPages: AppPages.routes,
