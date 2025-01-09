@@ -66,8 +66,19 @@ class PagesController extends GetxController {
     log("-> Önbellekleme İşlemi");
     try {
       // Kullanıcı listesini Storeage'e kaydetme
-      List<String> usersJson =
-          ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+      // List<String> usersJson =
+      //     ARMOYU.appUsers.map((user) => jsonEncode(user.toJson())).toList();
+
+      List<String> usersJson = ARMOYU.appUsers.map(
+        (user) {
+          if (user.user.value.userID == currentUserAccount.user.value.userID) {
+            return jsonEncode(currentUserAccount.toJson());
+          } else {
+            return jsonEncode(user.toJson());
+          }
+        },
+      ).toList();
+
       ARMOYU.storage.write("users", usersJson);
       // Kullanıcı listesini Storeage'e kaydetme
       log("-> Önbellekleme İşlemi -- <<TAMAMLANDI>>");

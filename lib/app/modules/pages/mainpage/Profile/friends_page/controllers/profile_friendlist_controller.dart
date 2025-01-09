@@ -19,14 +19,14 @@ class ProfileFriendlistController extends GetxController {
     UserAccounts(
       user: User().obs,
       sessionTOKEN: Rx(""),
-      language: Rx(""),
+      language: Rxn(),
     ),
   );
   var currentUserAccounts = Rx<UserAccounts>(
     UserAccounts(
       user: User().obs,
       sessionTOKEN: Rx(""),
-      language: Rx(""),
+      language: Rxn(),
     ),
   );
 

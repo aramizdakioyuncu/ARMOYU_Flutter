@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
@@ -48,32 +47,18 @@ class StartingpageController extends GetxController {
   }
 
   Future<void> startingfunctions() async {
-    //Socket Bağlantısı
-    // Get.put(SocketioControllereki(), permanent: true);
-    //Socket Bağlantısı
-
-    // Bellekteki Kullanıcı listesini Storeage'den yükleme
-    List<dynamic>? usersJson = ARMOYU.storage.read("users");
     String? sesssionTOKEN;
-
-    //Listeye Yükle
-    try {
-      ARMOYU.appUsers.value = usersJson!
-          .map((userJson) => UserAccounts.fromJson(jsonDecode(userJson)))
-          .toList();
-    } catch (e) {
-      log(e.toString());
-    }
 
     if (ARMOYU.appUsers.isEmpty) {
       //Oturum Kaydı olmadığı için Giriş ekranına yönlendiriliyor
+
       Get.offAndToNamed("/login");
       return;
     }
 
     sesssionTOKEN = ARMOYU.appUsers.first.sessionTOKEN.value;
-
-    log("Açık Kullanıcı Hesabı : ${usersJson!.length}");
+    log("TOKENN :$sesssionTOKEN");
+    log("Açık Kullanıcı Hesabı : ${ARMOYU.appUsers.length}");
 
     int sirasay = 0;
     for (UserAccounts userInfo in ARMOYU.appUsers) {

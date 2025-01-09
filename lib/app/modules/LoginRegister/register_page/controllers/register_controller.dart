@@ -106,22 +106,19 @@ class RegisterpageController extends GetxController {
     if (response.result.status) {
       LoginResponse loginresponse = await f.login(username, password);
 
-      if (loginresponse.result.description == "Başarılı.") {
+      if (loginresponse.result.status) {
         UserAccounts newUser = ARMOYU.appUsers.first;
 
         accountController.changeUser(
           UserAccounts(
             user: newUser.user,
             sessionTOKEN: Rx(loginresponse.result.descriptiondetail),
-            language: Rx(""),
+            language: Rxn(),
           ),
         );
 
-        Get.toNamed("/app", arguments: {'userID': newUser.user.value.userID!});
-        // Get.offAll(
-        //   () => const AppPageView(),
-        //   arguments: {'userID': newUser.user.value.userID!},
-        // );
+        Get.offAndToNamed("/app");
+
         return;
       }
 
@@ -149,7 +146,7 @@ class RegisterpageController extends GetxController {
     UserAccounts(
       user: User().obs,
       sessionTOKEN: Rx(""),
-      language: Rx(""),
+      language: Rxn(),
     ),
   );
 

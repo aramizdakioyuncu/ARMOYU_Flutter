@@ -21,10 +21,10 @@ packages:
     dependency: "direct main"
     description:
       name: armoyu_widgets
-      sha256: c04edf50e89b37c6a30a0c24edcad13c263d0a4e6395c6c5a2af1af7f3fe0642
+      sha256: "95e37099be53270550ac0652f91f051c4d9f738b5dbc21d780541b71e49f60c2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+27"
+    version: "1.0.0+33"
   async:
     dependency: transitive
     description:

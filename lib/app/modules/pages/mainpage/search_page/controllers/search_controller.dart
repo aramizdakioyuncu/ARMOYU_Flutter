@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/news.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
@@ -11,6 +10,7 @@ import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/sources/card/widgets/card_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,6 +35,7 @@ class SearchPageController extends GetxController {
   var newsList = <News>[].obs;
   late Rxn<Widget> widgetTPCard = Rxn<Widget>();
   late Rxn<Widget> widgetPOPCard = Rxn<Widget>();
+  late Rxn<Widget> widgetNews = Rxn<Widget>();
 
   @override
   void onInit() {
@@ -42,69 +43,41 @@ class SearchPageController extends GetxController {
 
     widgetTPCard.value = API.widgets.cards.cardWidget(
       context: Get.context!,
-      title: "TP",
+      title: CustomCardType.playerXP,
       content: [],
-      icon: const Icon(
-        Icons.auto_graph_outlined,
-        size: 15,
-        color: Colors.white,
-      ),
-      effectcolor: const Color.fromARGB(255, 10, 84, 175).withOpacity(0.7),
       firstFetch: true,
+      profileFunction: (userID, username) {
+        PageFunctions().pushProfilePage(
+          Get.context!,
+          User(userName: Rx(username)),
+        );
+      },
     );
     widgetPOPCard.value = API.widgets.cards.cardWidget(
       context: Get.context!,
-      title: "POP",
+      title: CustomCardType.playerPOP,
       content: [],
-      icon: const Icon(
-        Icons.remove_red_eye_outlined,
-        size: 15,
-        color: Colors.white,
-      ),
-      effectcolor: const Color.fromARGB(255, 175, 10, 10).withOpacity(0.7),
       firstFetch: true,
+      profileFunction: (userID, username) {
+        PageFunctions().pushProfilePage(
+          Get.context!,
+          User(userName: Rx(username)),
+        );
+      },
     );
 
     searchController.addListener(_onSearchTextChanged);
 
     if (!firstProcces.value) {
-      getnewslist();
-      firstProcces = true.obs;
-    }
-  }
-
-  Future<void> getnewslist() async {
-    if (eventlistProcces.value) {
-      return;
-    }
-    eventlistProcces.value = true;
-
-    NewsListResponse response = await API.service.newsServices.fetch(page: 1);
-    if (!response.result.status) {
-      ARMOYUWidget.toastNotification(response.result.description.toString());
-      eventlistProcces.value = false;
-      //10 saniye sonra Tekrar çekmeyi dene
-      await Future.delayed(const Duration(seconds: 10));
-      getnewslist();
-      return;
-    }
-
-    newsList.clear();
-
-    for (var element in response.response!.news) {
-      newsList.add(
-        News(
-          newsID: element.newsID,
-          newsTitle: element.title,
-          author: element.newsOwner.displayname,
-          newsImage: element.media.mediaURL.minURL,
-          newssummary: element.summary,
-          authoravatar: element.newsOwner.avatar.minURL,
-          newsViews: element.views,
-        ),
+      widgetNews.value = API.widgets.news.newsCarouselWidget(
+        newsFunction: (news) {
+          Get.toNamed("/news/detail", arguments: {
+            "news": news,
+          });
+        },
       );
+      // firstProcces = true.obs;
     }
-    eventlistProcces.value = false;
   }
 
   void _onSearchTextChanged() {

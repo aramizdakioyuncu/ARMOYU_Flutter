@@ -3,8 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
-import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions.dart';
+
 import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
@@ -125,22 +124,10 @@ class LoginPageController extends GetxController {
       return;
     }
 
-    User newUser = ARMOYUFunctions.userfetch(response.response!);
-
-    log("Barrierrrr _>>>${response.result.description}");
-
     usernameController.value.text = "";
     passwordController.value.text = "";
 
     loginProcess.value = false;
-
-    accountController.changeUser(
-      UserAccounts(
-        user: newUser.obs,
-        sessionTOKEN: Rx(response.result.description),
-        language: Rx(Get.deviceLocale!.languageCode),
-      ),
-    );
 
     Get.offAndToNamed("/app", arguments: {
       'currentUserAccounts': ARMOYU.appUsers,

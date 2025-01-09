@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Notification/_main/views/notification_page.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_page.dart';
+import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_view.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:ARMOYU/app/modules/utils/camera/controllers/cam_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
@@ -405,7 +405,7 @@ class MainView extends StatelessWidget {
                 ),
               ),
               Obx(
-                () => SearchPage(
+                () => SearchView(
                   currentUserAccounts: controller.currentUserAccounts.value!,
                   appbar: true,
                   scrollController: searchScrollController,

@@ -20,6 +20,7 @@ void main() async {
 
   //ARMOYU Service Setup
   API.service.setup();
+  API.widgets;
 
   //Flutter Proje bilgisini çekiyoruz
   await getFlutterInfo();

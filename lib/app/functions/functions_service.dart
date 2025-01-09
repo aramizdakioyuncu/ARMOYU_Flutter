@@ -9,6 +9,7 @@ import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/l
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:crypto/crypto.dart';
 import 'package:get/get.dart';
 import 'package:ARMOYU/app/Services/Utility/onesignal.dart';
@@ -54,7 +55,7 @@ class FunctionService {
       UserAccounts(
         user: userdetail.obs,
         sessionTOKEN: Rx(response.result.description),
-        language: Rx(""),
+        language: Rxn(),
       ),
     );
 
@@ -98,7 +99,7 @@ class FunctionService {
     UserAccounts userdetail = UserAccounts(
       user: ARMOYUFunctions.userfetch(oyuncubilgi).obs,
       sessionTOKEN: Rx(response.result.description),
-      language: Rx(""),
+      language: Rxn(),
     );
 
     //İlk defa giriş yapılıyorsa
@@ -120,8 +121,7 @@ class FunctionService {
     }
 
     //Socket Güncelle
-    // var socketio = Get.find<SocketioControllereki>();
-    // socketio.registerUser(userdetail.user.value);
+
     API.widgets.socketIO.registerUser(userdetail.user.value);
     //Socket Güncelle
 
@@ -129,9 +129,27 @@ class FunctionService {
       result: ServiceResult(
         status: true,
         description: "Başarılı",
-        descriptiondetail: response.result.descriptiondetail,
+        descriptiondetail: response.result.description,
       ),
       response: oyuncubilgi,
+    );
+
+    //* *//
+    final findCurrentAccountController = Get.find<AccountUserController>();
+    log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
+    //* *//
+    AccountUserController accountController = findCurrentAccountController;
+
+    User newUser = ARMOYUFunctions.userfetch(response.response!);
+    log("Barrierrrr >>>${response.result.descriptiondetail}");
+
+    accountController.changeUser(
+      UserAccounts(
+        user: newUser.obs,
+        sessionTOKEN: Rx(response.result.description),
+        language: Rxn(
+            "${Get.deviceLocale?.scriptCode} ${Get.deviceLocale?.countryCode}"),
+      ),
     );
 
     return ll;

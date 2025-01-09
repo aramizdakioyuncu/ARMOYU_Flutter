@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:ARMOYU/app/modules/Settings/SettingsPage/languages/controllers/languages_settings_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +11,7 @@ class LanguagesSettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LanguagesSettingsController());
     return Scaffold(
       appBar: AppBar(
         title: Text(SettingsKeys.languages.tr),
@@ -42,15 +46,28 @@ class LanguagesSettingsView extends StatelessWidget {
                     onTap: () {
                       if (language == 'tr') {
                         Get.updateLocale(const Locale('tr', 'TR'));
+                        controller.currentUserAccounts.value.language.value =
+                            "tr TR";
                       } else if (language == 'en') {
                         Get.updateLocale(const Locale('en', 'US'));
+                        controller.currentUserAccounts.value.language.value =
+                            "en US";
                       } else if (language == 'ar') {
                         Get.updateLocale(const Locale('ar', 'AE'));
+                        controller.currentUserAccounts.value.language.value =
+                            "ar AE";
                       } else if (language == 'de') {
                         Get.updateLocale(const Locale('de', 'DE'));
+                        controller.currentUserAccounts.value.language.value =
+                            "de DE";
                       } else if (language == 'ru') {
                         Get.updateLocale(const Locale('ru', 'RU'));
+                        controller.currentUserAccounts.value.language.value =
+                            "ru RU";
                       }
+
+                      log(controller.currentUserAccounts.value.language.value
+                          .toString());
                     },
                     selected: TranslateKeys.currentLanguage.tr ==
                         languageshort.first.value,

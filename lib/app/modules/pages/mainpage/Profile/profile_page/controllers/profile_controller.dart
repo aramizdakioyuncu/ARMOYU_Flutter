@@ -87,7 +87,7 @@ class ProfileController extends GetxController
     UserAccounts(
       user: User().obs,
       sessionTOKEN: Rx(""),
-      language: Rx(""),
+      language: Rxn(),
     ),
   );
 
@@ -965,7 +965,7 @@ class ProfileController extends GetxController
           "user": UserAccounts(
             user: userProfile.value.obs,
             sessionTOKEN: Rx(""),
-            language: Rx(""),
+            language: Rxn(),
           ),
         });
       },
