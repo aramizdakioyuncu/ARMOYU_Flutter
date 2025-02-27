@@ -74,7 +74,7 @@ class EventController extends GetxController {
     fetcheventdetailProcess.value = true;
 
     EventDetailResponse response =
-        await API.service.eventServices.detailfetch(eventID: eventID);
+        await API.service.eventServices.fetchdetail(eventID: eventID);
     if (!response.result.status) {
       log(response.result.description);
       fetchParticipantProccess.value = false;

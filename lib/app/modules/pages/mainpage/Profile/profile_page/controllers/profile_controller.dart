@@ -5,13 +5,12 @@ import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:ARMOYU/app/functions/page_functions.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -22,6 +21,8 @@ import 'package:armoyu_services/core/models/ARMOYU/API/login&register&password/l
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:armoyu_widgets/functions/functions.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -171,7 +172,7 @@ class ProfileController extends GetxController
     if (profileUser.value!.userID ==
         currentUserAccounts.value.user.value.userID) {
       if (myprofilerefresh) {
-        FunctionService f = FunctionService();
+        FunctionService f = FunctionService(API.service);
 
         LookProfileResponse response =
             await f.lookProfile(currentUserAccounts.value.user.value.userID!);
@@ -191,7 +192,7 @@ class ProfileController extends GetxController
       if (profileUser.value!.userName != null) {
         log("->>kullanıcıadına  göre oyuncu bul!");
 
-        FunctionService f = FunctionService();
+        FunctionService f = FunctionService(API.service);
 
         LookProfilewithUsernameResponse response =
             await f.lookProfilewithusername(profileUser.value!.userName!.value);
@@ -256,7 +257,7 @@ class ProfileController extends GetxController
         ///////
       } else {
         log("->>ID ye göre oyuncu bul! ID-> ${profileUser.value!.userID}");
-        FunctionService f = FunctionService();
+        FunctionService f = FunctionService(API.service);
         response = await f.lookProfile(profileUser.value!.userID!);
         if (!response.result.status) {
           log("Oyuncu bulunamadı");
@@ -936,16 +937,22 @@ class ProfileController extends GetxController
 
   // Kullanıcı gönderi sayısını kontrol eden fonksiyon
   Widget getPostsCountWidget() {
-    if (userProfile.value.postsCount == null) {
-      return Shimmer.fromColors(
-        baseColor: Get.theme.disabledColor,
-        highlightColor: Get.theme.highlightColor,
-        child: const SizedBox(width: 35, height: 30),
-      );
+    final shammer = Shimmer.fromColors(
+      baseColor: Get.theme.disabledColor,
+      highlightColor: Get.theme.highlightColor,
+      child: const SizedBox(width: 35, height: 30),
+    );
+
+    if (userProfile.value.detailInfo == null) {
+      return shammer;
+    }
+    if (userProfile.value.detailInfo!.value!.posts.value == null) {
+      return shammer;
     } else {
       return Column(
         children: [
-          CustomText.costum1(userProfile.value.postsCount.toString(),
+          CustomText.costum1(
+              userProfile.value.detailInfo!.value!.posts.value.toString(),
               weight: FontWeight.bold),
           CustomText.costum1(ProfileKeys.profilePost.tr),
         ],
@@ -957,7 +964,7 @@ class ProfileController extends GetxController
   Widget getFriendsCountWidget(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (userProfile.value.friendsCount == null) {
+        if (userProfile.value.detailInfo!.value!.friends.value == null) {
           return;
         }
 
@@ -969,7 +976,7 @@ class ProfileController extends GetxController
           ),
         });
       },
-      child: userProfile.value.friendsCount == null
+      child: userProfile.value.detailInfo == null
           ? Shimmer.fromColors(
               baseColor: Get.theme.disabledColor,
               highlightColor: Get.theme.highlightColor,
@@ -977,7 +984,9 @@ class ProfileController extends GetxController
             )
           : Column(
               children: [
-                CustomText.costum1(userProfile.value.friendsCount.toString(),
+                CustomText.costum1(
+                    userProfile.value.detailInfo!.value!.friends.value
+                        .toString(),
                     weight: FontWeight.bold),
                 CustomText.costum1(ProfileKeys.profilefriend.tr),
               ],
@@ -987,7 +996,7 @@ class ProfileController extends GetxController
 
   // Kullanıcı ödül sayısını kontrol eden fonksiyon
   Widget getAwardsCountWidget() {
-    if (userProfile.value.awardsCount == null) {
+    if (userProfile.value.detailInfo == null) {
       return Shimmer.fromColors(
         baseColor: Get.theme.disabledColor,
         highlightColor: Get.theme.highlightColor,
@@ -1000,7 +1009,8 @@ class ProfileController extends GetxController
     } else {
       return Column(
         children: [
-          CustomText.costum1(userProfile.value.awardsCount.toString(),
+          CustomText.costum1(
+              userProfile.value.detailInfo!.value!.awards.value.toString(),
               weight: FontWeight.bold),
           CustomText.costum1(ProfileKeys.profileaward.tr),
         ],
@@ -1021,6 +1031,7 @@ class ProfileController extends GetxController
                 return;
               }
               ARMOYUFunctions functions = ARMOYUFunctions(
+                service: API.service,
                 currentUserAccounts: currentUserAccounts.value,
               );
               functions.selectFavTeam(context, force: true);
@@ -1132,7 +1143,9 @@ class ProfileController extends GetxController
 
   // Ülke ve il bilgisini kontrol eden fonksiyon
   Widget getCountryAndProvinceWidget() {
-    if (userProfile.value.country == null) return const SizedBox.shrink();
+    if (userProfile.value.detailInfo!.value!.country.value == null) {
+      return const SizedBox.shrink();
+    }
     return Row(
       children: [
         const Icon(
@@ -1143,12 +1156,13 @@ class ProfileController extends GetxController
         const SizedBox(width: 3),
         Row(
           children: [
-            CustomText.costum1("${userProfile.value.country?.value.name}"),
+            CustomText.costum1(
+                "${userProfile.value.detailInfo!.value!.country.value?.name}"),
             const SizedBox(width: 5),
-            userProfile.value.province == null
+            userProfile.value.detailInfo!.value!.province.value == null
                 ? Container()
                 : CustomText.costum1(
-                    "${userProfile.value.province?.value.name}"),
+                    "${userProfile.value.detailInfo!.value!.province.value?.name}"),
           ],
         ),
       ],
@@ -1298,6 +1312,7 @@ class ProfileController extends GetxController
         child: Chat(
           user: userProfile.value,
           chatNotification: false.obs,
+          chatType: APIChat.ozel,
         ).profilesendMessage(
           context,
           currentUserAccounts: currentUserAccounts.value,
@@ -1309,7 +1324,7 @@ class ProfileController extends GetxController
 
   // Hakkımda metnini oluşturan fonksiyon
   Widget buildAboutMeSection(BuildContext context) {
-    if (userProfile.value.aboutme?.isEmpty ?? true) {
+    if (userProfile.value.detailInfo!.value!.about.value?.isEmpty ?? true) {
       return const SizedBox.shrink(); // Eğer boşsa boş bir widget döndür
     }
 
@@ -1317,7 +1332,7 @@ class ProfileController extends GetxController
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        userProfile.value.aboutme == null
+        userProfile.value.detailInfo!.value!.about.value == null
             ? Shimmer.fromColors(
                 baseColor: Get.theme.disabledColor,
                 highlightColor: Get.theme.highlightColor,
@@ -1326,7 +1341,7 @@ class ProfileController extends GetxController
                 ),
               )
             : CustomDedectabletext.costum1(
-                userProfile.value.aboutme!.value,
+                userProfile.value.detailInfo!.value!.about.value!,
                 3,
                 13,
               ),
@@ -1378,6 +1393,7 @@ class ProfileController extends GetxController
                       onTap: () {
                         Navigator.pop(context);
                         ARMOYUFunctions functions = ARMOYUFunctions(
+                          service: API.service,
                           currentUserAccounts: currentUserAccounts.value,
                         );
                         functions.profileEdit(context);

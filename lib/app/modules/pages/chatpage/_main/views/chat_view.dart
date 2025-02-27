@@ -73,15 +73,17 @@ class ChatView extends StatelessWidget {
       body: Column(
         children: [
           API.widgets.chat.chatmyfriendsNotes(context),
-          API.widgets.chat.chatListWidget(
-            context,
-            scrollController: controller.chatScrollController.value,
-            onPressed: (chat) {
-              Get.toNamed(
-                "/chat/detail",
-                arguments: {"chat": chat},
-              );
-            },
+          Expanded(
+            child: API.widgets.chat.chatListWidget(
+              context,
+              scrollController: controller.chatScrollController.value,
+              onPressed: (chat) {
+                Get.toNamed(
+                  "/chat/detail",
+                  arguments: {"chat": chat},
+                );
+              },
+            ),
           ),
         ],
       ),

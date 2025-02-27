@@ -31,7 +31,7 @@ class NewsPageController extends GetxController {
     newsfetchProcess.value = true;
 
     NewsFetchResponse response =
-        await API.service.newsServices.fetchnews(newsID: news.value!.newsID);
+        await API.service.newsServices.fetchdetail(newsID: news.value!.newsID);
 
     if (!response.result.status) {
       log(response.result.description);

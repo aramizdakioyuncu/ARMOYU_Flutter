@@ -97,8 +97,15 @@ class InviteView extends StatelessWidget {
                                     const SizedBox(width: 2),
                                     InkWell(
                                       onTap: () {
-                                        controller.currentUserAccounts.value!
-                                                    .user.value.invitecode ==
+                                        controller
+                                                    .currentUserAccounts
+                                                    .value!
+                                                    .user
+                                                    .value
+                                                    .detailInfo!
+                                                    .value!
+                                                    .inviteCode
+                                                    .value ==
                                                 null
                                             ? null
                                             : Clipboard.setData(
@@ -108,7 +115,9 @@ class InviteView extends StatelessWidget {
                                                       .value!
                                                       .user
                                                       .value
-                                                      .invitecode!
+                                                      .detailInfo!
+                                                      .value!
+                                                      .inviteCode
                                                       .value
                                                       .toString(),
                                                 ),
@@ -125,7 +134,10 @@ class InviteView extends StatelessWidget {
                                                         .value!
                                                         .user
                                                         .value
-                                                        .invitecode ==
+                                                        .detailInfo!
+                                                        .value!
+                                                        .inviteCode
+                                                        .value ==
                                                     null
                                                 ? Container()
                                                 : Text(
@@ -134,8 +146,10 @@ class InviteView extends StatelessWidget {
                                                         .value!
                                                         .user
                                                         .value
-                                                        .invitecode!
-                                                        .value,
+                                                        .detailInfo!
+                                                        .value!
+                                                        .inviteCode
+                                                        .value!,
                                                     style: const TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:

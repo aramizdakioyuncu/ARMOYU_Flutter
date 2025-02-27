@@ -43,7 +43,7 @@ class SettingsView extends StatelessWidget {
                         .value.displayName!.value,
                   ),
                   subtitle: CustomText.costum1(
-                      "${SettingsKeys.lastFailedLogin.tr}: ${findCurrentAccountController.currentUserAccounts.value.user.value.lastfaillogin}"),
+                      "${SettingsKeys.lastFailedLogin.tr}: ${findCurrentAccountController.currentUserAccounts.value.user.value.detailInfo!.value!.lastfailedDate.value}"),
                   onTap: () {
                     Get.toNamed("/settings/account");
                   },

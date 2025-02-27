@@ -40,7 +40,7 @@ class _SkeletonCustomCards extends State<SkeletonCustomCards> {
                   borderRadius: BorderRadius.circular(15),
                   gradient: LinearGradient(
                     colors: [
-                      Colors.black.withOpacity(0.7),
+                      Colors.black.withValues(alpha: 0.7),
                       Colors.transparent,
                     ],
                     stops: const [0.0, 0.4],

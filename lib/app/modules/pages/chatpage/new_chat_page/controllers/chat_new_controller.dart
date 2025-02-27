@@ -122,10 +122,10 @@ class ChatNewController extends GetxController {
           displayName: Rx<String>(element.displayName),
           status: element.status == 1 ? true : false,
           level: Rx<int>(element.level),
-          lastlogin:
-              element.lastLogin != null ? Rx<String>(element.lastLogin) : null,
-          lastloginv2:
-              element.lastLogin != null ? Rx<String>(element.lastLogin) : null,
+          // lastlogin:
+          //     element.lastLogin != null ? Rx<String>(element.lastLogin) : null,
+          // lastloginv2:
+          //     element.lastLogin != null ? Rx<String>(element.lastLogin) : null,
           ismyFriend: element.friendshipStatus == 1 ? true.obs : false.obs,
           avatar: Media(
             mediaID: 0,

@@ -1,15 +1,17 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat_message.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -95,7 +97,7 @@ class ChatController extends GetxController {
     }
 
     chatsearchprocess.value = true;
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     ChatListResponse response = await f.getchats(chatPage.value);
     if (!response.result.status) {
       chatsearchprocess.value = false;
@@ -132,8 +134,8 @@ class ChatController extends GetxController {
           user: User(
             userID: element.kullID,
             displayName: Rx<String>(element.adSoyad),
-            lastlogin: Rx<String>(element.sonGiris),
-            lastloginv2: Rx<String>(element.sonGiris),
+            // lastlogin: Rx<String>(element.sonGiris),
+            // lastloginv2: Rx<String>(element.sonGiris),
             avatar: Media(
               mediaID: element.kullID,
               mediaURL: MediaURL(
@@ -151,7 +153,7 @@ class ChatController extends GetxController {
                 ? true
                 : false,
           ).obs,
-          chatType: element.sohbetTuru,
+          chatType: element.sohbetTuru == "ozel" ? APIChat.ozel : APIChat.grup,
           chatNotification: notification.obs,
         ),
       );
@@ -253,7 +255,7 @@ class ChatController extends GetxController {
                                           hintStyle: TextStyle(
                                             fontSize: 12,
                                             color: Get.theme.primaryColor
-                                                .withOpacity(0.5),
+                                                .withValues(alpha: 0.5),
                                           ),
 
                                           border:
@@ -348,7 +350,8 @@ class ChatController extends GetxController {
                               Text(CommonKeys.everyone.tr),
                               Icon(
                                 Icons.keyboard_arrow_down_rounded,
-                                color: Get.theme.primaryColor.withOpacity(0.8),
+                                color: Get.theme.primaryColor
+                                    .withValues(alpha: 0.8),
                               )
                             ],
                           ),
@@ -413,8 +416,8 @@ class ChatController extends GetxController {
                       style: TextStyle(
                         fontSize: 12,
                         overflow: TextOverflow.ellipsis,
-                        color:
-                            Get.theme.primaryColor.withOpacity(isMe ? 0.8 : 1),
+                        color: Get.theme.primaryColor
+                            .withValues(alpha: isMe ? 0.8 : 1),
                       ),
                     ),
                   ),
@@ -472,7 +475,7 @@ class ChatController extends GetxController {
                                         fontSize: 10,
                                         fontWeight: FontWeight.bold,
                                         color: Get.theme.primaryColor
-                                            .withOpacity(0.5),
+                                            .withValues(alpha: 0.5),
                                       ),
                                     ),
                               !havetext
@@ -485,7 +488,7 @@ class ChatController extends GetxController {
                                           style: TextStyle(
                                             fontSize: 11,
                                             color: Get.theme.primaryColor
-                                                .withOpacity(0.8),
+                                                .withValues(alpha: 0.8),
                                           ),
                                         )
                                   : Text(

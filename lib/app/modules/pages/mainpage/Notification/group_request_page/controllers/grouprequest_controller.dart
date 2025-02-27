@@ -1,13 +1,14 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/widgets/notification_bars/notification_bars_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -74,7 +75,7 @@ class GrouprequestController extends GetxController {
     if (page == 1) {
       widgetNotifications.clear();
     }
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     NotificationListResponse response =
         await f.getnotifications("gruplar", "davet", page);
 

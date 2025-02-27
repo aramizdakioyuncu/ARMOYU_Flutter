@@ -1,14 +1,15 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/Settings/listtile.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +71,7 @@ class SettingsController extends GetxController {
     } else {
       final appPageController = Get.find<AppPageController>();
 
-      FunctionService f = FunctionService();
+      FunctionService f = FunctionService(API.service);
       Map<String, dynamic> response =
           await f.logOut(currentUserAccounts.value.user.value.userID!);
 

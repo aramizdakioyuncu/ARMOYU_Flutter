@@ -9,8 +9,6 @@ import 'package:armoyu_widgets/data/models/ARMOYU/station.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/team.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
 import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
@@ -19,6 +17,8 @@ import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_group_list.dart'
 import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_school_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
+import 'package:armoyu_widgets/functions/functions.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +103,7 @@ class MainPageController extends GetxController {
 
     //Takımları Çek opsiyonel
     ARMOYUFunctions functions = ARMOYUFunctions(
+      service: API.service,
       currentUserAccounts: currentUserAccounts.value!,
     );
     functions.favteamfetch();
@@ -244,7 +245,7 @@ class MainPageController extends GetxController {
     }
 
     loadGroupProcess.value = true;
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     APIMyGroupListResponse response = await f.myGroups();
     if (!response.result.status) {
       log(response.result.description.toString());
@@ -312,7 +313,7 @@ class MainPageController extends GetxController {
       return;
     }
     loadmySchoolProcess.value = true;
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     APIMySchoolListResponse response = await f.mySchools();
     if (!response.result.status) {
       loadmySchoolProcess.value = false;

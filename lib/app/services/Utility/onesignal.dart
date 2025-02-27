@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/event.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
@@ -101,7 +102,7 @@ class OneSignalApi {
           // await Future.delayed(Duration(seconds: 10)); // Örnek asenkron işlem
           Get.toNamed("/chat/detail", arguments: {
             "chat": Chat(
-              chatType: "ozel",
+              chatType: APIChat.ozel,
               user: User(
                 userID: userID!,
                 displayName: Rx(userDisplayname!),

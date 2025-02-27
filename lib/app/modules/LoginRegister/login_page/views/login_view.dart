@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/functions/functions_service.dart';
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/modules/LoginRegister/login_page/controllers/login_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/buttons.dart';
@@ -7,6 +7,7 @@ import 'package:ARMOYU/app/widgets/text.dart';
 import 'package:ARMOYU/app/modules/utils/text_page.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -92,7 +93,7 @@ class LoginpageView extends StatelessWidget {
                   InkWell(
                     onTap: () async {
                       if (ARMOYU.securityDetail == "0") {
-                        FunctionService f = FunctionService();
+                        FunctionService f = FunctionService(API.service);
                         ServiceResult response = await f.getappdetail();
 
                         if (!response.status) {
@@ -120,7 +121,7 @@ class LoginpageView extends StatelessWidget {
                       InkWell(
                         onTap: () async {
                           if (ARMOYU.securityDetail == "0") {
-                            FunctionService f = FunctionService();
+                            FunctionService f = FunctionService(API.service);
                             ServiceResult response = await f.getappdetail();
 
                             if (!response.status) {

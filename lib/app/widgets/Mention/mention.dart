@@ -47,7 +47,7 @@ class WidgetMention {
             subtitle: Text(
               "@${data['display']}",
               style: TextStyle(
-                color: Get.theme.primaryColor.withOpacity(0.7),
+                color: Get.theme.primaryColor.withValues(alpha: 0.7),
               ),
             ),
           ),
@@ -68,7 +68,7 @@ class WidgetMention {
           subtitle: Text(
             "Gündemdekiler",
             style: TextStyle(
-              color: Get.theme.primaryColor.withOpacity(0.7),
+              color: Get.theme.primaryColor.withValues(alpha: 0.7),
             ),
           ),
         );

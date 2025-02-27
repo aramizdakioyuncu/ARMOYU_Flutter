@@ -4,11 +4,11 @@ import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/appcore.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/functions.dart';
 import 'package:ARMOYU/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
 import 'package:ARMOYU/app/services/utility/onesignal.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/functions/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -74,7 +74,7 @@ class StartingpageController extends GetxController {
       for (User friendslist in userInfo.user.value.myFriends!) {
         sirasay2++;
 
-        log("-->$sirasay2. Ad: ${friendslist.displayName} Son Giriş: ${friendslist.lastloginv2}");
+        log("-->$sirasay2. Ad: ${friendslist.displayName} Son Giriş: ${"" /*friendslist.lastloginv2*/}");
       }
     }
 

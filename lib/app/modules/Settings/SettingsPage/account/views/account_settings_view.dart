@@ -1,9 +1,10 @@
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/Settings/SettingsPage/account/controllers/account_settings_controller.dart';
 import 'package:ARMOYU/app/translations/app_translation.dart';
 import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -77,8 +78,9 @@ class AccountsettingsView extends StatelessWidget {
                   ARMOYUWidget.showConfirmationDialog(
                     context,
                     accept: () async {
-                      Map<String, dynamic> result = await FunctionService()
-                          .logOut(controller.user.value!.userID!);
+                      Map<String, dynamic> result =
+                          await FunctionService(API.service)
+                              .logOut(controller.user.value!.userID!);
 
                       if (result['durum'] == 1) {
                         ARMOYUWidget.toastNotification(

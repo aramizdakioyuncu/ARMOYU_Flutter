@@ -1,13 +1,14 @@
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -57,7 +58,7 @@ class LoginPageController extends GetxController {
   }
 
   Future<void> logOutFunction(User loggoutAccount) async {
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     Map<String, dynamic> response = await f.logOut(loggoutAccount.userID!);
 
     if (response["durum"] == 0) {
@@ -85,7 +86,7 @@ class LoginPageController extends GetxController {
 
     //2.Hesap Ekle
     if (accountAdd.value) {
-      FunctionService f = FunctionService();
+      FunctionService f = FunctionService(API.service);
       LoginResponse response = await f.adduserAccount(username, password);
 
       if (!response.result.status ||
@@ -109,7 +110,7 @@ class LoginPageController extends GetxController {
       return;
     }
 
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     LoginResponse response = await f.login(username, password);
 
     if (!response.result.status ||

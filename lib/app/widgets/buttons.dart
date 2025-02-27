@@ -88,7 +88,7 @@ class CustomButtons {
             onPressed: !enabled ? null : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: enabled
-                  ? Get.theme.highlightColor.withOpacity(0.3)
+                  ? Get.theme.highlightColor.withValues(alpha: 0.3)
                   : Colors.red,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),

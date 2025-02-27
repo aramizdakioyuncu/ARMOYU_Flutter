@@ -55,9 +55,7 @@ class CamView extends StatelessWidget {
                                               child: ColorFiltered(
                                                 colorFilter: ColorFilter.mode(
                                                   controller.filterColor.value!
-                                                      .withOpacity(
-                                                    0.5,
-                                                  ),
+                                                      .withValues(alpha: 0.5),
                                                   BlendMode.color,
                                                 ),
                                                 child: CameraPreview(

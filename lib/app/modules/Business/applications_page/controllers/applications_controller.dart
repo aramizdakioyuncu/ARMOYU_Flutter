@@ -59,7 +59,7 @@ class ApplicationsController extends GetxController {
           ),
           subtitle: CustomText.costum1(
             element.applicationPosition.positionDepartment,
-            color: Colors.black.withOpacity(0.6),
+            color: Colors.black.withValues(alpha: 0.6),
           ),
           trailing: element.applicationStatus == 2
               ? CustomText.costum1("İnceleniyor")

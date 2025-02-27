@@ -59,10 +59,8 @@ class InviteController extends GetxController {
       log(response.description);
       return;
     }
-
-    currentUserAccounts.value!.user.value.invitecode = Rx<String>(
-      response.descriptiondetail,
-    );
+    currentUserAccounts.value!.user.value.detailInfo!.value!.inviteCode.value =
+        response.descriptiondetail;
 
     currentUserAccounts.value!.user.refresh();
   }

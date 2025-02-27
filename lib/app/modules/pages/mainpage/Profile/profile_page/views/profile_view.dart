@@ -213,64 +213,76 @@ class _ProfilePageState extends State<ProfileView>
                         ],
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    Obx(() => controller.getDisplayNameWidget()),
-                    Row(
-                      children: [
-                        Obx(() => controller.getUserNameWidget()),
-                        const SizedBox(width: 5),
-                        Obx(() => controller.getUserRoleWidget()),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
                     Obx(
-                      () => Visibility(
-                        visible:
-                            controller.userProfile.value.registerDate != null,
-                        child: controller.getRegisterDateWidget(),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Obx(
-                      () => Visibility(
-                          visible: controller.userProfile.value.burc != null,
-                          child: controller.getBurcWidget()),
-                    ),
-                    const SizedBox(height: 5),
-                    Obx(
-                      () => Visibility(
-                          visible: controller.userProfile.value.country != null,
-                          child: controller.getCountryAndProvinceWidget()),
-                    ),
-                    const SizedBox(height: 5),
-                    Obx(
-                      () => Visibility(
-                        visible: controller.userProfile.value.job != null,
-                        child: controller.getJobWidget(),
-                      ),
-                    ),
-                    Obx(
-                      () => controller.getFriendListWidget(context),
-                    ),
-                    Row(
-                      children: [
-                        Obx(
-                          () => controller.buildFriendButton(context),
-                        ),
-                        Obx(
-                          () => controller.buildFriendRequestButton(context),
-                        ),
-                        Obx(
-                          () => controller.buildMessageButton(context),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Obx(
-                      () => Visibility(
-                        visible: controller.userProfile.value.aboutme != null,
-                        child: controller.buildAboutMeSection(context),
-                      ),
+                      () => controller.userProfile.value.detailInfo == null
+                          ? const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.lock,
+                                  size: 40,
+                                ),
+                              ),
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 5),
+                                Obx(() => controller.getDisplayNameWidget()),
+                                Row(
+                                  children: [
+                                    Obx(() => controller.getUserNameWidget()),
+                                    const SizedBox(width: 5),
+                                    Obx(() => controller.getUserRoleWidget()),
+                                  ],
+                                ),
+                                const SizedBox(height: 15),
+                                Obx(
+                                  () => Visibility(
+                                    visible: controller
+                                            .userProfile.value.registerDate !=
+                                        null,
+                                    child: controller.getRegisterDateWidget(),
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Obx(
+                                  () => controller.getBurcWidget(),
+                                ),
+                                const SizedBox(height: 5),
+                                Obx(
+                                  () =>
+                                      controller.getCountryAndProvinceWidget(),
+                                ),
+                                const SizedBox(height: 5),
+                                Obx(
+                                  () => controller.getJobWidget(),
+                                ),
+                                Obx(
+                                  () => controller.getFriendListWidget(context),
+                                ),
+                                Row(
+                                  children: [
+                                    Obx(
+                                      () =>
+                                          controller.buildFriendButton(context),
+                                    ),
+                                    Obx(
+                                      () => controller
+                                          .buildFriendRequestButton(context),
+                                    ),
+                                    Obx(
+                                      () => controller
+                                          .buildMessageButton(context),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Obx(
+                                  () => controller.buildAboutMeSection(context),
+                                ),
+                              ],
+                            ),
                     ),
                   ],
                 ),

@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:ARMOYU/app/core/api.dart';
 import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/functions/functions_service.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
+import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -79,7 +80,7 @@ class ResetpasswordController extends GetxController {
 
     resetpasswordProcess.value = true;
 
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     ServiceResult response = await f.forgotpassword(
       usernameController.value.text,
       emailController.value.text,
@@ -130,7 +131,7 @@ class ResetpasswordController extends GetxController {
       return;
     }
 
-    FunctionService f = FunctionService();
+    FunctionService f = FunctionService(API.service);
     ServiceResult response = await f.forgotpassworddone(
       // yeniformat,
       usernameController.value.text,
