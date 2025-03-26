@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/news.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/news/news_list.dart';

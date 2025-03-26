@@ -1,12 +1,12 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
-import 'package:ARMOYU/app/modules/poll/poll_create/controllers/poll_create_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
-import 'package:ARMOYU/app/widgets/textfields.dart';
-import 'package:ARMOYU/app/widgets/utility.dart';
+import 'package:armoyu/app/modules/poll/poll_create/controllers/poll_create_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
+import 'package:armoyu/app/widgets/textfields.dart';
+import 'package:armoyu/app/widgets/utility.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

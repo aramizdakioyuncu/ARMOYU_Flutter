@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/event.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';

@@ -1,6 +1,6 @@
-import 'package:ARMOYU/app/modules/poll/_main/controllers/poll_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/modules/poll/_main/controllers/poll_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/modules/pages/chatpage/_main/views/chat_view.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/_main/views/main_view.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:armoyu/app/modules/pages/chatpage/_main/views/chat_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/_main/views/main_view.dart';
+import 'package:armoyu/app/modules/pages/_main/controllers/pages_controller.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

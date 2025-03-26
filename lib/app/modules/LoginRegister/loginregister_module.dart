@@ -1,9 +1,9 @@
-import 'package:ARMOYU/app/modules/LoginRegister/login_page/bindings/login_binding.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/login_page/views/login_view.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/register_page/bindings/register.binding.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/register_page/views/register_view.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/bindings/resetpassword_binding.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/views/resetpassword_view.dart';
+import 'package:armoyu/app/modules/LoginRegister/login_page/bindings/login_binding.dart';
+import 'package:armoyu/app/modules/LoginRegister/login_page/views/login_view.dart';
+import 'package:armoyu/app/modules/LoginRegister/register_page/bindings/register.binding.dart';
+import 'package:armoyu/app/modules/LoginRegister/register_page/views/register_view.dart';
+import 'package:armoyu/app/modules/LoginRegister/resetpassword_page/bindings/resetpassword_binding.dart';
+import 'package:armoyu/app/modules/LoginRegister/resetpassword_page/views/resetpassword_view.dart';
 import 'package:get/get.dart';
 
 class LoginRegisterpageModule {

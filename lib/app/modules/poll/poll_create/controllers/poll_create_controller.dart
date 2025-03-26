@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/textfields.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/textfields.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

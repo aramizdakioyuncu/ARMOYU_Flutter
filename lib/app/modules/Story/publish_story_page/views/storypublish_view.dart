@@ -1,5 +1,5 @@
 import 'package:armoyu_widgets/data/models/user.dart';
-import 'package:ARMOYU/app/modules/Story/publish_story_page/controller/storypublish_controller.dart';
+import 'package:armoyu/app/modules/Story/publish_story_page/controller/storypublish_controller.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

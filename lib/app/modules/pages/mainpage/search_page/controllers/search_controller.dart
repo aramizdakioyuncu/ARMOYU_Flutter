@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/news.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/functions/page_functions.dart';
-import 'package:ARMOYU/app/widgets/Skeletons/search_skeleton.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu/app/functions/page_functions.dart';
+import 'package:armoyu/app/widgets/Skeletons/search_skeleton.dart';
+import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/sources/card/widgets/card_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 

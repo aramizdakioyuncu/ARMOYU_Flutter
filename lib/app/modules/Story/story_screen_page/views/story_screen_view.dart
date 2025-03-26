@@ -1,6 +1,6 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/modules/Story/story_screen_page/controllers/story_screen_controller.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/modules/Story/story_screen_page/controllers/story_screen_controller.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 

@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/Settings/SettingsPage/about/controllers/about_settings_controller.dart';
+import 'package:armoyu/app/modules/Settings/SettingsPage/about/controllers/about_settings_controller.dart';
 import 'package:get/get.dart';
 
 class AboutSettingsBinding extends Bindings {

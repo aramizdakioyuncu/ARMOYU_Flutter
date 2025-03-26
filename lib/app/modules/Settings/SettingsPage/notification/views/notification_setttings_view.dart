@@ -1,7 +1,7 @@
-import 'package:ARMOYU/app/modules/Settings/SettingsPage/notification/controllers/notification_settings_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu/app/modules/Settings/SettingsPage/notification/controllers/notification_settings_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
+import 'package:armoyu/app/widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';

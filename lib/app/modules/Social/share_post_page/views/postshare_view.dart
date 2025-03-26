@@ -1,13 +1,13 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/core/widgets.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
-import 'package:ARMOYU/app/modules/Social/share_post_page/controllers/postshare_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
-import 'package:ARMOYU/app/widgets/textfields.dart';
+import 'package:armoyu/app/modules/Social/share_post_page/controllers/postshare_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
+import 'package:armoyu/app/widgets/textfields.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';

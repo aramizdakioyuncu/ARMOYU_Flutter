@@ -1,10 +1,10 @@
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/login_page/controllers/login_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
-import 'package:ARMOYU/app/widgets/textfields.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
-import 'package:ARMOYU/app/modules/utils/text_page.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/modules/LoginRegister/login_page/controllers/login_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
+import 'package:armoyu/app/widgets/textfields.dart';
+import 'package:armoyu/app/widgets/text.dart';
+import 'package:armoyu/app/modules/utils/text_page.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';

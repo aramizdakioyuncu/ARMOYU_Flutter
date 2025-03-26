@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/modules/pages/chatpage/call_chat_page/controllers/chatcall_controller.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/modules/pages/chatpage/call_chat_page/controllers/chatcall_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

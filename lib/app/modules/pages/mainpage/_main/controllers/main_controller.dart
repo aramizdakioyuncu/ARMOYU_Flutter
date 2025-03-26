@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
@@ -9,9 +9,9 @@ import 'package:armoyu_widgets/data/models/ARMOYU/station.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/team.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/views/social_page.dart';
-import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
+import 'package:armoyu/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:armoyu/app/modules/pages/mainpage/socail_page/views/social_page.dart';
+import 'package:armoyu/app/modules/utils/camera/views/cam_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/station/station_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_group_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/utils/my_school_list.dart';

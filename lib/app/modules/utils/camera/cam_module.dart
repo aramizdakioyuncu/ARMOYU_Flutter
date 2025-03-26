@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/utils/camera/views/cam_view.dart';
+import 'package:armoyu/app/modules/utils/camera/views/cam_view.dart';
 import 'package:get/get.dart';
 
 class CamModule {

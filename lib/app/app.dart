@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/appcore.dart';
-import 'package:ARMOYU/app/routes/app_pages.dart';
-import 'package:ARMOYU/app/theme/app_theme.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/core/appcore.dart';
+import 'package:armoyu/app/routes/app_pages.dart';
+import 'package:armoyu/app/theme/app_theme.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:flutter/material.dart';

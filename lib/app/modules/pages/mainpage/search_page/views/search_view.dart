@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/pages/_main/controllers/pages_controller.dart';
+import 'package:armoyu/app/modules/pages/_main/controllers/pages_controller.dart';
 
-import 'package:ARMOYU/app/modules/pages/mainpage/search_page/controllers/search_controller.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
-import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
+import 'package:armoyu/app/modules/pages/mainpage/search_page/controllers/search_controller.dart';
+import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/widgets/bottomnavigationbar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

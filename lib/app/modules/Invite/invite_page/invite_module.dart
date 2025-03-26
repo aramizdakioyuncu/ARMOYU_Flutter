@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/modules/Invite/invite_page/bindings/invite_binding.dart';
-import 'package:ARMOYU/app/modules/Invite/invite_page/views/invite_view.dart';
+import 'package:armoyu/app/modules/Invite/invite_page/bindings/invite_binding.dart';
+import 'package:armoyu/app/modules/Invite/invite_page/views/invite_view.dart';
 import 'package:get/get.dart';
 
 class InviteModule {

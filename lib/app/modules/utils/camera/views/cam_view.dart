@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:ARMOYU/app/modules/utils/camera/controllers/cam_controller.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
+import 'package:armoyu/app/modules/utils/camera/controllers/cam_controller.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';

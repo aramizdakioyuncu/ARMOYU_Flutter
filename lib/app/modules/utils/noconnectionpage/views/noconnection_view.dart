@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/modules/utils/noconnectionpage/controllers/noconnection_controller.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
+import 'package:armoyu/app/modules/utils/noconnectionpage/controllers/noconnection_controller.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

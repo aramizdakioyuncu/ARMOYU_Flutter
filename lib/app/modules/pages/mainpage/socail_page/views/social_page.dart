@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/modules/pages/mainpage/socail_page/controllers/socail_page_controller.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
-import 'package:ARMOYU/app/widgets/bottomnavigationbar.dart';
+import 'package:armoyu/app/modules/pages/mainpage/socail_page/controllers/socail_page_controller.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/widgets/bottomnavigationbar.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

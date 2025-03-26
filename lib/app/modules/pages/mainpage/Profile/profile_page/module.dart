@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
 import 'package:get/get.dart';
 
 class ProfileModule {

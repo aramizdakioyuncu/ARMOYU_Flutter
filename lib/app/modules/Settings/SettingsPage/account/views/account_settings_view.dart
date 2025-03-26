@@ -1,9 +1,9 @@
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/core/widgets.dart';
 
-import 'package:ARMOYU/app/modules/Settings/SettingsPage/account/controllers/account_settings_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu/app/modules/Settings/SettingsPage/account/controllers/account_settings_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

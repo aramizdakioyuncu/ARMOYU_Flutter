@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/constants/api_constants.dart';
+import 'package:armoyu/app/constants/api_constants.dart';
 import 'package:armoyu_services/armoyu_services.dart';
 import 'package:armoyu_widgets/armoyuwidgets.dart';
 

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/core/widgets.dart';
 import 'package:armoyu_widgets/data/models/select.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/category/category.dart';

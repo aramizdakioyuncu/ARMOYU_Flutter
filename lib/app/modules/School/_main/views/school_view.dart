@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/School/_main/controllers/school_controller.dart';
+import 'package:armoyu/app/modules/School/_main/controllers/school_controller.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

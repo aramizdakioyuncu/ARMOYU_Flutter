@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/Group/_main/views/group_view.dart';
+import 'package:armoyu/app/modules/Group/_main/views/group_view.dart';
 import 'package:get/get.dart';
 
 class GroupBinding extends Bindings {

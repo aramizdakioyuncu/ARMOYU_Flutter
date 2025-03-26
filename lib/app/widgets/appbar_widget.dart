@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

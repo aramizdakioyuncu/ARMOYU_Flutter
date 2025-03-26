@@ -1,7 +1,7 @@
-import 'package:ARMOYU/app/modules/Group/create_group_page/bindings/group_binding.dart';
-import 'package:ARMOYU/app/modules/Group/create_group_page/views/group_create_view.dart';
-import 'package:ARMOYU/app/modules/Group/_main/bindings/group_binding.dart';
-import 'package:ARMOYU/app/modules/Group/_main/views/group_view.dart';
+import 'package:armoyu/app/modules/Group/create_group_page/bindings/group_binding.dart';
+import 'package:armoyu/app/modules/Group/create_group_page/views/group_create_view.dart';
+import 'package:armoyu/app/modules/Group/_main/bindings/group_binding.dart';
+import 'package:armoyu/app/modules/Group/_main/views/group_view.dart';
 import 'package:get/get.dart';
 
 class GroupModule {

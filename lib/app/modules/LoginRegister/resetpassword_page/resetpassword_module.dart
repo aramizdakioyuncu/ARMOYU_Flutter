@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/bindings/resetpassword_binding.dart';
-import 'package:ARMOYU/app/modules/LoginRegister/resetpassword_page/views/resetpassword_view.dart';
+import 'package:armoyu/app/modules/LoginRegister/resetpassword_page/bindings/resetpassword_binding.dart';
+import 'package:armoyu/app/modules/LoginRegister/resetpassword_page/views/resetpassword_view.dart';
 import 'package:get/get.dart';
 
 class ResetPasswordModule {

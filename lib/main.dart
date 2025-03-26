@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:ARMOYU/app/app.dart';
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/app.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';

@@ -1,6 +1,6 @@
-import 'package:ARMOYU/app/core/widgets.dart';
-import 'package:ARMOYU/app/modules/Invite/invite_page/controllers/invite_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/core/widgets.dart';
+import 'package:armoyu/app/modules/Invite/invite_page/controllers/invite_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';

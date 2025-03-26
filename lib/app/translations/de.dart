@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 
 Map<String, String> de = {
   TranslateKeys.currentLanguage: 'Deutsch',

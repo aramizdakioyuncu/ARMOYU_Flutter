@@ -1,8 +1,8 @@
-import 'package:ARMOYU/app/translations/ar.dart';
-import 'package:ARMOYU/app/translations/de.dart';
-import 'package:ARMOYU/app/translations/en.dart';
-import 'package:ARMOYU/app/translations/ru.dart';
-import 'package:ARMOYU/app/translations/tr.dart';
+import 'package:armoyu/app/translations/ar.dart';
+import 'package:armoyu/app/translations/de.dart';
+import 'package:armoyu/app/translations/en.dart';
+import 'package:armoyu/app/translations/ru.dart';
+import 'package:armoyu/app/translations/tr.dart';
 
 abstract class AppTranslation {
   static Map<String, Map<String, String>> translationKeys = {

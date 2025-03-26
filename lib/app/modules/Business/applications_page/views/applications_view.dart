@@ -1,7 +1,7 @@
-import 'package:ARMOYU/app/modules/Business/applications_page/controllers/applications_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu/app/modules/Business/applications_page/controllers/applications_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/widgets/text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

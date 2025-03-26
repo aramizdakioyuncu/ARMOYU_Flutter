@@ -1,19 +1,19 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/Notification/_main/views/notification_page.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/search_page/views/search_view.dart';
-import 'package:ARMOYU/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
-import 'package:ARMOYU/app/modules/utils/camera/controllers/cam_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/modules/pages/mainpage/Notification/_main/views/notification_page.dart';
+import 'package:armoyu/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/search_page/views/search_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
+import 'package:armoyu/app/modules/utils/camera/controllers/cam_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/functions/functions.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import 'package:ARMOYU/app/Services/Utility/barcode.dart';
+import 'package:armoyu/app/Services/Utility/barcode.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 

@@ -1,7 +1,7 @@
-import 'package:ARMOYU/app/modules/School/school_login/binding/school_login_binding.dart';
-import 'package:ARMOYU/app/modules/School/school_login/views/school_login_view.dart';
-import 'package:ARMOYU/app/modules/School/_main/bindings/school_binding.dart';
-import 'package:ARMOYU/app/modules/School/_main/views/school_view.dart';
+import 'package:armoyu/app/modules/School/school_login/binding/school_login_binding.dart';
+import 'package:armoyu/app/modules/School/school_login/views/school_login_view.dart';
+import 'package:armoyu/app/modules/School/_main/bindings/school_binding.dart';
+import 'package:armoyu/app/modules/School/_main/views/school_view.dart';
 import 'package:get/get.dart';
 
 class SchoolModule {

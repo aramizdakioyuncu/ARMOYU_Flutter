@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/modules/Settings/SettingsPage/languages/controllers/languages_settings_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
+import 'package:armoyu/app/modules/Settings/SettingsPage/languages/controllers/languages_settings_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:country_flags/country_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

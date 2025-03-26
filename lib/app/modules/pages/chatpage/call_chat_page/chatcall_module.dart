@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/pages/chatpage/call_chat_page/views/chatcall_view.dart';
+import 'package:armoyu/app/modules/pages/chatpage/call_chat_page/views/chatcall_view.dart';
 import 'package:get/get.dart';
 
 class ChatcallModule {

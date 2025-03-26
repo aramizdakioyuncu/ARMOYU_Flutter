@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
-import 'package:ARMOYU/app/core/appcore.dart';
-import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/core/appcore.dart';
+import 'package:armoyu/app/core/widgets.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/role.dart';

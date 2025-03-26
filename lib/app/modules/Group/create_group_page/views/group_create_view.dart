@@ -1,11 +1,11 @@
 import 'package:armoyu_widgets/data/models/select.dart';
-import 'package:ARMOYU/app/modules/Group/create_group_page/controllers/group_create_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
+import 'package:armoyu/app/modules/Group/create_group_page/controllers/group_create_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
 
-import 'package:ARMOYU/app/widgets/textfields.dart';
-import 'package:ARMOYU/app/widgets/utility.dart';
+import 'package:armoyu/app/widgets/textfields.dart';
+import 'package:armoyu/app/widgets/utility.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

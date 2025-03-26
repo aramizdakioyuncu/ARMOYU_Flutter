@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/functions/page_functions.dart';
+import 'package:armoyu/app/functions/page_functions.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';

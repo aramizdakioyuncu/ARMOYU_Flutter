@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/utils/startingpage/views/startingpage_view.dart';
+import 'package:armoyu/app/modules/utils/startingpage/views/startingpage_view.dart';
 import 'package:get/get.dart';
 
 class StartingpageBinding extends Bindings {

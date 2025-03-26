@@ -1,4 +1,4 @@
-import 'package:ARMOYU/app/modules/Settings/SettingsPage/devicepermission/controllers/devicepermission_settings_controller.dart';
+import 'package:armoyu/app/modules/Settings/SettingsPage/devicepermission/controllers/devicepermission_settings_controller.dart';
 import 'package:get/get.dart';
 
 class DevicepermissionSettingsBinding extends Bindings {

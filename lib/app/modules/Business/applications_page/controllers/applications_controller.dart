@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/joinus/joinus_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';

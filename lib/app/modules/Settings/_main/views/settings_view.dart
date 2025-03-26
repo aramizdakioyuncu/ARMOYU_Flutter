@@ -1,8 +1,8 @@
 import 'dart:developer';
-import 'package:ARMOYU/app/modules/Settings/_main/controller/settings_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
+import 'package:armoyu/app/modules/Settings/_main/controller/settings_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:cached_network_image/cached_network_image.dart';

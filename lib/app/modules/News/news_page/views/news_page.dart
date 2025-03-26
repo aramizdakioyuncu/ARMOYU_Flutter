@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/modules/News/news_page/controllers/news_page_controller.dart';
-import 'package:ARMOYU/app/widgets/appbar_widget.dart';
+import 'package:armoyu/app/modules/News/news_page/controllers/news_page_controller.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';

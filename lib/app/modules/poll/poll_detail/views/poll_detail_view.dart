@@ -1,7 +1,7 @@
-import 'package:ARMOYU/app/modules/poll/poll_detail/controllers/poll_detail_controller.dart';
-import 'package:ARMOYU/app/modules/utils/newphotoviewer.dart';
-import 'package:ARMOYU/app/widgets/buttons.dart';
-import 'package:ARMOYU/app/widgets/utility.dart';
+import 'package:armoyu/app/modules/poll/poll_detail/controllers/poll_detail_controller.dart';
+import 'package:armoyu/app/modules/utils/newphotoviewer.dart';
+import 'package:armoyu/app/widgets/buttons.dart';
+import 'package:armoyu/app/widgets/utility.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

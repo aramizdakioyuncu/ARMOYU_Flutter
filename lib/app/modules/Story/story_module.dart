@@ -1,5 +1,5 @@
-import 'package:ARMOYU/app/modules/Story/story_screen_page/bindings/story_screen_binding.dart';
-import 'package:ARMOYU/app/modules/Story/story_screen_page/views/story_screen_view.dart';
+import 'package:armoyu/app/modules/Story/story_screen_page/bindings/story_screen_binding.dart';
+import 'package:armoyu/app/modules/Story/story_screen_page/views/story_screen_view.dart';
 import 'package:get/get.dart';
 
 class StoryModule {

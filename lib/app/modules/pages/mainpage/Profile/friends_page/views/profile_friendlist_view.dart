@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/modules/pages/mainpage/Profile/friends_page/controllers/profile_friendlist_controller.dart';
-import 'package:ARMOYU/app/translations/app_translation.dart';
-import 'package:ARMOYU/app/widgets/text.dart';
-import 'package:ARMOYU/app/widgets/userlist/userlist_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/Profile/friends_page/controllers/profile_friendlist_controller.dart';
+import 'package:armoyu/app/translations/app_translation.dart';
+import 'package:armoyu/app/widgets/text.dart';
+import 'package:armoyu/app/widgets/userlist/userlist_view.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

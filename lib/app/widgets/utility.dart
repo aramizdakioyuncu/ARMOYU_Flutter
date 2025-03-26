@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/widgets.dart';
+import 'package:armoyu/app/core/widgets.dart';
 import 'package:armoyu_widgets/data/models/select.dart';
-import 'package:ARMOYU/app/functions/page_functions.dart';
+import 'package:armoyu/app/functions/page_functions.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:flutter/cupertino.dart';

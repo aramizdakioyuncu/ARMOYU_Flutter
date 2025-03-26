@@ -1,10 +1,10 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/core/api.dart';
+import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:ARMOYU/app/modules/pages/_main/views/pages_view.dart';
+import 'package:armoyu/app/modules/pages/_main/views/pages_view.dart';
 import 'package:armoyu_services/armoyu_services.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
 import 'package:flutter/material.dart';

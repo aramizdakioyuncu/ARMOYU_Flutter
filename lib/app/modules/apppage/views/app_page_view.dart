@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ARMOYU/app/modules/apppage/controllers/app_page_controller.dart';
+import 'package:armoyu/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
