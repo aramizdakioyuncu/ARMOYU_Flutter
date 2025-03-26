@@ -155,6 +155,7 @@ class GroupController extends GetxController {
       ),
       groupBanner: Media(
         mediaID: response.response!.groupID,
+        mediaType: MediaType.image,
         mediaURL: MediaURL(
           bigURL: Rx<String>(response.response!.groupBanner.bigURL),
           normalURL: Rx<String>(response.response!.groupBanner.normalURL),
@@ -163,6 +164,7 @@ class GroupController extends GetxController {
       ),
       groupLogo: Media(
         mediaID: response.response!.groupID,
+        mediaType: MediaType.image,
         mediaURL: MediaURL(
           bigURL: Rx<String>(response.response!.groupLogo.bigURL),
           normalURL: Rx<String>(response.response!.groupLogo.normalURL),
@@ -212,6 +214,7 @@ class GroupController extends GetxController {
           userName: Rx<String>(users.username!),
           avatar: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(users.avatar.bigURL),
               normalURL: Rx<String>(users.avatar.bigURL),
@@ -339,6 +342,7 @@ class GroupController extends GetxController {
 
     user.value!.myGroups![groupIndex].groupLogo = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.result.descriptiondetail.toString()),
         normalURL: Rx<String>(response.result.descriptiondetail.toString()),
@@ -348,6 +352,7 @@ class GroupController extends GetxController {
 
     group.value!.groupLogo = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.result.descriptiondetail.toString()),
         normalURL: Rx<String>(response.result.descriptiondetail.toString()),
@@ -357,6 +362,7 @@ class GroupController extends GetxController {
 
     group.value!.groupLogo = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.result.descriptiondetail.toString()),
         normalURL: Rx<String>(response.result.descriptiondetail.toString()),
@@ -406,6 +412,7 @@ class GroupController extends GetxController {
 
     user.value!.myGroups![groupIndex].groupBanner = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.result.descriptiondetail.toString()),
         normalURL: Rx<String>(response.result.descriptiondetail.toString()),
@@ -415,6 +422,7 @@ class GroupController extends GetxController {
 
     group.value!.groupBanner = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.result.descriptiondetail.toString()),
         normalURL: Rx<String>(response.result.descriptiondetail.toString()),
@@ -424,6 +432,7 @@ class GroupController extends GetxController {
 
     group.value!.groupBanner = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.result.descriptiondetail.toString()),
         normalURL: Rx<String>(response.result.descriptiondetail.toString()),
@@ -486,7 +495,8 @@ class GroupController extends GetxController {
             displayName: RxString(element.value),
             userName: RxString(element.username!),
             avatar: Media(
-              mediaID: 11,
+              mediaID: 0,
+              mediaType: MediaType.image,
               mediaURL: MediaURL(
                 bigURL: Rx<String>(element.avatar!),
                 normalURL: Rx<String>(element.avatar!),

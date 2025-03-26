@@ -58,6 +58,7 @@ class RestourantController extends GetxController {
           name: element.equipmentName,
           logo: Media(
             mediaID: element.equipmentId,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.equipmentImage.bigURL),
               normalURL: Rx<String>(element.equipmentImage.normalURL),
@@ -66,6 +67,7 @@ class RestourantController extends GetxController {
           ),
           banner: Media(
             mediaID: element.equipmentId,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.equipmentImage.bigURL),
               normalURL: Rx<String>(element.equipmentImage.normalURL),

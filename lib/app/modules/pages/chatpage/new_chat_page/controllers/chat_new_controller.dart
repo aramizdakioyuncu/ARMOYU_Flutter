@@ -129,6 +129,7 @@ class ChatNewController extends GetxController {
           ismyFriend: element.friendshipStatus == 1 ? true.obs : false.obs,
           avatar: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.avatar.bigURL),
               normalURL: Rx<String>(element.avatar.normalURL),

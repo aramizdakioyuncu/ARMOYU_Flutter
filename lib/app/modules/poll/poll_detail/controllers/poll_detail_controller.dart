@@ -99,6 +99,7 @@ class PollDetailController extends GetxController {
         surveyMedias.add(
           Media(
             mediaID: mediaelement.mediaID,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(mediaelement.mediaURL.bigURL),
               normalURL: Rx<String>(mediaelement.mediaURL.normalURL),
@@ -120,6 +121,7 @@ class PollDetailController extends GetxController {
             displayName: Rx<String>(element.surveyOwner.ownerDisplayName),
             avatar: Media(
               mediaID: element.surveyId,
+              mediaType: MediaType.image,
               mediaURL: MediaURL(
                 bigURL: Rx<String>(element.surveyOwner.ownerAvatar.bigURL),
                 normalURL:

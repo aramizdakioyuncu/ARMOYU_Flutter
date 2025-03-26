@@ -83,6 +83,7 @@ class CamController extends GetxController {
           onFilterSelected: () => takePicture(color: Colors.white),
           media: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(
                   "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
@@ -101,6 +102,7 @@ class CamController extends GetxController {
           onFilterSelected: () => takePicture(color: Colors.grey),
           media: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(
                   "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
@@ -118,6 +120,7 @@ class CamController extends GetxController {
           onFilterSelected: () => takePicture(color: Colors.red),
           media: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(
                   "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
@@ -135,6 +138,7 @@ class CamController extends GetxController {
           onFilterSelected: () => takePicture(color: Colors.yellow),
           media: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(
                   "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
@@ -152,6 +156,7 @@ class CamController extends GetxController {
           onFilterSelected: () => takePicture(color: Colors.green),
           media: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(
                   "https://fotolifeakademi.com/uploads/2020/12/portre-fotografciligi-kursu.webp"),
@@ -213,8 +218,9 @@ class CamController extends GetxController {
 
       media.add(
         Media(
-          mediaXFile: picture,
           mediaID: picture.hashCode,
+          mediaType: MediaType.image,
+          mediaXFile: picture,
           mediaURL: MediaURL(
             bigURL: Rx<String>(picture.path),
             normalURL: Rx<String>(picture.path),
@@ -227,8 +233,9 @@ class CamController extends GetxController {
         0,
         FilterItem(
           media: Media(
-            mediaXFile: picture,
             mediaID: picture.hashCode,
+            mediaType: MediaType.image,
+            mediaXFile: picture,
             mediaURL: MediaURL(
               bigURL: Rx<String>(picture.path),
               normalURL: Rx<String>(picture.path),

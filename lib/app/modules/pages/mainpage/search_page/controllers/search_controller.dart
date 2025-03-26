@@ -46,7 +46,12 @@ class SearchPageController extends GetxController {
       title: CustomCardType.playerXP,
       content: [],
       firstFetch: true,
-      profileFunction: (userID, username) {
+      profileFunction: (
+          {required avatar,
+          required banner,
+          required displayname,
+          required userID,
+          required username}) {
         PageFunctions().pushProfilePage(
           Get.context!,
           User(userName: Rx(username)),
@@ -58,7 +63,12 @@ class SearchPageController extends GetxController {
       title: CustomCardType.playerPOP,
       content: [],
       firstFetch: true,
-      profileFunction: (userID, username) {
+      profileFunction: (
+          {required avatar,
+          required banner,
+          required displayname,
+          required userID,
+          required username}) {
         PageFunctions().pushProfilePage(
           Get.context!,
           User(userName: Rx(username)),

@@ -57,6 +57,7 @@ class SchoolController extends GetxController {
       schoolURL: response.response!.schoolURL,
       schoolBanner: Media(
         mediaID: response.response!.schoolBanner.mediaID,
+        mediaType: MediaType.image,
         mediaURL: MediaURL(
           bigURL: Rx<String>(response.response!.schoolBanner.mediaURL.bigURL),
           normalURL:
@@ -66,6 +67,7 @@ class SchoolController extends GetxController {
       ),
       schoolLogo: Media(
         mediaID: response.response!.schoolLogo.mediaID,
+        mediaType: MediaType.image,
         mediaURL: MediaURL(
           bigURL: Rx<String>(response.response!.schoolLogo.mediaURL.bigURL),
           normalURL:

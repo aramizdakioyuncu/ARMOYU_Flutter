@@ -277,6 +277,7 @@ class MainPageController extends GetxController {
         ),
         groupLogo: Media(
           mediaID: 0,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(element.groupLogo.mediaURL.bigURL),
             normalURL: Rx<String>(element.groupLogo.mediaURL.normalURL),
@@ -285,6 +286,7 @@ class MainPageController extends GetxController {
         ),
         groupBanner: Media(
           mediaID: 0,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(element.groupBanner.mediaURL.bigURL),
             normalURL: Rx<String>(element.groupBanner.mediaURL.normalURL),
@@ -341,6 +343,7 @@ class MainPageController extends GetxController {
         schoolUsersCount: element.schoolUserCount,
         schoolLogo: Media(
           mediaID: 0,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(element.schoolLogo.mediaURL.bigURL),
             normalURL: Rx<String>(element.schoolLogo.mediaURL.normalURL),
@@ -349,6 +352,7 @@ class MainPageController extends GetxController {
         ),
         schoolBanner: Media(
           mediaID: 0,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(element.schoolBanner.mediaURL.bigURL),
             normalURL: Rx<String>(element.schoolBanner.mediaURL.normalURL),
@@ -388,6 +392,7 @@ class MainPageController extends GetxController {
           type: element.stationType,
           logo: Media(
             mediaID: element.stationID,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.stationLogo.mediaURL.bigURL),
               normalURL: Rx<String>(element.stationLogo.mediaURL.normalURL),
@@ -396,6 +401,7 @@ class MainPageController extends GetxController {
           ),
           banner: Media(
             mediaID: element.stationID,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.stationBanner.mediaURL.bigURL),
               normalURL: Rx<String>(element.stationBanner.mediaURL.normalURL),

@@ -101,6 +101,7 @@ class ProfileFriendlistController extends GetxController {
         displayName: displayname.obs,
         avatar: Media(
           mediaID: userID,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(avatar),
             normalURL: Rx<String>(normalavatar),

@@ -182,6 +182,7 @@ class StoryScreenController extends GetxController {
           status: element.goruntuleyenBegenme == 1 ? true : false,
           avatar: Media(
             mediaID: 0,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.goruntuleyenAvatar.bigURL),
               normalURL: Rx<String>(element.goruntuleyenAvatar.normalURL),

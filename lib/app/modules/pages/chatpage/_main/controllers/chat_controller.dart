@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:ARMOYU/app/core/api.dart';
-import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat_message.dart';
@@ -138,6 +137,7 @@ class ChatController extends GetxController {
             // lastloginv2: Rx<String>(element.sonGiris),
             avatar: Media(
               mediaID: element.kullID,
+              mediaType: MediaType.image,
               mediaURL: MediaURL(
                 bigURL: Rx<String>(element.chatImage.mediaURL.bigURL),
                 normalURL: Rx<String>(element.chatImage.mediaURL.normalURL),
@@ -153,7 +153,7 @@ class ChatController extends GetxController {
                 ? true
                 : false,
           ).obs,
-          chatType: element.sohbetTuru == "ozel" ? APIChat.ozel : APIChat.grup,
+          chatType: element.sohbetTuru,
           chatNotification: notification.obs,
         ),
       );

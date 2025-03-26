@@ -115,6 +115,7 @@ class GrouprequestController extends GetxController {
             displayName: Rx<String>(element.bildirimGonderenAdSoyad),
             avatar: Media(
               mediaID: element.bildirimGonderenID,
+              mediaType: MediaType.image,
               mediaURL: MediaURL(
                 bigURL: Rx<String>(element.bildirimGonderenAvatar),
                 normalURL: Rx<String>(element.bildirimGonderenAvatar),

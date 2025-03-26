@@ -108,6 +108,7 @@ class OneSignalApi {
                 displayName: Rx(userDisplayname!),
                 avatar: Media(
                   mediaID: userID,
+                  mediaType: MediaType.image,
                   mediaURL: MediaURL(
                     bigURL: Rx(userAvatar!),
                     normalURL: Rx(userAvatar),

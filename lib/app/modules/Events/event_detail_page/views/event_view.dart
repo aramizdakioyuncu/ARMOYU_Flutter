@@ -48,6 +48,7 @@ class EventView extends StatelessWidget {
                         media: [
                           Media(
                             mediaID: 0,
+                            mediaType: MediaType.image,
                             mediaURL: MediaURL(
                               bigURL: Rx<String>(
                                   controller.event.value!.image.toString()),
@@ -119,6 +120,7 @@ class EventView extends StatelessWidget {
                                 media: [
                                   Media(
                                     mediaID: 0,
+                                    mediaType: MediaType.image,
                                     mediaURL: MediaURL(
                                       bigURL: Rx<String>(
                                         controller.event.value!.detailImage

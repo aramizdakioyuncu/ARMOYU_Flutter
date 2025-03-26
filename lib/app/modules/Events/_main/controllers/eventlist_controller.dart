@@ -58,6 +58,7 @@ class EventlistController extends GetxController {
             displayName: Rx<String>(element.displayname),
             avatar: Media(
               mediaID: element.userID,
+              mediaType: MediaType.image,
               mediaURL: MediaURL(
                 bigURL: Rx<String>(element.avatar.bigURL),
                 normalURL: Rx<String>(element.avatar.normalURL),

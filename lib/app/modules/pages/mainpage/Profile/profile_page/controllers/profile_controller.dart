@@ -337,7 +337,13 @@ class ProfileController extends GetxController
       refreshPosts: () async {
         await handleRefresh(myProfileRefresh: true);
       },
-      profileFunction: (userID, username) {},
+      profileFunction: ({
+        required avatar,
+        required banner,
+        required displayname,
+        required userID,
+        required username,
+      }) {},
     );
 
     widget2.value = API.widgets.gallery.mediaGallery(
@@ -354,7 +360,13 @@ class ProfileController extends GetxController
         await handleRefresh(myProfileRefresh: true);
       },
       category: "etiketlenmis",
-      profileFunction: (userID, username) {},
+      profileFunction: ({
+        required avatar,
+        required banner,
+        required displayname,
+        required userID,
+        required username,
+      }) {},
     );
 
     if (firstFetchPosts.value || myprofilerefresh) {
@@ -425,6 +437,7 @@ class ProfileController extends GetxController
 
     currentUserAccounts.value.user.value.avatar = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.descriptiondetail.toString()),
         normalURL: Rx<String>(response.descriptiondetail.toString()),
@@ -434,6 +447,7 @@ class ProfileController extends GetxController
 
     userProfile.value.avatar = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.descriptiondetail.toString()),
         normalURL: Rx<String>(response.descriptiondetail.toString()),
@@ -465,6 +479,7 @@ class ProfileController extends GetxController
 
     currentUserAccounts.value.user.value.banner = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.descriptiondetail.toString()),
         normalURL: Rx<String>(response.descriptiondetail.toString()),
@@ -474,6 +489,7 @@ class ProfileController extends GetxController
 
     userProfile.value.banner = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.descriptiondetail.toString()),
         normalURL: Rx<String>(response.descriptiondetail.toString()),
@@ -517,6 +533,7 @@ class ProfileController extends GetxController
 
     currentUserAccounts.value.user.value.avatar = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.descriptiondetail.toString()),
         normalURL: Rx<String>(response.descriptiondetail.toString()),
@@ -561,6 +578,7 @@ class ProfileController extends GetxController
     }
     currentUserAccounts.value.user.value.banner = Media(
       mediaID: 1000000,
+      mediaType: MediaType.image,
       mediaURL: MediaURL(
         bigURL: Rx<String>(response.descriptiondetail.toString()),
         normalURL: Rx<String>(response.descriptiondetail.toString()),
@@ -750,7 +768,12 @@ class ProfileController extends GetxController
         padding: EdgeInsets.zero,
         physics: const ClampingScrollPhysics(),
         shrinkWrap: true,
-        profileFunction: (userID, username) {
+        profileFunction: (
+            {required avatar,
+            required banner,
+            required displayname,
+            required userID,
+            required username}) {
           log("$userID $username");
           PageFunctions().pushProfilePage(
             Get.context!,

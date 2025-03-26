@@ -60,7 +60,12 @@ class SocailPageController extends GetxController {
       context: Get.context!,
       scrollController: scrollController,
       shrinkWrap: true,
-      profileFunction: (userID, username) {
+      profileFunction: (
+          {required avatar,
+          required banner,
+          required displayname,
+          required userID,
+          required username}) {
         log('$userID $username');
         PageFunctions().pushProfilePage(
           Get.context!,

@@ -151,6 +151,7 @@ class EventController extends GetxController {
             userName: Rx<String>(element2.username!),
             avatar: Media(
               mediaID: element2.userID,
+              mediaType: MediaType.image,
               mediaURL: MediaURL(
                 bigURL: Rx<String>(element2.avatar.bigURL),
                 normalURL: Rx<String>(element2.avatar.normalURL),
@@ -170,6 +171,7 @@ class EventController extends GetxController {
         groupID: element.groupID,
         groupLogo: Media(
           mediaID: element.groupID,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(element.groupLogo),
             normalURL: Rx<String>(element.groupLogo),
@@ -178,6 +180,7 @@ class EventController extends GetxController {
         ),
         groupBanner: Media(
           mediaID: element.groupID,
+          mediaType: MediaType.image,
           mediaURL: MediaURL(
             bigURL: Rx<String>(element.groupBanner),
             normalURL: Rx<String>(element.groupBanner),
@@ -205,6 +208,7 @@ class EventController extends GetxController {
           userName: Rx<String>(element.username!),
           avatar: Media(
             mediaID: element.userID,
+            mediaType: MediaType.image,
             mediaURL: MediaURL(
               bigURL: Rx<String>(element.avatar.bigURL),
               normalURL: Rx<String>(element.avatar.normalURL),
