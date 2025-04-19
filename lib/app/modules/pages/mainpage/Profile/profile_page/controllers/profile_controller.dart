@@ -76,10 +76,9 @@ class ProfileController extends GetxController
   var changebannerStatus = false.obs;
 
   // Rxn<Widget> widget = Rxn();
-  late PostsWidgetBundle widget;
-  Rxn<Widget> widget2 = Rxn();
-  // Rxn<Widget> widget3 = Rxn();
-  late PostsWidgetBundle widget3;
+  late PostsWidgetBundle widgetposts;
+  Rxn<Widget> widgetgallery = Rxn();
+  late PostsWidgetBundle widgettaggedposts;
 
   @override
   // ignore: unnecessary_overrides
@@ -98,7 +97,6 @@ class ProfileController extends GetxController
   @override
   void onInit() {
     super.onInit();
-
     //* *//
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
@@ -149,6 +147,41 @@ class ProfileController extends GetxController
     );
 
     test();
+
+    widgetposts = API.widgets.social.posts(
+      context: Get.context!,
+      shrinkWrap: true,
+      userID: profileUser.value!.userID,
+      // sliverWidget: true,
+      refreshPosts: () async {
+        await handleRefresh(myProfileRefresh: true);
+      },
+      profileFunction: ({
+        required avatar,
+        required banner,
+        required displayname,
+        required userID,
+        required username,
+      }) {},
+    );
+
+    widgettaggedposts = API.widgets.social.posts(
+      context: Get.context!,
+      shrinkWrap: true,
+      userID: profileUser.value!.userID!,
+      // sliverWidget: true,
+      refreshPosts: () async {
+        await handleRefresh(myProfileRefresh: true);
+      },
+      category: "etiketlenmis",
+      profileFunction: ({
+        required avatar,
+        required banner,
+        required displayname,
+        required userID,
+        required username,
+      }) {},
+    );
   }
 
   Future<void> userblockingfunction() async {
@@ -168,7 +201,7 @@ class ProfileController extends GetxController
 
   var widgetPosts = Rxn<List>(null);
   var medialist = Rxn<List<Media>>(null);
-  var widgetTaggedPosts = Rxn<List>(null);
+  // var widgetTaggedPosts = Rxn<List>(null);
 
   Future<void> test({bool myprofilerefresh = false}) async {
     log("----${profileUser.value!.userID == currentUserAccounts.value.user.value.userID}-----");
@@ -332,44 +365,9 @@ class ProfileController extends GetxController
 
     log("yeniden veriler çekiliyor");
 
-    widget = API.widgets.social.posts(
-      context: Get.context!,
-      shrinkWrap: true,
-      userID: userProfile.value.userID!,
-      sliverWidget: true,
-      refreshPosts: () async {
-        await handleRefresh(myProfileRefresh: true);
-      },
-      profileFunction: ({
-        required avatar,
-        required banner,
-        required displayname,
-        required userID,
-        required username,
-      }) {},
-    );
-
-    widget2.value = API.widgets.gallery.mediaGallery(
+    widgetgallery.value = API.widgets.gallery.mediaGallery(
       context: Get.context!,
       userID: userProfile.value.userID!,
-    );
-
-    widget3 = API.widgets.social.posts(
-      context: Get.context!,
-      shrinkWrap: true,
-      userID: userProfile.value.userID!,
-      sliverWidget: true,
-      refreshPosts: () async {
-        await handleRefresh(myProfileRefresh: true);
-      },
-      category: "etiketlenmis",
-      profileFunction: ({
-        required avatar,
-        required banner,
-        required displayname,
-        required userID,
-        required username,
-      }) {},
     );
 
     if (firstFetchPosts.value || myprofilerefresh) {
@@ -642,51 +640,42 @@ class ProfileController extends GetxController
     );
   }
 
-  bool handleScrollNotification(ScrollNotification scrollNotification) {
+  bool postsScrollNotification(ScrollNotification scrollNotification) {
     if (scrollNotification is ScrollUpdateNotification) {
       final metrics = scrollNotification.metrics;
 
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Paylaşım------");
-        // profileloadPosts(
-        //     postscounter.value, userProfile.value.userID!, widgetPosts, "");
+        widgetposts.loadMore();
+        widgetposts.widget.refresh();
         return true;
       }
     }
     return false;
   }
 
-  // Widget buildPostList() {
-  //   return API.widgets.social.posts(
-  //     context: Get.context!,
-  //     key: const PageStorageKey('Tab1'),
-  //     userID: userProfile.value.userID!,
-  //     username: userProfile.value.userName!.value,
-  //     padding: EdgeInsets.zero,
-  //     physics: const ClampingScrollPhysics(),
-  //     shrinkWrap: true,
-  //     profileFunction: (userID, username) {
-  //       log("$userID $username");
-
-  //       PageFunctions().pushProfilePage(
-  //         Get.context!,
-  //         User(
-  //           userName: Rx(username),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  Widget buildPostList() {
+    return NotificationListener<ScrollNotification>(
+      onNotification: postsScrollNotification,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        physics: const ClampingScrollPhysics(),
+        key: const PageStorageKey('Tab1'),
+        shrinkWrap: true,
+        children: [
+          Obx(
+            () => widgetposts.widget.value ?? Container(),
+          ),
+        ],
+      ),
+    );
+  }
 
   bool handleScrollNotificationGallery(ScrollNotification scrollNotification) {
     if (scrollNotification is ScrollUpdateNotification) {
       final metrics = scrollNotification.metrics;
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Galeri------");
-
-        // refreshgallery
-        // refreshgallery
-        // refreshgallery
 
         return true;
       }
@@ -695,51 +684,28 @@ class ProfileController extends GetxController
   }
 
   Widget buildGallery() {
-    return firstFetchGallery.value || medialist.value == null
-        ? const Center(child: CupertinoActivityIndicator())
-        : medialist.value!.isEmpty
-            ? const Center(
-                child: Text("Boş"),
-              )
-            : NotificationListener<ScrollNotification>(
-                onNotification: handleScrollNotificationGallery,
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  physics: const ClampingScrollPhysics(),
-                  key: const PageStorageKey('Tab2'),
-                  shrinkWrap: true,
-                  children: [
-                    GridView(
-                      shrinkWrap: true,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 4.0,
-                        mainAxisSpacing: 4.0,
-                      ),
-                      padding: EdgeInsets.zero,
-                      physics: const ClampingScrollPhysics(),
-                      // children: List.generate(
-                      //   medialist.value!.length,
-                      //   (index) => medialist.value![index].mediaGallery(
-                      //     currentUser: userProfile.value,
-                      //     context: Get.context!,
-                      //     index: index,
-                      //     medialist: medialist.value!,
-                      //   ),
-                      // ),
-                    ),
-                    Visibility(
-                      visible: galleryproccess.value,
-                      child: const SizedBox(
-                        height: 100,
-                        width: double.infinity,
-                        child: CupertinoActivityIndicator(),
-                      ),
-                    )
-                  ],
-                ),
-              );
+    return NotificationListener<ScrollNotification>(
+      onNotification: handleScrollNotificationGallery,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        physics: const ClampingScrollPhysics(),
+        key: const PageStorageKey('Tab2'),
+        shrinkWrap: true,
+        children: [
+          Obx(
+            () => widgetgallery.value ?? Container(),
+          ),
+          Visibility(
+            visible: galleryproccess.value,
+            child: const SizedBox(
+              height: 100,
+              width: double.infinity,
+              child: CupertinoActivityIndicator(),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   bool handleScrollNotificationTagged(ScrollNotification scrollNotification) {
@@ -747,45 +713,29 @@ class ProfileController extends GetxController
       final metrics = scrollNotification.metrics;
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Paylaşım Etiketlenmiş------");
-        // profileloadtaggedPosts(
-        //   postscounterv2.value,
-        //   userProfile.value.userID!,
-        //   widgetTaggedPosts,
-        //   "etiketlenmis",
-        // );
+        widgettaggedposts.loadMore();
         return true;
       }
     }
     return false;
   }
 
-  // Widget buildTaggedPosts() {
-  //   return NotificationListener<ScrollNotification>(
-  //     onNotification: handleScrollNotificationTagged,
-  //     child: API.widgets.social.posts(
-  //       context: Get.context!,
-  //       key: const PageStorageKey('Tab3'),
-  //       userID: userProfile.value.userID!,
-  //       username: userProfile.value.userName!.value,
-  //       category: "etiketlenmis",
-  //       padding: EdgeInsets.zero,
-  //       physics: const ClampingScrollPhysics(),
-  //       shrinkWrap: true,
-  //       profileFunction: (
-  //           {required avatar,
-  //           required banner,
-  //           required displayname,
-  //           required userID,
-  //           required username}) {
-  //         log("$userID $username");
-  //         PageFunctions().pushProfilePage(
-  //           Get.context!,
-  //           User(userName: Rx(username)),
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
+  Widget buildTaggedPosts() {
+    return NotificationListener<ScrollNotification>(
+      onNotification: handleScrollNotificationTagged,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        physics: const ClampingScrollPhysics(),
+        key: const PageStorageKey('Tab3'),
+        shrinkWrap: true,
+        children: [
+          Obx(
+            () => widgettaggedposts.widget.value ?? Container(),
+          ),
+        ],
+      ),
+    );
+  }
 
   ///WidgetsProfile
   ///

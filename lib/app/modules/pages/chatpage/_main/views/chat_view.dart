@@ -47,6 +47,8 @@ class ChatView extends StatelessWidget {
                     height: 45,
                     child: TextField(
                       controller: controller.chatcontroller.value,
+                      onChanged: (value) =>
+                          controller.widgetChat.filterList(value),
                       autofocus: true,
                       decoration: InputDecoration(
                         border: InputBorder.none,
@@ -70,20 +72,12 @@ class ChatView extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
+      body: ListView(
+        controller: controller.chatScrollController.value,
         children: [
           API.widgets.chat.chatmyfriendsNotes(context),
           Expanded(
-            child: API.widgets.chat.chatListWidget(
-              context,
-              scrollController: controller.chatScrollController.value,
-              onPressed: (chat) {
-                Get.toNamed(
-                  "/chat/detail",
-                  arguments: {"chat": chat},
-                );
-              },
-            ),
+            child: controller.widgetChat.widget.value!,
           ),
         ],
       ),

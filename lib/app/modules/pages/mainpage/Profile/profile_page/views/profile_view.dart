@@ -297,27 +297,9 @@ class _ProfilePageState extends State<ProfileView>
         body: TabBarView(
           controller: controller.tabController,
           children: [
-            Obx(
-              () => controller.widget.widget.value ?? Container(),
-            ),
-            CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                // CupertinoSliverRefreshControl(
-                //   onRefresh: () async => await controller.handleRefresh(
-                //     myProfileRefresh: true,
-                //   ),
-                // ),
-                Obx(
-                  () => SliverToBoxAdapter(
-                    child: Center(
-                      child: controller.widget2.value ?? Container(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Obx(() => controller.widget3.widget.value!),
+            controller.buildPostList(),
+            controller.buildGallery(),
+            controller.buildTaggedPosts(),
           ],
         ),
       ),

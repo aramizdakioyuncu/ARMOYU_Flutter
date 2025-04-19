@@ -1,16 +1,12 @@
 import 'dart:developer';
 
 import 'package:armoyu/app/core/api.dart';
-import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat.dart';
-import 'package:armoyu_widgets/data/models/Chat/chat_message.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/translations/app_translation.dart';
-import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat_list.dart';
-import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
-import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/sources/chat/bundle/chat_bundle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,6 +28,7 @@ class ChatController extends GetxController {
     ),
   );
 
+  late ChatWidgetBundle widgetChat;
   @override
   void onInit() {
     super.onInit();
@@ -42,130 +39,23 @@ class ChatController extends GetxController {
     //* *//
     currentUserAccounts = findCurrentAccountController.currentUserAccounts;
 
-    if (isFirstFetch.value) {
-      getchat();
-    }
-
-    chatcontroller.value.addListener(() {
-      String newText = chatcontroller.value.text.toLowerCase();
-      // Filtreleme işlemi
-      filteredItems.value = currentUserAccounts.value.chatList!.where((item) {
-        return item.user.displayName!.toLowerCase().contains(newText);
-      }).toList();
-    });
+    widgetChat = API.widgets.chat.chatListWidget(
+      Get.context!,
+      onPressed: (chat) {
+        Get.toNamed(
+          "/chat/detail",
+          arguments: {"chat": chat},
+        );
+      },
+    );
 
     chatScrollController.value.addListener(() {
       if (chatScrollController.value.position.pixels >=
-          chatScrollController.value.position.maxScrollExtent * 0.5) {
+          chatScrollController.value.position.maxScrollExtent * 0.8) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
-        getchat();
+        widgetChat.loadMore();
       }
     });
-  }
-
-  Future<void> handleRefresh() async {
-    await getchat(fetchRestart: true);
-  }
-
-  Future<void> getchat({bool fetchRestart = false}) async {
-    if (chatsearchprocess.value) {
-      return;
-    }
-
-    if (fetchRestart) {
-      chatPage.value = 1;
-      currentUserAccounts.value.chatList = <Chat>[].obs;
-      filteredItems.value = null;
-    }
-
-    if (chatPage.value == 1 && !fetchRestart) {
-      if (currentUserAccounts.value.chatList != null) {
-        filteredItems.value = currentUserAccounts.value.chatList!;
-
-        int pageCount =
-            (currentUserAccounts.value.user.value.widgetStoriescard!.length /
-                    30)
-                .ceil();
-        log(pageCount.toString());
-
-        chatPage.value = pageCount;
-        chatPage++;
-      } else {
-        currentUserAccounts.value.chatList = <Chat>[].obs;
-      }
-    }
-
-    chatsearchprocess.value = true;
-    FunctionService f = FunctionService(API.service);
-    ChatListResponse response = await f.getchats(chatPage.value);
-    if (!response.result.status) {
-      chatsearchprocess.value = false;
-      isFirstFetch.value = false;
-
-      //10 saniye sonra Tekrar çekmeyi dene
-      await Future.delayed(const Duration(seconds: 10));
-      await getchat();
-      return;
-    }
-
-    if (response.response!.isEmpty) {
-      chatsearchprocess.value = false;
-      isFirstFetch.value = false;
-
-      log("Sohbet Liste Sonu!");
-
-      return;
-    }
-
-    for (APIChatList element in response.response!) {
-      String sonmesaj = element.sonMesaj.toString();
-      if (sonmesaj == "null") {
-        sonmesaj = "";
-      }
-      bool notification = false;
-      if (element.bildirim == 1) {
-        notification = true;
-      }
-      currentUserAccounts.value.chatList ?? <Chat>[];
-      currentUserAccounts.value.chatList!.add(
-        Chat(
-          chatID: 1,
-          user: User(
-            userID: element.kullID,
-            displayName: Rx<String>(element.adSoyad),
-            // lastlogin: Rx<String>(element.sonGiris),
-            // lastloginv2: Rx<String>(element.sonGiris),
-            avatar: Media(
-              mediaID: element.kullID,
-              mediaType: MediaType.image,
-              mediaURL: MediaURL(
-                bigURL: Rx<String>(element.chatImage.mediaURL.bigURL),
-                normalURL: Rx<String>(element.chatImage.mediaURL.normalURL),
-                minURL: Rx<String>(element.chatImage.mediaURL.minURL),
-              ),
-            ),
-          ),
-          lastmessage: ChatMessage(
-            user: User(userID: element.kullID),
-            messageContext: sonmesaj,
-            messageID: 1,
-            isMe: element.kullID == currentUserAccounts.value.user.value.userID
-                ? true
-                : false,
-          ).obs,
-          chatType: element.sohbetTuru,
-          chatNotification: notification.obs,
-        ),
-      );
-    }
-
-    filteredItems.value = currentUserAccounts.value.chatList!;
-
-    filteredItems.refresh();
-
-    chatsearchprocess.value = false;
-    isFirstFetch.value = false;
-    chatPage++;
   }
 
   //Notes

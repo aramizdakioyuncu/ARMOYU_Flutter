@@ -44,7 +44,6 @@ class SearchPageController extends GetxController {
     widgetTPCard.value = API.widgets.cards.cardWidget(
       context: Get.context!,
       title: CustomCardType.playerXP,
-      content: [],
       firstFetch: true,
       profileFunction: (
           {required avatar,
@@ -61,7 +60,6 @@ class SearchPageController extends GetxController {
     widgetPOPCard.value = API.widgets.cards.cardWidget(
       context: Get.context!,
       title: CustomCardType.playerPOP,
-      content: [],
       firstFetch: true,
       profileFunction: (
           {required avatar,

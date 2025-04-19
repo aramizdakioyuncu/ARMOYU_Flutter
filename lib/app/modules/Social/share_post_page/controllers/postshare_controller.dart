@@ -57,7 +57,7 @@ class PostshareController extends GetxController {
       postsharetext.value.text = response.result.description.toString();
       postshareProccess.value = false;
 
-      Get.back();
+      Get.back(result: true);
 
       // currentUserAccounts.value.user.value.widgetPosts!.add(element);
     }

@@ -72,8 +72,10 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
       floatingActionButton: FloatingActionButton(
         heroTag:
             "socailshare${findCurrentAccountController.currentUserAccounts.value.user.value.userID}",
-        onPressed: () {
-          Get.toNamed("/social/share");
+        onPressed: () async {
+          if (await Get.toNamed("/social/share") != null) {
+            controller.widgetposts.refresh();
+          }
         },
         child: const Icon(Icons.post_add),
       ),

@@ -45,14 +45,13 @@ class SocailPageController extends GetxController {
 
     _scrollController = mainController.homepageScrollControllerv2.value;
 
-    // _scrollController = scrollController;
-
     // ScrollController'ı dinle
-    _scrollController.addListener(() {
+    _scrollController.addListener(() async {
       if (_scrollController.position.pixels >=
           _scrollController.position.maxScrollExtent * 0.5) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
-        // loadMoreData();
+        log("qqqq");
+        await widgetposts.loadMore();
       }
     });
 
@@ -71,7 +70,10 @@ class SocailPageController extends GetxController {
         log('$userID $username');
         PageFunctions().pushProfilePage(
           Get.context!,
-          User(userName: Rx(username)),
+          User(
+            userID: userID,
+            userName: Rx(username),
+          ),
         );
       },
     );
@@ -80,5 +82,7 @@ class SocailPageController extends GetxController {
   //Sayfa Yenilenme işlemi
   Future<void> handleRefresh() async {
     log("Sayfa Yenilendi");
+
+    await widgetposts.refresh();
   }
 }
