@@ -298,7 +298,7 @@ class _ProfilePageState extends State<ProfileView>
           controller: controller.tabController,
           children: [
             Obx(
-              () => controller.widget.value ?? Container(),
+              () => controller.widget.widget.value ?? Container(),
             ),
             CustomScrollView(
               physics: const BouncingScrollPhysics(),
@@ -317,7 +317,7 @@ class _ProfilePageState extends State<ProfileView>
                 ),
               ],
             ),
-            Obx(() => controller.widget3.value!),
+            Obx(() => controller.widget3.widget.value!),
           ],
         ),
       ),

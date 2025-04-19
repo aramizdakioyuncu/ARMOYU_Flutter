@@ -9,8 +9,9 @@ class API {
   static String oneSignalClientID = APIConstants.oneSignalClientID;
   static String oneSignalAPIKey = APIConstants.oneSignalKey;
 
-  static ARMOYUServices service =
-      ARMOYUServices(apiKey: APIConstants.apiKEY, usePreviousAPI: true);
+  static ARMOYUServices service = ARMOYUServices(
+    apiKey: APIConstants.apiKEY,
+  );
 
   static ARMOYUWidgets widgets = ARMOYUWidgets(service: service);
 }

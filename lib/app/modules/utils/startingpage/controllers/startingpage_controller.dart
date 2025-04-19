@@ -103,23 +103,27 @@ class StartingpageController extends GetxController {
   }
 
   appstatuscheck(String sesssionTOKEN) async {
-    LoginResponse response =
-        await API.service.authServices.loginwithbarriertoken(
-      barriertoken: sesssionTOKEN,
-    );
+    try {
+      LoginResponse response =
+          await API.service.authServices.loginwithbarriertoken(
+        barriertoken: sesssionTOKEN,
+      );
 
-    if (response.result.status) {
-      log("Web Versiyon ${response.result.descriptiondetail["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
-      if (response.result.descriptiondetail["build"] >
-          int.parse(ARMOYU.appBuild)) {
-        ARMOYUFunctions.updateForce(Get.context);
-        return;
-      }
+      if (response.result.status) {
+        log("Web Versiyon ${response.result.descriptiondetail["build"]}  > Sistem versiyon  ${int.parse(ARMOYU.appBuild)}");
+        if (response.result.descriptiondetail["build"] >
+            int.parse(ARMOYU.appBuild)) {
+          ARMOYUFunctions.updateForce(Get.context);
+          return;
+        }
 
-      if (response.result.description == "Oyuncu bilgileri yanlış!") {
-        Get.offAndToNamed("/login");
-        return;
+        if (response.result.description == "Oyuncu bilgileri yanlış!") {
+          Get.offAndToNamed("/login");
+          return;
+        }
       }
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

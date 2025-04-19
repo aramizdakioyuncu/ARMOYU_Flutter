@@ -35,19 +35,12 @@ class PostshareView extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Obx(
-              //   () => Media.mediaList(
-              //     controller.media,
-              //     big: true,
-              //     editable: true,
-              //     currentUser: findCurrentAccountController
-              //         .currentUserAccounts.value.user.value,
-              //   ),
-              // ),
-              API.widgets.gallery.mediaList(
-                controller.media,
-                big: true,
-                editable: true,
+              Obx(
+                () => API.widgets.gallery.mediaList(
+                  controller.media,
+                  big: true,
+                  editable: true,
+                ),
               ),
               SizedBox(
                 width: Get.width,

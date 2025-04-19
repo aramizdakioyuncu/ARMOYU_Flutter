@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu/app/core/appcore.dart';
 import 'package:armoyu/app/core/widgets.dart';
-import 'package:armoyu/app/functions/page_functions.dart';
 import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/chat/chat.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
@@ -23,6 +22,7 @@ import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/functions/functions.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/sources/social/bundle/posts_bundle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -75,9 +75,12 @@ class ProfileController extends GetxController
   var changeavatarStatus = false.obs;
   var changebannerStatus = false.obs;
 
-  Rxn<Widget> widget = Rxn();
+  // Rxn<Widget> widget = Rxn();
+  late PostsWidgetBundle widget;
   Rxn<Widget> widget2 = Rxn();
-  Rxn<Widget> widget3 = Rxn();
+  // Rxn<Widget> widget3 = Rxn();
+  late PostsWidgetBundle widget3;
+
   @override
   // ignore: unnecessary_overrides
   void onClose() {
@@ -329,7 +332,7 @@ class ProfileController extends GetxController
 
     log("yeniden veriler çekiliyor");
 
-    widget.value = API.widgets.social.posts(
+    widget = API.widgets.social.posts(
       context: Get.context!,
       shrinkWrap: true,
       userID: userProfile.value.userID!,
@@ -351,7 +354,7 @@ class ProfileController extends GetxController
       userID: userProfile.value.userID!,
     );
 
-    widget3.value = API.widgets.social.posts(
+    widget3 = API.widgets.social.posts(
       context: Get.context!,
       shrinkWrap: true,
       userID: userProfile.value.userID!,
@@ -756,33 +759,33 @@ class ProfileController extends GetxController
     return false;
   }
 
-  Widget buildTaggedPosts() {
-    return NotificationListener<ScrollNotification>(
-      onNotification: handleScrollNotificationTagged,
-      child: API.widgets.social.posts(
-        context: Get.context!,
-        key: const PageStorageKey('Tab3'),
-        userID: userProfile.value.userID!,
-        username: userProfile.value.userName!.value,
-        category: "etiketlenmis",
-        padding: EdgeInsets.zero,
-        physics: const ClampingScrollPhysics(),
-        shrinkWrap: true,
-        profileFunction: (
-            {required avatar,
-            required banner,
-            required displayname,
-            required userID,
-            required username}) {
-          log("$userID $username");
-          PageFunctions().pushProfilePage(
-            Get.context!,
-            User(userName: Rx(username)),
-          );
-        },
-      ),
-    );
-  }
+  // Widget buildTaggedPosts() {
+  //   return NotificationListener<ScrollNotification>(
+  //     onNotification: handleScrollNotificationTagged,
+  //     child: API.widgets.social.posts(
+  //       context: Get.context!,
+  //       key: const PageStorageKey('Tab3'),
+  //       userID: userProfile.value.userID!,
+  //       username: userProfile.value.userName!.value,
+  //       category: "etiketlenmis",
+  //       padding: EdgeInsets.zero,
+  //       physics: const ClampingScrollPhysics(),
+  //       shrinkWrap: true,
+  //       profileFunction: (
+  //           {required avatar,
+  //           required banner,
+  //           required displayname,
+  //           required userID,
+  //           required username}) {
+  //         log("$userID $username");
+  //         PageFunctions().pushProfilePage(
+  //           Get.context!,
+  //           User(userName: Rx(username)),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
   ///WidgetsProfile
   ///

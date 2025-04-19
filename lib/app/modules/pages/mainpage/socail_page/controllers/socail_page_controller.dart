@@ -7,6 +7,7 @@ import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
+import 'package:armoyu_widgets/sources/social/bundle/posts_bundle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,8 +21,8 @@ class SocailPageController extends GetxController {
   late final ScrollController _scrollController;
 
   Rxn<Widget> widgetstory = Rxn(); // Reaktif liste
-  Rxn<Widget> widgetposts = Rxn(); // Reaktif liste
-
+  // Rxn<Widget> widgetposts = Rxn(); // Reaktif liste
+  late PostsWidgetBundle widgetposts;
   var currentUserAccounts = Rx<UserAccounts>(
     UserAccounts(
       user: User().obs,
@@ -56,16 +57,17 @@ class SocailPageController extends GetxController {
     });
 
     widgetstory.value = API.widgets.social.widgetStorycircle();
-    widgetposts.value = API.widgets.social.posts(
+    widgetposts = API.widgets.social.posts(
       context: Get.context!,
       scrollController: scrollController,
       shrinkWrap: true,
-      profileFunction: (
-          {required avatar,
-          required banner,
-          required displayname,
-          required userID,
-          required username}) {
+      profileFunction: ({
+        required avatar,
+        required banner,
+        required displayname,
+        required userID,
+        required username,
+      }) {
         log('$userID $username');
         PageFunctions().pushProfilePage(
           Get.context!,
@@ -76,5 +78,7 @@ class SocailPageController extends GetxController {
   }
 
   //Sayfa Yenilenme işlemi
-  Future<void> handleRefresh() async {}
+  Future<void> handleRefresh() async {
+    log("Sayfa Yenilendi");
+  }
 }

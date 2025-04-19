@@ -13,18 +13,18 @@ packages:
     dependency: "direct main"
     description:
       name: armoyu_services
-      sha256: fd174c205aa28a810bc5704d363c092bc8bac0e513ebc2e28ed4e8a698258fc7
+      sha256: "03a1410af6f200bc52620aaedf14c5732aff95db4d8222e33a2c817ca28d22ee"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+52"
+    version: "1.0.0+53"
   armoyu_widgets:
     dependency: "direct main"
     description:
       name: armoyu_widgets
-      sha256: a4dfe00a0d2a57174faff11e83099611302906b2f2f3722d66f50fa45aef7917
+      sha256: beb2d6fd5b8acd6cb95899647b0bc1a3d349218205b3e1d9ebca57d2d1b23665
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+45"
+    version: "1.0.0+49"
   async:
     dependency: transitive
     description:
