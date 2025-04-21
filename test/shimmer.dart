@@ -1,4 +1,4 @@
-import 'package:armoyu/app/widgets/shimmer/placeholder.dart';
+import 'package:armoyu_widgets/widgets/shimmer/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 

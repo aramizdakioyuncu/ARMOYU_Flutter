@@ -56,14 +56,14 @@ dependencies:
   qr_flutter: ^4.1.0
   get: ^4.6.6
   get_storage: ^2.1.1
-  
-  armoyu_services: ^1.0.0+53
-  armoyu_widgets: ^1.0.0+52
 
   share_plus: ^10.1.2
   marquee: ^2.3.0
   socket_io_client: ^3.0.0
   country_flags: ^3.0.0
+
+  armoyu_services: ^1.0.0+55
+  armoyu_widgets: ^1.0.0+62
 
 dev_dependencies:
   flutter_test:

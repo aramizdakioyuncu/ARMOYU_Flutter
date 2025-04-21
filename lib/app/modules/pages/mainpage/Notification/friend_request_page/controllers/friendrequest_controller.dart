@@ -4,11 +4,11 @@ import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:armoyu/app/widgets/notification_bars/notification_bars_view.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/widgets/notification_bars/notification_bars_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -110,6 +110,7 @@ class FriendrequestController extends GetxController {
 
       widgetNotifications.add(
         CustomMenusNotificationbars(
+          service: API.service,
           currentUserAccounts: currentUserAccounts.value,
           user: User(
             userID: element.bildirimGonderenID,

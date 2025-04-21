@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/Chat/chat.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
+import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/sources/chat/bundle/chat_bundle.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class ChatNewController extends GetxController {
 
   var chatScrollController = ScrollController().obs;
 
-  late var currentUser = Rxn<User>();
+  late var currentUserAccounts = Rxn<UserAccounts>();
 
   late ChatWidgetBundle widgetnewChat;
 
@@ -27,8 +28,8 @@ class ChatNewController extends GetxController {
 
     final findCurrentAccountController = Get.find<AccountUserController>();
     log("Current AccountUser :: ${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
-    currentUser.value =
-        findCurrentAccountController.currentUserAccounts.value.user.value;
+    currentUserAccounts.value =
+        findCurrentAccountController.currentUserAccounts.value;
 
     chatScrollController.value.addListener(() {
       if (chatScrollController.value.position.pixels >=
@@ -40,6 +41,9 @@ class ChatNewController extends GetxController {
 
     widgetnewChat = API.widgets.chat.newchatListWidget(
       Get.context!,
+      onChatUpdated: (updatedChat) {
+        currentUserAccounts.value!.chatList = updatedChat;
+      },
       onPressed: (chat) {
         Get.toNamed("/chat/detail", arguments: {
           "chat": chat,

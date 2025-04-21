@@ -7,10 +7,10 @@ import 'package:armoyu_widgets/data/models/ARMOYU/news.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/functions/page_functions.dart';
-import 'package:armoyu/app/widgets/Skeletons/search_skeleton.dart';
 import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/sources/card/widgets/card_widget.dart';
+import 'package:armoyu_widgets/widgets/Skeletons/search_skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -53,7 +53,10 @@ class SearchPageController extends GetxController {
           required username}) {
         PageFunctions().pushProfilePage(
           Get.context!,
-          User(userName: Rx(username)),
+          User(
+            userID: userID,
+            userName: Rx(username),
+          ),
         );
       },
     );
@@ -69,7 +72,10 @@ class SearchPageController extends GetxController {
           required username}) {
         PageFunctions().pushProfilePage(
           Get.context!,
-          User(userName: Rx(username)),
+          User(
+            userID: userID,
+            userName: Rx(username),
+          ),
         );
       },
     );

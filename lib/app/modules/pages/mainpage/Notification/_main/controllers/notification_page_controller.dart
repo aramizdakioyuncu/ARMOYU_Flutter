@@ -6,11 +6,11 @@ import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:armoyu/app/translations/app_translation.dart';
-import 'package:armoyu/app/widgets/notification_bars/notification_bars_view.dart';
 import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/widgets/notification_bars/notification_bars_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,12 +46,6 @@ class NotificationPageController extends GetxController {
     });
   }
 
-  void setstatefunction() {
-    // if (mounted) {
-    //   setState(() {});
-    // }
-  }
-
   Future<void> _loadMoreData() async {
     if (!notificationProccess.value) {
       await loadnoifications();
@@ -63,7 +57,7 @@ class NotificationPageController extends GetxController {
     await loadnoifications();
   }
 
-  List<CustomMenusNotificationbars> widgetNotifications = [];
+  Rxn<List<CustomMenusNotificationbars>> widgetNotifications = Rxn();
 
   Future<void> loadnoifications() async {
     if (notificationProccess.value) {
@@ -79,19 +73,17 @@ class NotificationPageController extends GetxController {
       notificationProccess.value = false;
       firstProccess.value = false;
 
-      setstatefunction();
       return;
     }
 
     if (page.value == 1) {
-      widgetNotifications.clear();
-      setstatefunction();
+      widgetNotifications.value = [];
+      widgetNotifications.refresh();
     }
 
     if (response.response!.isEmpty) {
       notificationProccess.value = false;
       firstProccess.value = false;
-      setstatefunction();
 
       return;
     }
@@ -110,8 +102,11 @@ class NotificationPageController extends GetxController {
           noticiationbuttons = true;
         }
       }
-      widgetNotifications.add(
+
+      widgetNotifications.value ??= [];
+      widgetNotifications.value!.add(
         CustomMenusNotificationbars(
+          service: API.service,
           currentUserAccounts: currentUserAccounts,
           user: User(
             userID: element.bildirimGonderenID,
@@ -134,13 +129,12 @@ class NotificationPageController extends GetxController {
           text: element.bildirimIcerik,
         ),
       );
-      setstatefunction();
+      widgetNotifications.refresh();
     }
 
     notificationProccess.value = false;
     firstProccess.value = false;
     page.value++;
-    setstatefunction();
   }
 
   Widget notificationlistwidget() {
@@ -211,19 +205,22 @@ class NotificationPageController extends GetxController {
             },
           ),
           ...List.generate(
-            widgetNotifications.length,
+            widgetNotifications.value!.length,
             (index) {
               return Column(
                 children: [
-                  widgetNotifications[index].notificationWidget(Get.context!,
-                      deleteFunction: () {
-                    widgetNotifications.removeAt(index);
-                  }),
+                  widgetNotifications.value![index].notificationWidget(
+                    Get.context!,
+                    deleteFunction: () {
+                      widgetNotifications.value!.removeAt(index);
+                    },
+                    profileFunction: () {},
+                  ),
                   const SizedBox(height: 1)
                 ],
               );
             },
-          )
+          ),
         ],
       ),
     );

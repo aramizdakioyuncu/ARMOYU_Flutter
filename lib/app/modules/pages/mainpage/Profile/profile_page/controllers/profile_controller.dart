@@ -22,6 +22,7 @@ import 'package:armoyu_services/core/models/ARMOYU/_response/service_result.dart
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/functions/functions.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/sources/gallery/bundle/gallery_bundle.dart';
 import 'package:armoyu_widgets/sources/social/bundle/posts_bundle.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
@@ -59,15 +60,6 @@ class ProfileController extends GetxController
   var friendStatus = "".obs;
   var friendStatuscolor = Colors.blue.obs;
 
-  var postscounter = 1.obs;
-  var postsfetchproccess = false.obs;
-
-  var postscounterv2 = 1.obs;
-  var postsfetchProccessv2 = false.obs;
-
-  var gallerycounter = 1.obs;
-  var firstgalleryfetcher = false.obs;
-
   var firstFetchPosts = true.obs;
   var firstFetchGallery = true.obs;
   var firstFetchTaggedPost = true.obs;
@@ -75,16 +67,9 @@ class ProfileController extends GetxController
   var changeavatarStatus = false.obs;
   var changebannerStatus = false.obs;
 
-  // Rxn<Widget> widget = Rxn();
   late PostsWidgetBundle widgetposts;
-  Rxn<Widget> widgetgallery = Rxn();
+  late GalleryWidgetBundle widgetgallery;
   late PostsWidgetBundle widgettaggedposts;
-
-  @override
-  // ignore: unnecessary_overrides
-  void onClose() {
-    super.onClose();
-  }
 
   var currentUserAccounts = Rx<UserAccounts>(
     UserAccounts(
@@ -148,13 +133,31 @@ class ProfileController extends GetxController
 
     test();
 
+    userwidgets();
+  }
+
+  void userwidgets() {
+    log(profileUser.value!.userID.toString());
+    log(profileUser.value!.userName.toString());
+
     widgetposts = API.widgets.social.posts(
       context: Get.context!,
       shrinkWrap: true,
-      userID: profileUser.value!.userID,
-      // sliverWidget: true,
-      refreshPosts: () async {
-        await handleRefresh(myProfileRefresh: true);
+      userID: profileUser.value?.userID == 0 ? null : profileUser.value?.userID,
+      username: profileUser.value!.userName?.value,
+      cachedpostsList: !ismyProfile.value
+          ? null
+          : currentUserAccounts.value.user.value.widgetPosts,
+      onPostsUpdated: (updatedPosts) {
+        if (profileUser.value?.userID !=
+                currentUserAccounts.value.user.value.userID ||
+            profileUser.value?.userName !=
+                currentUserAccounts.value.user.value.userName) {
+          return;
+        }
+
+        currentUserAccounts.value.user.value.widgetPosts = updatedPosts;
+        log("--------------->> (Profile Posts)  updatedPosts : ${updatedPosts.length} || widgetPosts: ${currentUserAccounts.value.user.value.widgetPosts?.length}");
       },
       profileFunction: ({
         required avatar,
@@ -165,13 +168,42 @@ class ProfileController extends GetxController
       }) {},
     );
 
+    widgetgallery = API.widgets.gallery.mediaGallery(
+      context: Get.context!,
+      userID: profileUser.value?.userID == 0 ? null : profileUser.value?.userID,
+      username: profileUser.value!.userName?.value,
+      cachedmediaList: !ismyProfile.value
+          ? null
+          : currentUserAccounts.value.user.value.widgetGallery,
+      onmediaUpdated: (updatedMedia) {
+        if (profileUser.value?.userID !=
+                currentUserAccounts.value.user.value.userID ||
+            profileUser.value?.userName !=
+                currentUserAccounts.value.user.value.userName) {
+          return;
+        }
+        currentUserAccounts.value.user.value.widgetGallery = updatedMedia;
+        log("--------------->> (Profile Gallery)  updatedPosts : ${updatedMedia.length} || widgetGallery: ${currentUserAccounts.value.user.value.widgetGallery?.length}");
+      },
+    );
+
     widgettaggedposts = API.widgets.social.posts(
       context: Get.context!,
       shrinkWrap: true,
-      userID: profileUser.value!.userID!,
-      // sliverWidget: true,
-      refreshPosts: () async {
-        await handleRefresh(myProfileRefresh: true);
+      userID: profileUser.value?.userID == 0 ? null : profileUser.value?.userID,
+      username: profileUser.value!.userName?.value,
+      cachedpostsList: !ismyProfile.value
+          ? null
+          : currentUserAccounts.value.user.value.widgettaggedPosts,
+      onPostsUpdated: (updatedPosts) {
+        if (profileUser.value?.userID !=
+                currentUserAccounts.value.user.value.userID ||
+            profileUser.value?.userName !=
+                currentUserAccounts.value.user.value.userName) {
+          return;
+        }
+        currentUserAccounts.value.user.value.widgettaggedPosts = updatedPosts;
+        log("--------------->> (Profile TaggedPosts )  updatedPosts : ${updatedPosts.length} || widgetPosts: ${currentUserAccounts.value.user.value.widgettaggedPosts?.length}");
       },
       category: "etiketlenmis",
       profileFunction: ({
@@ -198,10 +230,6 @@ class ProfileController extends GetxController
       return;
     }
   }
-
-  var widgetPosts = Rxn<List>(null);
-  var medialist = Rxn<List<Media>>(null);
-  // var widgetTaggedPosts = Rxn<List>(null);
 
   Future<void> test({bool myprofilerefresh = false}) async {
     log("----${profileUser.value!.userID == currentUserAccounts.value.user.value.userID}-----");
@@ -239,6 +267,8 @@ class ProfileController extends GetxController
         }
 
         if (response.result.description == "Oyuncu bilgileri yanlış!") {
+          log(response.result.description);
+
           return;
         }
         //Kullanıcı adında birisi var
@@ -363,45 +393,13 @@ class ProfileController extends GetxController
       }
     }
 
-    log("yeniden veriler çekiliyor");
+    userwidgets();
 
-    widgetgallery.value = API.widgets.gallery.mediaGallery(
-      context: Get.context!,
-      userID: userProfile.value.userID!,
-    );
-
-    if (firstFetchPosts.value || myprofilerefresh) {
-      if (myprofilerefresh) {
-        postscounter.value = 1;
-      }
-
-      // refreshposts
-      // refreshposts
-      // refreshposts
-
-      firstFetchPosts.value = false;
-    }
-    if (firstFetchGallery.value || myprofilerefresh) {
-      if (myprofilerefresh) {
-        gallerycounter.value = 1;
-      }
-
-      // refreshgallery
-      // refreshgallery
-      // refreshgallery
-
-      firstFetchGallery.value = false;
-    }
-
-    if (firstFetchTaggedPost.value || myprofilerefresh) {
-      if (myprofilerefresh) {
-        postscounterv2.value = 1;
-      }
-      // refreshtaggedpost
-      // refreshtaggedpost
-      // refreshtaggedpost
-
-      firstFetchTaggedPost.value = false;
+    if (myprofilerefresh) {
+      log("Veriler yeniden çekiliyor");
+      widgetposts.refresh();
+      widgetgallery.refresh();
+      widgettaggedposts.refresh();
     }
 
     refreshprofilepageStatus.value = false;
@@ -676,7 +674,7 @@ class ProfileController extends GetxController
       final metrics = scrollNotification.metrics;
       if (metrics.atEdge && metrics.pixels >= metrics.maxScrollExtent * 0.5) {
         log("------Galeri------");
-
+        widgetgallery.loadMore();
         return true;
       }
     }
@@ -693,7 +691,7 @@ class ProfileController extends GetxController
         shrinkWrap: true,
         children: [
           Obx(
-            () => widgetgallery.value ?? Container(),
+            () => widgetgallery.widget.value ?? Container(),
           ),
           Visibility(
             visible: galleryproccess.value,

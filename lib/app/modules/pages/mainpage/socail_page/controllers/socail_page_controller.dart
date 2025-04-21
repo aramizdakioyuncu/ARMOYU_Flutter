@@ -12,16 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SocailPageController extends GetxController {
-  final ScrollController scrollController;
-
-  SocailPageController({
-    required this.scrollController,
-  });
-
-  late final ScrollController _scrollController;
+  late final ScrollController scrollController;
 
   Rxn<Widget> widgetstory = Rxn(); // Reaktif liste
-  // Rxn<Widget> widgetposts = Rxn(); // Reaktif liste
   late PostsWidgetBundle widgetposts;
   var currentUserAccounts = Rx<UserAccounts>(
     UserAccounts(
@@ -43,20 +36,20 @@ class SocailPageController extends GetxController {
       tag: currentUserAccounts.value.user.value.userID.toString(),
     );
 
-    _scrollController = mainController.homepageScrollControllerv2.value;
+    scrollController = mainController.homepageScrollControllerv2.value;
 
-    // ScrollController'ı dinle
-    _scrollController.addListener(() async {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent * 0.5) {
-        // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
-        log("qqqq");
-        await widgetposts.loadMore();
-      }
-    });
+    initpost();
+  }
 
+  initpost() async {
     widgetstory.value = API.widgets.social.widgetStorycircle();
+
     widgetposts = API.widgets.social.posts(
+      cachedpostsList: currentUserAccounts.value.widgetPosts,
+      onPostsUpdated: (updatedPosts) {
+        currentUserAccounts.value.widgetPosts = updatedPosts;
+        log("--------------->>  updatedPosts : ${updatedPosts.length} || widgetPosts: ${currentUserAccounts.value.widgetPosts?.length}");
+      },
       context: Get.context!,
       scrollController: scrollController,
       shrinkWrap: true,

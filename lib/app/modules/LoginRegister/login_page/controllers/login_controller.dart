@@ -125,13 +125,15 @@ class LoginPageController extends GetxController {
       return;
     }
 
+    //APIACCOUNTSERVICES
+    API.widgets.accountController.changeUser(ARMOYU.appUsers.first);
+    //APIACCOUNTSERVICES
+
     usernameController.value.text = "";
     passwordController.value.text = "";
 
     loginProcess.value = false;
 
-    Get.offAndToNamed("/app", arguments: {
-      'currentUserAccounts': ARMOYU.appUsers,
-    });
+    Get.offAndToNamed("/app");
   }
 }

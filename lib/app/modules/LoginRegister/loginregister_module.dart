@@ -1,4 +1,3 @@
-import 'package:armoyu/app/modules/LoginRegister/login_page/bindings/login_binding.dart';
 import 'package:armoyu/app/modules/LoginRegister/login_page/views/login_view.dart';
 import 'package:armoyu/app/modules/LoginRegister/register_page/bindings/register.binding.dart';
 import 'package:armoyu/app/modules/LoginRegister/register_page/views/register_view.dart';
@@ -13,7 +12,6 @@ class LoginRegisterpageModule {
     GetPage(
       name: "$route/login",
       page: () => const LoginpageView(),
-      binding: LoginpageBinding(),
     ),
     GetPage(
       name: "$route/register",

@@ -6,10 +6,10 @@ import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/modules/apppage/controllers/app_page_controller.dart';
 import 'package:armoyu/app/translations/app_translation.dart';
-import 'package:armoyu/app/widgets/Settings/listtile.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/widgets/Settings/listtile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

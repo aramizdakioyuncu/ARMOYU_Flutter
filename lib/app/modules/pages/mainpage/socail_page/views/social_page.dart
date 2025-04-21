@@ -35,10 +35,8 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
     log("***Social**${findCurrentAccountController.currentUserAccounts.value.user.value.displayName}");
     String uniqueTag = DateTime.now().millisecondsSinceEpoch.toString();
 
-    final controller = Get.put(
-      SocailPageController(scrollController: widget.homepageScrollController),
-      tag: "socail-$uniqueTag",
-    );
+    final controller =
+        Get.put(SocailPageController(), tag: "socail-$uniqueTag");
 
     return Scaffold(
       appBar: AppbarWidget.custom(),
