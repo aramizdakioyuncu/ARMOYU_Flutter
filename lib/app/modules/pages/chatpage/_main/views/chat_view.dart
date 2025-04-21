@@ -76,9 +76,7 @@ class ChatView extends StatelessWidget {
         controller: controller.chatScrollController.value,
         children: [
           API.widgets.chat.chatmyfriendsNotes(context),
-          Expanded(
-            child: controller.widgetChat.widget.value!,
-          ),
+          controller.widgetChat.widget.value!,
         ],
       ),
       floatingActionButton: FloatingActionButton(
