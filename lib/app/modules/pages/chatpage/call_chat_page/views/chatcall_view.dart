@@ -17,7 +17,7 @@ class ChatcallView extends StatelessWidget {
       },
       child: API.widgets.chat.chatcallWidget(
         context,
-        user: controller.chat.value!.user,
+        chat: controller.chat.value!,
         onClose: () {
           Get.back();
         },
