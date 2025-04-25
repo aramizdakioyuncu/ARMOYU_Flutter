@@ -15,7 +15,7 @@ class ChatdetailView extends StatelessWidget {
     return Scaffold(
       body: API.widgets.chat.chatdetailWidget(
         context,
-        chat: controller.chat.value!,
+        cachedChat: controller.chat.value!,
         chatcall: (chat) {
           Get.toNamed("/chat/call", arguments: {"chat": chat});
         },

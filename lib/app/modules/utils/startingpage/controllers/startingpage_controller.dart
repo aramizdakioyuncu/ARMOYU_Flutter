@@ -2,12 +2,14 @@ import 'dart:developer';
 
 import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu/app/core/appcore.dart';
+import 'package:armoyu_widgets/data/models/Chat/chat.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/modules/utils/noconnectionpage/views/noconnection_view.dart';
 import 'package:armoyu/app/services/utility/onesignal.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/core/armoyu.dart';
+import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/functions/functions.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,6 +57,27 @@ class StartingpageController extends GetxController {
       Get.offAndToNamed("/login");
       return;
     }
+    API.widgets.socketIO.onCallingAccept = (
+      int chatID,
+      String name,
+      String avatar,
+    ) {
+      // onCallingAccept güncellemesi burada işlenir
+      log("onCallingAccept güncellemesi geldi.");
+
+      final findCurrentAccountController = Get.find<AccountUserController>();
+      Chat? chat = findCurrentAccountController
+          .currentUserAccounts.value.chatList!
+          .firstWhereOrNull(
+        (element) => element.chatID == chatID,
+      );
+
+      if (chat == null) {
+        log("Chat bulunamadı.");
+        return;
+      }
+      Get.toNamed("/chat/call", arguments: {"chat": chat});
+    };
 
     sesssionTOKEN = ARMOYU.appUsers.first.sessionTOKEN.value;
     log("TOKENN :$sesssionTOKEN");

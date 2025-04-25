@@ -1,4 +1,3 @@
-import 'package:armoyu/app/modules/utils/startingpage/bindings/startingpage_binding.dart';
 import 'package:armoyu/app/modules/utils/startingpage/views/startingpage_view.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +8,6 @@ class StartingpageModule {
     GetPage(
       name: route,
       page: () => const StartingpageView(),
-      binding: StartingpageBinding(),
     ),
   ];
 }
