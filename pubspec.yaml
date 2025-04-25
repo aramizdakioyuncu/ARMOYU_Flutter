@@ -1,7 +1,7 @@
 name: armoyu
 description: Resmi ARMOYU Flutter projesidir.
 publish_to: "none"
-version: 1.0.16+100
+version: 1.0.16+101
 
 environment:
   sdk: ">=3.0.2 <4.0.0"
@@ -63,7 +63,7 @@ dependencies:
   country_flags: ^3.0.0
 
   armoyu_services: ^1.0.0+55
-  armoyu_widgets: ^1.0.0+67
+  armoyu_widgets: ^1.0.0+68
 
 dev_dependencies:
   flutter_test:
