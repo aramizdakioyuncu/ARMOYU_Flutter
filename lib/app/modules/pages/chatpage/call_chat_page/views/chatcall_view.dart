@@ -15,14 +15,17 @@ class ChatcallView extends StatelessWidget {
       onWillPop: () async {
         return true;
       },
-      child: API.widgets.chat.chatcallWidget(
-        context,
-        chat: controller.chat.value!,
-        onClose: () {
-          Get.back();
-        },
-        speaker: (value) {},
-        videocall: (value) {},
+      child: Scaffold(
+        body: API.widgets.chat.chatcallWidget(
+          context,
+          chat: controller.chat.value!,
+          onClose: () {
+            Get.back();
+          },
+          speaker: (value) {},
+          videocall: (value) {},
+          createanswer: controller.call,
+        ),
       ),
     );
   }

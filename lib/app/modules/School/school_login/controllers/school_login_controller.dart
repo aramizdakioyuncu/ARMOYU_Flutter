@@ -33,7 +33,7 @@ class SchoolLoginController extends GetxController {
     {
       'ID': '-1',
       'value': 'Seç',
-      'logo': "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png"
+      'logo': "https://api.aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png"
     }
   ].obs;
   var cupertinolist2 = [
@@ -48,7 +48,7 @@ class SchoolLoginController extends GetxController {
   var selectedcupertinolist2 = 0.obs;
 
   var schoollogo =
-      "https://aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png".obs;
+      "https://api.aramizdakioyuncu.com/galeri/ana-yapi/armoyu.png".obs;
 
   Future<void> loginschool() async {
     if (schoolProcess.value) {

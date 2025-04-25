@@ -17,7 +17,7 @@ class ChatdetailView extends StatelessWidget {
         context,
         cachedChat: controller.chat.value!,
         chatcall: (chat) {
-          Get.toNamed("/chat/call", arguments: {"chat": chat});
+          Get.toNamed("/chat/call", arguments: {"chat": chat, "type": "call"});
         },
         onClose: () {
           Get.back();
