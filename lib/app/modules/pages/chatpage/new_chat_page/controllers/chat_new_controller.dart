@@ -41,8 +41,9 @@ class ChatNewController extends GetxController {
 
     widgetnewChat = API.widgets.chat.newchatListWidget(
       Get.context!,
+      cachedChatList: currentUserAccounts.value!.newchatList,
       onChatUpdated: (updatedChat) {
-        currentUserAccounts.value!.chatList = updatedChat;
+        currentUserAccounts.value!.newchatList = updatedChat;
       },
       onPressed: (chat) {
         Get.toNamed("/chat/detail", arguments: {

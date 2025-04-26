@@ -50,18 +50,20 @@ class _SocialPage extends State<SocialPage> with AutomaticKeepAliveClientMixin {
             },
           ),
           SliverToBoxAdapter(
-            child: controller.widgetstory.value,
+            child: controller.widgetstory.widget.value,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 1)),
           SliverToBoxAdapter(
             child: controller.widgetposts.widget.value,
           ),
-          const SliverToBoxAdapter(
-            child: Visibility(
-              visible: true,
-              child: SizedBox(
-                height: 100,
-                child: CupertinoActivityIndicator(),
+          Obx(
+            () => SliverToBoxAdapter(
+              child: Visibility(
+                visible: !controller.isLoading.value,
+                child: const SizedBox(
+                  height: 100,
+                  child: CupertinoActivityIndicator(),
+                ),
               ),
             ),
           ),

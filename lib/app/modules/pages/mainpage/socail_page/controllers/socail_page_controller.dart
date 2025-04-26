@@ -8,13 +8,14 @@ import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_control
 
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:armoyu_widgets/sources/social/bundle/posts_bundle.dart';
+import 'package:armoyu_widgets/sources/social/bundle/story_bundle.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SocailPageController extends GetxController {
   late final ScrollController scrollController;
 
-  Rxn<Widget> widgetstory = Rxn(); // Reaktif liste
+  late StoryWidgetBundle widgetstory; // Reaktif liste
   late PostsWidgetBundle widgetposts;
   var currentUserAccounts = Rx<UserAccounts>(
     UserAccounts(
@@ -23,6 +24,7 @@ class SocailPageController extends GetxController {
       language: Rxn(),
     ),
   );
+  var isLoading = false.obs;
 
   @override
   void onInit() {
@@ -42,7 +44,13 @@ class SocailPageController extends GetxController {
   }
 
   initpost() async {
-    widgetstory.value = API.widgets.social.widgetStorycircle();
+    widgetstory = API.widgets.social.widgetStorycircle(
+      cachedStoryList: currentUserAccounts.value.widgetStoriescard,
+      onStoryUpdated: (updatedPosts) {
+        currentUserAccounts.value.widgetStoriescard = updatedPosts;
+        log("--------------->>  updatedStory : ${updatedPosts.length} || widgetStories: ${currentUserAccounts.value.widgetStoriescard?.length}");
+      },
+    );
 
     widgetposts = API.widgets.social.posts(
       cachedpostsList: currentUserAccounts.value.widgetPosts,
@@ -74,8 +82,9 @@ class SocailPageController extends GetxController {
 
   //Sayfa Yenilenme işlemi
   Future<void> handleRefresh() async {
-    log("Sayfa Yenilendi");
-
+    log("Sayfa Yenileniyor...");
+    isLoading.value = true;
     await widgetposts.refresh();
+    isLoading.value = false;
   }
 }

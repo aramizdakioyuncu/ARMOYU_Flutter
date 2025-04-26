@@ -42,7 +42,6 @@ dependencies:
   flutter_html: ^3.0.0-beta.2
   html: ^0.15.4
   permission_handler: ^11.3.0
-  # just_audio: ^0.9.36
   audioplayers: ^6.1.0
 
   flutter_mentions: ^2.0.1
@@ -63,7 +62,7 @@ dependencies:
   country_flags: ^3.0.0
 
   armoyu_services: ^1.0.0+55
-  armoyu_widgets: ^1.0.0+68
+  armoyu_widgets: ^1.0.0+72
 
 dev_dependencies:
   flutter_test:

@@ -3,12 +3,12 @@ import 'dart:developer';
 
 import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/data/models/ARMOYU/group.dart';
-import 'package:armoyu_widgets/data/models/ARMOYU/news.dart';
 import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu/app/functions/page_functions.dart';
 import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+import 'package:armoyu_widgets/sources/card/bundle/card_bundle.dart';
 import 'package:armoyu_widgets/sources/card/widgets/card_widget.dart';
 import 'package:armoyu_widgets/widgets/Skeletons/search_skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,28 +23,26 @@ class SearchPageController extends GetxController {
     required this.searchController,
   });
 
-  var postsearchprocess = false.obs;
-
-  var eventlistProcces = false.obs;
   Timer? searchTimer;
 
   var widgetSearch = <Widget>[].obs;
 
-  var firstProcces = false.obs;
-
-  var newsList = <News>[].obs;
-  late Rxn<Widget> widgetTPCard = Rxn<Widget>();
-  late Rxn<Widget> widgetPOPCard = Rxn<Widget>();
+  late CardWidgetBundle widgetTPCard;
+  late CardWidgetBundle widgetPOPCard;
   late Rxn<Widget> widgetNews = Rxn<Widget>();
 
   @override
   void onInit() {
     super.onInit();
 
-    widgetTPCard.value = API.widgets.cards.cardWidget(
+    widgetTPCard = API.widgets.cards.cardWidget(
       context: Get.context!,
       title: CustomCardType.playerXP,
       firstFetch: true,
+      cachedCardList: currentUserAccounts.xpcard,
+      onCardUpdated: (updatedCard) {
+        currentUserAccounts.xpcard = updatedCard;
+      },
       profileFunction: (
           {required avatar,
           required banner,
@@ -60,10 +58,14 @@ class SearchPageController extends GetxController {
         );
       },
     );
-    widgetPOPCard.value = API.widgets.cards.cardWidget(
+    widgetPOPCard = API.widgets.cards.cardWidget(
       context: Get.context!,
       title: CustomCardType.playerPOP,
       firstFetch: true,
+      cachedCardList: currentUserAccounts.popcard,
+      onCardUpdated: (updatedCard) {
+        currentUserAccounts.popcard = updatedCard;
+      },
       profileFunction: (
           {required avatar,
           required banner,
@@ -82,16 +84,13 @@ class SearchPageController extends GetxController {
 
     searchController.addListener(_onSearchTextChanged);
 
-    if (!firstProcces.value) {
-      widgetNews.value = API.widgets.news.newsCarouselWidget(
-        newsFunction: (news) {
-          Get.toNamed("/news/detail", arguments: {
-            "news": news,
-          });
-        },
-      );
-      // firstProcces = true.obs;
-    }
+    widgetNews.value = API.widgets.news.newsCarouselWidget(
+      newsFunction: (news) {
+        Get.toNamed("/news/detail", arguments: {
+          "news": news,
+        });
+      },
+    );
   }
 
   void _onSearchTextChanged() {
