@@ -1,4 +1,3 @@
-import 'package:armoyu/app/modules/pages/mainpage/Notification/group_request_page/bindings/grouprequest_binding.dart';
 import 'package:armoyu/app/modules/pages/mainpage/Notification/group_request_page/views/grouprequest_page.dart';
 import 'package:get/get.dart';
 
@@ -9,7 +8,6 @@ class GroupRequestModule {
     GetPage(
       name: "$route/group-request",
       page: () => const GrouprequestView(),
-      binding: GrouprequestBinding(),
     ),
   ];
 }

@@ -30,46 +30,23 @@ class GrouprequestView extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              controller.postpage.value = 1;
-              await controller.loadnoifications(controller.postpage.value);
+              await controller.notifications.refresh();
             },
             icon: const Icon(Icons.refresh),
           )
         ],
       ),
-      body: RefreshIndicator(
-        onRefresh: controller.handleRefresh,
-        child: Obx(
-          () => controller.widgetNotifications.isEmpty
-              ? Center(
-                  child: !controller.firstFetchProcces.value &&
-                          !controller.postpageproccess.value
-                      ? Text(CommonKeys.empty.tr)
-                      : const CupertinoActivityIndicator(),
-                )
-              : ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: controller.scrollController.value,
-                  itemCount: controller.widgetNotifications.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        controller.widgetNotifications[index]
-                            .notificationWidget(
-                          context,
-                          deleteFunction: () {
-                            controller.widgetNotifications.removeAt(index);
-                          },
-                          profileFunction: () {
-                            // Profile sayfasına gitme işlemi
-                          },
-                        ),
-                        const SizedBox(height: 1)
-                      ],
-                    );
-                  },
-                ),
-        ),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        controller: controller.scrollController.value,
+        slivers: [
+          CupertinoSliverRefreshControl(
+            onRefresh: controller.notifications.refresh,
+          ),
+          SliverToBoxAdapter(
+            child: controller.notifications.widget.value!,
+          ),
+        ],
       ),
     );
   }

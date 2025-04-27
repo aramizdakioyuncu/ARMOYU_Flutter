@@ -30,7 +30,7 @@ class FriendRequestView extends StatelessWidget {
           IconButton(
             onPressed: () async {
               controller.page.value = 1;
-              await controller.loadnoifications();
+              await controller.notifications.loadMore();
             },
             icon: const Icon(Icons.refresh),
           )
@@ -41,7 +41,7 @@ class FriendRequestView extends StatelessWidget {
         controller: controller.scrollController.value,
         slivers: [
           CupertinoSliverRefreshControl(
-            onRefresh: controller.handleRefresh,
+            onRefresh: controller.notifications.refresh,
           ),
           Obx(
             () => controller.widgetNotifications.isEmpty
@@ -53,29 +53,10 @@ class FriendRequestView extends StatelessWidget {
                           : const CupertinoActivityIndicator(),
                     ),
                   )
-                : SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: controller.widgetNotifications.length,
-                      (context, index) {
-                        return Column(
-                          children: [
-                            controller.widgetNotifications[index]
-                                .notificationWidget(
-                              context,
-                              deleteFunction: () {
-                                controller.widgetNotifications.removeAt(index);
-                              },
-                              profileFunction: () {
-                                // Profile sayfasına gitme işlemi
-                              },
-                            ),
-                            const SizedBox(height: 1)
-                          ],
-                        );
-                      },
-                    ),
+                : SliverToBoxAdapter(
+                    child: controller.notifications.widget.value!,
                   ),
-          )
+          ),
         ],
       ),
     );

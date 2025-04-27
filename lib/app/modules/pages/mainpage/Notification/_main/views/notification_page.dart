@@ -40,10 +40,13 @@ class _NotificationPage extends State<NotificationPage>
         controller: controller.scrollController.value,
         slivers: [
           CupertinoSliverRefreshControl(
-            onRefresh: controller.handleRefresh,
+            onRefresh: controller.notifications.refresh,
           ),
-          Obx(
-            () => controller.notificationlistwidget(),
+          SliverToBoxAdapter(
+            child: controller.notificationsdetail,
+          ),
+          SliverToBoxAdapter(
+            child: controller.notifications.widget.value!,
           ),
         ],
       ),

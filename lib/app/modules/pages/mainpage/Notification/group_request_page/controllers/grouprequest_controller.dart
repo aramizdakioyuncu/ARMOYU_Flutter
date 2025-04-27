@@ -1,32 +1,19 @@
 import 'dart:developer';
 
 import 'package:armoyu/app/core/api.dart';
-import 'package:armoyu_widgets/data/models/ARMOYU/media.dart';
-import 'package:armoyu_widgets/data/models/user.dart';
-import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:armoyu_services/core/models/ARMOYU/API/notifications/notification_list.dart';
-import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
+
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
-import 'package:armoyu_widgets/functions/functions_service.dart';
+import 'package:armoyu_widgets/sources/notifications/bundle/notifications_bundle.dart';
 import 'package:armoyu_widgets/widgets/notification_bars/notification_bars_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class GrouprequestController extends GetxController {
-  var postpageproccess = false.obs;
-  var postpage = 1.obs;
-  var firstFetchProcces = true.obs;
-  var widgetNotifications = <CustomMenusNotificationbars>[].obs;
+  var widgetNotifications = <Notifications>[].obs;
 
   var scrollController = ScrollController().obs;
 
-  var currentUserAccounts = Rx<UserAccounts>(
-    UserAccounts(
-      user: User().obs,
-      sessionTOKEN: Rx(""),
-      language: Rxn(),
-    ),
-  );
+  late NotificationsBundle notifications;
 
   @override
   void onInit() {
@@ -34,109 +21,23 @@ class GrouprequestController extends GetxController {
 
     //***//
     final findCurrentAccountController = Get.find<AccountUserController>();
-    currentUserAccounts.value =
-        findCurrentAccountController.currentUserAccounts.value;
     //***//
-
-    if (firstFetchProcces.value) {
-      loadnoifications(postpage.value);
-    }
 
     scrollController.value.addListener(() {
       if (scrollController.value.position.pixels >=
           scrollController.value.position.maxScrollExtent * 0.5) {
         // Sayfa sonuna geldiğinde yapılacak işlemi burada gerçekleştirin
-        loadMoreData();
+        notifications.loadMore();
       }
     });
-  }
 
-  Future<void> loadMoreData() async {
-    if (!postpageproccess.value) {
-      await loadnoifications(postpage.value);
-    }
-  }
-
-  Future<void> handleRefresh() async {
-    // setState(() {
-    postpage.value = 1;
-    loadnoifications(postpage.value);
-    // });
-  }
-
-  Future<void> loadnoifications(int page) async {
-    if (postpageproccess.value) {
-      return;
-    }
-
-    // setState(() {
-    postpageproccess.value = true;
-    // });
-    if (page == 1) {
-      widgetNotifications.clear();
-    }
-    FunctionService f = FunctionService(API.service);
-    NotificationListResponse response =
-        await f.getnotifications("gruplar", "davet", page);
-
-    if (!response.result.status) {
-      log(response.result.description);
-      firstFetchProcces.value = false;
-      postpageproccess.value = false;
-      return;
-    }
-
-    if (response.response!.isEmpty) {
-      firstFetchProcces.value = false;
-      postpageproccess.value = false;
-      return;
-    }
-
-    var noticiationbuttons = false.obs;
-
-    for (APINotificationList element in response.response!) {
-      noticiationbuttons.value = false;
-
-      if (element.bildirimAmac.toString() == "arkadaslik") {
-        if (element.bildirimKategori.toString() == "istek") {
-          noticiationbuttons.value = true;
-        }
-      } else if (element.bildirimAmac.toString() == "gruplar") {
-        if (element.bildirimKategori.toString() == "davet") {
-          noticiationbuttons.value = true;
-        }
-      }
-
-      widgetNotifications.add(
-        CustomMenusNotificationbars(
-          service: API.service,
-          currentUserAccounts: currentUserAccounts.value,
-          user: User(
-            userID: element.bildirimGonderenID,
-            displayName: Rx<String>(element.bildirimGonderenAdSoyad),
-            avatar: Media(
-              mediaID: element.bildirimGonderenID,
-              mediaType: MediaType.image,
-              mediaURL: MediaURL(
-                bigURL: Rx<String>(element.bildirimGonderenAvatar),
-                normalURL: Rx<String>(element.bildirimGonderenAvatar),
-                minURL: Rx<String>(element.bildirimGonderenAvatar),
-              ),
-            ),
-          ),
-          category: element.bildirimAmac,
-          categorydetail: element.bildirimKategori,
-          categorydetailID: element.bildirimKategoriDetay,
-          date: element.bildirimZaman,
-          enableButtons: noticiationbuttons.value,
-          text: element.bildirimIcerik,
-        ),
-      );
-    }
-
-    firstFetchProcces.value = false;
-    postpageproccess.value = false;
-
-    postpage++;
+    notifications = API.widgets.notifications.notifications(
+      onTap: (category, categorydetail, categorydetailID) {},
+      category: "gruplar",
+      categorydetail: "davet",
+      profileFunction: (userID, username) {
+        log("profileFunction userID: $userID, username: $username");
+      },
+    );
   }
 }
