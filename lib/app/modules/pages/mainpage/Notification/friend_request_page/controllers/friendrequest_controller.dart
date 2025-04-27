@@ -1,5 +1,6 @@
-import 'dart:developer';
 import 'package:armoyu/app/core/api.dart';
+import 'package:armoyu/app/functions/page_functions.dart';
+import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/sources/notifications/bundle/notifications_bundle.dart';
 import 'package:armoyu_widgets/widgets/notification_bars/notification_bars_view.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,13 @@ class FriendrequestController extends GetxController {
       category: "arkadaslik",
       categorydetail: "istek",
       profileFunction: (userID, username) {
-        log("profileFunction userID: $userID, username: $username");
+        PageFunctions().pushProfilePage(
+          Get.context!,
+          User(
+            userID: userID,
+            userName: Rx(username),
+          ),
+        );
       },
     );
   }
