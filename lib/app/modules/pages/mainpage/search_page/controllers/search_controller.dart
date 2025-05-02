@@ -10,6 +10,7 @@ import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/sources/card/bundle/card_bundle.dart';
 import 'package:armoyu_widgets/sources/card/widgets/card_widget.dart';
+import 'package:armoyu_widgets/sources/news/bundle/news_bundle.dart';
 import 'package:armoyu_widgets/widgets/Skeletons/search_skeleton.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class SearchPageController extends GetxController {
 
   late CardWidgetBundle widgetTPCard;
   late CardWidgetBundle widgetPOPCard;
-  late Rxn<Widget> widgetNews = Rxn<Widget>();
+  late NewsWidgetBundle widgetNews;
 
   @override
   void onInit() {
@@ -84,7 +85,11 @@ class SearchPageController extends GetxController {
 
     searchController.addListener(_onSearchTextChanged);
 
-    widgetNews.value = API.widgets.news.newsCarouselWidget(
+    widgetNews = API.widgets.news.newsCarouselWidget(
+      cachedNewsList: currentUserAccounts.newsList,
+      onNewsUpdated: (updatedNews) {
+        currentUserAccounts.newsList = updatedNews;
+      },
       newsFunction: (news) {
         Get.toNamed("/news/detail", arguments: {
           "news": news,

@@ -69,7 +69,7 @@ class _SearchPagePage extends State<SearchView>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 10),
-                    controller.widgetNews.value!,
+                    controller.widgetNews.widget.value!,
                     const SizedBox(height: 10),
                     controller.widgetTPCard.widget.value!,
                     const SizedBox(height: 10),

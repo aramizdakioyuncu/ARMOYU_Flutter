@@ -85,6 +85,7 @@ class SocailPageController extends GetxController {
     log("Sayfa Yenileniyor...");
     isLoading.value = true;
     await widgetposts.refresh();
+    await widgetstory.refresh();
     isLoading.value = false;
   }
 }
