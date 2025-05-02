@@ -94,7 +94,14 @@ class RegisterpageController extends GetxController {
 
     FunctionService f = FunctionService(API.service);
     RegisterResponse response = await f.register(
-        username, name, lastname, email, password, rpassword, inviteCode);
+      username,
+      name,
+      lastname,
+      email,
+      password,
+      rpassword,
+      inviteCode,
+    );
 
     if (!response.result.status) {
       ARMOYUWidget.stackbarNotification(
