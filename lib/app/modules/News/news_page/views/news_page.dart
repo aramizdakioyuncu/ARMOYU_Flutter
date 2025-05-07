@@ -19,8 +19,11 @@ class NewsPageView extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () async {
-                await Share.share(
-                  'https://aramizdakioyuncu.com/haberler/oyun/${controller.news.value!.newsTitle}',
+                await SharePlus.instance.share(
+                  ShareParams(
+                    uri: Uri.parse(
+                        'https://aramizdakioyuncu.com/haberler/oyun/${controller.news.value!.newsTitle}'),
+                  ),
                 );
               },
               icon: const Icon(Icons.share),

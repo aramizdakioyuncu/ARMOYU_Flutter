@@ -102,7 +102,10 @@ class PostshareView extends StatelessWidget {
                         log(aa.toString());
 
                         Position position = await Geolocator.getCurrentPosition(
-                            desiredAccuracy: LocationAccuracy.high);
+                          locationSettings: LocationSettings(
+                            accuracy: LocationAccuracy.high,
+                          ),
+                        );
 
                         await placemarkFromCoordinates(
                                 position.latitude, position.longitude)
