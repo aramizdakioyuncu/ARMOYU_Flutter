@@ -13,18 +13,18 @@ packages:
     dependency: "direct main"
     description:
       name: armoyu_services
-      sha256: "8c579ec4d5dbbed5c4b8af04b65e24b901e7e7032975579f8ae4ff9a8f536791"
+      sha256: "8b4ce99e97a51659e73b15db3d2c9e540ef0da9086b3310ad76cd6fbbc919d59"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+57"
+    version: "1.0.0+58"
   armoyu_widgets:
     dependency: "direct main"
     description:
       name: armoyu_widgets
-      sha256: "117f8fc8c172b2dafacf59049fefc823e18c4809ea22db1b8df41cee74de396d"
+      sha256: "613743fe6efd05b47c8b25cf6cba454a489d1aaa8616aa6eac4b5893f336abaa"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+78"
+    version: "1.0.0+81"
   async:
     dependency: transitive
     description:
@@ -157,10 +157,10 @@ packages:
     dependency: transitive
     description:
       name: camera_android_camerax
-      sha256: f0dcbce91623f75030840609de9b64d0d73f86df279c6e9588c1501245a05eb2
+      sha256: ea7e40bd63afb8f55058e48ec529ce96562be9d08393f79631a06f781161fd0d
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.15+2"
+    version: "0.6.16"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -985,10 +985,10 @@ packages:
     dependency: "direct main"
     description:
       name: onesignal_flutter
-      sha256: f1bc3cfa7bf8f9d06977f305802a0dcd31b007a9f95910c41b14bc99c3612828
+      sha256: acb0e04ab9fe8dc7e8d7b507ce880907261f57309bca5f0ae44dda89125c46fd
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.2"
   package_info_plus:
     dependency: "direct main"
     description:
@@ -1582,10 +1582,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: dc6ecaa00a7c708e5b4d10ee7bec8c270e9276dfcab1783f57e9962d7884305f
+      sha256: "329edf97fdd893e0f1e3b9e88d6a0e627128cc17cc316a8d67fda8f1451178ba"
       url: "https://pub.dev"
     source: hosted
-    version: "5.12.0"
+    version: "5.13.0"
   win32_registry:
     dependency: transitive
     description:

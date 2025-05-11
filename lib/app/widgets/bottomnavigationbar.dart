@@ -37,6 +37,12 @@ class BottomnavigationBar {
             icon: Icon(Icons.search),
             label: 'Arama',
           ),
+          if (MediaQuery.of(Get.context!).size.width >=
+              450) // Ekran genişliği 600'ün üzerinde ise görünür
+            BottomNavigationBarItem(
+              icon: Icon(Icons.directions_car_rounded),
+              label: 'Araba',
+            ),
           BottomNavigationBarItem(
             icon: Badge(
               isLabelVisible: (pagesController

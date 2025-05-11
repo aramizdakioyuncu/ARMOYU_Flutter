@@ -1,8 +1,9 @@
 import 'dart:developer';
 
 import 'package:armoyu/app/core/api.dart';
-import 'package:armoyu/app/modules/pages/mainpage/Notification/_main/views/notification_page.dart';
-import 'package:armoyu/app/modules/pages/mainpage/Profile/profile_page/views/profile_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/mediaplayer_page/views/mediaplayer_view.dart';
+import 'package:armoyu/app/modules/pages/mainpage/notification_page/_main/views/notification_page.dart';
+import 'package:armoyu/app/modules/pages/mainpage/profile_page/profile_page/views/profile_view.dart';
 import 'package:armoyu/app/modules/pages/mainpage/search_page/views/search_view.dart';
 import 'package:armoyu/app/modules/pages/mainpage/_main/controllers/main_controller.dart';
 import 'package:armoyu/app/modules/utils/camera/controllers/cam_controller.dart';
@@ -413,6 +414,8 @@ class MainView extends StatelessWidget {
                   scrollController: searchScrollController,
                 ),
               ),
+              if (MediaQuery.of(Get.context!).size.width >= 450)
+                MediaplayerView(),
               Obx(
                 () => NotificationPage(
                   currentUserAccounts: controller.currentUserAccounts.value!,

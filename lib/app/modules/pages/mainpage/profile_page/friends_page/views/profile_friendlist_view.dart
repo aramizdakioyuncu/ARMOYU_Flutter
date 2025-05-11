@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:armoyu/app/modules/pages/mainpage/Profile/friends_page/controllers/profile_friendlist_controller.dart';
+import 'package:armoyu/app/modules/pages/mainpage/profile_page/friends_page/controllers/profile_friendlist_controller.dart';
 import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:armoyu/app/widgets/text.dart';
 import 'package:armoyu/app/widgets/userlist/userlist_view.dart';

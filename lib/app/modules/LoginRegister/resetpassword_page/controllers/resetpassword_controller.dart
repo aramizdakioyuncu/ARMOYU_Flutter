@@ -88,10 +88,14 @@ class ResetpasswordController extends GetxController {
     );
 
     if (!response.status) {
-      String text = response.description;
-      ARMOYUWidget.stackbarNotification(Get.context!, text);
-      log(text);
+      ARMOYUWidget.stackbarNotification(Get.context!, response.description);
       resetpasswordProcess.value = false;
+      return;
+    }
+    if (response.description == "Oyuncu bilgileri yanlış!") {
+      ARMOYUWidget.stackbarNotification(Get.context!, response.description);
+      resetpasswordProcess.value = false;
+
       return;
     }
 

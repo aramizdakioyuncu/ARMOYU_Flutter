@@ -1,4 +1,4 @@
-import 'package:armoyu/app/modules/pages/mainpage/Notification/group_request_page/views/grouprequest_page.dart';
+import 'package:armoyu/app/modules/pages/mainpage/notification_page/group_request_page/views/grouprequest_page.dart';
 import 'package:get/get.dart';
 
 class GroupRequestModule {

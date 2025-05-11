@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:armoyu/app/modules/pages/mainpage/Notification/friend_request_page/controllers/friendrequest_controller.dart';
+import 'package:armoyu/app/modules/pages/mainpage/notification_page/friend_request_page/controllers/friendrequest_controller.dart';
 import 'package:armoyu/app/translations/app_translation.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
 import 'package:flutter/cupertino.dart';

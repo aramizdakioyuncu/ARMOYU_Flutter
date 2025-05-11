@@ -1,5 +1,5 @@
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
-import 'package:armoyu/app/modules/pages/mainpage/Notification/_main/controllers/notification_page_controller.dart';
+import 'package:armoyu/app/modules/pages/mainpage/notification_page/_main/controllers/notification_page_controller.dart';
 import 'package:armoyu/app/widgets/appbar_widget.dart';
 import 'package:armoyu/app/widgets/bottomnavigationbar.dart';
 import 'package:flutter/cupertino.dart';

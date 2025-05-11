@@ -7,7 +7,6 @@ import 'package:armoyu_widgets/data/models/user.dart';
 import 'package:armoyu_widgets/data/models/useraccounts.dart';
 import 'package:armoyu_services/core/models/ARMOYU/_response/response.dart';
 import 'package:armoyu_widgets/data/services/accountuser_services.dart';
-import 'package:armoyu_widgets/functions/functions_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -92,15 +91,14 @@ class RegisterpageController extends GetxController {
       return;
     }
 
-    FunctionService f = FunctionService(API.service);
-    RegisterResponse response = await f.register(
-      username,
-      name,
-      lastname,
-      email,
-      password,
-      rpassword,
-      inviteCode,
+    RegisterResponse response = await API.service.authServices.register(
+      username: username,
+      firstname: name,
+      lastname: lastname,
+      email: email,
+      password: password,
+      rpassword: rpassword,
+      inviteCode: inviteCode,
     );
 
     if (!response.result.status) {
@@ -111,20 +109,28 @@ class RegisterpageController extends GetxController {
     }
 
     if (response.result.status) {
-      LoginResponse loginresponse = await f.login(username, password);
+      LoginResponse loginresponse = await API.service.authServices.login(
+        username: username,
+        password: password,
+      );
 
       if (loginresponse.result.status) {
         UserAccounts newUser = ARMOYU.appUsers.first;
 
-        accountController.changeUser(
-          UserAccounts(
-            user: newUser.user,
-            sessionTOKEN: Rx(loginresponse.result.descriptiondetail),
-            language: Rxn(),
-          ),
-        );
+        try {
+          accountController.changeUser(
+            UserAccounts(
+              user: newUser.user,
+              sessionTOKEN: Rx(loginresponse.result.description),
+              language: Rxn(),
+            ),
+          );
 
-        Get.offAndToNamed("/app");
+          Get.offAndToNamed("/app");
+        } catch (e) {
+          log(e.toString());
+          registerProccess.value = false;
+        }
 
         return;
       }
