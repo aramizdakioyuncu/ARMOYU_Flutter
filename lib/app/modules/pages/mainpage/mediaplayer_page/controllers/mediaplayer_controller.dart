@@ -1,4 +1,3 @@
-import 'package:armoyu/app/constants/api_constants.dart';
 import 'package:armoyu/app/core/api.dart';
 import 'package:armoyu_widgets/sources/players/bundle/musicplayer_bundle.dart';
 import 'package:get/get.dart';
@@ -10,7 +9,5 @@ class MediaplayerController extends GetxController {
     super.onInit();
 
     player = API.widgets.players.advencedPlayer(Get.context!);
-
-    player.mediaList(APIConstants.musicList);
   }
 }

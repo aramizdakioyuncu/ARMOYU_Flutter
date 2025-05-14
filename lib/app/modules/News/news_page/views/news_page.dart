@@ -15,20 +15,21 @@ class NewsPageView extends StatelessWidget {
     final NewsPageController controller = Get.put(NewsPageController());
     return Scaffold(
       appBar: AppbarWidget.standart(
-          title: controller.news.value!.newsTitle.toString(),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await SharePlus.instance.share(
-                  ShareParams(
-                    uri: Uri.parse(
-                        'https://aramizdakioyuncu.com/haberler/oyun/${controller.news.value!.newsTitle}'),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.share),
-            ),
-          ]),
+        title: controller.news.value!.newsTitle.toString(),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await SharePlus.instance.share(
+                ShareParams(
+                  uri: Uri.parse(
+                      'https://aramizdakioyuncu.com/haberler/oyun/${controller.news.value!.newsTitle}'),
+                ),
+              );
+            },
+            icon: const Icon(Icons.share),
+          ),
+        ],
+      ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

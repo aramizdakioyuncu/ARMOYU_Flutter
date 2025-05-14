@@ -14,7 +14,7 @@ import 'package:armoyu/app/modules/pages/chatpage/detail_chat_page/chatdetail_mo
 import 'package:armoyu/app/modules/Group/group_module.dart';
 import 'package:armoyu/app/modules/LoginRegister/loginregister_module.dart';
 import 'package:armoyu/app/modules/News/list_news_page/module.dart';
-import 'package:armoyu/app/modules/News/news_page/module.dart';
+import 'package:armoyu/app/modules/News/news_page/news_module.dart';
 import 'package:armoyu/app/modules/pages/mainpage/notification_page/friend_request_page/friend_requst_module.dart';
 import 'package:armoyu/app/modules/pages/mainpage/notification_page/group_request_page/group_request_module.dart';
 import 'package:armoyu/app/modules/pages/mainpage/profile_page/friends_page/profile_friendlist_module.dart';

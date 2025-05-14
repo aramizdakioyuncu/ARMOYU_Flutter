@@ -1,4 +1,4 @@
-package com.example.armoyu
+package com.ARMOYU
 
 import io.flutter.embedding.android.FlutterActivity
 
