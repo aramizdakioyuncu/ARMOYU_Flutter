@@ -43,6 +43,10 @@ class BottomnavigationBar {
               icon: Icon(Icons.directions_car_rounded),
               label: 'Araba',
             ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.flare_rounded),
+            label: 'Reels',
+          ),
           BottomNavigationBarItem(
             icon: Badge(
               isLabelVisible: (pagesController

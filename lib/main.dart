@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mentions/flutter_mentions.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 void main() async {
@@ -17,6 +18,9 @@ void main() async {
 
   //Bellekteki verileri alıyoruz
   await GetStorage.init();
+
+  //Video
+  MediaKit.ensureInitialized();
 
   //ARMOYU Service Setup
   API.service.setup();
