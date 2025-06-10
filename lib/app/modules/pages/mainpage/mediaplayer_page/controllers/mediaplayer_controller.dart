@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 class MediaplayerController extends GetxController {
   late PlayerWidgetBundle player;
+
   @override
   void onInit() {
     super.onInit();

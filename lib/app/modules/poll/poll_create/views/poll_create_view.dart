@@ -35,11 +35,17 @@ class PollCreateView extends StatelessWidget {
               //     currentUser: controller.user.value!,
               //   ),
               // ),
-              API.widgets.gallery.mediaList(
-                controller.media,
-                big: true,
-                editable: true,
-              ),
+              API.widgets.gallery
+                  .mediaList(
+                    context,
+                    onMediaUpdated: (onMediaUpdated) {
+                      controller.media.value = onMediaUpdated;
+                    },
+                    big: true,
+                    editable: true,
+                  )
+                  .widget
+                  .value!,
               Text(PollKeys.pollquestion.tr),
               CustomTextfields.costum3(
                 controller: controller.controllerSurveyQuestion,

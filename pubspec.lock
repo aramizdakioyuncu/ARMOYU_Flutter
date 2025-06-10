@@ -21,18 +21,18 @@ packages:
     dependency: "direct main"
     description:
       name: armoyu_services
-      sha256: fe507906240cb843d016ef8677f5e52d7fd519168ac63ba791b9cdc82d32d9f2
+      sha256: "57f00ee5a955a0bda45e7eb4297ecedc40e696d0875163bf94dd63c140744c52"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+61"
+    version: "1.0.0+66"
   armoyu_widgets:
     dependency: "direct main"
     description:
       name: armoyu_widgets
-      sha256: "7d21dabd58dd25294d23c9c9a12f0a2194c3720c842279a089ecc95c0e246d20"
+      sha256: c03ef5197bb1e9305434ece28f4d30a66bd111c038ffbab251de344ec04cf147
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+84"
+    version: "1.0.0+91"
   async:
     dependency: transitive
     description:
@@ -385,6 +385,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  file_picker:
+    dependency: transitive
+    description:
+      name: file_picker
+      sha256: "77f8e81d22d2a07d0dee2c62e1dda71dc1da73bf43bb2d45af09727406167964"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.1.9"
   file_selector_linux:
     dependency: transitive
     description:
@@ -1626,6 +1634,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  video_compress:
+    dependency: transitive
+    description:
+      name: video_compress
+      sha256: "31bc5cdb9a02ba666456e5e1907393c28e6e0e972980d7d8d619a7beda0d4f20"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.4"
   video_player:
     dependency: "direct main"
     description:

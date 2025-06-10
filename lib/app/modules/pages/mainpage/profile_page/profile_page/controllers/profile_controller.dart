@@ -1366,11 +1366,7 @@ class ProfileController extends GetxController
                     child: InkWell(
                       onTap: () {
                         Navigator.pop(context);
-                        ARMOYUFunctions functions = ARMOYUFunctions(
-                          service: API.service,
-                          currentUserAccounts: currentUserAccounts.value,
-                        );
-                        functions.profileEdit(context);
+                        API.widgets.profile.popupProfileSettings(context);
                       },
                       child: ListTile(
                         leading: const Icon(Icons.edit),

@@ -1,4 +1,5 @@
 import 'package:armoyu/app/modules/pages/mainpage/reels_page/controllers/reels_controller.dart';
+import 'package:armoyu/app/widgets/appbar_widget.dart';
 import 'package:armoyu/app/widgets/bottomnavigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ class ReelsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final reelsController = Get.put(MainReelsController());
     return Scaffold(
+      appBar: AppbarWidget.custom(),
       body: reelsController.reelsWidgetBundle.widget.value,
       bottomNavigationBar: BottomnavigationBar.custom1(),
     );
